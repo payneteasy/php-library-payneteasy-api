@@ -284,7 +284,7 @@ class SaleTest extends QueryTest
     /**
      * @dataProvider providerProcess
      */
-    public function testProcess($order, $customer, $card, $server_response, $assert)
+    public function testProcess($order, $customer = null, $card = null, $server_response = null, $assert = null)
     {
         $this->transport->response  = $server_response;
 

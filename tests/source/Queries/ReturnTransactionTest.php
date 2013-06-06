@@ -225,7 +225,7 @@ class ReturnTransactionTest extends QueryTest
     /**
      * @dataProvider providerProcess
      */
-    public function testProcess($order, $server_response, $assert)
+    public function testProcess($order, $server_response = null, $assert = null)
     {
         $this->transport->response  = $server_response;
 
