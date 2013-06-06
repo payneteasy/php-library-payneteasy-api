@@ -4,8 +4,9 @@ namespace PaynetEasy\Paynet\Transport;
 use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
 use \PaynetEasy\Paynet\Exceptions\RequestWrong;
 use \PaynetEasy\Paynet\Responses\Response;
+use \Exception;
 
-class Curl          implements TransportI
+class Curl implements TransportI
 {
     protected $server;
 
@@ -107,7 +108,7 @@ class Curl          implements TransportI
 
             $response           = new Response($result);
         }
-        catch (\Exception $e)
+        catch (Exception $e)
         {
         }
 

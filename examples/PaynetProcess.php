@@ -10,10 +10,9 @@ use \PaynetEasy\Paynet\Data\Card;
 use \PaynetEasy\Paynet\Data\RecurrentCard;
 
 use \PaynetEasy\Paynet\Queries\Sale;
-use \PaynetEasy\Paynet\Queries\Status;
-use \PaynetEasy\Paynet\Callbacks\Redirect3D;
 
 use \PaynetEasy\Paynet\Responses\Response;
+use \Exception;
 
 abstract class PaynetProcess
 {
@@ -274,7 +273,7 @@ $(document).ready(progress_bar);
         $this->template->out();
     }
 
-    protected function out_error(\Exception $e)
+    protected function out_error(Exception $e)
     {
         $this->template->content        = '<div class="alert alert-error"><h3>An exception has occurred</h3>';
         $this->template->content       .= '<p>Text: '.  htmlspecialchars($e->getMessage()).'</p>';

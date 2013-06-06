@@ -4,7 +4,7 @@ namespace PaynetEasy\Paynet\Data;
 use \ArrayObject;
 use \PaynetEasy\Paynet\Exceptions\PaynetException;
 
-class Data    extends     ArrayObject
+class Data extends ArrayObject
 {
     protected $properties;
 

@@ -1,9 +1,9 @@
-<?PHP
+<?php
 namespace PaynetEasy\Paynet\Transport;
 
 use \PaynetEasy\Paynet\Responses\Response;
 
-class Transport     implements TransportI
+class Transport implements TransportI
 {
     public $response;
 

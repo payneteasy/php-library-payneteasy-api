@@ -6,7 +6,7 @@ namespace PaynetEasy\Paynet\Responses;
  *
  * http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Information_request_parameters
  */
-class CardInfo      extends Response
+class CardInfo extends Response
 {
     public function cardPrintedName()
     {

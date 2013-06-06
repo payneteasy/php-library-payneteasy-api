@@ -5,7 +5,7 @@ namespace PaynetEasy\Paynet\Data;
  * Container for customer data
  *
  */
-class Customer    extends     Data
+class Customer extends Data
 {
     public function __construct($array)
     {

@@ -1,12 +1,9 @@
 <?php
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Transport\Transport;
 use \PaynetEasy\Paynet\Data\Order;
-use \PaynetEasy\Paynet\Responses\Response;
 use \PaynetEasy\Paynet\Queries\Query;
-
-use \PaynetEasy\Paynet\Exceptions\PaynetException;
+use \Exception;
 
 /**
  * Test class for Status.
@@ -44,7 +41,7 @@ class StatusTest extends QueryTest
         {
             $this->query->process();
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
         }
 

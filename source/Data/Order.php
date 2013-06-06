@@ -7,7 +7,7 @@ use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
  * Container for order data
  *
  */
-class Order    extends     Data
+class Order extends Data
 {
     public function __construct($array)
     {

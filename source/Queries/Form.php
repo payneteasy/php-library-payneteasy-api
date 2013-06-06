@@ -13,7 +13,7 @@ use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
  * The implementation of the query Form
  * http://wiki.payneteasy.com/index.php?title=PnE%3APayment_Form_integration
  */
-class   Form                extends Sale
+class Form extends Sale
 {
     /**
      * Constructor

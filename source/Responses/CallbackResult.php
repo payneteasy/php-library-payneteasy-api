@@ -9,7 +9,7 @@ use \PaynetEasy\Paynet\Exceptions\CallbackResultException;
  *
  * see: http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks#Sale.2C_Return_Callback_Parameters
  */
-class CallbackResult      extends Response
+class CallbackResult extends Response
 {
     const SALE          = 'sale';
     const REVERSAL      = 'reversal';

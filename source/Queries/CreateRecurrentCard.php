@@ -2,14 +2,14 @@
 namespace PaynetEasy\Paynet\Queries;
 
 use \PaynetEasy\Paynet\Data\RecurrentCard;
-
 use \PaynetEasy\Paynet\Transport\TransportI;
+use \Exception;
 
 /**
  * The implementation of the Reccurent Transaction init
  * http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions
  */
-class   CreateRecurrentCard     extends Sale
+class CreateRecurrentCard extends Sale
 {
     /**
      * Reccurent Card
@@ -61,7 +61,7 @@ class   CreateRecurrentCard     extends Sale
             /* @var $response \PaynetEasy\Paynet\Responses\Response */
             $response       = $query->process();
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
         }
 
@@ -69,7 +69,7 @@ class   CreateRecurrentCard     extends Sale
         $this->status       = $query->status();
         $this->error        = $query->getLastError();
 
-        if($e instanceof \Exception)
+        if($e instanceof Exception)
         {
             throw $e;
         }

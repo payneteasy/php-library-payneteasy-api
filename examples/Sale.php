@@ -1,15 +1,10 @@
 <?PHP
 require_once './PaynetProcess.php';
 
-use \PaynetEasy\Paynet\Data\Order;
-use \PaynetEasy\Paynet\Data\Customer;
-use \PaynetEasy\Paynet\Data\Card;
-
 use \PaynetEasy\Paynet\Queries\Sale         as PaynetSale;
 use \PaynetEasy\Paynet\Queries\Status;
 use \PaynetEasy\Paynet\Callbacks\Redirect3D;
-
-use \PaynetEasy\Paynet\Responses\Response;
+use \Exception;
 
 class Sale extends PaynetProcess
 {
@@ -32,7 +27,7 @@ class Sale extends PaynetProcess
         {
             $this->processResponse($this->query->process());
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             $this->out_error($e);
         }
@@ -58,7 +53,7 @@ class Sale extends PaynetProcess
         {
             $this->processResponse($this->query->process());
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             $this->out_error($e);
         }
@@ -84,7 +79,7 @@ class Sale extends PaynetProcess
         {
             $this->processResponse($this->query->process($_POST));
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             $this->out_error($e);
         }

@@ -7,6 +7,8 @@ use \PaynetEasy\Paynet\Data\RecurrentCard;
 use \PaynetEasy\Paynet\Responses\Response;
 use \PaynetEasy\Paynet\Queries\CreateCardRef;
 
+use \Exception;
+
 class   CreateRecurrentCard extends Sale
 {
     protected function processResponse(Response $response)
@@ -34,7 +36,7 @@ class   CreateRecurrentCard extends Sale
             /* @var $response \PaynetEasy\Paynet\Responses\Response */
             $response       = $query->process();
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
         }
 

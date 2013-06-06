@@ -9,12 +9,13 @@ use \PaynetEasy\Paynet\Callbacks\Redirect3D;
 
 use \PaynetEasy\Paynet\Exceptions\PaynetException;
 use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
+use \Exception;
 
 /**
  * The implementation of the query SALE
  * http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#General_Sale_Process_Flow
  */
-class   Sale                extends Query
+class Sale extends Query
 {
     public function validate()
     {
@@ -132,7 +133,7 @@ class   Sale                extends Query
             /* @var $response \PaynetEasy\Paynet\Responses\Response */
             $response       = $status_query->process();
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
         }
 
@@ -140,7 +141,7 @@ class   Sale                extends Query
         $this->status       = $status_query->status();
         $this->error        = $status_query->getLastError();
 
-        if($e instanceof \Exception)
+        if($e instanceof Exception)
         {
             throw $e;
         }
@@ -168,7 +169,7 @@ class   Sale                extends Query
         {
             $response       = $callback->process($data);
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
         }
 
@@ -176,7 +177,7 @@ class   Sale                extends Query
         $this->status       = $callback->status();
         $this->error        = $callback->getLastError();
 
-        if($e instanceof \Exception)
+        if($e instanceof Exception)
         {
             throw $e;
         }

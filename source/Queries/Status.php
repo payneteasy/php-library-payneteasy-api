@@ -9,7 +9,7 @@ use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
  * The implementation of the query STATUS
  * http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Order_status
  */
-class   Status                extends Query
+class Status extends Query
 {
     public function validate()
     {

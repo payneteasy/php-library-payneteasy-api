@@ -4,7 +4,7 @@ namespace PaynetEasy\Paynet\Responses;
 use \ArrayObject;
 use \PaynetEasy\Paynet\Exceptions\PaynetException;
 
-class   Response  extends ArrayObject
+class Response extends ArrayObject
 {
     public function __construct($array = array())
     {

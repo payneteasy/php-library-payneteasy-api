@@ -13,11 +13,14 @@ use \PaynetEasy\Paynet\Transport\TransportI;
 use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
 use \PaynetEasy\Paynet\Exceptions\InvalidControlCode;
 
+use \Exception;
+use \BadMethodCallException;
+
 /**
  * Abstract Query or Callback
  *
  */
-abstract class   Query
+abstract class Query
 {
     const STATE_NULL        = 'null';
     const STATE_INIT        = 'init';
@@ -264,7 +267,7 @@ abstract class   Query
 
             return $this->processResponse(new Response($data));
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             $this->state            = self::STATE_END;
             $this->status           = self::STATUS_ERROR;
@@ -303,7 +306,7 @@ abstract class   Query
 
     protected function createControlCode()
     {
-        throw new \BadMethodCallException('method must be overloaded');
+        throw new BadMethodCallException('method must be overloaded');
     }
 
     /**
@@ -427,7 +430,7 @@ abstract class   Query
         {
             return $this->processResponse($this->transport->query($query));
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             $this->state            = self::STATE_END;
             $this->status           = self::STATUS_ERROR;

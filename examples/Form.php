@@ -1,15 +1,9 @@
 <?PHP
 require_once './PaynetProcess.php';
 
-use \PaynetEasy\Paynet\Data\Order;
-use \PaynetEasy\Paynet\Data\Customer;
-use \PaynetEasy\Paynet\Data\Card;
-
-use \PaynetEasy\Paynet\Queries\Form         as PaynetForm;
-use \PaynetEasy\Paynet\Queries\Status;
-use \PaynetEasy\Paynet\Callbacks\Redirect3D;
-
-use \PaynetEasy\Paynet\Responses\Response;
+use \PaynetEasy\Paynet\Queries\Form         as FormQuery;
+use \PaynetEasy\Paynet\Data\Data;
+use \Exception;
 
 class Form extends Sale
 {
@@ -18,14 +12,14 @@ class Form extends Sale
         parent::init();
 
         // for a credit card form should not be determined
-        $this->card         = new \PaynetEasy\Paynet\Data\Data();
+        $this->card         = new Data;
     }
 
     public function process_start()
     {
         // Step 1.
         // Create a query Sale
-        $this->query            = new PaynetForm($this->transport);
+        $this->query            = new FormQuery($this->transport);
 
         // Configurating it
         $this->query->setConfig($this->config);
@@ -39,7 +33,7 @@ class Form extends Sale
         {
             $this->processResponse($this->query->process());
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             $this->out_error($e);
         }

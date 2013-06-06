@@ -12,7 +12,7 @@ use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
  * The implementation of the query STATUS
  * http://wiki.payneteasy.com/index.php?title=PnE%3ARecurrent_Transactions&setlang=en#Recurrent_Payments
  */
-class   CreateCardRef           extends Query
+class CreateCardRef extends Query
 {
     /**
      * Constructor

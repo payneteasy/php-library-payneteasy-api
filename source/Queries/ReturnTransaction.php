@@ -11,7 +11,7 @@ use \PaynetEasy\Paynet\Transport\TransportI;
  * The implementation of the query Return
  * http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
  */
-class   ReturnTransaction       extends Query
+class ReturnTransaction extends Query
 {
     protected $comment;
 

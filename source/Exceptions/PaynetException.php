@@ -1,7 +1,9 @@
 <?PHP
 namespace PaynetEasy\Paynet\Exceptions;
 
-class PaynetException extends \Exception
+use \Exception;
+
+class PaynetException extends Exception
 {
     protected $errors = array();
 

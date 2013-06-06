@@ -12,7 +12,7 @@ use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
  * The implementation of the query MakeRebill
  * http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Process_Recurrent_Payment
  */
-class   MakeRebill           extends Sale
+class MakeRebill extends Sale
 {
     /**
      * Reccurent Card
