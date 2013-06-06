@@ -46,7 +46,7 @@ class Customer    extends     Data
 
     public function getEmail()
     {
-        return $this->get_value('email');
+        return $this->getValue('email');
     }
 
     /**

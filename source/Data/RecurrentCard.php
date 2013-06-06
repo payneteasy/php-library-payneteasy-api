@@ -22,7 +22,7 @@ class RecurrentCard    extends     Data
         parent::__construct(array('cardrefid' => $cardrefid));
     }
 
-    public function cardrefid()
+    public function cardRefId()
     {
         if(!$this->offsetExists('cardrefid'))
         {

@@ -59,12 +59,12 @@ class   Sale                extends Query
                 $this->state        = self::STATE_PROCESSING;
 
                 $this->validate();
-                return $this->init_query();
+                return $this->initQuery();
             }
             case self::STATE_PROCESSING:
             case self::STATE_WAIT:
             {
-                return $this->status_query();
+                return $this->statusQuery();
             }
             case self::STATE_REDIRECT:
             {
@@ -75,7 +75,7 @@ class   Sale                extends Query
                     throw new PaynetException('Data parameter undefined for state = STATE_REDIRECT');
                 }
 
-                return $this->redirect_calback($data);
+                return $this->redirectCalback($data);
             }
             case self::STATE_END:
             {
@@ -88,7 +88,7 @@ class   Sale                extends Query
         }
     }
 
-    protected function create_control_code()
+    protected function createControlCode()
     {
         return sha1
         (
@@ -100,16 +100,16 @@ class   Sale                extends Query
         );
     }
 
-    protected function init_query()
+    protected function initQuery()
     {
-        return $this->send_query
+        return $this->sendQuery
         (
             array_merge
             (
                 $this->getCustomer()->getData(),
                 $this->getOrder()->getData(),
                 $this->getCard()->getData(),
-                $this->common_query_options(),
+                $this->commonQueryOptions(),
                 array
                 (
                     '.method'       => $this->method,
@@ -119,7 +119,7 @@ class   Sale                extends Query
         );
     }
 
-    protected function status_query()
+    protected function statusQuery()
     {
         $status_query       = new Status($this->transport);
 
@@ -156,7 +156,7 @@ class   Sale                extends Query
      *
      * @throws      PaynetException
      */
-    protected function redirect_calback($data)
+    protected function redirectCalback($data)
     {
         $callback           = new Redirect3D($this->transport);
 

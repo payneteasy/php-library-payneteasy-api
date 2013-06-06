@@ -56,7 +56,7 @@ class Order    extends     Data
 
     public function getOrderCode()
     {
-        return $this->get_value('client_orderid');
+        return $this->getValue('client_orderid');
     }
 
     public function getOrderId()
@@ -66,7 +66,7 @@ class Order    extends     Data
 
     public function getPaynetOrderId()
     {
-        return $this->get_value('orderid');
+        return $this->getValue('orderid');
     }
 
     public function setPaynetOrderId($paynet_order_id)
@@ -76,7 +76,7 @@ class Order    extends     Data
 
     public function getAmount()
     {
-        return $this->get_value('amount');
+        return $this->getValue('amount');
     }
 
     /**
@@ -85,7 +85,7 @@ class Order    extends     Data
      */
     public function getAmountInCents()
     {
-        $amount         = (float)$this->get_value('amount');
+        $amount         = (float)$this->getValue('amount');
         $amount         = explode('.', $amount);
         if(empty($amount[1]))
         {
@@ -106,12 +106,12 @@ class Order    extends     Data
 
     public function getCurrency()
     {
-        return $this->get_value('currency');
+        return $this->getValue('currency');
     }
 
     public function getDesc()
     {
-        return $this->get_value('order_desc');
+        return $this->getValue('order_desc');
     }
 
     public function getContextData()

@@ -83,23 +83,23 @@ class   GetCardInfo           extends Query
             array
             (
                 'login'         => $this->config['login'],
-                'control'       => $this->create_control_code(),
+                'control'       => $this->createControlCode(),
                 '.method'       => $this->method,
                 '.end_point'    => $this->config['end_point']
             )
         );
 
-        return new CardInfo($this->send_query($query)->getArrayCopy());
+        return new CardInfo($this->sendQuery($query)->getArrayCopy());
     }
 
-    protected function create_control_code()
+    protected function createControlCode()
     {
         // This is SHA-1 checksum of the concatenation
         // login + cardrefid + merchant-control.
         return sha1
         (
             $this->config['login'].
-            $this->recurrent_card->cardrefid().
+            $this->recurrent_card->cardRefId().
             $this->config['control']
         );
     }

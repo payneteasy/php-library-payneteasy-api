@@ -42,13 +42,13 @@ class   CreateRecurrentCard     extends Sale
 
         if($response->isApproved())
         {
-            $this->create_card_ref();
+            $this->createCardRef();
         }
 
         return      $response;
     }
 
-    protected function create_card_ref()
+    protected function createCardRef()
     {
         $query              = new CreateCardRef($this->transport);
 

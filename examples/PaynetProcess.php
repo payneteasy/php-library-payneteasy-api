@@ -134,7 +134,7 @@ abstract class PaynetProcess
      * Response Handler for Paynet
      * @param Response $response
      */
-    protected function process_response(Response $response)
+    protected function processResponse(Response $response)
     {
         // Step 3.
         // Handling response from paynet
@@ -248,7 +248,7 @@ $(document).ready(progress_bar);
 
             if($this->reccurent_card instanceof RecurrentCard)
             {
-                $this->template->content    .= '<p><b>ReccurentCardId</b>: '.$this->reccurent_card->cardrefid().'</p>';
+                $this->template->content    .= '<p><b>ReccurentCardId</b>: '.$this->reccurent_card->cardRefId().'</p>';
             }
         }
         elseif($this->query->status()   === Sale::STATUS_DECLINED)

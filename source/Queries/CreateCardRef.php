@@ -52,13 +52,13 @@ class   CreateCardRef           extends Query
             array
             (
                 'login'         => $this->config['login'],
-                'control'       => $this->create_control_code(),
+                'control'       => $this->createControlCode(),
                 '.method'       => $this->method,
                 '.end_point'    => $this->config['end_point']
             )
         );
 
-        $response           = $this->send_query($query);
+        $response           = $this->sendQuery($query);
 
         if(!isset($response['card-ref-id']))
         {
@@ -74,7 +74,7 @@ class   CreateCardRef           extends Query
         return $response;
     }
 
-    protected function create_control_code()
+    protected function createControlCode()
     {
         // This is SHA-1 checksum of the concatenation
         // login + client-order-id + paynet-order-id + merchant-control.

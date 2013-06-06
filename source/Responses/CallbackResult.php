@@ -17,7 +17,7 @@ class CallbackResult      extends Response
 
     public function type()
     {
-        $result         = strtolower($this->get_value('type'));
+        $result         = strtolower($this->getValue('type'));
 
         switch($result)
         {
@@ -37,16 +37,16 @@ class CallbackResult      extends Response
 
     public function amount()
     {
-        return (float)$this->get_value('amount');
+        return (float)$this->getValue('amount');
     }
 
     public function comment()
     {
-        return $this->get_value('comment');
+        return $this->getValue('comment');
     }
 
-    public function merchantdata()
+    public function merchantData()
     {
-        return $this->get_value('merchantdata');
+        return $this->getValue('merchantdata');
     }
 }

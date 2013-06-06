@@ -50,15 +50,15 @@ class   Form                extends Sale
         $this->order->validate();
     }
 
-    protected function init_query()
+    protected function initQuery()
     {
-        return $this->send_query
+        return $this->sendQuery
         (
             array_merge
             (
                 $this->getCustomer()->getData(),
                 $this->getOrder()->getData(),
-                $this->common_query_options(),
+                $this->commonQueryOptions(),
                 array
                 (
                     '.method'       => $this->method,

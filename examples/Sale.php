@@ -30,7 +30,7 @@ class Sale extends PaynetProcess
         // Step 2. Process query
         try
         {
-            $this->process_response($this->query->process());
+            $this->processResponse($this->query->process());
         }
         catch(\Exception $e)
         {
@@ -56,7 +56,7 @@ class Sale extends PaynetProcess
         // Step 2. Executing query
         try
         {
-            $this->process_response($this->query->process());
+            $this->processResponse($this->query->process());
         }
         catch(\Exception $e)
         {
@@ -82,7 +82,7 @@ class Sale extends PaynetProcess
         // Step 2. Executing query
         try
         {
-            $this->process_response($this->query->process($_POST));
+            $this->processResponse($this->query->process($_POST));
         }
         catch(\Exception $e)
         {

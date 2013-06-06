@@ -24,9 +24,9 @@ class Data    extends     ArrayObject
      */
     public function validate()
     {
-        $this->check_the_required();
+        $this->checkRequired();
 
-        $this->validate_preg();
+        $this->validatePreg();
     }
 
     /**
@@ -53,7 +53,7 @@ class Data    extends     ArrayObject
         return $this->getArrayCopy();
     }
 
-    protected function check_the_required()
+    protected function checkRequired()
     {
         foreach ($this->properties as $k => $v)
         {
@@ -69,7 +69,7 @@ class Data    extends     ArrayObject
         }
     }
 
-    protected function validate_preg()
+    protected function validatePreg()
     {
         foreach($this->validate_preg as $property  => $preg)
         {
@@ -87,7 +87,7 @@ class Data    extends     ArrayObject
         }
     }
 
-    protected function get_value($key)
+    protected function getValue($key)
     {
         if($this->offsetExists($key))
         {

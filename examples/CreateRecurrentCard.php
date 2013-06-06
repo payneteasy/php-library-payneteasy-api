@@ -9,19 +9,19 @@ use \PaynetEasy\Paynet\Queries\CreateCardRef;
 
 class   CreateRecurrentCard extends Sale
 {
-    protected function process_response(Response $response)
+    protected function processResponse(Response $response)
     {
         if($this->query->state() === Query::STATE_END
         && $response->isApproved())
         {
             // Create Reccurent Card
-            $this->create_card_ref();
+            $this->createCardRef();
         }
 
         parent::process_response($response);
     }
 
-    protected function create_card_ref()
+    protected function createCardRef()
     {
         $query              = new CreateCardRef($this->transport);
 

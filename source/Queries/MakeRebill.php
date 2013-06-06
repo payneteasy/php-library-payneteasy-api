@@ -104,15 +104,15 @@ class   MakeRebill           extends Sale
         $this->recurrent_card->validate();
     }
 
-    protected function init_query()
+    protected function initQuery()
     {
-        return $this->send_query
+        return $this->sendQuery
         (
             array_merge
             (
                 $this->getOrder()->getData(),
                 $this->recurrent_card->getData(),
-                $this->common_query_options(),
+                $this->commonQueryOptions(),
                 array
                 (
                     'comment'       => $this->comment,
@@ -123,14 +123,14 @@ class   MakeRebill           extends Sale
         );
     }
 
-    protected function create_control_code()
+    protected function createControlCode()
     {
         return sha1
         (
             $this->config['end_point'].
             $this->order->getOrderCode().
             $this->order->getAmountInCents().
-            $this->recurrent_card->cardrefid().
+            $this->recurrent_card->cardRefId().
             $this->config['control']
         );
     }

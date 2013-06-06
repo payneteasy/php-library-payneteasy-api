@@ -76,7 +76,7 @@ class   ReturnTransaction       extends Query
             array
             (
                 'login'         => $this->config['login'],
-                'control'       => $this->create_control_code(),
+                'control'       => $this->createControlCode(),
                 '.method'       => $this->method,
                 '.end_point'    => $this->config['end_point']
             ),
@@ -101,10 +101,10 @@ class   ReturnTransaction       extends Query
             $query['comment']       = $this->comment;
         }
 
-        return $this->send_query($query);
+        return $this->sendQuery($query);
     }
 
-    protected function create_control_code()
+    protected function createControlCode()
     {
         // Checksum used to ensure that it is Merchant (and not a fraudster)
         // that initiates the return request.

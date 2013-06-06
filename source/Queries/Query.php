@@ -262,7 +262,7 @@ abstract class   Query
         {
             $this->validate();
 
-            return $this->process_response(new Response($data));
+            return $this->processResponse(new Response($data));
         }
         catch(\Exception $e)
         {
@@ -301,7 +301,7 @@ abstract class   Query
         return $this->error;
     }
 
-    protected function create_control_code()
+    protected function createControlCode()
     {
         throw new \BadMethodCallException('method must be overloaded');
     }
@@ -311,7 +311,7 @@ abstract class   Query
      *
      * @return      array
      */
-    protected function common_query_options()
+    protected function commonQueryOptions()
     {
         $query                              = array
         (
@@ -319,7 +319,7 @@ abstract class   Query
             '.end_point'    => $this->config['end_point']
         );
 
-        $query['control']                   = $this->create_control_code();
+        $query['control']                   = $this->createControlCode();
 
         if(isset($this->config['redirect_url']))
         {
@@ -341,7 +341,7 @@ abstract class   Query
      *
      * @throws      InvalidControlCode
      */
-    protected function validate_control_code(Response $response)
+    protected function validateControlCode(Response $response)
     {
         // This is SHA-1 checksum of the concatenation
         // status + orderid + client_orderid + merchant-control.
@@ -368,11 +368,11 @@ abstract class   Query
      *
      * @throws      \PaynetEasy\Paynet\Exceptions\PaynetException
      */
-    protected function process_response(Response $response)
+    protected function processResponse(Response $response)
     {
         if($this->is_control)
         {
-            $this->validate_control_code($response);
+            $this->validateControlCode($response);
         }
 
         if($response->isError())
@@ -421,11 +421,11 @@ abstract class   Query
      *
      * @throws      \PaynetEasy\Paynet\Exceptions\PaynetException
      */
-    protected function send_query($query)
+    protected function sendQuery($query)
     {
         try
         {
-            return $this->process_response($this->transport->query($query));
+            return $this->processResponse($this->transport->query($query));
         }
         catch(\Exception $e)
         {

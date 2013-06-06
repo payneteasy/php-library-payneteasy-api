@@ -37,7 +37,7 @@ class Form extends Sale
         // Step 2. Process query
         try
         {
-            $this->process_response($this->query->process());
+            $this->processResponse($this->query->process());
         }
         catch(\Exception $e)
         {

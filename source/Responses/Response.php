@@ -16,7 +16,7 @@ class   Response  extends ArrayObject
         parent::__construct($array);
     }
 
-    protected function get_value($index)
+    protected function getValue($index)
     {
         if($this->offsetExists($index))
         {
@@ -30,29 +30,29 @@ class   Response  extends ArrayObject
 
     public function type()
     {
-        return $this->get_value('type');
+        return $this->getValue('type');
     }
 
     public function status()
     {
-        return $this->get_value('status');
+        return $this->getValue('status');
     }
 
     public function serialNumber()
     {
-        return $this->get_value('serial-number');
+        return $this->getValue('serial-number');
     }
 
     public function descriptor()
     {
-        return $this->get_value('descriptor');
+        return $this->getValue('descriptor');
     }
 
     public function orderId()
     {
         foreach(array('merchant-order-id', 'client_orderid', 'merchant_order') as $index)
         {
-            $result     = $this->get_value($index);
+            $result     = $this->getValue($index);
             if(!is_null($result))
             {
                 return $result;
@@ -64,7 +64,7 @@ class   Response  extends ArrayObject
     {
         foreach(array('orderid', 'paynet-order-id') as $index)
         {
-            $result     = $this->get_value($index);
+            $result     = $this->getValue($index);
             if(!is_null($result))
             {
                 return $result;
@@ -74,14 +74,14 @@ class   Response  extends ArrayObject
 
     public function redirectUrl()
     {
-        return $this->get_value('redirect-url');
+        return $this->getValue('redirect-url');
     }
 
     public function control()
     {
         foreach(array('control', 'merchant_control') as $index)
         {
-            $result     = $this->get_value($index);
+            $result     = $this->getValue($index);
             if(!is_null($result))
             {
                 return $result;
@@ -93,7 +93,7 @@ class   Response  extends ArrayObject
     {
         foreach(array('error_message', 'error-message') as $index)
         {
-            $result     = $this->get_value($index);
+            $result     = $this->getValue($index);
             if(!is_null($result))
             {
                 return $result;
@@ -107,7 +107,7 @@ class   Response  extends ArrayObject
     {
         foreach(array('error_code', 'error-code') as $index)
         {
-            $result     = $this->get_value($index);
+            $result     = $this->getValue($index);
             if(!is_null($result))
             {
                 return (int)$result;
