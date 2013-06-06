@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Responses;
 
-use \PaynetEasy\Paynet\Exceptions\CallbackResultException;
+use \PaynetEasy\Paynet\Exceptions\CallbackException;
 
 /**
  * Merchant Callbacks
@@ -30,7 +30,7 @@ class CallbackResult extends Response
 
             default:
             {
-                throw new CallbackResultException("invalid transaction type: '$result'");
+                throw new CallbackException("invalid transaction type: '$result'");
             }
         }
     }

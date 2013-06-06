@@ -6,7 +6,7 @@ use \PaynetEasy\Paynet\Data\RecurrentCard;
 
 use \PaynetEasy\Paynet\Transport\TransportI;
 
-use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
+use \PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query MakeRebill
@@ -82,22 +82,22 @@ class MakeRebill extends Sale
 
         if(empty($this->config['login']))
         {
-            throw new ConfigWrong('login undefined');
+            throw new ConfigException('login undefined');
         }
 
         if(($this->order instanceof Order) === false)
         {
-            throw new ConfigWrong('Order is not instance of Order');
+            throw new ConfigException('Order is not instance of Order');
         }
 
         if(($this->recurrent_card instanceof RecurrentCard) === false)
         {
-            throw new ConfigWrong('recurrent_card is not instance of RecurrentCard');
+            throw new ConfigException('recurrent_card is not instance of RecurrentCard');
         }
 
         if(strlen($this->comment) > 50)
         {
-            throw new ConfigWrong('comment is very big (over 50 chars)');
+            throw new ConfigException('comment is very big (over 50 chars)');
         }
 
         $this->order->validate();

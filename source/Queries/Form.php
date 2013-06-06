@@ -7,7 +7,7 @@ use \PaynetEasy\Paynet\Data\Customer;
 use \PaynetEasy\Paynet\Data\Order;
 use \PaynetEasy\Paynet\Data\Card;
 
-use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
+use \PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query Form
@@ -33,17 +33,17 @@ class Form extends Sale
 
         if(($this->customer instanceof Customer) === false)
         {
-            throw new ConfigWrong('Customer is not instance of Customer');
+            throw new ConfigException('Customer is not instance of Customer');
         }
 
         if(($this->order instanceof Order) === false)
         {
-            throw new ConfigWrong('Order is not instance of Order');
+            throw new ConfigException('Order is not instance of Order');
         }
 
         if($this->card instanceof Card)
         {
-            throw new ConfigWrong('Credir Card must be undefined for Form API');
+            throw new ConfigException('Credir Card must be undefined for Form API');
         }
 
         $this->customer->validate();

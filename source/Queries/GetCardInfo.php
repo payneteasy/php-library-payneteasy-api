@@ -4,7 +4,7 @@ namespace PaynetEasy\Paynet\Queries;
 use \PaynetEasy\Paynet\Data\RecurrentCard;
 use \PaynetEasy\Paynet\Responses\CardInfo;
 
-use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
+use \PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query STATUS
@@ -56,12 +56,12 @@ class GetCardInfo extends Query
 
         if(empty($this->config['login']))
         {
-            throw new ConfigWrong('login undefined');
+            throw new ConfigException('login undefined');
         }
 
         if(($this->recurrent_card instanceof RecurrentCard) === false)
         {
-            throw new ConfigWrong('Order is not instance of Order');
+            throw new ConfigException('Order is not instance of Order');
         }
 
         $this->recurrent_card->validate();

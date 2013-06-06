@@ -8,7 +8,7 @@ use \PaynetEasy\Paynet\Responses\Response;
 use \PaynetEasy\Paynet\Callbacks\Redirect3D;
 
 use \PaynetEasy\Paynet\Exceptions\PaynetException;
-use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
+use \PaynetEasy\Paynet\Exceptions\ConfigException;
 use \Exception;
 
 /**
@@ -23,17 +23,17 @@ class Sale extends Query
 
         if(($this->customer instanceof Customer) === false)
         {
-            throw new ConfigWrong('Customer is not instance of Customer');
+            throw new ConfigException('Customer is not instance of Customer');
         }
 
         if(($this->order instanceof Order) === false)
         {
-            throw new ConfigWrong('Order is not instance of Order');
+            throw new ConfigException('Order is not instance of Order');
         }
 
         if(($this->card instanceof Card) === false)
         {
-            throw new ConfigWrong('Card is not instance of Card');
+            throw new ConfigException('Card is not instance of Card');
         }
 
         $this->customer->validate();

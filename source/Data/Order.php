@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Data;
 
-use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
+use \PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * Container for order data
@@ -127,12 +127,12 @@ class Order extends Data
     {
         if(!$this->getPaynetOrderId())
         {
-            throw new ConfigWrong('order.paynet_order_id undefined');
+            throw new ConfigException('order.paynet_order_id undefined');
         }
 
         if(!$this->getOrderCode())
         {
-            throw new ConfigWrong('order.order_code undefined');
+            throw new ConfigException('order.order_code undefined');
         }
     }
 }

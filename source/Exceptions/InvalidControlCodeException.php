@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Exceptions;
 
-class InvalidControlCode extends PaynetException
+class InvalidControlCodeException extends PaynetException
 {
     public function __construct($control, $expected_control)
     {

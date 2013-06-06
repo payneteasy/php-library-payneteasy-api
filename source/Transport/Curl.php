@@ -1,8 +1,8 @@
 <?PHP
 namespace PaynetEasy\Paynet\Transport;
 
-use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
-use \PaynetEasy\Paynet\Exceptions\RequestWrong;
+use \PaynetEasy\Paynet\Exceptions\ConfigException;
+use \PaynetEasy\Paynet\Exceptions\RequestException;
 use \PaynetEasy\Paynet\Responses\Response;
 use \Exception;
 
@@ -28,12 +28,12 @@ class Curl implements TransportI
     {
         if(empty($request['.method']))
         {
-            throw new ConfigWrong('.method not defined in paynet request');
+            throw new ConfigException('.method not defined in paynet request');
         }
 
         if(empty($request['.end_point']))
         {
-            throw new ConfigWrong('.end_point not defined in paynet request');
+            throw new ConfigException('.end_point not defined in paynet request');
         }
 
         $method             = $request['.method'];
@@ -77,12 +77,12 @@ class Curl implements TransportI
 
             if(curl_errno($curl))
             {
-                throw new RequestWrong(curl_error($curl), curl_errno($curl));
+                throw new RequestException(curl_error($curl), curl_errno($curl));
             }
 
             if(curl_getinfo($curl, CURLINFO_HTTP_CODE) != 200)
             {
-                throw new RequestWrong
+                throw new RequestException
                 (
                     sprintf
                     (
@@ -94,7 +94,7 @@ class Curl implements TransportI
 
             if(empty($response))
             {
-                throw new RequestWrong('response is empty');
+                throw new RequestException('response is empty');
             }
 
             $result             = array();
@@ -103,7 +103,7 @@ class Curl implements TransportI
 
             if(empty($result))
             {
-                throw new RequestWrong('Response parsing error: '.$response);
+                throw new RequestException('Response parsing error: '.$response);
             }
 
             $response           = new Response($result);

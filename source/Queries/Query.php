@@ -10,8 +10,8 @@ use \PaynetEasy\Paynet\Responses\Response;
 
 use \PaynetEasy\Paynet\Transport\TransportI;
 
-use \PaynetEasy\Paynet\Exceptions\ConfigWrong;
-use \PaynetEasy\Paynet\Exceptions\InvalidControlCode;
+use \PaynetEasy\Paynet\Exceptions\ConfigException;
+use \PaynetEasy\Paynet\Exceptions\InvalidControlCodeException;
 
 use \Exception;
 use \BadMethodCallException;
@@ -222,18 +222,18 @@ abstract class Query
     /**
      * Config validator
      *
-     * @throws      ConfigWrong
+     * @throws      ConfigException
      */
     public function validateConfig()
     {
         if(empty($this->config['end_point']))
         {
-            throw new ConfigWrong('end_point undefined');
+            throw new ConfigException('end_point undefined');
         }
 
         if(empty($this->config['control']))
         {
-            throw new ConfigWrong('control undefined');
+            throw new ConfigException('control undefined');
         }
     }
 
@@ -342,7 +342,7 @@ abstract class Query
      *
      * @param       Response      $response
      *
-     * @throws      InvalidControlCode
+     * @throws      InvalidControlCodeException
      */
     protected function validateControlCode(Response $response)
     {
@@ -358,7 +358,7 @@ abstract class Query
 
         if($sign !== $response->control())
         {
-            throw new InvalidControlCode($sign, $response->control());
+            throw new InvalidControlCodeException($sign, $response->control());
         }
     }
 

@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Exceptions;
 
-class RequestWrong extends PaynetException
+class ConfigException extends PaynetException
 {
 
 }
