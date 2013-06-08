@@ -2,7 +2,7 @@
 namespace PaynetEasy\Paynet\Transport;
 
 use PaynetEasy\Paynet\Exceptions\RequestException;
-use PaynetEasy\Paynet\Responses\Response;
+use PaynetEasy\Paynet\Transport\Response;
 use Exception;
 
 class PaynetClient implements GatewayClientInterface

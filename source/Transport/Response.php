@@ -1,8 +1,8 @@
 <?PHP
-namespace PaynetEasy\Paynet\Responses;
+namespace PaynetEasy\Paynet\Transport;
 
-use \ArrayObject;
-use \PaynetEasy\Paynet\Exceptions\PaynetException;
+use ArrayObject;
+use PaynetEasy\Paynet\Exceptions\PaynetException;
 
 class Response extends ArrayObject
 {

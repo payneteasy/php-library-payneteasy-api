@@ -11,7 +11,7 @@ use \PaynetEasy\Paynet\Data\RecurrentCard;
 
 use \PaynetEasy\Paynet\Queries\Sale;
 
-use \PaynetEasy\Paynet\Responses\Response;
+use \PaynetEasy\Paynet\Transport\Response;
 use \Exception;
 
 abstract class PaynetProcess

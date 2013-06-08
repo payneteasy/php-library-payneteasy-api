@@ -4,7 +4,7 @@ require_once './Sale.php';
 use \PaynetEasy\Paynet\Queries\Query;
 
 use \PaynetEasy\Paynet\Data\RecurrentCard;
-use \PaynetEasy\Paynet\Responses\Response;
+use \PaynetEasy\Paynet\Transport\Response;
 use \PaynetEasy\Paynet\Queries\CreateCardRef;
 
 use \Exception;
@@ -33,7 +33,7 @@ class   CreateRecurrentCard extends Sale
         $e                  = null;
         try
         {
-            /* @var $response \PaynetEasy\Paynet\Responses\Response */
+            /* @var $response \PaynetEasy\Paynet\Transport\Response */
             $response       = $query->process();
         }
         catch(Exception $e)

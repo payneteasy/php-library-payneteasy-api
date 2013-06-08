@@ -58,7 +58,7 @@ class CreateRecurrentCard extends Sale
         $e                  = null;
         try
         {
-            /* @var $response \PaynetEasy\Paynet\Responses\Response */
+            /* @var $response \PaynetEasy\Paynet\Transport\Response */
             $response       = $query->process();
         }
         catch(Exception $e)

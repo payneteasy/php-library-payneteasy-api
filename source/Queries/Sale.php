@@ -4,7 +4,7 @@ namespace PaynetEasy\Paynet\Queries;
 use \PaynetEasy\Paynet\Data\Customer;
 use \PaynetEasy\Paynet\Data\Order;
 use \PaynetEasy\Paynet\Data\Card;
-use \PaynetEasy\Paynet\Responses\Response;
+use \PaynetEasy\Paynet\Transport\Response;
 use \PaynetEasy\Paynet\Callbacks\Redirect3D;
 
 use \PaynetEasy\Paynet\Exceptions\PaynetException;
@@ -46,7 +46,7 @@ class Sale extends Query
      *
      * @param       array       $data
      *
-     * @return      \PaynetEasy\Paynet\Responses\Response
+     * @return      \PaynetEasy\Paynet\Transport\Response
      *
      * @throws      PaynetException
      */
@@ -130,7 +130,7 @@ class Sale extends Query
         $e                  = null;
         try
         {
-            /* @var $response \PaynetEasy\Paynet\Responses\Response */
+            /* @var $response \PaynetEasy\Paynet\Transport\Response */
             $response       = $status_query->process();
         }
         catch(Exception $e)

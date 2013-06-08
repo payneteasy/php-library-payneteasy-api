@@ -1,7 +1,7 @@
 <?php
 namespace PaynetEasy\Paynet\Transport;
 
-use \PaynetEasy\Paynet\Responses\Response;
+use \PaynetEasy\Paynet\Transport\Response;
 
 class Transport implements GatewayClientInterface
 {

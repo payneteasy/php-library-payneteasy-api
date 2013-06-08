@@ -102,7 +102,7 @@ abstract class QueryTest extends PHPUnit_Framework_TestCase
         {
             $this->assertFalse($e instanceof PaynetException, 'not expected exception PaynetException');
             $this->assertFalse($this->query->getLastError() instanceof PaynetException, 'getLastError must be null');
-            $this->assertInstanceOf('PaynetEasy\Paynet\Responses\Response', $response);
+            $this->assertInstanceOf('PaynetEasy\Paynet\Transport\Response', $response);
         }
 
         $this->assertEquals($this->query->state(), $assert['state'], 'query.state not equal '.$assert['state']);

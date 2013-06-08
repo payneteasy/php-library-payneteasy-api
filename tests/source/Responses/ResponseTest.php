@@ -1,6 +1,6 @@
 <?php
 
-namespace PaynetEasy\Paynet\Responses;
+namespace PaynetEasy\Paynet\Transport;
 
 use \ReflectionMethod;
 
@@ -33,7 +33,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PaynetEasy\Paynet\Responses\Response::isError
+     * @covers PaynetEasy\Paynet\Transport\Response::isError
      */
     public function testIsError()
     {
@@ -48,7 +48,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PaynetEasy\Paynet\Responses\Response::isProcessing
+     * @covers PaynetEasy\Paynet\Transport\Response::isProcessing
      */
     public function testIsProcessing()
     {
@@ -66,7 +66,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PaynetEasy\Paynet\Responses\Response::isDeclined
+     * @covers PaynetEasy\Paynet\Transport\Response::isDeclined
      */
     public function testIsDeclined()
     {
@@ -77,7 +77,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PaynetEasy\Paynet\Responses\Response::redirect
+     * @covers PaynetEasy\Paynet\Transport\Response::redirect
      * @todo   Implement testRedirect().
      */
     public function testRedirect()
@@ -89,11 +89,11 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PaynetEasy\Paynet\Responses\Response::getAnyKey
+     * @covers PaynetEasy\Paynet\Transport\Response::getAnyKey
      */
     public function testGetAnyKey()
     {
-        $method = new ReflectionMethod('PaynetEasy\Paynet\Responses\Response', 'getAnyKey');
+        $method = new ReflectionMethod('PaynetEasy\Paynet\Transport\Response', 'getAnyKey');
         $method->setAccessible(true);
 
         $this->object->exchangeArray(array('first-key' => null, 'first_key' => 2));
@@ -104,11 +104,11 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PaynetEasy\Paynet\Responses\Response::getValue
+     * @covers PaynetEasy\Paynet\Transport\Response::getValue
      */
     public function testGetValue()
     {
-        $method = new ReflectionMethod('PaynetEasy\Paynet\Responses\Response', 'getValue');
+        $method = new ReflectionMethod('PaynetEasy\Paynet\Transport\Response', 'getValue');
         $method->setAccessible(true);
 
         $this->object->exchangeArray(array('first-key' => 1, 'first_key' => 2));

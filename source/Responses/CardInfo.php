@@ -1,6 +1,8 @@
 <?PHP
 namespace PaynetEasy\Paynet\Responses;
 
+use PaynetEasy\Paynet\Transport\Response;
+
 /**
  * Card Information Response
  *

@@ -6,7 +6,7 @@ use \PaynetEasy\Paynet\Data\Data;
 use \PaynetEasy\Paynet\Data\Customer;
 use \PaynetEasy\Paynet\Data\Order;
 use \PaynetEasy\Paynet\Data\Card;
-use \PaynetEasy\Paynet\Responses\Response;
+use \PaynetEasy\Paynet\Transport\Response;
 
 use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use \PaynetEasy\Paynet\Transport\Request;
@@ -254,7 +254,7 @@ abstract class Query
      *
      * @param       array       $data       Data
      *
-     * @return      \PaynetEasy\Paynet\Responses\Response
+     * @return      \PaynetEasy\Paynet\Transport\Response
      */
     public function process($data = null)
     {
@@ -368,7 +368,7 @@ abstract class Query
      *
      * @param       Response        $response
      *
-     * @return      \PaynetEasy\Paynet\Responses\Response
+     * @return      \PaynetEasy\Paynet\Transport\Response
      *
      * @throws      \PaynetEasy\Paynet\Exceptions\PaynetException
      */
@@ -421,7 +421,7 @@ abstract class Query
      *
      * @param       array       $query
      *
-     * @return      \PaynetEasy\Paynet\Responses\Response
+     * @return      \PaynetEasy\Paynet\Transport\Response
      *
      * @throws      \PaynetEasy\Paynet\Exceptions\PaynetException
      */

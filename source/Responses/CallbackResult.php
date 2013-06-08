@@ -1,7 +1,8 @@
 <?PHP
 namespace PaynetEasy\Paynet\Responses;
 
-use \PaynetEasy\Paynet\Exceptions\CallbackException;
+use PaynetEasy\Paynet\Transport\Response;
+use PaynetEasy\Paynet\Exceptions\CallbackException;
 
 /**
  * Merchant Callbacks

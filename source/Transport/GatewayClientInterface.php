@@ -8,7 +8,7 @@ interface GatewayClientInterface
      *
      * @param   \PaynetEasy\Paynet\Transport\Request    $request    Request data
      *
-     * @return  \PaynetEasy\Paynet\Responses\Response               Response data
+     * @return  \PaynetEasy\Paynet\Transport\Response               Response data
      */
     public function makeRequest(Request $request);
 }
