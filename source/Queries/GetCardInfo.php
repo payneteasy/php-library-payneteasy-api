@@ -22,7 +22,7 @@ class GetCardInfo extends Query
      * Constructor
      * @param       TransportI        $transport
      */
-    public function __construct(TransportI $transport)
+    public function __construct(GatewayClientInterface $transport)
     {
         parent::__construct($transport);
 

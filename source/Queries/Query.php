@@ -8,7 +8,8 @@ use \PaynetEasy\Paynet\Data\Order;
 use \PaynetEasy\Paynet\Data\Card;
 use \PaynetEasy\Paynet\Responses\Response;
 
-use \PaynetEasy\Paynet\Transport\TransportI;
+use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
+use \PaynetEasy\Paynet\Transport\Request;
 
 use \PaynetEasy\Paynet\Exceptions\ConfigException;
 use \PaynetEasy\Paynet\Exceptions\InvalidControlCodeException;
@@ -35,7 +36,7 @@ abstract class Query
 
     /**
      * Transport
-     * @var \PaynetEasy\Paynet\Transport\TransportI
+     * @var \PaynetEasy\Paynet\Transport\GatewayClientInterface
      */
     protected $transport;
 
@@ -97,9 +98,9 @@ abstract class Query
 
     /**
      * Constructor
-     * @param       TransportI        $transport
+     * @param       GatewayClientInterface        $transport
      */
-    public function __construct(TransportI $transport)
+    public function __construct(GatewayClientInterface $transport)
     {
         $this->method           = strtolower(substr(strrchr(get_class($this), '\\'), 1));
 
@@ -428,7 +429,14 @@ abstract class Query
     {
         try
         {
-            return $this->processResponse($this->transport->query($query));
+            /**
+             * @todo inversion of control needed
+             */
+            $request = new Request($query);
+            $request->setApiMethod($this->method)
+                    ->setEndPoint($this->config['end_point']);
+
+            return $this->processResponse($this->transport->makeRequest($request));
         }
         catch(Exception $e)
         {

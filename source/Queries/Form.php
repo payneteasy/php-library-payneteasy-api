@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Transport\TransportI;
+use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
 
 use \PaynetEasy\Paynet\Data\Customer;
 use \PaynetEasy\Paynet\Data\Order;
@@ -17,10 +17,10 @@ class Form extends Sale
 {
     /**
      * Constructor
-     * @param       TransportI      $transport      Transport
+     * @param       GatewayClientInterface      $transport      Transport
      * @param       boolean         $is_preauth     Preauch mode?
      */
-    public function __construct(TransportI $transport, $is_preauth = false)
+    public function __construct(GatewayClientInterface $transport, $is_preauth = false)
     {
         parent::__construct($transport);
 

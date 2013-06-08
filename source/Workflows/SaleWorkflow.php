@@ -13,7 +13,7 @@ class SaleWorkflow
     protected $paynet_server;
 
     /**
-     * @var PaynetEasy\Paynet\Transport\TransportI
+     * @var PaynetEasy\Paynet\Transport\GatewayClientInterface
      */
     protected $transport;
 

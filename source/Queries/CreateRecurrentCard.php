@@ -2,7 +2,7 @@
 namespace PaynetEasy\Paynet\Queries;
 
 use \PaynetEasy\Paynet\Data\RecurrentCard;
-use \PaynetEasy\Paynet\Transport\TransportI;
+use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use \Exception;
 
 /**
@@ -19,9 +19,9 @@ class CreateRecurrentCard extends Sale
 
     /**
      * Constructor
-     * @param       TransportI        $transport
+     * @param       GatewayClientInterface        $transport
      */
-    public function __construct(TransportI $transport)
+    public function __construct(GatewayClientInterface $transport)
     {
         parent::__construct($transport);
 

@@ -3,7 +3,7 @@ namespace PaynetEasy\Paynet\Queries;
 
 use \PaynetEasy\Paynet\Data\Order;
 
-use \PaynetEasy\Paynet\Transport\TransportI;
+use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
 
 use \PaynetEasy\Paynet\Exceptions\ResponseException;
 use \PaynetEasy\Paynet\Exceptions\ConfigException;
@@ -16,9 +16,9 @@ class CreateCardRef extends Query
 {
     /**
      * Constructor
-     * @param       TransportI        $transport
+     * @param       GatewayClientInterface        $transport
      */
-    public function __construct(TransportI $transport)
+    public function __construct(GatewayClientInterface $transport)
     {
         parent::__construct($transport);
 

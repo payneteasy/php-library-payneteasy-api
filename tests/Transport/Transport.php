@@ -3,7 +3,7 @@ namespace PaynetEasy\Paynet\Transport;
 
 use \PaynetEasy\Paynet\Responses\Response;
 
-class Transport implements TransportI
+class Transport implements GatewayClientInterface
 {
     public $response;
 
@@ -11,7 +11,7 @@ class Transport implements TransportI
 
     public $request;
 
-    public function query($request)
+    public function makeRequest(Request $request)
     {
         $this->request      = $request;
 

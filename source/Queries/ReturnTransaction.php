@@ -5,7 +5,7 @@ use \PaynetEasy\Paynet\Data\Order;
 
 use \PaynetEasy\Paynet\Exceptions\ConfigException;
 
-use \PaynetEasy\Paynet\Transport\TransportI;
+use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
 
 /**
  * The implementation of the query Return
@@ -17,9 +17,9 @@ class ReturnTransaction extends Query
 
     /**
      * Constructor
-     * @param       TransportI        $transport
+     * @param       GatewayClientInterface        $transport
      */
-    public function __construct(TransportI $transport)
+    public function __construct(GatewayClientInterface $transport)
     {
         parent::__construct($transport);
 
