@@ -6,36 +6,26 @@ use \PaynetEasy\Paynet\Exceptions\PaynetException;
 
 class Response extends ArrayObject
 {
-    public function __construct($array = array())
+    public function __construct($response = array())
     {
-        foreach($array as $key => $value)
-        {
-            $array[$key]        = trim($value);
-        }
+        array_walk($response, 'trim');
 
-        parent::__construct($array);
+        parent::__construct($response);
     }
 
-    protected function getValue($index)
+    public function html()
     {
-        if($this->offsetExists($index))
-        {
-            return $this->offsetGet($index);
-        }
-        else
-        {
-            return null;
-        }
+        return $this->getValue('html');
     }
 
     public function type()
     {
-        return $this->getValue('type');
+        return strtolower($this->getValue('type'));
     }
 
     public function status()
     {
-        return $this->getValue('status');
+        return strtolower($this->getValue('status'));
     }
 
     public function serialNumber()
@@ -50,26 +40,12 @@ class Response extends ArrayObject
 
     public function orderId()
     {
-        foreach(array('merchant-order-id', 'client_orderid', 'merchant_order') as $index)
-        {
-            $result     = $this->getValue($index);
-            if(!is_null($result))
-            {
-                return $result;
-            }
-        }
+        return $this->getAnyKey(array('merchant-order-id', 'client_orderid', 'merchant_order'));
     }
 
     public function paynetOrderId()
     {
-        foreach(array('orderid', 'paynet-order-id') as $index)
-        {
-            $result     = $this->getValue($index);
-            if(!is_null($result))
-            {
-                return $result;
-            }
-        }
+        return $this->getAnyKey(array('orderid', 'paynet-order-id'));
     }
 
     public function redirectUrl()
@@ -79,93 +55,38 @@ class Response extends ArrayObject
 
     public function control()
     {
-        foreach(array('control', 'merchant_control') as $index)
-        {
-            $result     = $this->getValue($index);
-            if(!is_null($result))
-            {
-                return $result;
-            }
-        }
+        return $this->getAnyKey(array('control', 'merchant_control'));
     }
 
     public function errorMessage()
     {
-        foreach(array('error_message', 'error-message') as $index)
-        {
-            $result     = $this->getValue($index);
-            if(!is_null($result))
-            {
-                return $result;
-            }
-        }
-
-        return '';
+        return $this->getAnyKey(array('error_message', 'error-message'));
     }
 
     public function errorCode()
     {
-        foreach(array('error_code', 'error-code') as $index)
-        {
-            $result     = $this->getValue($index);
-            if(!is_null($result))
-            {
-                return (int)$result;
-            }
-        }
-
-        return 0;
+        return $this->getAnyKey(array('error_code', 'error-code'));
     }
 
     public function isError()
     {
-        //  If type equals "validation-error" or "error", "error-message"
-        //  and "error-code" parameters contain error details.
-        if($this->offsetExists('type')
-        && in_array($this['type'], array('validation-error', 'error')))
-        {
-            return true;
-        }
-        elseif($this->offsetExists('status')
-        && in_array($this['status'], array('error'))
-        )
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+                //  If type equals "validation-error" or "error", "error-message"
+                //  and "error-code" parameters contain error details.
+        return    in_array($this->type(), array('validation-error', 'error'))
+               || $this->status() == 'error';
     }
 
     public function isApproved()
     {
-        if($this->status() === 'approved')
-        {
-            return true;
-        }
-
-        return false;
+        return $this->status() === 'approved';
     }
 
     public function isProcessing()
-    {
-        // 1. If status defined and equal "processing"
-        if($this->status() === 'processing')
-        {
-            return true;
-        }
-        // 2. Or status undefined but type not equal error
-        elseif(
-           !$this->offsetExists('status')
-        && $this->offsetExists('type')
-        && !in_array($this['type'], array('validation-error', 'error'))
-        )
-        {
-            return true;
-        }
-
-        return false;
+    {               // 1. If status defined and equal "processing"
+        return      ($this->status() === 'processing')
+                    // 2. Or status undefined but type not equal error
+                ||  (   !strlen($this->status())
+                     && !in_array($this->type(), array('validation-error', 'error')));
     }
 
     public function isDeclined()
@@ -176,13 +97,7 @@ class Response extends ArrayObject
         // 3. And in other statuses
         //
         // Therefore, the state declined calculated indirectly
-        //
-        if(!$this->isApproved() && !$this->isProcessing() && !$this->isError())
-        {
-            return true;
-        }
-
-        return false;
+        return !$this->isApproved() && !$this->isProcessing() && !$this->isError();
     }
 
     /**
@@ -195,9 +110,9 @@ class Response extends ArrayObject
         {
             header('Location: '.$this->redirectUrl());
         }
-        elseif($this->offsetExists('html'))
+        elseif(strlen($this->html()))
         {
-            echo $this->offsetGet('html');
+            echo $this->html();
         }
         else
         {
@@ -216,6 +131,27 @@ class Response extends ArrayObject
         else
         {
             return false;
+        }
+    }
+
+    protected function getAnyKey(array $keys)
+    {
+        foreach($keys as $key)
+        {
+            $value = $this->getValue($key);
+
+            if(!is_null($value))
+            {
+                return $value;
+            }
+        }
+    }
+
+    protected function getValue($index)
+    {
+        if($this->offsetExists($index))
+        {
+            return $this->offsetGet($index);
         }
     }
 }
