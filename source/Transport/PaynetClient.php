@@ -6,7 +6,7 @@ use \PaynetEasy\Paynet\Exceptions\RequestException;
 use \PaynetEasy\Paynet\Responses\Response;
 use \Exception;
 
-class Curl implements TransportI
+class PaynetClient implements TransportI
 {
     protected $server;
 

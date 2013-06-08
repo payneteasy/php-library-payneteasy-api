@@ -3,7 +3,7 @@ require_once './config.php';
 require_once './Template.php';
 require_once './autoload.php';
 
-use \PaynetEasy\Paynet\Transport\Curl;
+use \PaynetEasy\Paynet\Transport\PaynetClient;
 use \PaynetEasy\Paynet\Data\Order;
 use \PaynetEasy\Paynet\Data\Customer;
 use \PaynetEasy\Paynet\Data\Card;
@@ -22,7 +22,7 @@ abstract class PaynetProcess
     protected $template;
 
     /**
-     * @var Curl
+     * @var TransportI
      */
     protected $transport;
     /**
@@ -68,7 +68,7 @@ abstract class PaynetProcess
     {
         // Step 1.
         // Initialize the transport driver and configurated it.
-        $this->transport        = new Curl(PAYNET_SERVER);
+        $this->transport        = new PaynetClient(PAYNET_SERVER);
 
         // Step 2.
         // Make a order to be processed.

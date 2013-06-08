@@ -13,7 +13,7 @@ class SaleWorkflow
     protected $paynet_server;
 
     /**
-     * @var PaynetEasy\Paynet\Transport\Curl
+     * @var PaynetEasy\Paynet\Transport\TransportI
      */
     protected $transport;
 
