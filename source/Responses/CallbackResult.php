@@ -17,27 +17,19 @@ class CallbackResult extends Response
 
     public function type()
     {
-        $result         = strtolower($this->getValue('type'));
+        $type = parent::type();
 
-        switch($result)
+        if (!in_array($type, array(self::SALE, self::REVERSAL, self::CHARGEBACK)))
         {
-            case self::SALE:
-            case self::REVERSAL:
-            case self::CHARGEBACK:
-            {
-                return $result;
-            }
-
-            default:
-            {
-                throw new CallbackException("invalid transaction type: '$result'");
-            }
+            throw new CallbackException("Invalid callback result type: '{$type}'");
         }
+
+        return $type;
     }
 
     public function amount()
     {
-        return (float)$this->getValue('amount');
+        return (float) $this->getValue('amount');
     }
 
     public function comment()
