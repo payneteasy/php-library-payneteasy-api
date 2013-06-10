@@ -25,7 +25,7 @@ class Form extends Sale
         $this->query->setConfig($this->config);
 
         // Assign Query data
-        $this->query->setCustomer($this->customer);
+        $this->order->setCustomer($this->customer);
         $this->query->setOrder($this->order);
 
         // Step 2. Process query

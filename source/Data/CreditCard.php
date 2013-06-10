@@ -7,7 +7,9 @@ use \PaynetEasy\Paynet\Exceptions\PaynetException;
  * Container for credit card data
  *
  */
-class Card extends Data
+class       CreditCard
+extends     Data
+implements  CreditCardInterface
 {
     public function __construct($array)
     {

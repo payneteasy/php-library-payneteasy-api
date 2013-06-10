@@ -12,12 +12,6 @@ use \Exception;
 class CreateRecurrentCard extends Sale
 {
     /**
-     * Reccurent Card
-     * @var \PaynetEasy\Paynet\Data\RecurrentCard
-     */
-    protected $recurrent_card;
-
-    /**
      * Constructor
      * @param       GatewayClientInterface        $transport
      */
@@ -26,14 +20,6 @@ class CreateRecurrentCard extends Sale
         parent::__construct($transport);
 
         $this->method       = 'sale';
-    }
-
-    /**
-     * @return \PaynetEasy\Paynet\Data\RecurrentCard
-     */
-    public function getRecurrentCard()
-    {
-        return $this->recurrent_card;
     }
 
     public function process($data = null)
@@ -53,7 +39,7 @@ class CreateRecurrentCard extends Sale
         $query              = new CreateCardRef($this->transport);
 
         $query->setConfig($this->config);
-        $query->setOrder($this->order);
+        $query->setOrder($this->getOrder());
 
         $e                  = null;
         try
@@ -76,7 +62,7 @@ class CreateRecurrentCard extends Sale
 
         if($response->isApproved())
         {
-            $this->recurrent_card   = new RecurrentCard($response['cardrefid']);
+            $this->getOrder()->setRecurrentCard(new RecurrentCard($response['cardrefid']));
         }
 
         return $response;

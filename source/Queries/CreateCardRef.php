@@ -1,8 +1,6 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Data\Order;
-
 use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
 
 use \PaynetEasy\Paynet\Exceptions\ResponseException;
@@ -34,12 +32,12 @@ class CreateCardRef extends Query
             throw new ConfigException('login undefined');
         }
 
-        if(($this->order instanceof Order) === false)
+        if(!$this->getOrder())
         {
-            throw new ConfigException('Order is not instance of Order');
+            throw new ConfigException('Order is not defined');
         }
 
-        $this->order->validateShort();
+        $this->getOrder()->validateShort();
     }
 
     public function process($data = null)
@@ -48,7 +46,7 @@ class CreateCardRef extends Query
 
         $query              = array_merge
         (
-            $this->order->getContextData(),
+            $this->getOrder()->getContextData(),
             array
             (
                 'login'         => $this->config['login'],
@@ -81,8 +79,8 @@ class CreateCardRef extends Query
         return sha1
         (
             $this->config['login'].
-            $this->order->getOrderCode().
-            $this->order->getPaynetOrderId().
+            $this->getOrder()->getOrderCode().
+            $this->getOrder()->getPaynetOrderId().
             $this->config['control']
         );
     }

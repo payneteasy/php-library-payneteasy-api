@@ -1,9 +1,6 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Data\Order;
-use \PaynetEasy\Paynet\Data\RecurrentCard;
-
 use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
 
 use \PaynetEasy\Paynet\Exceptions\ConfigException;
@@ -14,12 +11,6 @@ use \PaynetEasy\Paynet\Exceptions\ConfigException;
  */
 class MakeRebill extends Sale
 {
-    /**
-     * Reccurent Card
-     * @var \PaynetEasy\Paynet\Data\RecurrentCard
-     */
-    protected $recurrent_card;
-
     /**
      * Comment
      * @var string
@@ -35,27 +26,6 @@ class MakeRebill extends Sale
         parent::__construct($transport);
 
         $this->method       = 'make-rebill';
-    }
-
-    /**
-     * @return \PaynetEasy\Paynet\Data\RecurrentCard
-     */
-    public function getRecurrentCard()
-    {
-        return $this->recurrent_card;
-    }
-
-    /**
-     *
-     * @param       RecurrentCard       $recurrent_card
-     *
-     * @return      \PaynetEasy\Paynet\Queries\MakeRebill
-     */
-    public function setRecurrentCard(RecurrentCard $recurrent_card)
-    {
-        $this->recurrent_card = $recurrent_card;
-
-        return $this;
     }
 
     public function getComment()
@@ -85,14 +55,14 @@ class MakeRebill extends Sale
             throw new ConfigException('login undefined');
         }
 
-        if(($this->order instanceof Order) === false)
+        if(!$this->getOrder())
         {
-            throw new ConfigException('Order is not instance of Order');
+            throw new ConfigException('Order is not defined');
         }
 
-        if(($this->recurrent_card instanceof RecurrentCard) === false)
+        if(!$this->getOrder()->hasRecurrentCard())
         {
-            throw new ConfigException('recurrent_card is not instance of RecurrentCard');
+            throw new ConfigException('Recurrent card is not defined');
         }
 
         if(strlen($this->comment) > 50)
@@ -100,8 +70,8 @@ class MakeRebill extends Sale
             throw new ConfigException('comment is very big (over 50 chars)');
         }
 
-        $this->order->validate();
-        $this->recurrent_card->validate();
+        $this->getOrder()->validate();
+        $this->getOrder()->getRecurrentCard()->validate();
     }
 
     protected function initQuery()
@@ -111,7 +81,7 @@ class MakeRebill extends Sale
             array_merge
             (
                 $this->getOrder()->getData(),
-                $this->recurrent_card->getData(),
+                $this->getOrder()->getRecurrentCard()->getData(),
                 $this->commonQueryOptions(),
                 array
                 (
@@ -128,9 +98,9 @@ class MakeRebill extends Sale
         return sha1
         (
             $this->config['end_point'].
-            $this->order->getOrderCode().
-            $this->order->getAmountInCents().
-            $this->recurrent_card->cardRefId().
+            $this->getOrder()->getOrderCode().
+            $this->getOrder()->getAmountInCents().
+            $this->getOrder()->getRecurrentCard()->cardRefId().
             $this->config['control']
         );
     }

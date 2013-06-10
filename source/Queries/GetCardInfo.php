@@ -1,7 +1,6 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Data\RecurrentCard;
 use \PaynetEasy\Paynet\Responses\CardInfo;
 
 use \PaynetEasy\Paynet\Exceptions\ConfigException;
@@ -13,12 +12,6 @@ use \PaynetEasy\Paynet\Exceptions\ConfigException;
 class GetCardInfo extends Query
 {
     /**
-     * Reccurent Card
-     * @var \PaynetEasy\Paynet\Data\RecurrentCard
-     */
-    protected $recurrent_card;
-
-    /**
      * Constructor
      * @param       TransportI        $transport
      */
@@ -29,27 +22,6 @@ class GetCardInfo extends Query
         $this->method       = 'get-card-info';
     }
 
-    /**
-     * @return \PaynetEasy\Paynet\Data\RecurrentCard
-     */
-    public function getRecurrentCard()
-    {
-        return $this->recurrent_card;
-    }
-
-    /**
-     *
-     * @param       RecurrentCard       $recurrent_card
-     * @return      \PaynetEasy\Paynet\Queries\GetCardInfo
-     */
-    public function setRecurrentCard(RecurrentCard $recurrent_card)
-    {
-        $this->recurrent_card = $recurrent_card;
-
-        return $this;
-    }
-
-
     public function validate()
     {
         $this->validateConfig();
@@ -59,12 +31,12 @@ class GetCardInfo extends Query
             throw new ConfigException('login undefined');
         }
 
-        if(($this->recurrent_card instanceof RecurrentCard) === false)
+        if(!$this->getOrder()->hasRecurrentCard())
         {
             throw new ConfigException('Order is not instance of Order');
         }
 
-        $this->recurrent_card->validate();
+        $this->getOrder()->getRecurrentCard()->validate();
     }
 
     /**
@@ -78,7 +50,7 @@ class GetCardInfo extends Query
 
         $query              = array_merge
         (
-            $this->recurrent_card->getData(),
+            $this->getOrder()->getRecurrentCard()->getData(),
             // Выделить этот код в отдельный класс
             array
             (
@@ -99,7 +71,7 @@ class GetCardInfo extends Query
         return sha1
         (
             $this->config['login'].
-            $this->recurrent_card->cardRefId().
+            $this->getOrder()->getRecurrentCard()->cardRefId().
             $this->config['control']
         );
     }

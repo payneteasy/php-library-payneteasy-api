@@ -1,9 +1,6 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Data\Customer;
-use \PaynetEasy\Paynet\Data\Order;
-use \PaynetEasy\Paynet\Data\Card;
 use \PaynetEasy\Paynet\Transport\Response;
 use \PaynetEasy\Paynet\Callbacks\Redirect3D;
 
@@ -21,24 +18,24 @@ class Sale extends Query
     {
         $this->validateConfig();
 
-        if(($this->customer instanceof Customer) === false)
+        if(!$this->getOrder())
         {
-            throw new ConfigException('Customer is not instance of Customer');
+            throw new ConfigException('Order is not defined');
         }
 
-        if(($this->order instanceof Order) === false)
+        if(!$this->getOrder()->hasCustomer())
         {
-            throw new ConfigException('Order is not instance of Order');
+            throw new ConfigException('Customer is not defined');
         }
 
-        if(($this->card instanceof Card) === false)
+        if(!$this->getOrder()->hasCreditCard())
         {
-            throw new ConfigException('Card is not instance of Card');
+            throw new ConfigException('Card is not defined');
         }
 
-        $this->customer->validate();
-        $this->order->validate();
-        $this->card->validate();
+        $this->getOrder()->validate();
+        $this->getOrder()->getCustomer()->validate();
+        $this->getOrder()->getCreditCard()->validate();
     }
 
     /**
@@ -94,9 +91,9 @@ class Sale extends Query
         return sha1
         (
             $this->config['end_point'].
-            $this->order->getOrderCode().
-            $this->order->getAmountInCents().
-            $this->customer->getEmail().
+            $this->getOrder()->getOrderCode().
+            $this->getOrder()->getAmountInCents().
+            $this->getOrder()->getCustomer()->getEmail().
             $this->config['control']
         );
     }
@@ -107,9 +104,9 @@ class Sale extends Query
         (
             array_merge
             (
-                $this->getCustomer()->getData(),
+                $this->getOrder()->getCustomer()->getData(),
                 $this->getOrder()->getData(),
-                $this->getCard()->getData(),
+                $this->getOrder()->getCreditCard()->getData(),
                 $this->commonQueryOptions(),
                 array
                 (
@@ -125,7 +122,7 @@ class Sale extends Query
         $status_query       = new Status($this->transport);
 
         $status_query->setConfig($this->config);
-        $status_query->setOrder($this->order);
+        $status_query->setOrder($this->getOrder());
 
         $e                  = null;
         try
@@ -162,7 +159,7 @@ class Sale extends Query
         $callback           = new Redirect3D($this->transport);
 
         $callback->setConfig($this->config);
-        $callback->setOrder($this->order);
+        $callback->setOrder($this->getOrder());
 
         $e                  = null;
         try

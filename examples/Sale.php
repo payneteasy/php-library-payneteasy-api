@@ -18,8 +18,9 @@ class Sale extends PaynetProcess
         $this->query->setConfig($this->config);
 
         // Assign Query data
-        $this->query->setCard($this->card);
-        $this->query->setCustomer($this->customer);
+        $this->order->setCreditCard($this->card);
+        $this->order->setCustomer($this->customer);
+
         $this->query->setOrder($this->order);
 
         // Step 2. Process query

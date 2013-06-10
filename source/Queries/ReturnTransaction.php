@@ -1,8 +1,6 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Data\Order;
-
 use \PaynetEasy\Paynet\Exceptions\ConfigException;
 
 use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
@@ -54,9 +52,9 @@ class ReturnTransaction extends Query
             throw new ConfigException('login undefined');
         }
 
-        if(($this->order instanceof Order) === false)
+        if(!$this->getOrder())
         {
-            throw new ConfigException('Order is not instance of Order');
+            throw new ConfigException('Order is not defined');
         }
 
         if(strlen($this->comment) > 50)
@@ -64,7 +62,7 @@ class ReturnTransaction extends Query
             throw new ConfigException('comment is very big (over 50 chars)');
         }
 
-        $this->order->validateShort();
+        $this->getOrder()->validateShort();
     }
 
     public function process($data = null)
@@ -80,18 +78,18 @@ class ReturnTransaction extends Query
                 '.method'       => $this->method,
                 '.end_point'    => $this->config['end_point']
             ),
-            $this->order->getContextData()
+            $this->getOrder()->getContextData()
         );
 
-        if($this->order->getAmount())
+        if($this->getOrder()->getAmount())
         {
             $query          = array_merge
             (
                 $query,
                 array
                 (
-                    'amount'    => $this->order->getAmount(),
-                    'currency'  => $this->order->getCurrency(),
+                    'amount'    => $this->getOrder()->getAmount(),
+                    'currency'  => $this->getOrder()->getCurrency(),
                 )
             );
         }
@@ -115,14 +113,14 @@ class ReturnTransaction extends Query
         $sign                   = array
         (
             $this->config['login'],
-            $this->order->getOrderCode(),
-            $this->order->getPaynetOrderId()
+            $this->getOrder()->getOrderCode(),
+            $this->getOrder()->getPaynetOrderId()
         );
 
-        if($this->order->getAmount())
+        if($this->getOrder()->getAmount())
         {
-            $sign[]             = $this->order->getAmountInCents();
-            $sign[]             = $this->order->getCurrency();
+            $sign[]             = $this->getOrder()->getAmountInCents();
+            $sign[]             = $this->getOrder()->getCurrency();
         }
 
         $sign[]                 = $this->config['control'];

@@ -6,8 +6,8 @@ require_once './autoload.php';
 use \PaynetEasy\Paynet\Transport\PaynetClient;
 use \PaynetEasy\Paynet\Data\Order;
 use \PaynetEasy\Paynet\Data\Customer;
-use \PaynetEasy\Paynet\Data\Card;
-use \PaynetEasy\Paynet\Data\RecurrentCard;
+use \PaynetEasy\Paynet\Data\CreditCard;
+use \PaynetEasy\Paynet\Data\RecurrentCardInterface;
 
 use \PaynetEasy\Paynet\Queries\Sale;
 
@@ -25,16 +25,19 @@ abstract class PaynetProcess
      * @var TransportI
      */
     protected $transport;
+
     /**
      * @var string
      */
     protected $current_url;
+
     /**
      * @var Customer
      */
     protected $customer;
+
     /**
-     * @var Card
+     * @var CreditCard
      */
     protected $card;
 
@@ -107,7 +110,7 @@ abstract class PaynetProcess
 
         // Step 4.
         // Initialize the Credit Card data.
-        $this->card             = new Card
+        $this->card             = new CreditCard
         (
             array
             (
@@ -245,7 +248,7 @@ $(document).ready(progress_bar);
             $this->template->content    = '<div class="alert alert-success"><h4 class="alert-heading">Approved!</h4>';
             $this->template->content    .= '<p>Congratulations! The transaction was approved.</p>';
 
-            if($this->reccurent_card instanceof RecurrentCard)
+            if($this->reccurent_card instanceof RecurrentCardInterface)
             {
                 $this->template->content    .= '<p><b>ReccurentCardId</b>: '.$this->reccurent_card->cardRefId().'</p>';
             }

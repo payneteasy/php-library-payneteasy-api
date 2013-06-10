@@ -1,21 +1,18 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \ArrayObject;
-use \PaynetEasy\Paynet\Data\Data;
-use \PaynetEasy\Paynet\Data\Customer;
-use \PaynetEasy\Paynet\Data\Order;
-use \PaynetEasy\Paynet\Data\Card;
-use \PaynetEasy\Paynet\Transport\Response;
+use ArrayObject;
+use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\Transport\Response;
 
-use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
-use \PaynetEasy\Paynet\Transport\Request;
+use PaynetEasy\Paynet\Transport\GatewayClientInterface;
+use PaynetEasy\Paynet\Transport\Request;
 
-use \PaynetEasy\Paynet\Exceptions\ConfigException;
-use \PaynetEasy\Paynet\Exceptions\InvalidControlCodeException;
+use PaynetEasy\Paynet\Exceptions\ConfigException;
+use PaynetEasy\Paynet\Exceptions\InvalidControlCodeException;
 
-use \Exception;
-use \BadMethodCallException;
+use Exception;
+use BadMethodCallException;
 
 /**
  * Abstract Query or Callback
@@ -53,22 +50,10 @@ abstract class Query
     protected $method;
 
     /**
-     * PaynetEasy Customer info
-     * @var \PaynetEasy\Paynet\Data\Customer
-     */
-    protected $customer;
-
-    /**
      * PaynetEasy Order info
-     * @var \PaynetEasy\Paynet\Data\Order
+     * @var \PaynetEasy\Paynet\Data\OrderInterface
      */
     protected $order;
-
-    /**
-     * PaynetEasy Card info
-     * @var \PaynetEasy\Paynet\Data\Card
-     */
-    protected $card;
 
     /**
      * PaynetEasy last error
@@ -105,10 +90,6 @@ abstract class Query
         $this->method           = strtolower(substr(strrchr(get_class($this), '\\'), 1));
 
         $this->transport        = $transport;
-
-        $this->customer         = new Data();
-        $this->card             = new Data();
-        $this->order            = new Data();
 
         $this->config           = new ArrayObject();
     }
@@ -150,56 +131,9 @@ abstract class Query
     }
 
     /**
-     * getter for Customer
+     * Get order
      *
-     * @return \PaynetEasy\Paynet\Data\Customer
-     */
-    public function getCustomer()
-    {
-        return $this->customer;
-    }
-
-    /**
-     * setter for Customer
-     * @param       Customer        $customer
-     *
-     * @return \PaynetEasy\Paynet\Queries\Query
-     */
-    public function setCustomer(Customer $customer)
-    {
-        $this->customer     = $customer;
-
-        return $this;
-    }
-
-    /**
-     * getter for Card
-     *
-     * @return \PaynetEasy\Paynet\Data\Card
-     */
-    public function getCard()
-    {
-        return $this->card;
-    }
-
-    /**
-     * setter for Card
-     *
-     * @param       Card        $card
-     *
-     * @return      \PaynetEasy\Paynet\Queries\Query
-     */
-    public function setCard(Card $card)
-    {
-        $this->card         = $card;
-
-        return $this;
-    }
-
-    /**
-     * getter for Order
-     *
-     * @return      Order
+     * @return      PaynetEasy\Paynet\Data\OrderInterface
      */
     public function getOrder()
     {
@@ -207,15 +141,15 @@ abstract class Query
     }
 
     /**
-     * setter for Order
+     * Set order
      *
-     * @param       Order       $order
+     * @param       PaynetEasy\Paynet\Data\OrderInterface   $order
      *
-     * @return      \PaynetEasy\Paynet\Queries\Query
+     * @return      self
      */
-    public function setOrder(Order $order)
+    public function setOrder(OrderInterface $order)
     {
-        $this->order        = $order;
+        $this->order = $order;
 
         return $this;
     }
@@ -409,7 +343,7 @@ abstract class Query
 
         if(!is_null(($paynet_order_id = $response->paynetOrderId())))
         {
-            $this->order->setPaynetOrderId($paynet_order_id);
+            $this->getOrder()->setPaynetOrderId($paynet_order_id);
         }
 
         return $response;

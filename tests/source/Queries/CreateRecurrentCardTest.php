@@ -42,9 +42,9 @@ class CreateRecurrentCardTest extends SaleTest
 
         if(!empty($assert['status']) && $assert['status'] === Query::STATUS_APPROVED)
         {
-            $card               = $this->query->getRecurrentCard();
+            $card               = $this->query->getOrder()->getRecurrentCard();
 
-            $this->assertInstanceOf('PaynetEasy\Paynet\Data\RecurrentCard', $card);
+            $this->assertInstanceOf('PaynetEasy\Paynet\Data\RecurrentCardInterface', $card);
             $this->assertEquals(self::CARD_REF_ID, $card->cardrefid());
         }
     }
@@ -58,9 +58,9 @@ class CreateRecurrentCardTest extends SaleTest
 
         if(!empty($assert['status']) && $assert['status'] === Query::STATUS_APPROVED)
         {
-            $card               = $this->query->getRecurrentCard();
+            $card               = $this->query->getOrder()->getRecurrentCard();
 
-            $this->assertInstanceOf('PaynetEasy\Paynet\Data\RecurrentCard', $card);
+            $this->assertInstanceOf('PaynetEasy\Paynet\Data\RecurrentCardInterface', $card);
             $this->assertEquals(self::CARD_REF_ID, $card->cardrefid());
         }
     }

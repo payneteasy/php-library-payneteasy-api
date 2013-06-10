@@ -1,4 +1,5 @@
-<?PHP
+<?php
+
 namespace PaynetEasy\Paynet\Data;
 
 use \PaynetEasy\Paynet\Exceptions\ConfigException;
@@ -7,8 +8,31 @@ use \PaynetEasy\Paynet\Exceptions\ConfigException;
  * Container for order data
  *
  */
-class Order extends Data
+class       Order
+extends     Data
+implements  OrderInterface
 {
+    /**
+     * Order customer
+     *
+     * @var \PaynetEasy\Paynet\Data\CustomerInterface
+     */
+    protected $customer;
+
+    /**
+     * Order credit card
+     *
+     * @var \PaynetEasy\Paynet\Data\CreditCardInterface
+     */
+    protected $creditCard;
+
+    /**
+     * Order recurrent card
+     *
+     * @var \PaynetEasy\Paynet\Data\RecurrentCardInterface
+     */
+    protected $recurrentCard;
+
     public function __construct($array)
     {
         if(isset($array['order_code']))
@@ -52,6 +76,96 @@ class Order extends Data
         );
 
         parent::__construct($array);
+    }
+
+    /**
+     * Set order customer
+     *
+     * @param       \PaynetEasy\Paynet\Data\CustomerInterface        $customer       Order customer
+     *
+     * @return      self
+     */
+    public function setCustomer(CustomerInterface $customer)
+    {
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasCustomer()
+    {
+        return is_object($this->getCustomer());
+    }
+
+    /**
+     * Set order credit card
+     *
+     * @param       \PaynetEasy\Paynet\Data\CreditCardInterface     $creditCard     Order credit card
+     *
+     * @return      self
+     */
+    public function setCreditCard(CreditCardInterface $creditCard)
+    {
+        $this->creditCard = $creditCard;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCreditCard()
+    {
+        return $this->creditCard;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasCreditCard()
+    {
+        return is_object($this->getCreditCard());
+    }
+
+    /**
+     * Set order recurrent card
+     *
+     * @param       \PaynetEasy\Paynet\Data\RecurrentCardInterface  $recurrentCard  Order recurrent card
+     *
+     * @return      self
+     */
+    public function setRecurrentCard(RecurrentCardInterface $recurrentCard)
+    {
+        $this->recurrentCard = $recurrentCard;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecurrentCard()
+    {
+        return $this->recurrentCard;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasRecurrentCard()
+    {
+        return is_object($this->getRecurrentCard());
     }
 
     public function getOrderCode()

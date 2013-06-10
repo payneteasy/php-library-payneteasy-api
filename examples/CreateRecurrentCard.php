@@ -42,7 +42,7 @@ class   CreateRecurrentCard extends Sale
 
         if($response->isApproved())
         {
-            $this->reccurent_card   = new RecurrentCard($response['cardrefid']);
+            $this->order->setRecurrentCard(new RecurrentCard($response['cardrefid']));
         }
 
         return $response;

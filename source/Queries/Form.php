@@ -2,11 +2,6 @@
 namespace PaynetEasy\Paynet\Queries;
 
 use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
-
-use \PaynetEasy\Paynet\Data\Customer;
-use \PaynetEasy\Paynet\Data\Order;
-use \PaynetEasy\Paynet\Data\Card;
-
 use \PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
@@ -31,23 +26,23 @@ class Form extends Sale
     {
         $this->validateConfig();
 
-        if(($this->customer instanceof Customer) === false)
+        if(!$this->getOrder())
         {
-            throw new ConfigException('Customer is not instance of Customer');
+            throw new ConfigException('Order is not defined');
         }
 
-        if(($this->order instanceof Order) === false)
+        if(!$this->getOrder()->hasCustomer())
         {
-            throw new ConfigException('Order is not instance of Order');
+            throw new ConfigException('Customer is not defined');
         }
 
-        if($this->card instanceof Card)
+        if($this->getOrder()->hasCreditCard())
         {
             throw new ConfigException('Credir Card must be undefined for Form API');
         }
 
-        $this->customer->validate();
-        $this->order->validate();
+        $this->getOrder()->validate();
+        $this->getOrder()->getCustomer()->validate();
     }
 
     protected function initQuery()
@@ -56,7 +51,7 @@ class Form extends Sale
         (
             array_merge
             (
-                $this->getCustomer()->getData(),
+                $this->getOrder()->getCustomer()->getData(),
                 $this->getOrder()->getData(),
                 $this->commonQueryOptions(),
                 array

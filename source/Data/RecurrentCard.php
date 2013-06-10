@@ -5,7 +5,9 @@ namespace PaynetEasy\Paynet\Data;
  * Container for Reccurent Credit Card data
  *
  */
-class RecurrentCard extends Data
+class       RecurrentCard
+extends     Data
+implements  RecurrentCardInterface
 {
     public function __construct($cardrefid)
     {

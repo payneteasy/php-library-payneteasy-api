@@ -1,10 +1,10 @@
 <?php
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Data\Order;
-use \PaynetEasy\Paynet\Data\Customer;
-use \PaynetEasy\Paynet\Data\Card;
-use \PaynetEasy\Paynet\Data\RecurrentCard;
+use PaynetEasy\Paynet\Data\Order;
+use PaynetEasy\Paynet\Data\Customer;
+use PaynetEasy\Paynet\Data\CreditCard;
+use PaynetEasy\Paynet\Data\RecurrentCardInterface;
 
 /**
  * Test class for Sale.
@@ -38,7 +38,7 @@ class SaleTest extends QueryTest
             )
         );
 
-        $card                   = new Card
+        $card                   = new CreditCard
         (
             array
             (
@@ -73,17 +73,18 @@ class SaleTest extends QueryTest
     {
         list($customer, $card, $order) = $this->getTestData();
 
-        $this->query->setOrder($order);
-        $this->query->setCustomer($customer);
+        $order->setCustomer($customer);
 
-        if($card instanceof RecurrentCard)
+        if($card instanceof RecurrentCardInterface)
         {
-            $this->query->setRecurrentCard($card);
+            $order->setRecurrentCard($card);
         }
         else
         {
-            $this->query->setCard($card);
+            $order->setCreditCard($card);
         }
+
+        $this->query->setOrder($order);
 
         $this->transport->response  = array
         (
@@ -132,7 +133,7 @@ class SaleTest extends QueryTest
             'server_callback_url' => $this->config['server_callback_url']
         );
 
-        if($card instanceof RecurrentCard)
+        if($card instanceof RecurrentCardInterface)
         {
             $request['cardrefid']   = $card->cardrefid();
 
@@ -288,16 +289,18 @@ class SaleTest extends QueryTest
     {
         $this->transport->response  = $server_response;
 
-        $this->query->setOrder($order);
-        $this->query->setCustomer($customer);
-        if($card instanceof RecurrentCard)
+        $order->setCustomer($customer);
+
+        if($card instanceof RecurrentCardInterface)
         {
-            $this->query->setRecurrentCard($card);
+            $order->setRecurrentCard($card);
         }
         else
         {
-            $this->query->setCard($card);
+            $order->setCreditCard($card);
         }
+
+        $this->query->setOrder($order);
 
         parent::testProcess($assert);
     }
@@ -318,17 +321,18 @@ class SaleTest extends QueryTest
 
         list($customer, $card, $order_full) = $this->getTestData();
 
-        $this->query->setOrder($order_full);
-        $this->query->setCustomer($customer);
-        if($card instanceof RecurrentCard)
+        $order_full->setCustomer($customer);
+
+        if($card instanceof RecurrentCardInterface)
         {
-            $this->query->setRecurrentCard($card);
+            $order_full->setRecurrentCard($card);
         }
         else
         {
-            $this->query->setCard($card);
+            $order_full->setCreditCard($card);
         }
 
+        $this->query->setOrder($order_full);
         $this->query->process();
 
         $this->transport->response          = $server_response;
@@ -504,17 +508,18 @@ class SaleTest extends QueryTest
             'serial-number'     => md5(time())
         );
 
-        $this->query->setOrder($order);
-        $this->query->setCustomer($customer);
-        if($card instanceof RecurrentCard)
+        $order->setCustomer($customer);
+
+        if($card instanceof RecurrentCardInterface)
         {
-            $this->query->setRecurrentCard($card);
+            $order->setRecurrentCard($card);
         }
         else
         {
-            $this->query->setCard($card);
+            $order->setCreditCard($card);
         }
 
+        $this->query->setOrder($order);
         $this->query->process();
 
         $this->transport->response          = array
