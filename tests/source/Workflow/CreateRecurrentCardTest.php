@@ -1,5 +1,6 @@
 <?php
-namespace PaynetEasy\Paynet\Queries;
+
+namespace PaynetEasy\Paynet\Workflow;
 
 /**
  * Test class for CreateRecurrentCard.
@@ -40,7 +41,7 @@ class CreateRecurrentCardTest extends SaleTest
     {
         parent::testStatus($order, $server_response, $assert);
 
-        if(!empty($assert['status']) && $assert['status'] === Query::STATUS_APPROVED)
+        if(!empty($assert['status']) && $assert['status'] === Sale::STATUS_APPROVED)
         {
             $card               = $this->query->getOrder()->getRecurrentCard();
 
@@ -56,7 +57,7 @@ class CreateRecurrentCardTest extends SaleTest
     {
         parent::testCallback($order, $customer, $card, $callback, $assert);
 
-        if(!empty($assert['status']) && $assert['status'] === Query::STATUS_APPROVED)
+        if(!empty($assert['status']) && $assert['status'] === Sale::STATUS_APPROVED)
         {
             $card               = $this->query->getOrder()->getRecurrentCard();
 

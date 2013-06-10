@@ -1,8 +1,9 @@
-<?PHP
-namespace PaynetEasy\Paynet\Queries;
+<?php
 
-use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
-use \PaynetEasy\Paynet\Exceptions\ConfigException;
+namespace PaynetEasy\Paynet\Workflow;
+
+use PaynetEasy\Paynet\Transport\GatewayClientInterface;
+use PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query Form

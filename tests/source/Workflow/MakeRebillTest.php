@@ -1,7 +1,8 @@
 <?php
-namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Data\RecurrentCard;
+namespace PaynetEasy\Paynet\Workflow;
+
+use PaynetEasy\Paynet\Data\RecurrentCard;
 
 /**
  * Test class for MakeRebill.

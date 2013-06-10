@@ -1,9 +1,11 @@
-<?PHP
-namespace PaynetEasy\Paynet\Queries;
+<?php
 
-use \PaynetEasy\Paynet\Data\RecurrentCard;
-use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
-use \Exception;
+namespace PaynetEasy\Paynet\Workflow;
+
+use PaynetEasy\Paynet\Data\RecurrentCard;
+use PaynetEasy\Paynet\Queries\CreateCardRef;
+use PaynetEasy\Paynet\Transport\GatewayClientInterface;
+use Exception;
 
 /**
  * The implementation of the Reccurent Transaction init
@@ -22,9 +24,9 @@ class CreateRecurrentCard extends Sale
         $this->method       = 'sale';
     }
 
-    public function process($data = null)
+    public function createRequest($data = null)
     {
-        $response       = parent::process($data);
+        $response       = parent::createRequest($data);
 
         if($response->isApproved())
         {
@@ -44,8 +46,9 @@ class CreateRecurrentCard extends Sale
         $e                  = null;
         try
         {
-            /* @var $response \PaynetEasy\Paynet\Transport\Response */
-            $response       = $query->process();
+            $request    = $query->createRequest();
+            $response   = $this->transport->makeRequest($request);
+            $query->processResponse($response);
         }
         catch(Exception $e)
         {

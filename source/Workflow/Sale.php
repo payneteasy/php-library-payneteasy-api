@@ -1,18 +1,21 @@
-<?PHP
-namespace PaynetEasy\Paynet\Queries;
+<?php
 
-use \PaynetEasy\Paynet\Transport\Response;
-use \PaynetEasy\Paynet\Callbacks\Redirect3D;
+namespace PaynetEasy\Paynet\Workflow;
 
-use \PaynetEasy\Paynet\Exceptions\PaynetException;
-use \PaynetEasy\Paynet\Exceptions\ConfigException;
-use \Exception;
+use PaynetEasy\Paynet\Queries\Status;
+
+use PaynetEasy\Paynet\Transport\Response;
+use PaynetEasy\Paynet\Callbacks\Redirect3D;
+
+use PaynetEasy\Paynet\Exceptions\PaynetException;
+use PaynetEasy\Paynet\Exceptions\ConfigException;
+use Exception;
 
 /**
  * The implementation of the query SALE
  * http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#General_Sale_Process_Flow
  */
-class Sale extends Query
+class Sale extends AbstractWorkflow
 {
     public function validate()
     {
@@ -47,7 +50,7 @@ class Sale extends Query
      *
      * @throws      PaynetException
      */
-    public function process($data = null)
+    public function createRequest($data = null)
     {
         switch($this->state())
         {
@@ -127,8 +130,9 @@ class Sale extends Query
         $e                  = null;
         try
         {
-            /* @var $response \PaynetEasy\Paynet\Transport\Response */
-            $response       = $status_query->process();
+            $request    = $status_query->createRequest();
+            $response   = $this->transport->makeRequest($request);
+            $status_query->processResponse($response);
         }
         catch(Exception $e)
         {
@@ -164,7 +168,7 @@ class Sale extends Query
         $e                  = null;
         try
         {
-            $response       = $callback->process($data);
+            $response       = $callback->createRequest($data);
         }
         catch(Exception $e)
         {

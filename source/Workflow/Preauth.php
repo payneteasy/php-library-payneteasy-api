@@ -1,5 +1,6 @@
-<?PHP
-namespace PaynetEasy\Paynet\Queries;
+<?php
+
+namespace PaynetEasy\Paynet\Workflow;
 
 /**
  * The implementation of the query Preauth
