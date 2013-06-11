@@ -93,7 +93,7 @@ abstract class AbstractWorkflowTest extends PHPUnit_Framework_TestCase
         }
         elseif(!empty($assert['error_message']) && $assert['status'] !== 'declined')
         {
-            $e                      = $this->query->getLastError();
+            $e = $this->query->getLastError();
             $this->assertTrue($e instanceof PaynetException, 'expected getLastError');
             $this->assertEquals($e->getMessage(), $assert['error_message'], 'Error Message wrong');
             $this->assertEquals($e->getCode(), $assert['error_code'], 'Error Code wrong');

@@ -1,8 +1,8 @@
 <?PHP
 require_once './PaynetProcess.php';
 
-use \PaynetEasy\Paynet\Queries\Sale         as PaynetSale;
-use \PaynetEasy\Paynet\Queries\Status;
+use \PaynetEasy\Paynet\Queries\SaleQuery         as PaynetSale;
+use \PaynetEasy\Paynet\Queries\StatusQuery;
 use \PaynetEasy\Paynet\Callbacks\Redirect3D;
 use \Exception;
 
@@ -44,7 +44,7 @@ class Sale extends PaynetProcess
         $this->order['client_orderid'] = $_POST['client_orderid'];
 
         // Create Status Query
-        $this->query            = new Status($this->transport);
+        $this->query            = new StatusQuery($this->transport);
 
         $this->query->setOrder($this->order);
         $this->query->setConfig($this->config);

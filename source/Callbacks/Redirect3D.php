@@ -1,6 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Callbacks;
 
+use PaynetEasy\Paynet\Data\OrderInterface;
 use PaynetEasy\Paynet\Queries\AbstractQuery;
 
 class Redirect3D extends AbstractQuery
@@ -10,7 +11,14 @@ class Redirect3D extends AbstractQuery
      * @var boolean
      */
     protected $is_control = true;
-    //
-    // This class is empty, since the implementation of the Query does all the work
-    //
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createRequest(OrderInterface $order, $data = null)
+    {
+        $this->validateOrder($order);
+
+        return $this->wrapToRequest($data);
+    }
 }

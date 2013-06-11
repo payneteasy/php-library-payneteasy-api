@@ -1,6 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
+use PaynetEasy\Paynet\Data\OrderInterface;
 use PaynetEasy\Paynet\Responses\CardInfo;
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Exceptions\ConfigException;
@@ -9,34 +10,21 @@ use PaynetEasy\Paynet\Exceptions\ConfigException;
  * The implementation of the query STATUS
  * http://wiki.payneteasy.com/index.php?title=PnE%3ARecurrent_Transactions&setlang=en#Recurrent_Payments
  */
-class GetCardInfo extends AbstractQuery
+class GetCardInfoQuery extends AbstractQuery
 {
-    /**
-     * Constructor
-     * @param       TransportI        $transport
-     */
-    public function __construct()
+    public function validateOrder(OrderInterface $order)
     {
-        parent::__construct();
-
-        $this->method       = 'get-card-info';
-    }
-
-    public function validate()
-    {
-        $this->validateConfig();
-
         if(empty($this->config['login']))
         {
             throw new ConfigException('login undefined');
         }
 
-        if(!$this->getOrder()->hasRecurrentCard())
+        if(!$order->hasRecurrentCard())
         {
             throw new ConfigException('Order is not instance of Order');
         }
 
-        $this->getOrder()->getRecurrentCard()->validate();
+        $order->getRecurrentCard()->validate();
     }
 
     /**
@@ -44,37 +32,39 @@ class GetCardInfo extends AbstractQuery
      *
      * @return \PaynetEasy\Paynet\Responses\CardInfo
      */
-    public function createRequest($data = null)
+    public function createRequest(OrderInterface $order)
     {
-        $this->validate();
+        $this->validateOrder($order);
 
         $query              = array_merge
         (
-            $this->getOrder()->getRecurrentCard()->getData(),
+            $order->getRecurrentCard()->getData(),
             // Выделить этот код в отдельный класс
             array
             (
                 'login'         => $this->config['login'],
-                'control'       => $this->createControlCode()
+                'control'       => $this->createControlCode($order)
             )
         );
 
         return $this->wrapToRequest($query);
     }
 
-    public function processResponse(Response $response)
+    public function processResponse(OrderInterface $order, Response $response)
     {
-        return new CardInfo(parent::processResponse($response)->getArrayCopy());
+        parent::processResponse($order, $response);
+
+        return new CardInfo($response->getArrayCopy());
     }
 
-    protected function createControlCode()
+    protected function createControlCode(OrderInterface $order)
     {
         // This is SHA-1 checksum of the concatenation
         // login + cardrefid + merchant-control.
         return sha1
         (
             $this->config['login'].
-            $this->getOrder()->getRecurrentCard()->cardRefId().
+            $order->getRecurrentCard()->cardRefId().
             $this->config['control']
         );
     }

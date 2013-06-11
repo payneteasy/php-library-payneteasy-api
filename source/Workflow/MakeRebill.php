@@ -37,7 +37,7 @@ class MakeRebill extends Sale
      *
      * @param string        $comment
      *
-     * @return \PaynetEasy\Paynet\Queries\ReturnTransaction
+     * @return \PaynetEasy\Paynet\Queries\ReturnQuery
      */
     public function setComment($comment)
     {

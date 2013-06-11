@@ -15,7 +15,7 @@ class StatusTest extends QueryTest
      * Test class
      * @var string
      */
-    protected $class            = 'Status';
+    protected $class            = 'StatusQuery';
 
     public function testControl()
     {
@@ -27,21 +27,21 @@ class StatusTest extends QueryTest
             'serial-number'     => md5(time())
         );
 
-        $this->query->setOrder(new Order
+        $order = new Order
         (
             array
             (
                 'client_orderid'        => 'CLIENT-112233',
                 'paynet_order_id'       => 'PAYNET-112233'
             )
-        ));
+        );
 
         $e                          = null;
         try
         {
-            $request = $this->query->createRequest();
+            $request = $this->query->createRequest($order);
             $response = $this->transport->makeRequest($request);
-            $this->query->processResponse($response);
+            $this->query->processResponse($order, $response);
         }
         catch(Exception $e)
         {
@@ -251,13 +251,9 @@ class StatusTest extends QueryTest
     /**
      * @dataProvider providerProcess
      */
-    public function testProcess($order, $server_response = null, $assert = null)
+    public function testProcess($order, $server_response, $assert)
     {
-        $this->transport->response  = $server_response;
-
-        $this->query->setOrder($order);
-
-        parent::testProcess($assert);
+        parent::testProcess($order, $server_response, $assert);
     }
 }
 

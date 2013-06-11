@@ -90,8 +90,6 @@ abstract class AbstractWorkflow
         $this->method           = strtolower(substr(strrchr(get_class($this), '\\'), 1));
 
         $this->transport        = $transport;
-
-        $this->config           = new ArrayObject();
     }
 
     /**
@@ -114,11 +112,6 @@ abstract class AbstractWorkflow
     public function setConfig($config, $value = null)
     {
         if(is_array($config))
-        {
-            $config                 = new ArrayObject($config);
-        }
-
-        if($config instanceof ArrayObject)
         {
             $this->config           = $config;
         }
@@ -200,7 +193,7 @@ abstract class AbstractWorkflow
         {
             $this->validate();
 
-            return $this->processResponse(new Response($data));
+            $this->processResponse(new Response($data));
         }
         catch(Exception $e)
         {

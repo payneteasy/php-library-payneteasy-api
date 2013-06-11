@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
-use PaynetEasy\Paynet\Queries\Status;
+use PaynetEasy\Paynet\Queries\StatusQuery;
 
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Callbacks\Redirect3D;
@@ -122,25 +122,23 @@ class Sale extends AbstractWorkflow
 
     protected function statusQuery()
     {
-        $status_query       = new Status($this->transport);
-
-        $status_query->setConfig($this->config);
-        $status_query->setOrder($this->getOrder());
+        $order = $this->getOrder();
+        $status_query       = new StatusQuery($this->config);
 
         $e                  = null;
         try
         {
-            $request    = $status_query->createRequest();
+            $request    = $status_query->createRequest($order);
             $response   = $this->transport->makeRequest($request);
-            $status_query->processResponse($response);
+            $status_query->processResponse($order, $response);
         }
         catch(Exception $e)
         {
         }
 
-        $this->state        = $status_query->getOrder()->getState();
-        $this->status       = $status_query->getOrder()->getStatus();
-        $this->error        = $status_query->getOrder()->getLastError();
+        $this->state        = $order->getState();
+        $this->status       = $order->getStatus();
+        $this->error        = $order->getLastError();
 
         if($e instanceof Exception)
         {
@@ -160,24 +158,23 @@ class Sale extends AbstractWorkflow
      */
     protected function redirectCalback($data)
     {
-        $callback           = new Redirect3D($this->transport);
-
-        $callback->setConfig($this->config);
-        $callback->setOrder($this->getOrder());
+        $order      = $this->getOrder();
+        $callback   = new Redirect3D($this->config);
 
         $e                  = null;
         try
         {
-            $request    = $callback->createRequest($data);
-            $response   = $callback->processResponse(new Response($request));
+            $request    = $callback->createRequest($order, $data);
+            $response   = new Response($request);
+            $callback->processResponse($order, $response);
         }
         catch(Exception $e)
         {
         }
 
-        $this->state        = $callback->getOrder()->getState();
-        $this->status       = $callback->getOrder()->getStatus();
-        $this->error        = $callback->getOrder()->getLastError();
+        $this->state        = $order->getState();
+        $this->status       = $order->getStatus();
+        $this->error        = $order->getLastError();
 
         if($e instanceof Exception)
         {

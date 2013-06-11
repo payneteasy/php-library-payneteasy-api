@@ -143,18 +143,18 @@ abstract class PaynetProcess
         // Handling response from paynet
         switch($this->query->state())
         {
-            case Sale::STATE_PROCESSING:
-            case Sale::STATE_WAIT:
+            case SaleQuery::STATE_PROCESSING:
+            case SaleQuery::STATE_WAIT:
             {
                 $this->out_form_wait();
                 break;
             }
-            case Sale::STATE_REDIRECT:
+            case SaleQuery::STATE_REDIRECT:
             {
                 $response->redirect();
                 break;
             }
-            case Sale::STATE_END:
+            case SaleQuery::STATE_END:
             {
                 $this->out_end($response);
                 break;

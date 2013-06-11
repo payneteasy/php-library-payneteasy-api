@@ -179,11 +179,7 @@ implements  OrderInterface
     }
 
     /**
-     * Set order credit card
-     *
-     * @param       \PaynetEasy\Paynet\Data\CreditCardInterface     $creditCard     Order credit card
-     *
-     * @return      self
+     * {@inheritdoc}
      */
     public function setCreditCard(CreditCardInterface $creditCard)
     {
@@ -209,11 +205,7 @@ implements  OrderInterface
     }
 
     /**
-     * Set order recurrent card
-     *
-     * @param       \PaynetEasy\Paynet\Data\RecurrentCardInterface  $recurrentCard  Order recurrent card
-     *
-     * @return      self
+     * {@inheritdoc}
      */
     public function setRecurrentCard(RecurrentCardInterface $recurrentCard)
     {

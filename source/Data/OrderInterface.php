@@ -44,6 +44,15 @@ interface OrderInterface
     public function hasCustomer();
 
     /**
+     * Set order credit card
+     *
+     * @param       \PaynetEasy\Paynet\Data\CreditCardInterface     $creditCard     
+     *
+     * @return      self
+     */
+    public function setCreditCard(CreditCardInterface $creditCard);
+
+    /**
      * Get credit card
      *
      * @return      \PaynetEasy\Paynet\Data\CreditCardInterface
@@ -56,6 +65,15 @@ interface OrderInterface
      * @return      boolean
      */
     public function hasCreditCard();
+
+    /**
+     * Set order recurrent card
+     *
+     * @param       \PaynetEasy\Paynet\Data\RecurrentCardInterface  $recurrentCard
+     *
+     * @return      self
+     */
+    public function setRecurrentCard(RecurrentCardInterface $recurrentCard);
 
     /**
      * Get order recurrent card

@@ -1,26 +1,16 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
+use PaynetEasy\Paynet\Data\OrderInterface;
 use PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query Return
  * http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
  */
-class ReturnTransaction extends AbstractQuery
+class ReturnQuery extends AbstractQuery
 {
     protected $comment;
-
-    /**
-     * Constructor
-     * @param       GatewayClientInterface        $transport
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->method           = 'return';
-    }
 
     public function getComment()
     {
@@ -32,7 +22,7 @@ class ReturnTransaction extends AbstractQuery
      *
      * @param string        $comment
      *
-     * @return \PaynetEasy\Paynet\Queries\ReturnTransaction
+     * @return \PaynetEasy\Paynet\Queries\ReturnQuery
      */
     public function setComment($comment)
     {
@@ -41,18 +31,11 @@ class ReturnTransaction extends AbstractQuery
         return $this;
     }
 
-    public function validate()
+    public function validateOrder(OrderInterface $order)
     {
-        $this->validateConfig();
-
         if(empty($this->config['login']))
         {
             throw new ConfigException('login undefined');
-        }
-
-        if(!$this->getOrder())
-        {
-            throw new ConfigException('Order is not defined');
         }
 
         if(strlen($this->comment) > 50)
@@ -60,34 +43,30 @@ class ReturnTransaction extends AbstractQuery
             throw new ConfigException('comment is very big (over 50 chars)');
         }
 
-        $this->getOrder()->validateShort();
+        $order->validateShort();
     }
 
-    public function createRequest($data = null)
+    public function createRequest(OrderInterface $order)
     {
-        $this->validate();
+        $this->validateOrder($order);
 
         $query              = array_merge
         (
             array
             (
                 'login'         => $this->config['login'],
-                'control'       => $this->createControlCode()
+                'control'       => $this->createControlCode($order)
             ),
-            $this->getOrder()->getContextData()
+            $order->getContextData()
         );
 
-        if($this->getOrder()->getAmount())
+        /**
+         * @todo Amount MUST be setted in the order
+         */
+        if($order->getAmount())
         {
-            $query          = array_merge
-            (
-                $query,
-                array
-                (
-                    'amount'    => $this->getOrder()->getAmount(),
-                    'currency'  => $this->getOrder()->getCurrency(),
-                )
-            );
+            $query['amount']    = $order->getAmount();
+            $query['currency']  = $order->getCurrency();
         }
 
         if(!empty($this->comment))
@@ -98,7 +77,7 @@ class ReturnTransaction extends AbstractQuery
         return $this->wrapToRequest($query);
     }
 
-    protected function createControlCode()
+    protected function createControlCode(OrderInterface $order)
     {
         // Checksum used to ensure that it is Merchant (and not a fraudster)
         // that initiates the return request.
@@ -109,14 +88,17 @@ class ReturnTransaction extends AbstractQuery
         $sign                   = array
         (
             $this->config['login'],
-            $this->getOrder()->getOrderCode(),
-            $this->getOrder()->getPaynetOrderId()
+            $order->getOrderCode(),
+            $order->getPaynetOrderId()
         );
 
-        if($this->getOrder()->getAmount())
+        /**
+         * @todo Amount MUST be setted in the order
+         */
+        if($order->getAmount())
         {
-            $sign[]             = $this->getOrder()->getAmountInCents();
-            $sign[]             = $this->getOrder()->getCurrency();
+            $sign[]             = $order->getAmountInCents();
+            $sign[]             = $order->getCurrency();
         }
 
         $sign[]                 = $this->config['control'];

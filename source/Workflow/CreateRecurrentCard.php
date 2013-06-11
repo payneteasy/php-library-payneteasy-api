@@ -3,7 +3,7 @@
 namespace PaynetEasy\Paynet\Workflow;
 
 use PaynetEasy\Paynet\Data\RecurrentCard;
-use PaynetEasy\Paynet\Queries\CreateCardRef;
+use PaynetEasy\Paynet\Queries\CreateCardRefQuery;
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use Exception;
 
@@ -38,25 +38,23 @@ class CreateRecurrentCard extends Sale
 
     protected function createCardRef()
     {
-        $query              = new CreateCardRef($this->transport);
-
-        $query->setConfig($this->config);
-        $query->setOrder($this->getOrder());
+        $order = $this->getOrder();
+        $query = new CreateCardRefQuery($this->config);
 
         $e                  = null;
         try
         {
-            $request    = $query->createRequest();
+            $request    = $query->createRequest($order);
             $response   = $this->transport->makeRequest($request);
-            $query->processResponse($response);
+            $query->processResponse($order, $response);
         }
         catch(Exception $e)
         {
         }
 
-        $this->state        = $query->getOrder()->getState();
-        $this->status       = $query->getOrder()->getStatus();
-        $this->error        = $query->getOrder()->getLastError();
+        $this->state        = $order->getState();
+        $this->status       = $order->getStatus();
+        $this->error        = $order->getLastError();
 
         if($e instanceof Exception)
         {
@@ -65,7 +63,7 @@ class CreateRecurrentCard extends Sale
 
         if($response->isApproved())
         {
-            $this->getOrder()->setRecurrentCard(new RecurrentCard($response['cardrefid']));
+            $order->setRecurrentCard(new RecurrentCard($response['cardrefid']));
         }
 
         return $response;

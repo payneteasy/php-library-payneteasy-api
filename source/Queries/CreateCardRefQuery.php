@@ -10,74 +10,60 @@ use PaynetEasy\Paynet\Exceptions\ConfigException;
  * The implementation of the query STATUS
  * http://wiki.payneteasy.com/index.php?title=PnE%3ARecurrent_Transactions&setlang=en#Recurrent_Payments
  */
-class CreateCardRef extends AbstractQuery
+class CreateCardRefQuery extends AbstractQuery
 {
-    public function __construct()
+    public function validateOrder(OrderInterface $order)
     {
-        parent::__construct();
-
-        $this->method       = 'create-card-ref';
-    }
-
-    public function validate()
-    {
-        $this->validateConfig();
-
         if(empty($this->config['login']))
         {
             throw new ConfigException('login undefined');
         }
 
-        if(!$this->getOrder())
-        {
-            throw new ConfigException('Order is not defined');
-        }
-
-        $this->getOrder()->validateShort();
+        $order->validateShort();
     }
 
-    public function createRequest($data = null)
+    public function createRequest(OrderInterface $order)
     {
-        $this->validate();
+        $this->validateOrder($order);
 
         $query              = array_merge
         (
-            $this->getOrder()->getContextData(),
+            $order->getContextData(),
             array
             (
                 'login'         => $this->config['login'],
-                'control'       => $this->createControlCode()
+                'control'       => $this->createControlCode($order)
             )
         );
 
         return $this->wrapToRequest($query);
     }
 
-    public function processResponse(Response $response)
+    public function processResponse(OrderInterface $order, Response $response)
     {
         if(!isset($response['card-ref-id']))
         {
             $e              = new ResponseException('card-ref-id undefined');
-            $this->getOrder()->addError($e);
-            $this->getOrder()->setState(OrderInterface::STATE_END);
+            $order->addError($e);
+            $order->setState(OrderInterface::STATE_END);
             throw $e;
         }
 
         $response['cardrefid'] = $response['card-ref-id'];
         unset($response['card-ref-id']);
 
-        return parent::processResponse($response);
+        parent::processResponse($order, $response);
     }
 
-    protected function createControlCode()
+    protected function createControlCode(OrderInterface $order)
     {
         // This is SHA-1 checksum of the concatenation
         // login + client-order-id + paynet-order-id + merchant-control.
         return sha1
         (
             $this->config['login'].
-            $this->getOrder()->getOrderCode().
-            $this->getOrder()->getPaynetOrderId().
+            $order->getOrderCode().
+            $order->getPaynetOrderId().
             $this->config['control']
         );
     }

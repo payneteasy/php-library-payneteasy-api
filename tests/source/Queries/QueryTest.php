@@ -1,11 +1,11 @@
 <?php
 namespace PaynetEasy\Paynet\Queries;
 
-use \PHPUnit_Framework_TestCase;
-use \PaynetEasy\Paynet\Transport\Transport;
+use PHPUnit_Framework_TestCase;
+use PaynetEasy\Paynet\Transport\Transport;
 
-use \PaynetEasy\Paynet\Exceptions\PaynetException;
-use \Exception;
+use PaynetEasy\Paynet\Exceptions\PaynetException;
+use Exception;
 
 /**
  * Test class for Query.
@@ -49,8 +49,6 @@ abstract class QueryTest extends PHPUnit_Framework_TestCase
 
         $this->class            = __NAMESPACE__.'\\'.$this->class;
 
-        $this->query            = new $this->class();
-
         $this->config           = array
         (
             'login'             => 'test-login',
@@ -60,7 +58,7 @@ abstract class QueryTest extends PHPUnit_Framework_TestCase
             'server_callback_url' => 'https://example.com/callback_url'
         );
 
-        $this->query->setConfig($this->config);
+        $this->query            = new $this->class($this->config);
     }
 
     /**
@@ -72,14 +70,16 @@ abstract class QueryTest extends PHPUnit_Framework_TestCase
 
     }
 
-    public function testProcess($assert, $callback = null)
+    public function testProcess($order, $server_response, $assert)
     {
+        $this->transport->response  = $server_response;
+
         $e                          = null;
         try
         {
-            $request = $this->query->createRequest($callback);
+            $request = $this->query->createRequest($order);
             $response = $this->transport->makeRequest($request);
-            $this->query->processResponse($response);
+            $this->query->processResponse($order, $response);
         }
         catch(Exception $e)
         {
@@ -95,7 +95,7 @@ abstract class QueryTest extends PHPUnit_Framework_TestCase
         }
         elseif(!empty($assert['error_message']) && $assert['status'] !== 'declined')
         {
-            $e = $this->query->getOrder()->getLastError();
+            $e = $order->getLastError();
             $this->assertTrue($e instanceof PaynetException, 'expected getLastError');
             $this->assertEquals($e->getMessage(), $assert['error_message'], 'Error Message wrong');
             $this->assertEquals($e->getCode(), $assert['error_code'], 'Error Code wrong');
@@ -103,18 +103,18 @@ abstract class QueryTest extends PHPUnit_Framework_TestCase
         else
         {
             $this->assertFalse($e instanceof PaynetException, 'not expected exception PaynetException');
-            $this->assertFalse($this->query->getOrder()->getLastError() instanceof PaynetException, 'getLastError must be null');
+            $this->assertFalse($order->getLastError() instanceof PaynetException, 'getLastError must be null');
             $this->assertInstanceOf('PaynetEasy\Paynet\Transport\Response', $response);
         }
 
         if (isset ($assert['state']))
         {
-            $this->assertEquals($this->query->getOrder()->getState(), $assert['state'], 'query.state not equal '.$assert['state']);
+            $this->assertEquals($order->getState(), $assert['state'], 'query.state not equal '.$assert['state']);
         }
 
         if (isset($assert['status']))
         {
-            $this->assertEquals($this->query->getOrder()->getStatus(), $assert['status'], 'query.status not equal'. $assert['status']);
+            $this->assertEquals($order->getStatus(), $assert['status'], 'query.status not equal'. $assert['status']);
         }
     }
 }

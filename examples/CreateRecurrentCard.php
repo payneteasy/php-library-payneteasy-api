@@ -5,7 +5,7 @@ use PaynetEasy\Paynet\Data\OrderInterface;
 
 use PaynetEasy\Paynet\Data\RecurrentCard;
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Queries\CreateCardRef;
+use PaynetEasy\Paynet\Queries\CreateCardRefQuery;
 
 use Exception;
 
@@ -25,7 +25,7 @@ class   CreateRecurrentCard extends Sale
 
     protected function createCardRef()
     {
-        $query = new CreateCardRef();
+        $query = new CreateCardRefQuery();
 
         $query->setConfig($this->config);
         $query->setOrder($this->order);
