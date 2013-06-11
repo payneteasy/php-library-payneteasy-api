@@ -3,7 +3,7 @@ namespace PaynetEasy\Paynet\Workflow;
 
 use PHPUnit_Framework_TestCase;
 use PaynetEasy\Paynet\Transport\Transport;
-
+use PaynetEasy\Paynet\Data\Order;
 use PaynetEasy\Paynet\Exceptions\PaynetException;
 use Exception;
 
@@ -72,6 +72,194 @@ abstract class AbstractWorkflowTest extends PHPUnit_Framework_TestCase
 
     }
 
+    public function testStatusProvider()
+    {
+        $order                  = new Order
+        (
+            array
+            (
+                'client_orderid'        => 'CLIENT-112233',
+                'paynet_order_id'       => 'PAYNET-112233'
+            )
+        );
+
+        $dataset                = array();
+
+        // APPROVE
+        $response               = array
+        (
+            'type'              => 'status-response',
+            'status'            => 'approved',
+            'paynet-order-id'   => $order->getPaynetOrderId(),
+            'serial-number'     => md5(time())
+        );
+
+        $assert                 = array
+        (
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_APPROVED
+        );
+
+        $dataset[]              = array($order, $response, $assert);
+
+        // DECLINE
+        $response               = array
+        (
+            'type'              => 'status-response',
+            'status'            => 'declined',
+            'paynet-order-id'   => $order->getPaynetOrderId(),
+            'serial-number'     => md5(time()),
+            'error-message'     => 'test error message',
+            'error-code'        => '578'
+        );
+
+        $assert                 = array
+        (
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_DECLINED,
+            'error_message'     => 'test error message',
+            'error_code'        => '578'
+        );
+
+        $dataset[]              = array($order, $response, $assert);
+
+        // FILTERED
+        $response               = array
+        (
+            'type'              => 'status-response',
+            'status'            => 'filtered',
+            'paynet-order-id'   => $order->getPaynetOrderId(),
+            'serial-number'     => md5(time()),
+            'error-message'     => 'test filtered message',
+            'error-code'        => '8876'
+        );
+
+        $assert                 = array
+        (
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_DECLINED,
+            'error_message'     => 'test filtered message',
+            'error_code'        => '8876'
+        );
+
+        $dataset[]              = array($order, $response, $assert);
+
+        // PROCESSING
+        $response               = array
+        (
+            'type'              => 'status-response',
+            'status'            => 'processing',
+            'paynet-order-id'   => $order->getPaynetOrderId(),
+            'serial-number'     => md5(time())
+        );
+
+        $assert                 = array
+        (
+            'state'             => Order::STATE_PROCESSING,
+            'status'            => null
+        );
+
+        $dataset[]              = array($order, $response, $assert);
+
+        // 3D redirect
+        $response               = array
+        (
+            'type'              => 'status-response',
+            'status'            => 'processing',
+            'html'              => '<HTML>',
+            'paynet-order-id'   => $order->getPaynetOrderId(),
+            'serial-number'     => md5(time())
+        );
+
+        $assert                 = array
+        (
+            'state'             => Order::STATE_REDIRECT,
+            'status'            => null
+        );
+
+        $dataset[]              = array($order, $response, $assert);
+
+        // URL redirect
+        $response               = array
+        (
+            'type'              => 'status-response',
+            'status'            => 'processing',
+            'redirect-url'      => 'http://testdomain.com/',
+            'paynet-order-id'   => $order->getPaynetOrderId(),
+            'serial-number'     => md5(time())
+        );
+
+        $assert                 = array
+        (
+            'state'             => Order::STATE_REDIRECT,
+            'status'            => null
+        );
+
+        $dataset[]              = array($order, $response, $assert);
+
+        // ERROR
+        $response               = array
+        (
+            'type'              => 'status-response',
+            'status'            => 'error',
+            'paynet-order-id'   => $order->getPaynetOrderId(),
+            'serial-number'     => md5(time()),
+            'error-message'     => 'test error message',
+            'error-code'        => '2'
+        );
+
+        $assert                 = array
+        (
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_ERROR,
+            'error_message'     => 'test error message',
+            'error_code'        => '2',
+            'exception'         => true
+        );
+
+        $dataset[]              = array($order, $response, $assert);
+
+        // Errors validation-error
+        $response               = array
+        (
+            'type'              => 'validation-error',
+            'error-message'     => 'test validation message',
+            'error-code'        => '1'
+        );
+
+        $assert                 = array
+        (
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_ERROR,
+            'error_message'     => 'test validation message',
+            'error_code'        => '1',
+            'exception'         => true
+        );
+
+        $dataset[]              = array($order, $response, $assert);
+
+        // Errors validation-error
+        $response               = array
+        (
+            'type'              => 'error',
+            'error-message'     => 'test error message',
+            'error-code'        => '1'
+        );
+
+        $assert                 = array
+        (
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_ERROR,
+            'error_message'     => 'test error message',
+            'error_code'        => '1',
+            'exception'         => true
+        );
+
+        $dataset[]              = array($order, $response, $assert);
+
+        return $dataset;
+    }
+
     public function testProcess($assert, $callback = null)
     {
         $e                          = null;
@@ -85,6 +273,8 @@ abstract class AbstractWorkflowTest extends PHPUnit_Framework_TestCase
 
         if(!empty($assert['exception']))
         {
+            $e = $this->query->getLastError();
+
             $this->assertTrue($e instanceof PaynetException, 'expected exception PaynetException');
             $this->assertEquals($e->getMessage(), $assert['error_message'], 'exception message mismatch');
             $this->assertEquals($e->getCode(), $assert['error_code'], 'exception code mismatch');
@@ -94,6 +284,7 @@ abstract class AbstractWorkflowTest extends PHPUnit_Framework_TestCase
         elseif(!empty($assert['error_message']) && $assert['status'] !== 'declined')
         {
             $e = $this->query->getLastError();
+
             $this->assertTrue($e instanceof PaynetException, 'expected getLastError');
             $this->assertEquals($e->getMessage(), $assert['error_message'], 'Error Message wrong');
             $this->assertEquals($e->getCode(), $assert['error_code'], 'Error Code wrong');

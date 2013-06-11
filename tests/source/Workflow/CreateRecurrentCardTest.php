@@ -35,7 +35,7 @@ class CreateRecurrentCardTest extends SaleTest
     }
 
     /**
-     * @dataProvider \PaynetEasy\Paynet\Queries\StatusTest::providerProcess
+     * @dataProvider testStatusProvider
      */
     public function testStatus($order, $server_response, $assert)
     {

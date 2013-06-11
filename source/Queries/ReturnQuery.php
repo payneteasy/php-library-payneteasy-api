@@ -2,7 +2,6 @@
 namespace PaynetEasy\Paynet\Queries;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
-use PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query Return
@@ -10,42 +9,9 @@ use PaynetEasy\Paynet\Exceptions\ConfigException;
  */
 class ReturnQuery extends AbstractQuery
 {
-    protected $comment;
-
-    public function getComment()
-    {
-        return $this->comment;
-    }
-
     /**
-     * Defines comment for Transaction
-     *
-     * @param string        $comment
-     *
-     * @return \PaynetEasy\Paynet\Queries\ReturnQuery
+     * {@inheritdoc}
      */
-    public function setComment($comment)
-    {
-        $this->comment          = $comment;
-
-        return $this;
-    }
-
-    public function validateOrder(OrderInterface $order)
-    {
-        if(empty($this->config['login']))
-        {
-            throw new ConfigException('login undefined');
-        }
-
-        if(strlen($this->comment) > 50)
-        {
-            throw new ConfigException('comment is very big (over 50 chars)');
-        }
-
-        $order->validateShort();
-    }
-
     public function createRequest(OrderInterface $order)
     {
         $this->validateOrder($order);
@@ -69,14 +35,17 @@ class ReturnQuery extends AbstractQuery
             $query['currency']  = $order->getCurrency();
         }
 
-        if(!empty($this->comment))
+        if($order->getCancelReason())
         {
-            $query['comment']       = $this->comment;
+            $query['comment']       = $order->getCancelReason();
         }
 
         return $this->wrapToRequest($query);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function createControlCode(OrderInterface $order)
     {
         // Checksum used to ensure that it is Merchant (and not a fraudster)

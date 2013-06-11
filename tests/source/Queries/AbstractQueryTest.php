@@ -26,10 +26,10 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetApiMethod()
     {
-        $this->object->setApiMethod('GetCardInfoQuery');
+        $this->object->setApiMethod('\PaynetEasy\Paynet\Queries\GetCardInfoQuery');
         $this->assertEquals('get-card-info', $this->object->method);
 
-        $this->object->setApiMethod('ReturnQuery');
+        $this->object->setApiMethod('\PaynetEasy\Paynet\Queries\ReturnQuery');
         $this->assertEquals('return', $this->object->method);
     }
 }

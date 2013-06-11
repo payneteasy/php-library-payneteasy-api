@@ -30,6 +30,15 @@ interface OrderInterface
     const STATUS_ERROR      = 'error';
 
     /**
+     * Set order customer
+     *
+     * @param       \PaynetEasy\Paynet\Data\CustomerInterface        $customer       Order customer
+     *
+     * @return      self
+     */
+    public function setCustomer(CustomerInterface $customer);
+
+    /**
      * Get order customer
      *
      * @return      \PaynetEasy\Paynet\Data\CustomerInterface
@@ -46,7 +55,7 @@ interface OrderInterface
     /**
      * Set order credit card
      *
-     * @param       \PaynetEasy\Paynet\Data\CreditCardInterface     $creditCard     
+     * @param       \PaynetEasy\Paynet\Data\CreditCardInterface     $creditCard
      *
      * @return      self
      */
@@ -152,6 +161,22 @@ interface OrderInterface
      * @todo More specific name and description needed
      */
     public function getStatus();
+
+    /**
+     * Set order cancellation reason (up to 50 chars)
+     *
+     * @param       string      cancelReason        Cancellation reason
+     *
+     * @return      self
+     */
+    public function setCancelReason($cancelReason);
+
+    /**
+     * Get order cancellation reason (up to 50 chars)
+     *
+     * @return      string                          Cancellation reason
+     */
+    public function getCancelReason();
 
     /**
      * Adds new order error

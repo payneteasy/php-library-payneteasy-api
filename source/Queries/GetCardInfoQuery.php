@@ -12,25 +12,8 @@ use PaynetEasy\Paynet\Exceptions\ConfigException;
  */
 class GetCardInfoQuery extends AbstractQuery
 {
-    public function validateOrder(OrderInterface $order)
-    {
-        if(empty($this->config['login']))
-        {
-            throw new ConfigException('login undefined');
-        }
-
-        if(!$order->hasRecurrentCard())
-        {
-            throw new ConfigException('Order is not instance of Order');
-        }
-
-        $order->getRecurrentCard()->validate();
-    }
-
     /**
-     * Return CardInfo
-     *
-     * @return \PaynetEasy\Paynet\Responses\CardInfo
+     * {@inheritdoc}
      */
     public function createRequest(OrderInterface $order)
     {
@@ -50,6 +33,9 @@ class GetCardInfoQuery extends AbstractQuery
         return $this->wrapToRequest($query);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function processResponse(OrderInterface $order, Response $response)
     {
         parent::processResponse($order, $response);
@@ -57,6 +43,22 @@ class GetCardInfoQuery extends AbstractQuery
         return new CardInfo($response->getArrayCopy());
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function validateOrder(OrderInterface $order)
+    {
+        if(!$order->hasRecurrentCard())
+        {
+            throw new ConfigException('Order is not instance of Order');
+        }
+
+        $order->getRecurrentCard()->validate();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function createControlCode(OrderInterface $order)
     {
         // This is SHA-1 checksum of the concatenation

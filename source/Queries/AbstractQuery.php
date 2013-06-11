@@ -71,8 +71,6 @@ implements      QueryInterface
             $order->setState(OrderInterface::STATE_END);
             $order->setStatus(OrderInterface::STATUS_ERROR);
             $order->addError($response->error());
-
-            throw $response->error();
         }
         elseif($response->isApproved())
         {
@@ -125,6 +123,11 @@ implements      QueryInterface
             throw new ConfigException('control undefined');
         }
 
+        if(empty($config['login']))
+        {
+            throw new ConfigException('login undefined');
+        }
+
         $this->config = $config;
     }
 
@@ -139,8 +142,17 @@ implements      QueryInterface
      */
     protected function setApiMethod($class)
     {
-        $name_chunks    = preg_split('/(?=[A-Z])/', $class, null, PREG_SPLIT_NO_EMPTY);
-        array_pop($name_chunks); // delete node "Query" from end of method name array
+        $result = array();
+
+        preg_match('#(?<=\\\\)\w+(?=Query$)#i', $class, $result);
+
+        if (empty($result))
+        {
+            throw new ConfigException('API method name not found in class name');
+        }
+
+        $name_chunks = preg_split('/(?=[A-Z])/', $result[0], null, PREG_SPLIT_NO_EMPTY);
+
         $this->method   = strtolower(implode('-', $name_chunks));
     }
 
@@ -153,7 +165,7 @@ implements      QueryInterface
      */
     protected function validateOrder(OrderInterface $order)
     {
-
+        $order->validateShort();
     }
 
     /**

@@ -4,7 +4,6 @@ namespace PaynetEasy\Paynet\Queries;
 use PaynetEasy\Paynet\Data\OrderInterface;
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Exceptions\ResponseException;
-use PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query STATUS
@@ -12,16 +11,9 @@ use PaynetEasy\Paynet\Exceptions\ConfigException;
  */
 class CreateCardRefQuery extends AbstractQuery
 {
-    public function validateOrder(OrderInterface $order)
-    {
-        if(empty($this->config['login']))
-        {
-            throw new ConfigException('login undefined');
-        }
-
-        $order->validateShort();
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function createRequest(OrderInterface $order)
     {
         $this->validateOrder($order);
@@ -39,6 +31,9 @@ class CreateCardRefQuery extends AbstractQuery
         return $this->wrapToRequest($query);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function processResponse(OrderInterface $order, Response $response)
     {
         if(!isset($response['card-ref-id']))
@@ -55,6 +50,9 @@ class CreateCardRefQuery extends AbstractQuery
         parent::processResponse($order, $response);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function createControlCode(OrderInterface $order)
     {
         // This is SHA-1 checksum of the concatenation

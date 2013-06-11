@@ -87,6 +87,13 @@ implements  OrderInterface
      */
     protected $status = '';
 
+    /**
+     * Order cancellation reason (up to 50 chars)
+     *
+     * @var string
+     */
+    protected $cancelReason;
+
     public function __construct($array)
     {
         if(isset($array['order_code']))
@@ -149,11 +156,7 @@ implements  OrderInterface
     }
 
     /**
-     * Set order customer
-     *
-     * @param       \PaynetEasy\Paynet\Data\CustomerInterface        $customer       Order customer
-     *
-     * @return      self
+     * {@inheritdoc}
      */
     public function setCustomer(CustomerInterface $customer)
     {
@@ -274,6 +277,29 @@ implements  OrderInterface
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCancelReason($cancelReason)
+    {
+        if(strlen($this->comment) > 50)
+        {
+            throw new ConfigException('Cancellation reason is very long (over 50 characters)');
+        }
+
+        $this->cancelReason = $cancelReason;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCancelReason()
+    {
+        return $this->cancelReason;
     }
 
     /**

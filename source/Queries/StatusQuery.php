@@ -1,7 +1,6 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use PaynetEasy\Paynet\Exceptions\ConfigException;
 use PaynetEasy\Paynet\Data\OrderInterface;
 
 /**
@@ -10,16 +9,9 @@ use PaynetEasy\Paynet\Data\OrderInterface;
  */
 class StatusQuery extends AbstractQuery
 {
-    public function validateOrder(OrderInterface $order)
-    {
-        if(empty($this->config['login']))
-        {
-            throw new ConfigException('login undefined');
-        }
-
-        $order->validateShort();
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function createRequest(OrderInterface $order)
     {
         $this->validateOrder($order);
@@ -38,6 +30,9 @@ class StatusQuery extends AbstractQuery
         return $this->wrapToRequest($query);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function createControlCode(OrderInterface $order)
     {
         // This is SHA-1 checksum of the concatenation

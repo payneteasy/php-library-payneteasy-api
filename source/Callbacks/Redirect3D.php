@@ -6,6 +6,10 @@ use PaynetEasy\Paynet\Queries\AbstractQuery;
 
 class Redirect3D extends AbstractQuery
 {
+    public function __construct(array $config = array())
+    {
+        $this->setConfig($config);
+    }
     /**
      * Control must be validated
      * @var boolean
