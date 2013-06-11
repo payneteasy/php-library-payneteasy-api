@@ -1,13 +1,13 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Exceptions\ConfigException;
+use PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query STATUS
  * http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Order_status
  */
-class Status extends Query
+class Status extends AbstractQuery
 {
     public function validate()
     {
@@ -26,7 +26,7 @@ class Status extends Query
         $this->getOrder()->validateShort();
     }
 
-    public function process($data = null)
+    public function createRequest($data = null)
     {
         $this->validate();
 
@@ -37,13 +37,11 @@ class Status extends Query
             array
             (
                 'login'         => $this->config['login'],
-                'control'       => $this->createControlCode(),
-                '.method'       => $this->method,
-                '.end_point'    => $this->config['end_point']
+                'control'       => $this->createControlCode()
             )
         );
 
-        return $this->sendQuery($query);
+        return $this->wrapToRequest($query);
     }
 
     protected function createControlCode()

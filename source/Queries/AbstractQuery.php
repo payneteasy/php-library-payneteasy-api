@@ -3,40 +3,22 @@ namespace PaynetEasy\Paynet\Queries;
 
 use ArrayObject;
 use PaynetEasy\Paynet\Data\OrderInterface;
-use PaynetEasy\Paynet\Transport\Response;
 
-use PaynetEasy\Paynet\Transport\GatewayClientInterface;
+use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Transport\Request;
 
 use PaynetEasy\Paynet\Exceptions\ConfigException;
 use PaynetEasy\Paynet\Exceptions\InvalidControlCodeException;
 
-use Exception;
 use BadMethodCallException;
 
 /**
  * Abstract Query or Callback
  *
  */
-abstract class Query
+abstract class  AbstractQuery
+implements      QueryInterface
 {
-    const STATE_NULL        = 'null';
-    const STATE_INIT        = 'init';
-    const STATE_REDIRECT    = 'redirect';
-    const STATE_PROCESSING  = 'processing';
-    const STATE_WAIT        = 'wait';
-    const STATE_END         = 'end';
-
-    const STATUS_APPROVED   = 'approved';
-    const STATUS_DECLINED   = 'declined';
-    const STATUS_ERROR      = 'error';
-
-    /**
-     * Transport
-     * @var \PaynetEasy\Paynet\Transport\GatewayClientInterface
-     */
-    protected $transport;
-
     /**
      * Config for PaynetEasy
      * @var \ArrayObject
@@ -56,26 +38,6 @@ abstract class Query
     protected $order;
 
     /**
-     * PaynetEasy last error
-     * @var \Exception
-     */
-    protected $error;
-
-    /**
-     * Process state
-     *
-     * @var string
-     */
-    protected $state        = self::STATE_NULL;
-
-    /**
-     * Query status
-     *
-     * @var string
-     */
-    protected $status;
-
-    /**
      * Flag is true, if the response must be signed by the control code
      * @var boolean
      */
@@ -85,13 +47,10 @@ abstract class Query
      * Constructor
      * @param       GatewayClientInterface        $transport
      */
-    public function __construct(GatewayClientInterface $transport)
+    public function __construct()
     {
-        $this->method           = strtolower(substr(strrchr(get_class($this), '\\'), 1));
-
-        $this->transport        = $transport;
-
-        $this->config           = new ArrayObject();
+        $this->method   = strtolower(substr(strrchr(get_class($this), '\\'), 1));
+        $this->config   = new ArrayObject();
     }
 
     /**
@@ -190,53 +149,11 @@ abstract class Query
      *
      * @return      \PaynetEasy\Paynet\Transport\Response
      */
-    public function process($data = null)
+    public function createRequest($data = null)
     {
-        //
-        // This code use as handler for callback
-        //
+        $this->validate();
 
-        try
-        {
-            $this->validate();
-
-            return $this->processResponse(new Response($data));
-        }
-        catch(Exception $e)
-        {
-            $this->state            = self::STATE_END;
-            $this->status           = self::STATUS_ERROR;
-            $this->error            = $e;
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Return state of query
-     * @return string
-     */
-    public function state()
-    {
-        return $this->state;
-    }
-
-    /**
-     * Return status of query
-     * @return string
-     */
-    public function status()
-    {
-        return $this->status;
-    }
-
-    /**
-     * Method returned last error or null
-     * @return Exception|null
-     */
-    public function getLastError()
-    {
-        return $this->error;
+        return $this->wrapToRequest($data);
     }
 
     protected function createControlCode()
@@ -251,13 +168,10 @@ abstract class Query
      */
     protected function commonQueryOptions()
     {
-        $query                              = array
+        $query = array
         (
-            '.method'       => $this->method,
-            '.end_point'    => $this->config['end_point']
+            'control'       => $this->createControlCode()
         );
-
-        $query['control']                   = $this->createControlCode();
 
         if(isset($this->config['redirect_url']))
         {
@@ -306,79 +220,68 @@ abstract class Query
      *
      * @throws      \PaynetEasy\Paynet\Exceptions\PaynetException
      */
-    protected function processResponse(Response $response)
+    public function processResponse(Response $response)
     {
         if($this->is_control)
         {
             $this->validateControlCode($response);
         }
 
+        $order = $this->getOrder();
+
         if($response->isError())
         {
+            $order->setState(OrderInterface::STATE_END);
+            $order->setStatus(OrderInterface::STATUS_ERROR);
+            $order->addError($response->error());
+
             throw $response->error();
         }
         elseif($response->isApproved())
         {
-            $this->state        = self::STATE_END;
-            $this->status       = self::STATUS_APPROVED;
+            $order->setState(OrderInterface::STATE_END);
+            $order->setStatus(OrderInterface::STATUS_APPROVED);
         }
         // "filtered" status is interpreted as the "DECLINED"
         elseif($response->isDeclined())
         {
-            $this->state        = self::STATE_END;
-            $this->status       = self::STATUS_DECLINED;
+            $order->setState(OrderInterface::STATE_END);
+            $order->setStatus(OrderInterface::STATUS_DECLINED);
         }
         // For the 3D mode is set to the state "REDIRECT"
         // or for Form API redirect_url
         elseif($response->offsetExists('html') || $response->redirectUrl())
         {
-            $this->state        = self::STATE_REDIRECT;
+            $order->setState(OrderInterface::STATE_REDIRECT);
         }
         //
         // If it does not redirect, it's processing
         elseif($response->isProcessing())
         {
-            $this->state        = self::STATE_PROCESSING;
+            $order->setState(OrderInterface::STATE_PROCESSING);
         }
 
         if(!is_null(($paynet_order_id = $response->paynetOrderId())))
         {
-            $this->getOrder()->setPaynetOrderId($paynet_order_id);
+            $order->setPaynetOrderId($paynet_order_id);
         }
 
         return $response;
     }
 
-
     /**
-     * Send Query
+     * Wrap query data by Request object
      *
-     * @param       array       $query
+     * @param       array       $query                          Query data
      *
-     * @return      \PaynetEasy\Paynet\Transport\Response
-     *
-     * @throws      \PaynetEasy\Paynet\Exceptions\PaynetException
+     * @return      \PaynetEasy\Paynet\Transport\Request        Request object
      */
-    protected function sendQuery($query)
+    protected function wrapToRequest(array $query)
     {
-        try
-        {
-            /**
-             * @todo inversion of control needed
-             */
-            $request = new Request($query);
-            $request->setApiMethod($this->method)
-                    ->setEndPoint($this->config['end_point']);
+        $request = new Request($query);
+        $request->setApiMethod($this->method)
+                ->setEndPoint($this->config['end_point']);
 
-            return $this->processResponse($this->transport->makeRequest($request));
-        }
-        catch(Exception $e)
-        {
-            $this->state            = self::STATE_END;
-            $this->status           = self::STATUS_ERROR;
-            $this->error            = $e;
-
-            throw $e;
-        }
+        return $request;
     }
 }

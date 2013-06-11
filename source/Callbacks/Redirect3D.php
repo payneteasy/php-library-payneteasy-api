@@ -1,9 +1,9 @@
 <?PHP
 namespace PaynetEasy\Paynet\Callbacks;
 
-use \PaynetEasy\Paynet\Queries\Query;
+use PaynetEasy\Paynet\Queries\AbstractQuery;
 
-class Redirect3D extends Query
+class Redirect3D extends AbstractQuery
 {
     /**
      * Control must be validated

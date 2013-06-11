@@ -54,9 +54,9 @@ class CreateRecurrentCard extends Sale
         {
         }
 
-        $this->state        = $query->state();
-        $this->status       = $query->status();
-        $this->error        = $query->getLastError();
+        $this->state        = $query->getOrder()->getState();
+        $this->status       = $query->getOrder()->getStatus();
+        $this->error        = $query->getOrder()->getLastError();
 
         if($e instanceof Exception)
         {

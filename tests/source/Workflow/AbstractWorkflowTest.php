@@ -105,8 +105,15 @@ abstract class AbstractWorkflowTest extends PHPUnit_Framework_TestCase
             $this->assertInstanceOf('PaynetEasy\Paynet\Transport\Response', $response);
         }
 
-        $this->assertEquals($this->query->state(), $assert['state'], 'query.state not equal '.$assert['state']);
-        $this->assertEquals($this->query->status(), $assert['status'], 'query.status not equal'. $assert['status']);
+        if (isset($assert['state']))
+        {
+            $this->assertEquals($this->query->state(), $assert['state'], 'query.state not equal '.$assert['state']);
+        }
+
+        if (isset($assert['status']))
+        {
+            $this->assertEquals($this->query->status(), $assert['status'], 'query.status not equal'. $assert['status']);
+        }
     }
 }
 

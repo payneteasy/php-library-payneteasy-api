@@ -1,9 +1,9 @@
 <?PHP
 require_once './PaynetProcess.php';
 
-use \PaynetEasy\Paynet\Queries\Form         as FormQuery;
-use \PaynetEasy\Paynet\Data\Data;
-use \Exception;
+use PaynetEasy\Paynet\Workflow\Form         as FormQuery;
+use PaynetEasy\Paynet\Data\Data;
+use Exception;
 
 class Form extends Sale
 {

@@ -49,7 +49,7 @@ abstract class QueryTest extends PHPUnit_Framework_TestCase
 
         $this->class            = __NAMESPACE__.'\\'.$this->class;
 
-        $this->query            = new $this->class($this->transport);
+        $this->query            = new $this->class();
 
         $this->config           = array
         (
@@ -77,7 +77,9 @@ abstract class QueryTest extends PHPUnit_Framework_TestCase
         $e                          = null;
         try
         {
-            $response               = $this->query->process($callback);
+            $request = $this->query->createRequest($callback);
+            $response = $this->transport->makeRequest($request);
+            $this->query->processResponse($response);
         }
         catch(Exception $e)
         {
@@ -93,7 +95,7 @@ abstract class QueryTest extends PHPUnit_Framework_TestCase
         }
         elseif(!empty($assert['error_message']) && $assert['status'] !== 'declined')
         {
-            $e                      = $this->query->getLastError();
+            $e = $this->query->getOrder()->getLastError();
             $this->assertTrue($e instanceof PaynetException, 'expected getLastError');
             $this->assertEquals($e->getMessage(), $assert['error_message'], 'Error Message wrong');
             $this->assertEquals($e->getCode(), $assert['error_code'], 'Error Code wrong');
@@ -101,12 +103,19 @@ abstract class QueryTest extends PHPUnit_Framework_TestCase
         else
         {
             $this->assertFalse($e instanceof PaynetException, 'not expected exception PaynetException');
-            $this->assertFalse($this->query->getLastError() instanceof PaynetException, 'getLastError must be null');
+            $this->assertFalse($this->query->getOrder()->getLastError() instanceof PaynetException, 'getLastError must be null');
             $this->assertInstanceOf('PaynetEasy\Paynet\Transport\Response', $response);
         }
 
-        $this->assertEquals($this->query->state(), $assert['state'], 'query.state not equal '.$assert['state']);
-        $this->assertEquals($this->query->status(), $assert['status'], 'query.status not equal'. $assert['status']);
+        if (isset ($assert['state']))
+        {
+            $this->assertEquals($this->query->getOrder()->getState(), $assert['state'], 'query.state not equal '.$assert['state']);
+        }
+
+        if (isset($assert['status']))
+        {
+            $this->assertEquals($this->query->getOrder()->getStatus(), $assert['status'], 'query.status not equal'. $assert['status']);
+        }
     }
 }
 

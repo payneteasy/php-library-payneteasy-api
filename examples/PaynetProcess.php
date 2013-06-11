@@ -3,16 +3,17 @@ require_once './config.php';
 require_once './Template.php';
 require_once './autoload.php';
 
-use \PaynetEasy\Paynet\Transport\PaynetClient;
-use \PaynetEasy\Paynet\Data\Order;
-use \PaynetEasy\Paynet\Data\Customer;
-use \PaynetEasy\Paynet\Data\CreditCard;
-use \PaynetEasy\Paynet\Data\RecurrentCardInterface;
+use PaynetEasy\Paynet\Transport\PaynetClient;
+use PaynetEasy\Paynet\Data\Order;
+use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\Data\Customer;
+use PaynetEasy\Paynet\Data\CreditCard;
+use PaynetEasy\Paynet\Data\RecurrentCardInterface;
 
-use \PaynetEasy\Paynet\Queries\Sale;
+use PaynetEasy\Paynet\Workflow\Sale;
 
-use \PaynetEasy\Paynet\Transport\Response;
-use \Exception;
+use PaynetEasy\Paynet\Transport\Response;
+use Exception;
 
 abstract class PaynetProcess
 {
@@ -22,7 +23,7 @@ abstract class PaynetProcess
     protected $template;
 
     /**
-     * @var TransportI
+     * @var \PaynetEasy\Paynet\Transport\GatewayClientInterface
      */
     protected $transport;
 
@@ -243,32 +244,31 @@ $(document).ready(progress_bar);
 
     protected function out_end(Response $response)
     {
-        if($this->query->status()       === Sale::STATUS_APPROVED)
+        switch ($this->order->getStatus())
         {
-            $this->template->content    = '<div class="alert alert-success"><h4 class="alert-heading">Approved!</h4>';
-            $this->template->content    .= '<p>Congratulations! The transaction was approved.</p>';
+            case OrderInterface::STATUS_APPROVED:
+                $this->template->content    = '<div class="alert alert-success"><h4 class="alert-heading">Approved!</h4>';
+                $this->template->content    .= '<p>Congratulations! The transaction was approved.</p>';
 
-            if($this->reccurent_card instanceof RecurrentCardInterface)
-            {
-                $this->template->content    .= '<p><b>ReccurentCardId</b>: '.$this->reccurent_card->cardRefId().'</p>';
-            }
-        }
-        elseif($this->query->status()   === Sale::STATUS_DECLINED)
-        {
-            $this->template->content    = '<div class="alert alert-block"><h4 class="alert-heading">Declined!</h4>';
-            $this->template->content    .= '<p><b>Error Text</b>: '.$response->errorMessage().'</p>';
-            $this->template->content    .= '<p><b>Error Code</b>: '.$response->errorCode().'</p>';
-        }
-        elseif($this->query->status()   === Sale::STATUS_ERROR)
-        {
-            $this->template->content    = '<div class="alert alert-error"><h4 class="alert-heading">Error!</h4>';
-            $this->template->content    .= '<p><b>Error Text</b>: '.$this->query->getLastError()->getMessage().'</p>';
-            $this->template->content    .= '<p><b>Error Code</b>: '.$this->query->getLastError()->getCode().'</p>';
-        }
-        else
-        {
-            $this->template->content    = '<div class="alert alert-error"><h4 class="alert-heading">Error!</h4>';
-            $this->template->content    .= '<p>Status undefined</p>';
+                if($this->reccurent_card instanceof RecurrentCardInterface)
+                {
+                    $this->template->content    .= '<p><b>ReccurentCardId</b>: '.$this->reccurent_card->cardRefId().'</p>';
+                }
+            break;
+            case OrderInterface::STATUS_DECLINED:
+                $this->template->content    = '<div class="alert alert-block"><h4 class="alert-heading">Declined!</h4>';
+                $this->template->content    .= '<p><b>Error Text</b>: '.$response->errorMessage().'</p>';
+                $this->template->content    .= '<p><b>Error Code</b>: '.$response->errorCode().'</p>';
+            break;
+            case OrderInterface::STATUS_ERROR:
+                $this->template->content    = '<div class="alert alert-error"><h4 class="alert-heading">Error!</h4>';
+                $this->template->content    .= '<p><b>Error Text</b>: '.$this->order->getLastError()->getMessage().'</p>';
+                $this->template->content    .= '<p><b>Error Code</b>: '.$this->order->getLastError()->getCode().'</p>';
+            break;
+            default :
+                $this->template->content    = '<div class="alert alert-error"><h4 class="alert-heading">Error!</h4>';
+                $this->template->content    .= '<p>Status undefined</p>';
+            break;
         }
 
         $this->template->content        .= '</div>';

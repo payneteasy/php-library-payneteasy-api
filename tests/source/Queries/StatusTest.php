@@ -1,9 +1,9 @@
 <?php
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Data\Order;
-use \PaynetEasy\Paynet\Queries\Query;
-use \Exception;
+use PaynetEasy\Paynet\Data\Order;
+use PaynetEasy\Paynet\Data\OrderInterface;
+use Exception;
 
 /**
  * Test class for Status.
@@ -39,7 +39,9 @@ class StatusTest extends QueryTest
         $e                          = null;
         try
         {
-            $this->query->process();
+            $request = $this->query->createRequest();
+            $response = $this->transport->makeRequest($request);
+            $this->query->processResponse($response);
         }
         catch(Exception $e)
         {
@@ -54,7 +56,7 @@ class StatusTest extends QueryTest
                 $this->config['control']
         );
 
-        $this->assertTrue(!empty($this->transport->request['control']), 'control undefined');
+        $this->assertNotNull($this->transport->request['control'], 'control undefined');
         $this->assertEquals($control, $this->transport->request['control']);
     }
 
@@ -82,8 +84,8 @@ class StatusTest extends QueryTest
 
         $assert                 = array
         (
-            'state'             => Query::STATE_END,
-            'status'            => Query::STATUS_APPROVED
+            'state'             => OrderInterface::STATE_END,
+            'status'            => OrderInterface::STATUS_APPROVED
         );
 
         $dataset[]              = array($order, $response, $assert);
@@ -101,8 +103,8 @@ class StatusTest extends QueryTest
 
         $assert                 = array
         (
-            'state'             => Query::STATE_END,
-            'status'            => Query::STATUS_DECLINED,
+            'state'             => OrderInterface::STATE_END,
+            'status'            => OrderInterface::STATUS_DECLINED,
             'error_message'     => 'test error message',
             'error_code'        => '578'
         );
@@ -122,8 +124,8 @@ class StatusTest extends QueryTest
 
         $assert                 = array
         (
-            'state'             => Query::STATE_END,
-            'status'            => Query::STATUS_DECLINED,
+            'state'             => OrderInterface::STATE_END,
+            'status'            => OrderInterface::STATUS_DECLINED,
             'error_message'     => 'test filtered message',
             'error_code'        => '8876'
         );
@@ -141,7 +143,7 @@ class StatusTest extends QueryTest
 
         $assert                 = array
         (
-            'state'             => Query::STATE_PROCESSING,
+            'state'             => OrderInterface::STATE_PROCESSING,
             'status'            => null
         );
 
@@ -159,7 +161,7 @@ class StatusTest extends QueryTest
 
         $assert                 = array
         (
-            'state'             => Query::STATE_REDIRECT,
+            'state'             => OrderInterface::STATE_REDIRECT,
             'status'            => null
         );
 
@@ -177,7 +179,7 @@ class StatusTest extends QueryTest
 
         $assert                 = array
         (
-            'state'             => Query::STATE_REDIRECT,
+            'state'             => OrderInterface::STATE_REDIRECT,
             'status'            => null
         );
 
@@ -196,8 +198,8 @@ class StatusTest extends QueryTest
 
         $assert                 = array
         (
-            'state'             => Query::STATE_END,
-            'status'            => Query::STATUS_ERROR,
+            'state'             => OrderInterface::STATE_END,
+            'status'            => OrderInterface::STATUS_ERROR,
             'error_message'     => 'test error message',
             'error_code'        => '2',
             'exception'         => true
@@ -215,8 +217,8 @@ class StatusTest extends QueryTest
 
         $assert                 = array
         (
-            'state'             => Query::STATE_END,
-            'status'            => Query::STATUS_ERROR,
+            'state'             => OrderInterface::STATE_END,
+            'status'            => OrderInterface::STATUS_ERROR,
             'error_message'     => 'test validation message',
             'error_code'        => '1',
             'exception'         => true
@@ -234,8 +236,8 @@ class StatusTest extends QueryTest
 
         $assert                 = array
         (
-            'state'             => Query::STATE_END,
-            'status'            => Query::STATUS_ERROR,
+            'state'             => OrderInterface::STATE_END,
+            'status'            => OrderInterface::STATUS_ERROR,
             'error_message'     => 'test error message',
             'error_code'        => '1',
             'exception'         => true

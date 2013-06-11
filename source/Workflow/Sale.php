@@ -138,9 +138,9 @@ class Sale extends AbstractWorkflow
         {
         }
 
-        $this->state        = $status_query->state();
-        $this->status       = $status_query->status();
-        $this->error        = $status_query->getLastError();
+        $this->state        = $status_query->getOrder()->getState();
+        $this->status       = $status_query->getOrder()->getStatus();
+        $this->error        = $status_query->getOrder()->getLastError();
 
         if($e instanceof Exception)
         {
@@ -168,15 +168,16 @@ class Sale extends AbstractWorkflow
         $e                  = null;
         try
         {
-            $response       = $callback->createRequest($data);
+            $request    = $callback->createRequest($data);
+            $response   = $callback->processResponse(new Response($request));
         }
         catch(Exception $e)
         {
         }
 
-        $this->state        = $callback->state();
-        $this->status       = $callback->status();
-        $this->error        = $callback->getLastError();
+        $this->state        = $callback->getOrder()->getState();
+        $this->status       = $callback->getOrder()->getStatus();
+        $this->error        = $callback->getOrder()->getLastError();
 
         if($e instanceof Exception)
         {

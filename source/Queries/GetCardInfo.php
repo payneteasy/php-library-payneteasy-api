@@ -1,23 +1,23 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Responses\CardInfo;
-
-use \PaynetEasy\Paynet\Exceptions\ConfigException;
+use PaynetEasy\Paynet\Responses\CardInfo;
+use PaynetEasy\Paynet\Transport\Response;
+use PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query STATUS
  * http://wiki.payneteasy.com/index.php?title=PnE%3ARecurrent_Transactions&setlang=en#Recurrent_Payments
  */
-class GetCardInfo extends Query
+class GetCardInfo extends AbstractQuery
 {
     /**
      * Constructor
      * @param       TransportI        $transport
      */
-    public function __construct(GatewayClientInterface $transport)
+    public function __construct()
     {
-        parent::__construct($transport);
+        parent::__construct();
 
         $this->method       = 'get-card-info';
     }
@@ -44,7 +44,7 @@ class GetCardInfo extends Query
      *
      * @return \PaynetEasy\Paynet\Responses\CardInfo
      */
-    public function process($data = null)
+    public function createRequest($data = null)
     {
         $this->validate();
 
@@ -55,13 +55,16 @@ class GetCardInfo extends Query
             array
             (
                 'login'         => $this->config['login'],
-                'control'       => $this->createControlCode(),
-                '.method'       => $this->method,
-                '.end_point'    => $this->config['end_point']
+                'control'       => $this->createControlCode()
             )
         );
 
-        return new CardInfo($this->sendQuery($query)->getArrayCopy());
+        return $this->wrapToRequest($query);
+    }
+
+    public function processResponse(Response $response)
+    {
+        return new CardInfo(parent::processResponse($response)->getArrayCopy());
     }
 
     protected function createControlCode()

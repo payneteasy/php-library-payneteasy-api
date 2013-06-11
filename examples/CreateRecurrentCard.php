@@ -1,20 +1,20 @@
 <?PHP
 require_once './Sale.php';
 
-use \PaynetEasy\Paynet\Queries\Query;
+use PaynetEasy\Paynet\Data\OrderInterface;
 
-use \PaynetEasy\Paynet\Data\RecurrentCard;
-use \PaynetEasy\Paynet\Transport\Response;
-use \PaynetEasy\Paynet\Queries\CreateCardRef;
+use PaynetEasy\Paynet\Data\RecurrentCard;
+use PaynetEasy\Paynet\Transport\Response;
+use PaynetEasy\Paynet\Queries\CreateCardRef;
 
-use \Exception;
+use Exception;
 
 class   CreateRecurrentCard extends Sale
 {
     protected function processResponse(Response $response)
     {
-        if($this->query->state() === Query::STATE_END
-        && $response->isApproved())
+        if(   $this->query->getOrder()->getState() === OrderInterface::STATE_END
+           && $response->isApproved())
         {
             // Create Reccurent Card
             $this->createCardRef();
@@ -25,7 +25,7 @@ class   CreateRecurrentCard extends Sale
 
     protected function createCardRef()
     {
-        $query              = new CreateCardRef($this->transport);
+        $query = new CreateCardRef();
 
         $query->setConfig($this->config);
         $query->setOrder($this->order);
@@ -33,8 +33,9 @@ class   CreateRecurrentCard extends Sale
         $e                  = null;
         try
         {
-            /* @var $response \PaynetEasy\Paynet\Transport\Response */
-            $response       = $query->process();
+            $request = $query->createRequest();
+            $response = $this->transport->makeRequest($request);
+            $query->processResponse($response);
         }
         catch(Exception $e)
         {

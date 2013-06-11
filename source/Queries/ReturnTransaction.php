@@ -1,15 +1,13 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Exceptions\ConfigException;
-
-use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
+use PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query Return
  * http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
  */
-class ReturnTransaction extends Query
+class ReturnTransaction extends AbstractQuery
 {
     protected $comment;
 
@@ -17,9 +15,9 @@ class ReturnTransaction extends Query
      * Constructor
      * @param       GatewayClientInterface        $transport
      */
-    public function __construct(GatewayClientInterface $transport)
+    public function __construct()
     {
-        parent::__construct($transport);
+        parent::__construct();
 
         $this->method           = 'return';
     }
@@ -65,7 +63,7 @@ class ReturnTransaction extends Query
         $this->getOrder()->validateShort();
     }
 
-    public function process($data = null)
+    public function createRequest($data = null)
     {
         $this->validate();
 
@@ -74,9 +72,7 @@ class ReturnTransaction extends Query
             array
             (
                 'login'         => $this->config['login'],
-                'control'       => $this->createControlCode(),
-                '.method'       => $this->method,
-                '.end_point'    => $this->config['end_point']
+                'control'       => $this->createControlCode()
             ),
             $this->getOrder()->getContextData()
         );
@@ -99,7 +95,7 @@ class ReturnTransaction extends Query
             $query['comment']       = $this->comment;
         }
 
-        return $this->sendQuery($query);
+        return $this->wrapToRequest($query);
     }
 
     protected function createControlCode()

@@ -1,24 +1,20 @@
 <?PHP
 namespace PaynetEasy\Paynet\Queries;
 
-use \PaynetEasy\Paynet\Transport\GatewayClientInterface;
-
-use \PaynetEasy\Paynet\Exceptions\ResponseException;
-use \PaynetEasy\Paynet\Exceptions\ConfigException;
+use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\Transport\Response;
+use PaynetEasy\Paynet\Exceptions\ResponseException;
+use PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * The implementation of the query STATUS
  * http://wiki.payneteasy.com/index.php?title=PnE%3ARecurrent_Transactions&setlang=en#Recurrent_Payments
  */
-class CreateCardRef extends Query
+class CreateCardRef extends AbstractQuery
 {
-    /**
-     * Constructor
-     * @param       GatewayClientInterface        $transport
-     */
-    public function __construct(GatewayClientInterface $transport)
+    public function __construct()
     {
-        parent::__construct($transport);
+        parent::__construct();
 
         $this->method       = 'create-card-ref';
     }
@@ -40,7 +36,7 @@ class CreateCardRef extends Query
         $this->getOrder()->validateShort();
     }
 
-    public function process($data = null)
+    public function createRequest($data = null)
     {
         $this->validate();
 
@@ -50,26 +46,27 @@ class CreateCardRef extends Query
             array
             (
                 'login'         => $this->config['login'],
-                'control'       => $this->createControlCode(),
-                '.method'       => $this->method,
-                '.end_point'    => $this->config['end_point']
+                'control'       => $this->createControlCode()
             )
         );
 
-        $response           = $this->sendQuery($query);
+        return $this->wrapToRequest($query);
+    }
 
+    public function processResponse(Response $response)
+    {
         if(!isset($response['card-ref-id']))
         {
             $e              = new ResponseException('card-ref-id undefined');
-            $this->error    = $e;
-            $this->state    = self::STATE_END;
+            $this->getOrder()->addError($e);
+            $this->getOrder()->setState(OrderInterface::STATE_END);
             throw $e;
         }
 
         $response['cardrefid'] = $response['card-ref-id'];
         unset($response['card-ref-id']);
 
-        return $response;
+        return parent::processResponse($response);
     }
 
     protected function createControlCode()

@@ -2,7 +2,8 @@
 
 namespace PaynetEasy\Paynet\Data;
 
-use \PaynetEasy\Paynet\Exceptions\ConfigException;
+use Exception;
+use PaynetEasy\Paynet\Exceptions\ConfigException;
 
 /**
  * Container for order data
@@ -12,6 +13,39 @@ class       Order
 extends     Data
 implements  OrderInterface
 {
+    /**
+     * All allowed order states
+     *
+     * @var array
+     */
+    /**
+     * @todo More specific name and description needed
+     */
+    static protected $allowedStates = array
+    (
+        self::STATE_NULL,
+        self::STATE_INIT,
+        self::STATE_REDIRECT,
+        self::STATE_PROCESSING,
+        self::STATE_WAIT,
+        self::STATE_END
+    );
+
+    /**
+     * All allowed order statuses
+     *
+     * @var array
+     */
+    /**
+     * @todo More specific name and description needed
+     */
+    static protected $allowedStatuses = array
+    (
+        self::STATUS_APPROVED,
+        self::STATUS_DECLINED,
+        self::STATUS_ERROR
+    );
+
     /**
      * Order customer
      *
@@ -32,6 +66,26 @@ implements  OrderInterface
      * @var \PaynetEasy\Paynet\Data\RecurrentCardInterface
      */
     protected $recurrentCard;
+
+    /**
+     * Order state
+     *
+     * @var string
+     */
+    /**
+     * @todo More specific name and description needed
+     */
+    protected $state = self::STATE_NULL;
+
+    /**
+     * Order status
+     *
+     * @var string
+     */
+    /**
+     * @todo More specific name and description needed
+     */
+    protected $status = '';
 
     public function __construct($array)
     {
@@ -76,6 +130,22 @@ implements  OrderInterface
         );
 
         parent::__construct($array);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getAllowedStates()
+    {
+        return static::$allowedStates;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getAllowedStatuses()
+    {
+        return static::$allowedStatuses;
     }
 
     /**
@@ -166,6 +236,80 @@ implements  OrderInterface
     public function hasRecurrentCard()
     {
         return is_object($this->getRecurrentCard());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setState($state)
+    {
+        if (!in_array($state, static::getAllowedStates()))
+        {
+            throw new ConfigException("Unknown state given: {$state}");
+        }
+
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStatus($status)
+    {
+        if (!in_array($status, static::getAllowedStatuses()))
+        {
+            throw new ConfigException("Unknown state given: {$status}");
+        }
+
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addError(Exception $error)
+    {
+        $this->errors[] = $error;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasErrors()
+    {
+        return !empty($this->getErrors());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLastError()
+    {
+        if ($this->hasErrors())
+        {
+            $errors = $this->getErrors();
+            return end($errors);
+        }
     }
 
     public function getOrderCode()
