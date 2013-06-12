@@ -16,58 +16,26 @@ class StatusQueryTest extends QueryTestPrototype
     protected $object;
 
     /**
-     * @var \PaynetEasy\Paynet\Data\Order
-     */
-    protected $order;
-
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
-        $this->config           = array
-        (
-            'login'                 => 'test-login',
-            'end_point'             =>  789,
-            'control'               => 'D5F82EC1-8575-4482-AD89-97X6X0X20X22',
-            'redirect_url'          => 'https://example.com/redirect_url',
-            'server_callback_url'   => 'https://example.com/callback_url'
-        );
-
-        $this->object = new StatusQuery($this->config);
-        $this->order  = new Order(array
-        (
-            'client_orderid'        => 'CLIENT-112233',
-            'paynet_order_id'       => 'PAYNET-112233'
-        ));
+        $this->object = new StatusQuery($this->getConfig());
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Queries\StatusQuery::createRequest
-     */
-    public function testCreateRequest()
+    public function testCreateRequestProvider()
     {
-        $request = $this->object->createRequest($this->order);
-
-        // login + client-order-id + paynet-order-id + merchant-control
-        $control = sha1
+        return array(array
         (
-            $this->config['login'] .
-            'CLIENT-112233' .
-            'PAYNET-112233' .
-            $this->config['control']
-        );
-
-        $this->assertInstanceOf('PaynetEasy\Paynet\Transport\Request', $request);
-        $this->assertNotNull($request['control']);
-        $this->assertEquals($control, $request['control']);
-        $this->assertFalse($this->order->hasErrors());
+            sha1
+            (
+                self::LOGIN .
+                self::CLIENT_ORDER_ID .
+                self::PAYNET_ORDER_ID .
+                self::SIGN_KEY
+            )
+        ));
     }
 
     /**
@@ -76,10 +44,12 @@ class StatusQueryTest extends QueryTestPrototype
      */
     public function testProcessRedirect(array $response)
     {
-        $this->object->processResponse($this->order, new Response($response));
+        $order = $this->getOrder();
 
-        $this->assertOrderStates(Order::STATE_REDIRECT, null);
-        $this->assertFalse($this->order->hasErrors());
+        $this->object->processResponse($order, new Response($response));
+
+        $this->assertOrderStates($order, Order::STATE_REDIRECT, null);
+        $this->assertFalse($order->hasErrors());
     }
 
     public function testProcessRedirectProvider()
@@ -91,7 +61,7 @@ class StatusQueryTest extends QueryTestPrototype
             'type'              => 'status-response',
             'status'            => 'processing',
             'html'              => '<HTML>',
-            'paynet-order-id'   => 'PAYNET-112233',
+            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
             'serial-number'     =>  md5(time())
         ),
         // URL redirect
@@ -100,11 +70,23 @@ class StatusQueryTest extends QueryTestPrototype
             'type'              => 'status-response',
             'status'            => 'processing',
             'redirect-url'      => 'http://testdomain.com/',
-            'paynet-order-id'   => 'PAYNET-112233',
+            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
             'serial-number'     =>  md5(time())
         )));
     }
 
+    /**
+     * @dataProvider testProcessResponseApprovedProvider
+     */
+    public function testProcessResponseApproved(array $response)
+    {
+        $order = $this->getOrder();
+
+        $this->object->processResponse($order, new Response($response));
+
+        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_APPROVED);
+        $this->assertFalse($order->hasErrors());
+    }
 
     public function testProcessResponseApprovedProvider()
     {
@@ -112,9 +94,22 @@ class StatusQueryTest extends QueryTestPrototype
         (
             'type'              => 'status-response',
             'status'            => 'approved',
-            'paynet-order-id'   => 'PAYNET-112233',
+            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
             'serial-number'     =>  md5(time())
         )));
+    }
+
+    /**
+     * @dataProvider testProcessResponseDeclinedProvider
+     */
+    public function testProcessResponseDeclined(array $response)
+    {
+        $order = $this->getOrder();
+
+        $this->object->processResponse($order, new Response($response));
+
+        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_DECLINED);
+        $this->assertFalse($order->hasErrors());
     }
 
     public function testProcessResponseDeclinedProvider()
@@ -123,7 +118,7 @@ class StatusQueryTest extends QueryTestPrototype
         (
             'type'              => 'status-response',
             'status'            => 'declined',
-            'paynet-order-id'   => 'PAYNET-112233',
+            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test error message',
             'error-code'        =>  578
@@ -136,7 +131,7 @@ class StatusQueryTest extends QueryTestPrototype
         (
             'type'              => 'status-response',
             'status'            => 'filtered',
-            'paynet-order-id'   => 'PAYNET-112233',
+            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test filtered message',
             'error-code'        =>  8876
@@ -149,7 +144,7 @@ class StatusQueryTest extends QueryTestPrototype
         (
             'type'              => 'status-response',
             'status'            => 'processing',
-            'paynet-order-id'   => 'PAYNET-112233',
+            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -162,7 +157,7 @@ class StatusQueryTest extends QueryTestPrototype
         (
             'type'              => 'status-response',
             'status'            => 'error',
-            'paynet-order-id'   => 'PAYNET-112233',
+            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'status error message',
             'error-code'        =>  2
@@ -181,5 +176,17 @@ class StatusQueryTest extends QueryTestPrototype
             'error-message'     => 'immediate error message',
             'error-code'        =>  1
         )));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getOrder()
+    {
+        return new Order(array
+        (
+            'client_orderid'        => self::CLIENT_ORDER_ID,
+            'paynet_order_id'       => self::PAYNET_ORDER_ID
+        ));
     }
 }

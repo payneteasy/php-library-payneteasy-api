@@ -7,43 +7,40 @@ use PaynetEasy\Paynet\Data\Order;
 
 abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 {
-    abstract public function testCreateRequest();
+    const LOGIN             = 'test-login';
+    const END_POINT         =  789;
+    const SIGN_KEY          = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
+    const CLIENT_ORDER_ID   = 'CLIENT-112233';
+    const PAYNET_ORDER_ID   = 'PAYNET-112233';
 
     /**
-     * @dataProvider testProcessResponseApprovedProvider
+     * @dataProvider testCreateRequestProvider
      */
-    public function testProcessResponseApproved(array $response)
+    public function testCreateRequest($controlCode)
     {
-        $this->object->processResponse($this->order, new Response($response));
+        $order  = $this->getOrder();
 
-        $this->assertOrderStates(Order::STATE_END, Order::STATUS_APPROVED);
-        $this->assertFalse($this->order->hasErrors());
+        $request = $this->object->createRequest($order);
+
+        $this->assertInstanceOf('PaynetEasy\Paynet\Transport\Request', $request);
+        $this->assertNotNull($request['control']);
+        $this->assertEquals($controlCode, $request['control']);
+        $this->assertFalse($order->hasErrors());
     }
 
-    abstract public function testProcessResponseApprovedProvider();
-
-    /**
-     * @dataProvider testProcessResponseDeclinedProvider
-     */
-    public function testProcessResponseDeclined(array $response)
-    {
-        $this->object->processResponse($this->order, new Response($response));
-
-        $this->assertOrderStates(Order::STATE_END, Order::STATUS_DECLINED);
-        $this->assertFalse($this->order->hasErrors());
-    }
-
-    abstract public function testProcessResponseDeclinedProvider();
+    abstract public function testCreateRequestProvider();
 
     /**
      * @dataProvider testProcessResponseFilteredProvider
      */
     public function testProcessResponseFiltered(array $response)
     {
-        $this->object->processResponse($this->order, new Response($response));
+        $order = $this->getOrder();
 
-        $this->assertOrderStates(Order::STATE_END, Order::STATUS_DECLINED);
-        $this->assertFalse($this->order->hasErrors());
+        $this->object->processResponse($order, new Response($response));
+
+        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_DECLINED);
+        $this->assertFalse($order->hasErrors());
     }
 
     abstract public function testProcessResponseFilteredProvider();
@@ -53,10 +50,12 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessResponseProcessing(array $response)
     {
-        $this->object->processResponse($this->order, new Response($response));
+        $order = $this->getOrder();
 
-        $this->assertOrderStates(Order::STATE_PROCESSING, null);
-        $this->assertFalse($this->order->hasErrors());
+        $this->object->processResponse($order, new Response($response));
+
+        $this->assertOrderStates($order, Order::STATE_PROCESSING, null);
+        $this->assertFalse($order->hasErrors());
     }
 
     abstract public function testProcessResponseProcessingProvider();
@@ -66,11 +65,13 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessResponseError(array $response)
     {
-        // Payment error after check
-        $this->object->processResponse($this->order, new Response($response));
+        $order = $this->getOrder();
 
-        $this->assertOrderStates(Order::STATE_END, Order::STATUS_ERROR);
-        $this->assertOrderError($response['error-message'], $response['error-code']);
+        // Payment error after check
+        $this->object->processResponse($order, new Response($response));
+
+        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_ERROR);
+        $this->assertOrderError($order, $response['error-message'], $response['error-code']);
     }
 
     abstract public function testProcessResponseErrorProvider();
@@ -81,10 +82,10 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      * @param       string      $state      Order state
      * @param       string      $status     Order status
      */
-    protected function assertOrderStates($state, $status)
+    protected function assertOrderStates(Order $order, $state, $status)
     {
-        $this->assertEquals($state, $this->order->getState());
-        $this->assertEquals($status, $this->order->getStatus());
+        $this->assertEquals($state, $order->getState());
+        $this->assertEquals($status, $order->getStatus());
     }
 
     /**
@@ -93,14 +94,34 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      * @param       string      $errorMessage       Error message
      * @param       int         $errorCode          Error code
      */
-    protected function assertOrderError($errorMessage, $errorCode)
+    protected function assertOrderError($order, $errorMessage, $errorCode)
     {
-        $this->assertTrue($this->order->hasErrors());
+        $this->assertTrue($order->hasErrors());
 
-        $error = $this->order->getLastError();
+        $error = $order->getLastError();
 
         $this->assertInstanceOf('\PaynetEasy\Paynet\Exceptions\PaynetException', $error);
-        $this->assertEquals($error->getMessage(), $errorMessage);
-        $this->assertEquals($error->getCode(), $errorCode);
+        $this->assertEquals($errorMessage, $error->getMessage());
+        $this->assertEquals($errorCode, $error->getCode());
+    }
+
+    /**
+     * @return      \PaynetEasy\Paynet\Data\Order
+     */
+    abstract protected function getOrder();
+
+    /**
+     * @return      array
+     */
+    protected function getConfig()
+    {
+        return array
+        (
+            'login'                 =>  self::LOGIN,
+            'end_point'             =>  self::END_POINT,
+            'control'               =>  self::SIGN_KEY,
+            'redirect_url'          => 'https://example.com/redirect_url',
+            'server_callback_url'   => 'https://example.com/callback_url'
+        );
     }
 }

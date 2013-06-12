@@ -210,6 +210,16 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
+    public function createRecurrentCard($cardRefId)
+    {
+        $this->setRecurrentCard(new RecurrentCard($cardRefId));
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setRecurrentCard(RecurrentCardInterface $recurrentCard)
     {
         $this->recurrentCard = $recurrentCard;

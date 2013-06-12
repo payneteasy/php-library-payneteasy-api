@@ -18,11 +18,7 @@ class ReturnQuery extends AbstractQuery
 
         $query              = array_merge
         (
-            array
-            (
-                'login'         => $this->config['login'],
-                'control'       => $this->createControlCode($order)
-            ),
+            $this->createControlCode($order),
             $order->getContextData()
         );
 
@@ -72,6 +68,6 @@ class ReturnQuery extends AbstractQuery
 
         $sign[]                 = $this->config['control'];
 
-        return sha1(implode('', $sign));
+        return array('control' => sha1(implode('', $sign)));
     }
 }

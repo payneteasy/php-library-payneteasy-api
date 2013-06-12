@@ -76,6 +76,15 @@ interface OrderInterface
     public function hasCreditCard();
 
     /**
+     * Creates recurrent credit card for given id
+     *
+     * @param       string      $cardRefId      Recurrent credit card reference id
+     *
+     * @return      self
+     */
+    public function createRecurrentCard($cardRefId);
+
+    /**
      * Set order recurrent card
      *
      * @param       \PaynetEasy\Paynet\Data\RecurrentCardInterface  $recurrentCard

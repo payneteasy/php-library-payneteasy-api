@@ -1,3 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <phpunit bootstrap="./autoload.php">
+    <filter>
+        <blacklist>
+            <directory>./source/*</directory>
+            <directory suffix="Interface.php">../source/*</directory>
+            <directory suffix="Exception.php">../source/*</directory>
+        </blacklist>
+    </filter>
 </phpunit>

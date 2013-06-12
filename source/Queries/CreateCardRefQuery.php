@@ -18,14 +18,10 @@ class CreateCardRefQuery extends AbstractQuery
     {
         $this->validateOrder($order);
 
-        $query              = array_merge
+        $query = array_merge
         (
             $order->getContextData(),
-            array
-            (
-                'login'         => $this->config['login'],
-                'control'       => $this->createControlCode($order)
-            )
+            $this->createControlCode($order)
         );
 
         return $this->wrapToRequest($query);
@@ -38,14 +34,18 @@ class CreateCardRefQuery extends AbstractQuery
     {
         if(!isset($response['card-ref-id']))
         {
-            $e              = new ResponseException('card-ref-id undefined');
-            $order->addError($e);
+            $error = new ResponseException('card-ref-id undefined');
+
+            $order->addError($error);
             $order->setState(OrderInterface::STATE_END);
-            throw $e;
+
+            throw $error;
         }
 
-        $response['cardrefid'] = $response['card-ref-id'];
-        unset($response['card-ref-id']);
+        if($response->isApproved())
+        {
+            $order->createRecurrentCard($response['card-ref-id']);
+        }
 
         parent::processResponse($order, $response);
     }
@@ -57,12 +57,12 @@ class CreateCardRefQuery extends AbstractQuery
     {
         // This is SHA-1 checksum of the concatenation
         // login + client-order-id + paynet-order-id + merchant-control.
-        return sha1
+        return array('control' => sha1
         (
             $this->config['login'].
             $order->getOrderCode().
             $order->getPaynetOrderId().
             $this->config['control']
-        );
+        ));
     }
 }

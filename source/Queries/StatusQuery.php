@@ -19,12 +19,7 @@ class StatusQuery extends AbstractQuery
         $query              = array_merge
         (
             $order->getContextData(),
-            // Выделить этот код в отдельный класс
-            array
-            (
-                'login'         => $this->config['login'],
-                'control'       => $this->createControlCode($order)
-            )
+            $this->createControlCode($order)
         );
 
         return $this->wrapToRequest($query);
@@ -37,12 +32,12 @@ class StatusQuery extends AbstractQuery
     {
         // This is SHA-1 checksum of the concatenation
         // login + client-order-id + paynet-order-id + merchant-control.
-        return sha1
+        return array('control' => sha1
         (
             $this->config['login'].
             $order->getOrderCode().
             $order->getPaynetOrderId().
             $this->config['control']
-        );
+        ));
     }
 }

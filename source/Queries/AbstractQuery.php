@@ -9,8 +9,6 @@ use PaynetEasy\Paynet\Transport\Request;
 use PaynetEasy\Paynet\Exceptions\ConfigException;
 use PaynetEasy\Paynet\Exceptions\InvalidControlCodeException;
 
-use BadMethodCallException;
-
 /**
  * Abstract Query
  */
@@ -169,36 +167,25 @@ implements      QueryInterface
     }
 
     /**
-     * @todo Delete this
-     */
-    protected function createControlCode(OrderInterface $order)
-    {
-        throw new BadMethodCallException('method must be overloaded');
-    }
-
-    /**
      * Method forms the common parameters for the query
      *
      * @return      array
      */
     protected function commonQueryOptions()
     {
-        $query = array
-        (
-            'control'       => $this->createControlCode()
-        );
+        $commonOptions = array('login'              => $this->config['login']);
 
         if(isset($this->config['redirect_url']))
         {
-            $query['redirect_url']          = $this->config['redirect_url'];
+            $commonOptions['redirect_url']          = $this->config['redirect_url'];
         }
 
         if(isset($this->config['server_callback_url']))
         {
-            $query['server_callback_url']   = $this->config['server_callback_url'];
+            $commonOptions['server_callback_url']   = $this->config['server_callback_url'];
         }
 
-        return $query;
+        return $commonOptions;
     }
 
     /**
