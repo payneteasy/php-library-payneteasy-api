@@ -2,376 +2,110 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
-use ArrayObject;
 use PaynetEasy\Paynet\Data\OrderInterface;
-use PaynetEasy\Paynet\Transport\Response;
-
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
-use PaynetEasy\Paynet\Transport\Request;
-
-use PaynetEasy\Paynet\Exceptions\ConfigException;
-use PaynetEasy\Paynet\Exceptions\InvalidControlCodeException;
-
-use Exception;
-use BadMethodCallException;
+use PaynetEasy\Paynet\Queries\QueryFactoryInterface;
 
 /**
  * Abstract workflow
  */
-abstract class AbstractWorkflow
+abstract class AbstractWorkflow implements WorkflowInterface
 {
-    const STATE_NULL        = 'null';
-    const STATE_INIT        = 'init';
-    const STATE_REDIRECT    = 'redirect';
-    const STATE_PROCESSING  = 'processing';
-    const STATE_WAIT        = 'wait';
-    const STATE_END         = 'end';
-
-    const STATUS_APPROVED   = 'approved';
-    const STATUS_DECLINED   = 'declined';
-    const STATUS_ERROR      = 'error';
-
     /**
-     * Transport
+     * Paynet gateway client
+     *
      * @var \PaynetEasy\Paynet\Transport\GatewayClientInterface
      */
-    protected $transport;
+    protected $gatewayClient;
 
     /**
-     * Config for PaynetEasy
-     * @var \ArrayObject
-     */
-    protected $config;
-
-    /**
-     * Method API
-     * @var string
-     */
-    protected $method;
-
-    /**
-     * PaynetEasy Order info
-     * @var \PaynetEasy\Paynet\Data\OrderInterface
-     */
-    protected $order;
-
-    /**
-     * PaynetEasy last error
-     * @var \Exception
-     */
-    protected $error;
-
-    /**
-     * Process state
+     * API request queries factory
      *
-     * @var string
+     * @var \PaynetEasy\Paynet\Queries\QueryFactoryInterface
      */
-    protected $state        = self::STATE_NULL;
+    protected $queryFactory;
 
     /**
-     * Query status
+     * Config for API queries
      *
-     * @var string
+     * @var array
      */
-    protected $status;
-
-    /**
-     * Flag is true, if the response must be signed by the control code
-     * @var boolean
-     */
-    protected $is_control   = false;
+    protected $queryConfig;
 
     /**
      * Constructor
-     * @param       GatewayClientInterface        $transport
+     * @param       GatewayClientInterface        $gatewayClient
      */
-    public function __construct(GatewayClientInterface $transport)
+    public function __construct(GatewayClientInterface  $gatewayClient,
+                                QueryFactoryInterface   $queryFactory,
+                                array                   $queryConfig  = array())
     {
-        $this->method           = strtolower(substr(strrchr(get_class($this), '\\'), 1));
-
-        $this->transport        = $transport;
+        $this->gatewayClient = $gatewayClient;
+        $this->queryFactory  = $queryFactory;
+        $this->queryConfig   = $queryConfig;
     }
 
     /**
-     * Getter for Config
-     * @return ArrayObject
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * Method setup configuration or configuration property if
-     * $config parameter is a scalar.
+     * Process Order with different state
      *
-     * @param       ArrayObject|string   $config
-     * @param       mixed                $value
-     * @return      Query
-     */
-    public function setConfig($config, $value = null)
-    {
-        if(is_array($config))
-        {
-            $this->config           = $config;
-        }
-        else
-        {
-            $this->config[$config]  = $value;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get order
-     *
-     * @return      PaynetEasy\Paynet\Data\OrderInterface
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
-
-    /**
-     * Set order
-     *
-     * @param       PaynetEasy\Paynet\Data\OrderInterface   $order
-     *
-     * @return      self
-     */
-    public function setOrder(OrderInterface $order)
-    {
-        $this->order = $order;
-
-        return $this;
-    }
-
-    /**
-     * Config validator
-     *
-     * @throws      ConfigException
-     */
-    public function validateConfig()
-    {
-        if(empty($this->config['end_point']))
-        {
-            throw new ConfigException('end_point undefined');
-        }
-
-        if(empty($this->config['control']))
-        {
-            throw new ConfigException('control undefined');
-        }
-    }
-
-    /**
-     * Common validator for Query
-     *
-     */
-    public function validate()
-    {
-        $this->validateConfig();
-
-        return;
-    }
-
-    /**
-     * Processing Query
-     *
-     * @param       array       $data       Data
+     * @param       PaynetEasy\Paynet\Data\OrderInterface   $order              Order for processing
+     * @param       array                                   $callbackData       Paynet callback data
      *
      * @return      \PaynetEasy\Paynet\Transport\Response
      */
-    public function createRequest($data = null)
+    public function processOrder(OrderInterface $order, array $callbackData = array())
     {
-        //
-        // This code use as handler for callback
-        //
-
-        try
+        switch($order->getState())
         {
-            $this->validate();
+            case OrderInterface::STATE_NULL:
+            case OrderInterface::STATE_INIT:
+            {
+                return $this->initQuery($order);
+            }
+            case OrderInterface::STATE_PROCESSING:
+            case OrderInterface::STATE_WAIT:
+            {
+                return $this->statusQuery($order);
+            }
+            case OrderInterface::STATE_REDIRECT:
+            {
+                if(empty($callbackData))
+                {
+                    throw new PaynetException('Data parameter can not be empty for state "' .
+                                              OrderInterface::STATE_REDIRECT . '"');
+                }
 
-            $this->processResponse(new Response($data));
-        }
-        catch(Exception $e)
-        {
-            $this->state            = self::STATE_END;
-            $this->status           = self::STATUS_ERROR;
-            $this->error            = $e;
-
-            throw $e;
+                return $this->redirectCallback($order, $callbackData);
+            }
+            case OrderInterface::STATE_END:
+            {
+                return null;
+            }
+            default:
+            {
+                throw new PaynetException('Undefined state = ' . $order->getState());
+            }
         }
     }
 
     /**
-     * Return state of query
-     * @return string
-     */
-    public function state()
-    {
-        return $this->state;
-    }
-
-    /**
-     * Return status of query
-     * @return string
-     */
-    public function status()
-    {
-        return $this->status;
-    }
-
-    /**
-     * Method returned last error or null
-     * @return Exception|null
-     */
-    public function getLastError()
-    {
-        return $this->error;
-    }
-
-    protected function createControlCode()
-    {
-        throw new BadMethodCallException('method must be overloaded');
-    }
-
-    /**
-     * Method forms the common parameters for the query
+     * Creates API Query object by their API method name
+     * and executes API method request
      *
-     * @return      array
+     * @param       string                                      $queryName          API method name
+     * @param       \PaynetEasy\Paynet\Data\OrderInterface      $order              Order
+     *
+     * @return      \PaynetEasy\Paynet\Transport\Response                           Gateway response
      */
-    protected function commonQueryOptions()
+    protected function executeQuery($queryName, OrderInterface $order)
     {
-        $query                              = array
-        (
-            '.method'       => $this->method,
-            '.end_point'    => $this->config['end_point']
-        );
+        $query = $this->queryFactory->getQuery($queryName, $this->queryConfig);
 
-        $query['control']                   = $this->createControlCode();
+        $request    = $query->createRequest($order);
+        $response   = $this->gatewayClient->makeRequest($request);
 
-        if(isset($this->config['redirect_url']))
-        {
-            $query['redirect_url']          = $this->config['redirect_url'];
-        }
-
-        if(isset($this->config['server_callback_url']))
-        {
-            $query['server_callback_url']   = $this->config['server_callback_url'];
-        }
-
-        return $query;
-    }
-
-    /**
-     * Validate control code
-     *
-     * @param       Response      $response
-     *
-     * @throws      InvalidControlCodeException
-     */
-    protected function validateControlCode(Response $response)
-    {
-        // This is SHA-1 checksum of the concatenation
-        // status + orderid + client_orderid + merchant-control.
-        $sign   = sha1
-        (
-            $response->status().
-            $response->paynetOrderId().
-            $response->orderId().
-            $this->config['control']
-        );
-
-        if($sign !== $response->control())
-        {
-            throw new InvalidControlCodeException($sign, $response->control());
-        }
-    }
-
-    /**
-     * Handling response from the Paynet
-     *
-     * @param       Response        $response
-     *
-     * @return      \PaynetEasy\Paynet\Transport\Response
-     *
-     * @throws      \PaynetEasy\Paynet\Exceptions\PaynetException
-     */
-    public function processResponse(Response $response)
-    {
-        if($this->is_control)
-        {
-            $this->validateControlCode($response);
-        }
-
-        if($response->isError())
-        {
-            throw $response->error();
-        }
-        elseif($response->isApproved())
-        {
-            $this->state        = self::STATE_END;
-            $this->status       = self::STATUS_APPROVED;
-        }
-        // "filtered" status is interpreted as the "DECLINED"
-        elseif($response->isDeclined())
-        {
-            $this->state        = self::STATE_END;
-            $this->status       = self::STATUS_DECLINED;
-        }
-        // For the 3D mode is set to the state "REDIRECT"
-        // or for Form API redirect_url
-        elseif($response->offsetExists('html') || $response->redirectUrl())
-        {
-            $this->state        = self::STATE_REDIRECT;
-        }
-        //
-        // If it does not redirect, it's processing
-        elseif($response->isProcessing())
-        {
-            $this->state        = self::STATE_PROCESSING;
-        }
-
-        if(!is_null(($paynet_order_id = $response->paynetOrderId())))
-        {
-            $this->getOrder()->setPaynetOrderId($paynet_order_id);
-        }
+        $query->processResponse($order, $response);
 
         return $response;
-    }
-
-
-    /**
-     * Send Query
-     *
-     * @param       array       $query
-     *
-     * @return      \PaynetEasy\Paynet\Transport\Response
-     *
-     * @throws      \PaynetEasy\Paynet\Exceptions\PaynetException
-     */
-    protected function sendQuery($query)
-    {
-        try
-        {
-            /**
-             * @todo inversion of control needed
-             */
-            $request = new Request($query);
-            $request->setApiMethod($this->method)
-                    ->setEndPoint($this->config['end_point']);
-
-            return $this->processResponse($this->transport->makeRequest($request));
-        }
-        catch(Exception $e)
-        {
-            $this->state            = self::STATE_END;
-            $this->status           = self::STATUS_ERROR;
-            $this->error            = $e;
-
-            throw $e;
-        }
     }
 }

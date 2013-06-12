@@ -2,10 +2,7 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
-use PaynetEasy\Paynet\Data\RecurrentCard;
-use PaynetEasy\Paynet\Queries\CreateCardRefQuery;
-use PaynetEasy\Paynet\Transport\GatewayClientInterface;
-use Exception;
+use PaynetEasy\Paynet\Data\OrderInterface;
 
 /**
  * The implementation of the Reccurent Transaction init
@@ -14,58 +11,22 @@ use Exception;
 class CreateRecurrentCard extends Sale
 {
     /**
-     * Constructor
-     * @param       GatewayClientInterface        $transport
+     * {@inheritdoc}
      */
-    public function __construct(GatewayClientInterface $transport)
+    public function processOrder(OrderInterface $order, array $callbackData = array())
     {
-        parent::__construct($transport);
-
-        $this->method       = 'sale';
-    }
-
-    public function createRequest($data = null)
-    {
-        $response       = parent::createRequest($data);
+        $response       = parent::processOrder($order, $callbackData);
 
         if($response->isApproved())
         {
-            $this->createCardRef();
-        }
-
-        return      $response;
-    }
-
-    protected function createCardRef()
-    {
-        $order = $this->getOrder();
-        $query = new CreateCardRefQuery($this->config);
-
-        $e                  = null;
-        try
-        {
-            $request    = $query->createRequest($order);
-            $response   = $this->transport->makeRequest($request);
-            $query->processResponse($order, $response);
-        }
-        catch(Exception $e)
-        {
-        }
-
-        $this->state        = $order->getState();
-        $this->status       = $order->getStatus();
-        $this->error        = $order->getLastError();
-
-        if($e instanceof Exception)
-        {
-            throw $e;
-        }
-
-        if($response->isApproved())
-        {
-            $order->setRecurrentCard(new RecurrentCard($response['cardrefid']));
+            $this->createCardRef($order);
         }
 
         return $response;
+    }
+
+    protected function createCardRef(OrderInterface $order)
+    {
+        return $this->executeQuery('create-card-ref', $order);
     }
 }

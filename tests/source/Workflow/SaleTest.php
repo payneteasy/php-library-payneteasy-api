@@ -74,6 +74,8 @@ class SaleTest extends AbstractWorkflowTest
     {
         list($customer, $card, $order) = $this->getTestData();
 
+        $this->order = $order;
+
         $order->setCustomer($customer);
 
         if($card instanceof RecurrentCardInterface)
@@ -85,8 +87,6 @@ class SaleTest extends AbstractWorkflowTest
             $order->setCreditCard($card);
         }
 
-        $this->query->setOrder($order);
-
         $this->transport->response  = array
         (
             'type'              => 'async-response',
@@ -96,7 +96,7 @@ class SaleTest extends AbstractWorkflowTest
             'serial-number'     => md5(time())
         );
 
-        $this->query->createRequest();
+        $this->query->processOrder($order);
 
         $request                = array
         (
@@ -167,15 +167,13 @@ class SaleTest extends AbstractWorkflowTest
 
         foreach($request as $key => $value)
         {
-            $this->assertTrue(!empty($this->transport->request), 'Request property no exists: '.$key);
+            $this->assertNotEmpty($this->transport->request[$key], 'Request property no exists: ' . $key);
             $this->assertEquals($value, $this->transport->request[$key], "$key not equal '$value'");
         }
     }
 
-    public function providerProcess()
+    public function testProcessProvider()
     {
-        list($customer, $card, $order) = $this->getTestData();
-
         $dataset                = array();
 
         // PROCESSING
@@ -190,11 +188,11 @@ class SaleTest extends AbstractWorkflowTest
 
         $assert                 = array
         (
-            'state'             => Sale::STATE_PROCESSING,
+            'state'             => Order::STATE_PROCESSING,
             'status'            => null
         );
 
-        $dataset[]              = array($order, $customer, $card, $response, $assert);
+        $dataset[]              = array($assert, $response);
 
         // VALIDATION-ERROR
         $response               = array
@@ -207,14 +205,14 @@ class SaleTest extends AbstractWorkflowTest
 
         $assert                 = array
         (
-            'state'             => Sale::STATE_END,
-            'status'            => Sale::STATUS_ERROR,
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_ERROR,
             'error_message'     => $response['error-message'],
             'error_code'        => $response['error-code'],
             'exception'         => true
         );
 
-        $dataset[]              = array($order, $customer, $card, $response, $assert);
+        $dataset[]              = array($assert, $response);
 
         // FILTERED
         $response               = array
@@ -230,13 +228,13 @@ class SaleTest extends AbstractWorkflowTest
 
         $assert                 = array
         (
-            'state'             => Sale::STATE_END,
-            'status'            => Sale::STATUS_DECLINED,
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_DECLINED,
             'error_message'     => $response['error-message'],
             'error_code'        => $response['error-code']
         );
 
-        $dataset[]              = array($order, $customer, $card, $response, $assert);
+        $dataset[]              = array($assert, $response);
 
         // Type = error
         $response               = array
@@ -248,14 +246,14 @@ class SaleTest extends AbstractWorkflowTest
 
         $assert                 = array
         (
-            'state'             => Sale::STATE_END,
-            'status'            => Sale::STATUS_ERROR,
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_ERROR,
             'error_message'     => $response['error_message'],
             'error_code'        => $response['error_code'],
             'exception'         => true
         );
 
-        $dataset[]              = array($order, $customer, $card, $response, $assert);
+        $dataset[]              = array($assert, $response);
 
         // ERROR in STATUS
         $response               = array
@@ -271,23 +269,26 @@ class SaleTest extends AbstractWorkflowTest
 
         $assert                 = array
         (
-            'state'             => Sale::STATE_END,
-            'status'            => Sale::STATUS_ERROR,
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_ERROR,
             'error_message'     => $response['error-message'],
             'error_code'        => $response['error-code'],
             'exception'         => true
         );
 
-        $dataset[]              = array($order, $customer, $card, $response, $assert);
+        $dataset[]              = array($assert, $response);
 
         return $dataset;
     }
 
     /**
-     * @dataProvider providerProcess
+     * @dataProvider testProcessProvider
      */
-    public function testProcess($order, $customer = null, $card = null, $server_response = null, $assert = null)
+    public function testProcess($assert, $server_response)
     {
+        list($customer, $card, $order) = $this->getTestData();
+
+        $this->order = $order;
         $this->transport->response  = $server_response;
 
         $order->setCustomer($customer);
@@ -301,16 +302,17 @@ class SaleTest extends AbstractWorkflowTest
             $order->setCreditCard($card);
         }
 
-        $this->query->setOrder($order);
-
-        parent::testProcess($assert);
+        parent::testProcess($assert, $server_response);
     }
 
     /**
      * @dataProvider testStatusProvider
      */
-    public function testStatus($order, $server_response, $assert)
+    public function testStatus($assert, $server_response)
     {
+        list($customer, $card, $order) = $this->getTestData();
+
+        $this->order = $order;
         $this->transport->response          = array
         (
             'type'              => 'async-response',
@@ -320,31 +322,26 @@ class SaleTest extends AbstractWorkflowTest
             'serial-number'     => md5(time())
         );
 
-        list($customer, $card, $order_full) = $this->getTestData();
-
-        $order_full->setCustomer($customer);
+        $order->setCustomer($customer);
 
         if($card instanceof RecurrentCardInterface)
         {
-            $order_full->setRecurrentCard($card);
+            $order->setRecurrentCard($card);
         }
         else
         {
-            $order_full->setCreditCard($card);
+            $order->setCreditCard($card);
         }
 
-        $this->query->setOrder($order_full);
-        $this->query->createRequest();
+        $this->query->processOrder($order);
 
-        $this->transport->response          = $server_response;
+        $this->transport->response = $server_response;
 
-        parent::testProcess($assert);
+        parent::testProcess($assert, $server_response);
     }
 
-    public function providerCallback()
+    public function testCallbackProvider()
     {
-        list($customer, $card, $order) = $this->getTestData();
-
         $dataset                = array();
 
         // SALE
@@ -368,11 +365,11 @@ class SaleTest extends AbstractWorkflowTest
 
         $assert                 = array
         (
-            'state'             => Sale::STATE_END,
-            'status'            => Sale::STATUS_APPROVED
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_APPROVED
         );
 
-        $dataset[]              = array($order, $customer, $card, $response, $assert);
+        $dataset[]              = array($assert, $response);
 
         // PROCESSING
         $response               = array
@@ -395,11 +392,11 @@ class SaleTest extends AbstractWorkflowTest
 
         $assert                 = array
         (
-            'state'             => Sale::STATE_PROCESSING,
+            'state'             => Order::STATE_PROCESSING,
             'status'            => null
         );
 
-        $dataset[]              = array($order, $customer, $card, $response, $assert);
+        $dataset[]              = array($assert, $response);
 
         // DECLINE
         $response               = array
@@ -423,13 +420,13 @@ class SaleTest extends AbstractWorkflowTest
 
         $assert                 = array
         (
-            'state'             => Sale::STATE_END,
-            'status'            => Sale::STATUS_DECLINED,
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_DECLINED,
             'error_message'     => 'decline message',
             'error_code'        => '1000000'
         );
 
-        $dataset[]              = array($order, $customer, $card, $response, $assert);
+        $dataset[]              = array($assert, $response);
 
         // FILTERED
         $response               = array
@@ -453,13 +450,13 @@ class SaleTest extends AbstractWorkflowTest
 
         $assert                 = array
         (
-            'state'             => Sale::STATE_END,
-            'status'            => Sale::STATUS_DECLINED,
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_DECLINED,
             'error_message'     => 'filtered message',
             'error_code'        => '1000000'
         );
 
-        $dataset[]              = array($order, $customer, $card, $response, $assert);
+        $dataset[]              = array($assert, $response);
 
         // Error
         $response               = array
@@ -483,23 +480,26 @@ class SaleTest extends AbstractWorkflowTest
 
         $assert                 = array
         (
-            'state'             => Sale::STATE_END,
-            'status'            => Sale::STATUS_ERROR,
+            'state'             => Order::STATE_END,
+            'status'            => Order::STATUS_ERROR,
             'error_message'     => 'error message',
             'error_code'        => '1',
             'exception'         => true
         );
 
-        $dataset[]              = array($order, $customer, $card, $response, $assert);
+        $dataset[]              = array($assert, $response);
 
         return $dataset;
     }
 
     /**
-     * @dataProvider providerCallback
+     * @dataProvider testCallbackProvider
      */
-    public function testCallback($order, $customer, $card, $callback, $assert)
+    public function testCallback($assert, $callback)
     {
+        list($customer, $card, $order) = $this->getTestData();
+
+        $this->order = $order;
         $this->transport->response          = array
         (
             'type'              => 'async-response',
@@ -520,8 +520,7 @@ class SaleTest extends AbstractWorkflowTest
             $order->setCreditCard($card);
         }
 
-        $this->query->setOrder($order);
-        $this->query->createRequest();
+        $this->query->processOrder($order);
 
         $this->transport->response          = array
         (
@@ -532,7 +531,7 @@ class SaleTest extends AbstractWorkflowTest
             'serial-number'     => md5(time())
         );
 
-        $this->query->createRequest();
+        $this->query->processOrder($order);
 
         parent::testProcess($assert, $callback);
     }

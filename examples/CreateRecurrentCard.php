@@ -33,7 +33,7 @@ class   CreateRecurrentCard extends Sale
         $e                  = null;
         try
         {
-            $request = $query->createRequest();
+            $request = $query->processOrder();
             $response = $this->transport->makeRequest($request);
             $query->processResponse($response);
         }

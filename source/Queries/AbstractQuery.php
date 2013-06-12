@@ -59,7 +59,7 @@ implements      QueryInterface
      */
     public function processResponse(OrderInterface $order, Response $response)
     {
-        if($this->is_control)
+        if($response->control())
         {
             $this->validateControlCode($response);
         }

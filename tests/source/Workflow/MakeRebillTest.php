@@ -22,9 +22,7 @@ class MakeRebillTest extends SaleTest
     {
         list($customer, $card, $order) = parent::getTestData();
 
-        $card                   = new RecurrentCard(self::CARD_REF_ID);
-
-        return array($customer, $card, $order);
+        return array($customer, new RecurrentCard(self::CARD_REF_ID), $order);
     }
 }
 
