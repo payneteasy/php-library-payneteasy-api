@@ -325,7 +325,7 @@ implements  OrderInterface
      */
     public function hasErrors()
     {
-        return !empty($this->getErrors());
+        return count($this->getErrors()) > 0;
     }
 
     /**

@@ -44,7 +44,7 @@ implements  CreditCardInterface
 
         parent::validate();
 
-        if($this['expire_month'] < 0 || $this['expire_month'] > 12)
+        if($this['expire_month'] < 1 || $this['expire_month'] > 12)
         {
             $this->errors['expire_month'] = '%s is failed';
 

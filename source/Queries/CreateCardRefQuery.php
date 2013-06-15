@@ -21,6 +21,7 @@ class CreateCardRefQuery extends AbstractQuery
         $query = array_merge
         (
             $order->getContextData(),
+            $this->commonQueryOptions(),
             $this->createControlCode($order)
         );
 

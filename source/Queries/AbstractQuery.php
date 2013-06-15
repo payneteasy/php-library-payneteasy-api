@@ -25,7 +25,7 @@ implements      QueryInterface
      * Method API
      * @var string
      */
-    protected $method;
+    protected $apiMethod;
 
     /**
      * Flag is true, if the response must be signed by the control code
@@ -83,7 +83,7 @@ implements      QueryInterface
         }
         // For the 3D mode is set to the state "REDIRECT"
         // or for Form API redirect_url
-        elseif($response->offsetExists('html') || $response->redirectUrl())
+        elseif($response->hasHtml() || $response->hasRedirectUrl())
         {
             $order->setState(OrderInterface::STATE_REDIRECT);
         }
@@ -94,9 +94,9 @@ implements      QueryInterface
             $order->setState(OrderInterface::STATE_PROCESSING);
         }
 
-        if(!is_null(($paynet_order_id = $response->paynetOrderId())))
+        if(strlen($response->paynetOrderId()) > 0)
         {
-            $order->setPaynetOrderId($paynet_order_id);
+            $order->setPaynetOrderId($response->paynetOrderId());
         }
 
         return $response;
@@ -140,6 +140,11 @@ implements      QueryInterface
      */
     protected function setApiMethod($class)
     {
+        if (!empty($this->apiMethod))
+        {
+            return;
+        }
+
         $result = array();
 
         preg_match('#(?<=\\\\)\w+(?=Query$)#i', $class, $result);
@@ -149,9 +154,8 @@ implements      QueryInterface
             throw new ConfigException('API method name not found in class name');
         }
 
-        $name_chunks = preg_split('/(?=[A-Z])/', $result[0], null, PREG_SPLIT_NO_EMPTY);
-
-        $this->method   = strtolower(implode('-', $name_chunks));
+        $name_chunks     = preg_split('/(?=[A-Z])/', $result[0], null, PREG_SPLIT_NO_EMPTY);
+        $this->apiMethod = strtolower(implode('-', $name_chunks));
     }
 
     /**
@@ -173,7 +177,11 @@ implements      QueryInterface
      */
     protected function commonQueryOptions()
     {
-        $commonOptions = array('login'              => $this->config['login']);
+        $commonOptions = array
+        (
+            'login'     => $this->config['login'],
+            'end_point' => $this->config['end_point']
+        );
 
         if(isset($this->config['redirect_url']))
         {
@@ -224,7 +232,7 @@ implements      QueryInterface
     protected function wrapToRequest(array $query)
     {
         $request = new Request($query);
-        $request->setApiMethod($this->method)
+        $request->setApiMethod($this->apiMethod)
                 ->setEndPoint($this->config['end_point']);
 
         return $request;

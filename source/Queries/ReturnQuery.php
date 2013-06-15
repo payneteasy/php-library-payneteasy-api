@@ -19,6 +19,7 @@ class ReturnQuery extends AbstractQuery
         $query              = array_merge
         (
             $this->createControlCode($order),
+            $this->commonQueryOptions(),
             $order->getContextData()
         );
 

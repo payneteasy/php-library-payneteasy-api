@@ -16,9 +16,10 @@ class StatusQuery extends AbstractQuery
     {
         $this->validateOrder($order);
 
-        $query              = array_merge
+        $query = array_merge
         (
             $order->getContextData(),
+            $this->commonQueryOptions(),
             $this->createControlCode($order)
         );
 

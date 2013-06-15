@@ -29,7 +29,7 @@ class PaynetClient implements GatewayClientInterface
      */
     public function __construct($server, $base_url = '/paynet/api/v2/')
     {
-        $this->gateway_url = "https://{$server}/{$base_url}";
+        $this->gateway_url = 'https://' . trim($server, '/') . '/' . trim($base_url, '/');
     }
 
     /**

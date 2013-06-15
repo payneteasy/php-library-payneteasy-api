@@ -22,6 +22,7 @@ class GetCardInfoQuery extends AbstractQuery
         $query = array_merge
         (
             $order->getRecurrentCard()->getData(),
+            $this->commonQueryOptions(),
             $this->createControlCode($order)
         );
 
