@@ -16,7 +16,7 @@ class MakeRebillTest extends SaleTest
      * Test class
      * @var string
      */
-    protected $class            = 'MakeRebill';
+    protected $class            = 'MakeRebillWorkflow';
 
     public function getTestData()
     {

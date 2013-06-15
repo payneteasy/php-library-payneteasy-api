@@ -5,7 +5,7 @@ use PHPUnit_Framework_TestCase;
 use PaynetEasy\Paynet\Transport\Transport;
 use PaynetEasy\Paynet\Queries\QueryFactory;
 use PaynetEasy\Paynet\Data\Order;
-use Exception;
+use PaynetEasy\Paynet\Exceptions\PaynetException;
 
 /**
  * Test class for Query.
@@ -253,7 +253,7 @@ abstract class AbstractWorkflowTest extends PHPUnit_Framework_TestCase
         {
             $response = $this->query->processOrder($this->order, $callback);
         }
-        catch(Exception $e)
+        catch(PaynetException $e)
         {
         }
 

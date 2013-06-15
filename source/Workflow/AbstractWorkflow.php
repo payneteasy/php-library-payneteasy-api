@@ -6,11 +6,24 @@ use PaynetEasy\Paynet\Data\OrderInterface;
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Queries\QueryFactoryInterface;
 
+use PaynetEasy\Paynet\Transport\Response;
+use PaynetEasy\Paynet\Callbacks\Redirect3D;
+
+use PaynetEasy\Paynet\Exceptions\ConfigException;
+use PaynetEasy\Paynet\Exceptions\PaynetException;
+
 /**
  * Abstract workflow
  */
 abstract class AbstractWorkflow implements WorkflowInterface
 {
+    /**
+     * Initial Paynet API method
+     *
+     * @var string
+     */
+    protected $initialApiMethod;
+
     /**
      * Paynet gateway client
      *
@@ -43,6 +56,8 @@ abstract class AbstractWorkflow implements WorkflowInterface
         $this->gatewayClient = $gatewayClient;
         $this->queryFactory  = $queryFactory;
         $this->queryConfig   = $queryConfig;
+
+        $this->setInitialApiMethod(get_called_class());
     }
 
     /**
@@ -86,6 +101,69 @@ abstract class AbstractWorkflow implements WorkflowInterface
                 throw new PaynetException('Undefined state = ' . $order->getState());
             }
         }
+    }
+
+    protected function initQuery(OrderInterface $order)
+    {
+        $order->setState(OrderInterface::STATE_PROCESSING);
+
+        return $this->executeQuery($this->initialApiMethod, $order);
+    }
+
+    protected function statusQuery(OrderInterface $order)
+    {
+        return $this->executeQuery('status', $order);
+    }
+
+    /**
+     * The method handles the callback after the 3D
+     *
+     * @param       array $data
+     * @return      Response
+     *
+     * @throws      PaynetException
+     */
+    protected function redirectCallback(OrderInterface $order, $data)
+    {
+        $order->setState(OrderInterface::STATE_WAIT);
+
+        $callback   = new Redirect3D($this->queryConfig);
+
+        $request    = $callback->createRequest($order, $data);
+        $response   = new Response($request->getArrayCopy());
+        $callback->processResponse($order, $response);
+
+        return $response;
+    }
+
+    /**
+     * Set initial API query method. Workflow class name must follow next convention:
+     *
+     * (initial API query)              (workflow class name)
+     * make-rebill              =>      MakeRebillWorkflow
+     * sale                     =>      SaleWorkflow
+     *
+     * @param       string      $class          API query object class
+     */
+    protected function setInitialApiMethod($class)
+    {
+        if (!empty($this->initialApiMethod))
+        {
+            return;
+        }
+
+        $result = array();
+
+        preg_match('#(?<=\\\\)\w+(?=Workflow)#i', $class, $result);
+
+        if (empty($result))
+        {
+            throw new ConfigException('Initial API method name not found in class name');
+        }
+
+        $name_chunks = preg_split('/(?=[A-Z])/', $result[0], null, PREG_SPLIT_NO_EMPTY);
+
+        $this->initialApiMethod    = strtolower(implode('-', $name_chunks));
     }
 
     /**

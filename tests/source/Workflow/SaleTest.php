@@ -17,7 +17,7 @@ class SaleTest extends AbstractWorkflowTest
      * Test class
      * @var string
      */
-    protected $class            = 'Sale';
+    protected $class            = 'SaleWorkflow';
 
     public function getTestData()
     {
