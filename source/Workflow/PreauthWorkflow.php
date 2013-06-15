@@ -8,7 +8,4 @@ namespace PaynetEasy\Paynet\Workflow;
  */
 class PreauthWorkflow extends SaleWorkflow
 {
-    //
-    //
-    //
 }

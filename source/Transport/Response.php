@@ -3,14 +3,121 @@ namespace PaynetEasy\Paynet\Transport;
 
 use ArrayObject;
 use PaynetEasy\Paynet\Exceptions\PaynetException;
+use RuntimeException;
 
 class Response extends ArrayObject
 {
+    /**
+     * Need to update order status
+     */
+    const NEEDED_STATUS_UPDATE  = 'status_update';
+
+    /**
+     * Need to show html from response
+     */
+    const NEEDED_SHOW_HTML      = 'show_html';
+
+    /**
+     * Need redirect to response url
+     */
+    const NEEDED_REDIRECT       = 'redirect';
+
+    static protected $allowedNeededActions = array
+    (
+        self::NEEDED_STATUS_UPDATE,
+        self::NEEDED_SHOW_HTML,
+        self::NEEDED_REDIRECT
+    );
+
+    /**
+     * Action needed after API method request ended
+     *
+     * @var string
+     */
+    protected $neededAction;
+
     public function __construct($response = array())
     {
-        array_walk($response, 'trim');
+        parent::__construct(array_map('trim', $response));
+    }
 
-        parent::__construct($response);
+    /**
+     * Set action needed after API method request ended
+     *
+     * @param       string      $neededAction           Action needed after API method request ended
+     *
+     * @return      self
+     */
+    public function setNeededAction($neededAction)
+    {
+        if (!in_array($neededAction, static::$allowedNeededActions))
+        {
+            throw new RuntimeException("Unknown needed action: {$neededAction}");
+        }
+
+        $this->neededAction = $neededAction;
+
+        return $this;
+    }
+
+    /**
+     * Get action needed after API method request ended
+     *
+     * @return      string
+     */
+    public function getNeededAction()
+    {
+        return $this->neededAction;
+    }
+
+    /**
+     * True if Response has html to display
+     *
+     * @return      boolean
+     */
+    public function hasHtml()
+    {
+        return strlen($this->html()) > 0;
+    }
+
+    /**
+     * True if Response has url for redirect
+     *
+     * @return      boolean
+     */
+    public function hasRedirectUrl()
+    {
+        return strlen($this->redirectUrl()) > 0;
+    }
+
+    /**
+     * True if status update needed
+     *
+     * @return      boolean
+     */
+    public function isStatusUpdateNeeded()
+    {
+        return $this->getNeededAction() == self::NEEDED_STATUS_UPDATE;
+    }
+
+    /**
+     * True if html show needed
+     *
+     * @return      boolean
+     */
+    public function isShowHtmlNeeded()
+    {
+        return $this->getNeededAction() == self::NEEDED_SHOW_HTML;
+    }
+
+    /**
+     * True if redirect needed
+     *
+     * @return      boolean
+     */
+    public function isRedirectNeeded()
+    {
+        return $this->getNeededAction() == self::NEEDED_REDIRECT;
     }
 
     public function html()
