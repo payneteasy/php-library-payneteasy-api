@@ -23,6 +23,8 @@ class Redirect3D extends AbstractQuery
     {
         $this->validateOrder($order);
 
+        $order->setState(OrderInterface::STATE_WAIT);
+
         return $this->wrapToRequest($data);
     }
 }

@@ -9,8 +9,7 @@ use PaynetEasy\Paynet\Queries\QueryFactoryInterface;
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Callbacks\Redirect3D;
 
-use PaynetEasy\Paynet\Exceptions\ConfigException;
-use PaynetEasy\Paynet\Exceptions\PaynetException;
+use RuntimeException;
 
 /**
  * Abstract workflow
@@ -46,8 +45,9 @@ abstract class AbstractWorkflow implements WorkflowInterface
     protected $queryConfig;
 
     /**
-     * Constructor
-     * @param       GatewayClientInterface        $gatewayClient
+     * @param       GatewayClientInterface          $gatewayClient          Client for API gateway
+     * @param       QueryFactoryInterface           $queryFactory           Factory for API qieries
+     * @param       array                           $queryConfig            Config for queries
      */
     public function __construct(GatewayClientInterface  $gatewayClient,
                                 QueryFactoryInterface   $queryFactory,
@@ -75,58 +75,95 @@ abstract class AbstractWorkflow implements WorkflowInterface
             case OrderInterface::STATE_NULL:
             case OrderInterface::STATE_INIT:
             {
-                return $this->initQuery($order);
+                $response = $this->initializeProcessing($order);
+                break;
             }
             case OrderInterface::STATE_PROCESSING:
             case OrderInterface::STATE_WAIT:
             {
-                return $this->statusQuery($order);
+                $response = $this->updateStatus($order);
+                break;
             }
             case OrderInterface::STATE_REDIRECT:
             {
                 if(empty($callbackData))
                 {
-                    throw new PaynetException('Data parameter can not be empty for state "' .
-                                              OrderInterface::STATE_REDIRECT . '"');
+                    throw new RuntimeException("Data parameter can not be empty for state {$order->getState()}");
                 }
 
-                return $this->redirectCallback($order, $callbackData);
+                $response = $this->processCallback($order, $callbackData);
+                break;
             }
             case OrderInterface::STATE_END:
             {
-                return null;
+                throw new RuntimeException('Payment has been completed');
             }
             default:
             {
-                throw new PaynetException('Undefined state = ' . $order->getState());
+                throw new RuntimeException("Undefined state: {$order->getState()}");
             }
         }
+
+        $this->setNeededAction($response);
+
+        return $response;
     }
 
-    protected function initQuery(OrderInterface $order)
+    /**
+     * Executes initial API method  query
+     *
+     * @param       \PaynetEasy\Paynet\Data\OrderInterface      $order          Order for processing
+     *
+     * @return      \PaynetEasy\Paynet\Transport\Response                       Query response
+     */
+    protected function initializeProcessing(OrderInterface $order)
     {
-        $order->setState(OrderInterface::STATE_PROCESSING);
-
         return $this->executeQuery($this->initialApiMethod, $order);
     }
 
-    protected function statusQuery(OrderInterface $order)
+    /**
+     * Executes status query
+     *
+     * @param       \PaynetEasy\Paynet\Data\OrderInterface      $order          Order for processing
+     *
+     * @return      \PaynetEasy\Paynet\Transport\Response                       Query response
+     */
+    protected function updateStatus(OrderInterface $order)
     {
         return $this->executeQuery('status', $order);
     }
 
     /**
-     * The method handles the callback after the 3D
+     * Sets action needed after call to workflow
+     *
+     * @see Response::setNeededAction()
+     *
+     * @param       \PaynetEasy\Paynet\Transport\Response       $response       Query response
+     */
+    protected function setNeededAction(Response $response)
+    {
+        if ($response->hasRedirectUrl())
+        {
+            $response->setNeededAction(Response::NEEDED_REDIRECT);
+        }
+        elseif ($response->hasHtml())
+        {
+            $response->setNeededAction(Response::NEEDED_SHOW_HTML);
+        }
+        elseif ($response->isProcessing())
+        {
+            $response->setNeededAction(Response::NEEDED_STATUS_UPDATE);
+        }
+    }
+
+    /**
+     * Handles the callback after the redirect to Paynet
      *
      * @param       array $data
      * @return      Response
-     *
-     * @throws      PaynetException
      */
-    protected function redirectCallback(OrderInterface $order, $data)
+    protected function processCallback(OrderInterface $order, $data)
     {
-        $order->setState(OrderInterface::STATE_WAIT);
-
         $callback   = new Redirect3D($this->queryConfig);
 
         $request    = $callback->createRequest($order, $data);
@@ -158,7 +195,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
 
         if (empty($result))
         {
-            throw new ConfigException('Initial API method name not found in class name');
+            throw new RuntimeException('Initial API method name not found in class name');
         }
 
         $name_chunks = preg_split('/(?=[A-Z])/', $result[0], null, PREG_SPLIT_NO_EMPTY);
