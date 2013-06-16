@@ -2,7 +2,7 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
-use PaynetEasy\Paynet\Responses\CardInfo;
+use PaynetEasy\Paynet\Response\CardInfo;
 use PaynetEasy\Paynet\Transport\Response;
 
 use RuntimeException;

@@ -1,5 +1,5 @@
 <?PHP
-namespace PaynetEasy\Paynet\Responses;
+namespace PaynetEasy\Paynet\Response;
 
 use PaynetEasy\Paynet\Transport\Response;
 
