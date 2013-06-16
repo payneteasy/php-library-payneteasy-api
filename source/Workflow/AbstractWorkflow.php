@@ -7,7 +7,7 @@ use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Query\QueryFactoryInterface;
 
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Callbacks\Redirect3D;
+use PaynetEasy\Paynet\Callback\Redirect3D;
 
 use RuntimeException;
 

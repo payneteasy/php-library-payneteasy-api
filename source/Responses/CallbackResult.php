@@ -5,10 +5,10 @@ use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Exception\CallbackException;
 
 /**
- * Merchant Callbacks
+ * Merchant Callback
  * Sale, Return, Chargeback callback simple URL
  *
- * see: http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks#Sale.2C_Return_Callback_Parameters
+ * see: http://wiki.payneteasy.com/index.php/PnE:Merchant_Callback#Sale.2C_Return_Callback_Parameters
  */
 class CallbackResult extends Response
 {

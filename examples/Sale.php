@@ -3,7 +3,7 @@ require_once './PaynetProcess.php';
 
 use \PaynetEasy\Paynet\Query\SaleQuery         as PaynetSale;
 use \PaynetEasy\Paynet\Query\StatusQuery;
-use \PaynetEasy\Paynet\Callbacks\Redirect3D;
+use \PaynetEasy\Paynet\Callback\Redirect3D;
 use \Exception;
 
 class Sale extends PaynetProcess

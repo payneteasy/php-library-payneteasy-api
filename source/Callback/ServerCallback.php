@@ -1,5 +1,5 @@
 <?PHP
-namespace PaynetEasy\Paynet\Callbacks;
+namespace PaynetEasy\Paynet\Callback;
 
 use PaynetEasy\Paynet\Query\AbstractQuery;
 
