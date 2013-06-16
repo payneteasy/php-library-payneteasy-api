@@ -17,19 +17,11 @@ class SaleQuery extends AbstractQuery
         $query = array_merge
         (
             $order->getCustomer()->getData(),
+            $order->getCreditCard()->getData(),
             $order->getData(),
             $this->commonQueryOptions(),
             $this->createControlCode($order)
         );
-
-        if ($order->hasRecurrentCard())
-        {
-            $query += $order->getRecurrentCard()->getData();
-        }
-        elseif ($order->hasCreditCard())
-        {
-            $query += $order->getCreditCard()->getData();
-        }
 
         return $this->wrapToRequest($query);
     }
@@ -44,20 +36,15 @@ class SaleQuery extends AbstractQuery
             throw new ConfigException('Customer is not defined');
         }
 
-        if(     !$order->hasCreditCard()
-           &&   !$order->hasRecurrentCard())
+        if(!$order->hasCreditCard())
         {
-            throw new ConfigException('CreditCard or RecurrentCard must be defined');
+            throw new ConfigException('CreditCard must be defined');
         }
 
         $order->validate();
         $order->getCustomer()->validate();
 
-        if ($order->hasRecurrentCard())
-        {
-            $order->getRecurrentCard()->validate();
-        }
-        elseif ($order->hasCreditCard())
+        if ($order->hasCreditCard())
         {
             $order->getCreditCard()->validate();
         }
@@ -68,27 +55,13 @@ class SaleQuery extends AbstractQuery
      */
     protected function createControlCode(OrderInterface $order)
     {
-        if ($order->hasRecurrentCard())
-        {
-            return array('control' => sha1
-            (
-                $this->config['end_point'] .
-                'CLIENT-112233' .
-                '99' .
-                $order->getRecurrentCard()->cardrefid() .
-                $this->config['control']
-            ));
-        }
-        elseif ($order->hasCreditCard())
-        {
-            return array('control' => sha1
-            (
-                $this->config['end_point'] .
-                $order->getOrderCode() .
-                $order->getAmountInCents() .
-                $order->getCustomer()->getEmail() .
-                $this->config['control']
-            ));
-        }
+        return array('control' => sha1
+        (
+            $this->config['end_point'] .
+            $order->getOrderCode() .
+            $order->getAmountInCents() .
+            $order->getCustomer()->getEmail() .
+            $this->config['control']
+        ));
     }
 }
