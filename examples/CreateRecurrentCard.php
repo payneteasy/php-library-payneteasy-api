@@ -5,7 +5,7 @@ use PaynetEasy\Paynet\Data\OrderInterface;
 
 use PaynetEasy\Paynet\Data\RecurrentCard;
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Queries\CreateCardRefQuery;
+use PaynetEasy\Paynet\Query\CreateCardRefQuery;
 
 use Exception;
 

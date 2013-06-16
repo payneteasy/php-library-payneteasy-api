@@ -1,6 +1,6 @@
 <?php
 
-namespace PaynetEasy\Paynet\Queries;
+namespace PaynetEasy\Paynet\Query;
 
 class       QueryFactory
 implements  QueryFactoryInterface

@@ -1,5 +1,5 @@
 <?PHP
-namespace PaynetEasy\Paynet\Queries;
+namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
 

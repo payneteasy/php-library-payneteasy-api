@@ -1,5 +1,5 @@
 <?PHP
-namespace PaynetEasy\Paynet\Queries;
+namespace PaynetEasy\Paynet\Query;
 
 /**
  * The implementation of the query Capture

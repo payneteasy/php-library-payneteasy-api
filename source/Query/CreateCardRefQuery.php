@@ -1,17 +1,15 @@
 <?PHP
-namespace PaynetEasy\Paynet\Queries;
+namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
-use PaynetEasy\Paynet\Responses\CardInfo;
 use PaynetEasy\Paynet\Transport\Response;
-
-use RuntimeException;
+use PaynetEasy\Paynet\Exception\ResponseException;
 
 /**
  * The implementation of the query STATUS
  * http://wiki.payneteasy.com/index.php?title=PnE%3ARecurrent_Transactions&setlang=en#Recurrent_Payments
  */
-class GetCardInfoQuery extends AbstractQuery
+class CreateCardRefQuery extends AbstractQuery
 {
     /**
      * {@inheritdoc}
@@ -22,7 +20,7 @@ class GetCardInfoQuery extends AbstractQuery
 
         $query = array_merge
         (
-            $order->getRecurrentCard()->getData(),
+            $order->getContextData(),
             $this->commonQueryOptions(),
             $this->createControlCode($order)
         );
@@ -35,22 +33,22 @@ class GetCardInfoQuery extends AbstractQuery
      */
     public function processResponse(OrderInterface $order, Response $response)
     {
-        parent::processResponse($order, $response);
-
-        return new CardInfo($response->getArrayCopy());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function validateOrder(OrderInterface $order)
-    {
-        if(!$order->hasRecurrentCard())
+        if(!isset($response['card-ref-id']))
         {
-            throw new RuntimeException('Order is not instance of Order');
+            $error = new ResponseException('card-ref-id undefined');
+
+            $order->addError($error);
+            $order->setState(OrderInterface::STATE_END);
+
+            throw $error;
         }
 
-        $order->getRecurrentCard()->validate();
+        if($response->isApproved())
+        {
+            $order->createRecurrentCard($response['card-ref-id']);
+        }
+
+        parent::processResponse($order, $response);
     }
 
     /**
@@ -59,11 +57,12 @@ class GetCardInfoQuery extends AbstractQuery
     protected function createControlCode(OrderInterface $order)
     {
         // This is SHA-1 checksum of the concatenation
-        // login + cardrefid + merchant-control.
+        // login + client-order-id + paynet-order-id + merchant-control.
         return array('control' => sha1
         (
             $this->config['login'].
-            $order->getRecurrentCard()->cardRefId().
+            $order->getOrderCode().
+            $order->getPaynetOrderId().
             $this->config['control']
         ));
     }

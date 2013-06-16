@@ -3,7 +3,7 @@ namespace PaynetEasy\Paynet\Workflow;
 
 use PHPUnit_Framework_TestCase;
 use PaynetEasy\Paynet\Transport\FakeGatewayClient;
-use PaynetEasy\Paynet\Queries\QueryFactory;
+use PaynetEasy\Paynet\Query\QueryFactory;
 use PaynetEasy\Paynet\Data\Order;
 use PaynetEasy\Paynet\Exception\PaynetException;
 

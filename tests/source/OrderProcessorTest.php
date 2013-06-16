@@ -9,7 +9,7 @@ use PaynetEasy\Paynet\Transport\Request;
 use PaynetEasy\Paynet\Transport\Response;
 
 use PaynetEasy\Paynet\Workflow\FakeWorkflow;
-use PaynetEasy\Paynet\Queries\FakeQuery;
+use PaynetEasy\Paynet\Query\FakeQuery;
 use PaynetEasy\Paynet\Transport\FakeGatewayClient;
 
 /**

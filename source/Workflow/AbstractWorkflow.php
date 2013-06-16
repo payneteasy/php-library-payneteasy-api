@@ -4,7 +4,7 @@ namespace PaynetEasy\Paynet\Workflow;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
-use PaynetEasy\Paynet\Queries\QueryFactoryInterface;
+use PaynetEasy\Paynet\Query\QueryFactoryInterface;
 
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Callbacks\Redirect3D;
@@ -33,7 +33,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * API request queries factory
      *
-     * @var \PaynetEasy\Paynet\Queries\QueryFactoryInterface
+     * @var \PaynetEasy\Paynet\Query\QueryFactoryInterface
      */
     protected $queryFactory;
 

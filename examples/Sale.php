@@ -1,8 +1,8 @@
 <?PHP
 require_once './PaynetProcess.php';
 
-use \PaynetEasy\Paynet\Queries\SaleQuery         as PaynetSale;
-use \PaynetEasy\Paynet\Queries\StatusQuery;
+use \PaynetEasy\Paynet\Query\SaleQuery         as PaynetSale;
+use \PaynetEasy\Paynet\Query\StatusQuery;
 use \PaynetEasy\Paynet\Callbacks\Redirect3D;
 use \Exception;
 

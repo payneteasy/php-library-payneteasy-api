@@ -2,7 +2,7 @@
 namespace PaynetEasy\Paynet\Callbacks;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
-use PaynetEasy\Paynet\Queries\AbstractQuery;
+use PaynetEasy\Paynet\Query\AbstractQuery;
 
 class Redirect3D extends AbstractQuery
 {

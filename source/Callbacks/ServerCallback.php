@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Callbacks;
 
-use PaynetEasy\Paynet\Queries\AbstractQuery;
+use PaynetEasy\Paynet\Query\AbstractQuery;
 
 class ServerCallback extends AbstractQuery
 {

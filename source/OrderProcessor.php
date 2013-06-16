@@ -3,7 +3,7 @@
 namespace PaynetEasy\Paynet;
 
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
-use PaynetEasy\Paynet\Queries\QueryFactoryInterface;
+use PaynetEasy\Paynet\Query\QueryFactoryInterface;
 use PaynetEasy\Paynet\Workflow\WorkflowFactoryInterface;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
@@ -11,7 +11,7 @@ use PaynetEasy\Paynet\Transport\Request;
 use PaynetEasy\Paynet\Transport\Response;
 
 use PaynetEasy\Paynet\Transport\GatewayClient;
-use PaynetEasy\Paynet\Queries\QueryFactory;
+use PaynetEasy\Paynet\Query\QueryFactory;
 use PaynetEasy\Paynet\Workflow\WorkflowFactory;
 
 use RuntimeException;
@@ -62,7 +62,7 @@ class OrderProcessor
     /**
      * API request queries factory
      *
-     * @var \PaynetEasy\Paynet\Queries\QueryFactoryInterface
+     * @var \PaynetEasy\Paynet\Query\QueryFactoryInterface
      */
     protected $queryFactory;
 
@@ -197,7 +197,7 @@ class OrderProcessor
      * @param       string              $apiQueryName                       API query method
      * @param       array               $apiQueryConfig                     API query config
      *
-     * @return      \PaynetEasy\Paynet\Queries\QueryInterface               API query object
+     * @return      \PaynetEasy\Paynet\Query\QueryInterface               API query object
      */
     public function getQuery($apiQueryName, $apiQueryConfig)
     {
@@ -308,7 +308,7 @@ class OrderProcessor
     /**
      * Set query factory
      *
-     * @param       \PaynetEasy\Paynet\Queries\QueryFactoryInterface            $queryFactory           Query factory
+     * @param       \PaynetEasy\Paynet\Query\QueryFactoryInterface            $queryFactory           Query factory
      *
      * @return      self
      */
@@ -351,7 +351,7 @@ class OrderProcessor
     /**
      * Get query factory
      *
-     * @return      \PaynetEasy\Paynet\Queries\QueryFactoryInterface            Query factory
+     * @return      \PaynetEasy\Paynet\Query\QueryFactoryInterface            Query factory
      */
     public function getQueryFactory()
     {

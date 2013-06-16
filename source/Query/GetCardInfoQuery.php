@@ -1,11 +1,17 @@
-<?php
-
-namespace PaynetEasy\Paynet\Queries;
+<?PHP
+namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\Responses\CardInfo;
+use PaynetEasy\Paynet\Transport\Response;
+
 use RuntimeException;
 
-class MakeRebillQuery extends AbstractQuery
+/**
+ * The implementation of the query STATUS
+ * http://wiki.payneteasy.com/index.php?title=PnE%3ARecurrent_Transactions&setlang=en#Recurrent_Payments
+ */
+class GetCardInfoQuery extends AbstractQuery
 {
     /**
      * {@inheritdoc}
@@ -16,16 +22,10 @@ class MakeRebillQuery extends AbstractQuery
 
         $query = array_merge
         (
-            $order->getData(),
             $order->getRecurrentCard()->getData(),
             $this->commonQueryOptions(),
             $this->createControlCode($order)
         );
-
-        if($order->getCancelReason())
-        {
-            $query['comment']       = $order->getCancelReason();
-        }
 
         return $this->wrapToRequest($query);
     }
@@ -33,14 +33,23 @@ class MakeRebillQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    public function validateOrder(OrderInterface $order)
+    public function processResponse(OrderInterface $order, Response $response)
+    {
+        parent::processResponse($order, $response);
+
+        return new CardInfo($response->getArrayCopy());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function validateOrder(OrderInterface $order)
     {
         if(!$order->hasRecurrentCard())
         {
-            throw new RuntimeException('Recurrent card is not defined');
+            throw new RuntimeException('Order is not instance of Order');
         }
 
-        $order->validate();
         $order->getRecurrentCard()->validate();
     }
 
@@ -49,11 +58,11 @@ class MakeRebillQuery extends AbstractQuery
      */
     protected function createControlCode(OrderInterface $order)
     {
+        // This is SHA-1 checksum of the concatenation
+        // login + cardrefid + merchant-control.
         return array('control' => sha1
         (
-            $this->config['end_point'].
-            $order->getOrderCode().
-            $order->getAmountInCents().
+            $this->config['login'].
             $order->getRecurrentCard()->cardRefId().
             $this->config['control']
         ));
