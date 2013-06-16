@@ -13,5 +13,5 @@ interface WorkflowFactoryInterface
      *
      * @return      WorkflowInterface                   Workflow for payment processing
      */
-    public function getWorkflow($workflowName, array $workflowConfig = array());
+    public function getWorkflow($workflowName, array $workflowConfig);
 }

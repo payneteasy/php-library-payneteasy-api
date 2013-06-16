@@ -8,19 +8,24 @@ use PaynetEasy\Paynet\Queries\QueryFactoryInterface;
 class WorkflowFactory implements WorkflowFactoryInterface
 {
     /**
-     * Paynet gateway client
+     * API gateway client
      *
      * @var \PaynetEasy\Paynet\Transport\GatewayClientInterface
      */
     protected $gatewayClient;
 
     /**
-     * API request queries factory
+     * API queries factory
      *
      * @var \PaynetEasy\Paynet\Queries\QueryFactoryInterface
      */
     protected $queryFactory;
 
+    /**
+     *
+     * @param       \PaynetEasy\Paynet\Transport\GatewayClientInterface         $gatewayClient      API gateway client
+     * @param       \PaynetEasy\Paynet\Queries\QueryFactoryInterface            $queryFactory       API queries factory
+     */
     public function __construct(GatewayClientInterface  $gatewayClient,
                                 QueryFactoryInterface   $queryFactory)
     {
@@ -32,7 +37,7 @@ class WorkflowFactory implements WorkflowFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getWorkflow($workflowName, array $workflowConfig = array())
+    public function getWorkflow($workflowName, array $workflowConfig)
     {
         $nameChunks     = array_map('ucfirst', explode('-', $workflowName));
         $workflowClass  = __NAMESPACE__ . '\\' . implode('', $nameChunks) . 'Workflow';
