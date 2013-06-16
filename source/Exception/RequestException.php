@@ -1,5 +1,5 @@
 <?PHP
-namespace PaynetEasy\Paynet\Exceptions;
+namespace PaynetEasy\Paynet\Exception;
 
 class RequestException extends PaynetException
 {

@@ -35,7 +35,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
     }
 
     /**
-     * @expectedException PaynetEasy\Paynet\Exceptions\ResponseException
+     * @expectedException PaynetEasy\Paynet\Exception\ResponseException
      * @expectedExceptionMessage card-ref-id undefined
      */
     public function testProcessResponseWithException()

@@ -3,7 +3,7 @@ namespace PaynetEasy\Paynet\Queries;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Exceptions\ResponseException;
+use PaynetEasy\Paynet\Exception\ResponseException;
 
 /**
  * The implementation of the query STATUS

@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Transport;
 
-use PaynetEasy\Paynet\Exceptions\RequestException;
+use PaynetEasy\Paynet\Exception\RequestException;
 use PaynetEasy\Paynet\Transport\Response;
 use Exception;
 

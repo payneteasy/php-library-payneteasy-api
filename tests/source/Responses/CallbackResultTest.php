@@ -32,7 +32,7 @@ class CallbackResultTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers PaynetEasy\Paynet\Responses\CallbackResult::type
-     * @expectedException \PaynetEasy\Paynet\Exceptions\CallbackException
+     * @expectedException \PaynetEasy\Paynet\Exception\CallbackException
      */
     public function testTypeWithError()
     {

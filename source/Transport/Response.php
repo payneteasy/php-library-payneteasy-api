@@ -2,7 +2,7 @@
 namespace PaynetEasy\Paynet\Transport;
 
 use ArrayObject;
-use PaynetEasy\Paynet\Exceptions\PaynetException;
+use PaynetEasy\Paynet\Exception\PaynetException;
 use RuntimeException;
 
 class Response extends ArrayObject

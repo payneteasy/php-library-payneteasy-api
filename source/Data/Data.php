@@ -2,7 +2,7 @@
 namespace PaynetEasy\Paynet\Data;
 
 use \ArrayObject;
-use \PaynetEasy\Paynet\Exceptions\PaynetException;
+use \PaynetEasy\Paynet\Exception\PaynetException;
 
 class Data extends ArrayObject
 {

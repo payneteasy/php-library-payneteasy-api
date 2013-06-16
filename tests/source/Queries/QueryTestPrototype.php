@@ -105,7 +105,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 
         $error = $order->getLastError();
 
-        $this->assertInstanceOf('\PaynetEasy\Paynet\Exceptions\PaynetException', $error);
+        $this->assertInstanceOf('\PaynetEasy\Paynet\Exception\PaynetException', $error);
         $this->assertEquals($errorMessage, $error->getMessage());
         $this->assertEquals($errorCode, $error->getCode());
     }

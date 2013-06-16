@@ -7,7 +7,7 @@ use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Transport\Request;
 
 use RuntimeException;
-use PaynetEasy\Paynet\Exceptions\InvalidControlCodeException;
+use PaynetEasy\Paynet\Exception\InvalidControlCodeException;
 
 /**
  * Abstract Query

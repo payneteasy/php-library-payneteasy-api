@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Data;
 
-use \PaynetEasy\Paynet\Exceptions\PaynetException;
+use \PaynetEasy\Paynet\Exception\PaynetException;
 
 /**
  * Container for credit card data

@@ -5,7 +5,7 @@ use PHPUnit_Framework_TestCase;
 use PaynetEasy\Paynet\Transport\FakeGatewayClient;
 use PaynetEasy\Paynet\Queries\QueryFactory;
 use PaynetEasy\Paynet\Data\Order;
-use PaynetEasy\Paynet\Exceptions\PaynetException;
+use PaynetEasy\Paynet\Exception\PaynetException;
 
 /**
  * Test class for Query.
@@ -261,7 +261,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
         {
             $e = $this->order->getLastError();
 
-            $this->assertInstanceOf('PaynetEasy\Paynet\Exceptions\PaynetException', $e, 'expected exception PaynetException');
+            $this->assertInstanceOf('PaynetEasy\Paynet\Exception\PaynetException', $e, 'expected exception PaynetException');
             $this->assertEquals($assert['error_message'], $e->getMessage(), 'exception message mismatch');
             $this->assertEquals($assert['error_code'], $e->getCode(), 'exception code mismatch');
 
@@ -271,14 +271,14 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
         {
             $e = $this->order->getLastError();
 
-            $this->assertInstanceOf('PaynetEasy\Paynet\Exceptions\PaynetException', $e, 'expected getLastError');
+            $this->assertInstanceOf('PaynetEasy\Paynet\Exception\PaynetException', $e, 'expected getLastError');
             $this->assertEquals($assert['error_message'], $e->getMessage(), 'Error Message wrong');
             $this->assertEquals($assert['error_code'], $e->getCode(), 'Error Code wrong');
         }
         else
         {
-            $this->assertNotInstanceOf('PaynetEasy\Paynet\Exceptions\PaynetException', $e, 'not expected exception PaynetException');
-            $this->assertNotInstanceOf('PaynetEasy\Paynet\Exceptions\PaynetException',
+            $this->assertNotInstanceOf('PaynetEasy\Paynet\Exception\PaynetException', $e, 'not expected exception PaynetException');
+            $this->assertNotInstanceOf('PaynetEasy\Paynet\Exception\PaynetException',
                                         $this->order->getLastError(),
                                        'getLastError must be null');
             $this->assertInstanceOf('PaynetEasy\Paynet\Transport\Response', $response);
