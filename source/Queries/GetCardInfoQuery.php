@@ -4,7 +4,8 @@ namespace PaynetEasy\Paynet\Queries;
 use PaynetEasy\Paynet\Data\OrderInterface;
 use PaynetEasy\Paynet\Responses\CardInfo;
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Exceptions\ConfigException;
+
+use RuntimeException;
 
 /**
  * The implementation of the query STATUS
@@ -46,7 +47,7 @@ class GetCardInfoQuery extends AbstractQuery
     {
         if(!$order->hasRecurrentCard())
         {
-            throw new ConfigException('Order is not instance of Order');
+            throw new RuntimeException('Order is not instance of Order');
         }
 
         $order->getRecurrentCard()->validate();

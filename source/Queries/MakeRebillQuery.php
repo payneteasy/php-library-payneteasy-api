@@ -3,7 +3,7 @@
 namespace PaynetEasy\Paynet\Queries;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
-use PaynetEasy\Paynet\Exceptions\ConfigException;
+use RuntimeException;
 
 class MakeRebillQuery extends AbstractQuery
 {
@@ -37,7 +37,7 @@ class MakeRebillQuery extends AbstractQuery
     {
         if(!$order->hasRecurrentCard())
         {
-            throw new ConfigException('Recurrent card is not defined');
+            throw new RuntimeException('Recurrent card is not defined');
         }
 
         $order->validate();

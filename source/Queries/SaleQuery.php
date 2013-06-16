@@ -3,7 +3,7 @@
 namespace PaynetEasy\Paynet\Queries;
 
 use PaynetEasy\Paynet\Data\OrderInterface;
-use PaynetEasy\Paynet\Exceptions\ConfigException;
+use RuntimeException;
 
 class SaleQuery extends AbstractQuery
 {
@@ -33,12 +33,12 @@ class SaleQuery extends AbstractQuery
     {
         if(!$order->hasCustomer())
         {
-            throw new ConfigException('Customer is not defined');
+            throw new RuntimeException('Customer is not defined');
         }
 
         if(!$order->hasCreditCard())
         {
-            throw new ConfigException('CreditCard must be defined');
+            throw new RuntimeException('CreditCard must be defined');
         }
 
         $order->validate();

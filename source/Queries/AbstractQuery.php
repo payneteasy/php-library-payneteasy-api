@@ -6,7 +6,7 @@ use PaynetEasy\Paynet\Data\OrderInterface;
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Transport\Request;
 
-use PaynetEasy\Paynet\Exceptions\ConfigException;
+use RuntimeException;
 use PaynetEasy\Paynet\Exceptions\InvalidControlCodeException;
 
 /**
@@ -107,23 +107,23 @@ implements      QueryInterface
      *
      * @param       array       $config         API query object config
      *
-     * @throws      ConfigException
+     * @throws      RuntimeException
      */
     protected function setConfig(array $config)
     {
         if(empty($config['end_point']))
         {
-            throw new ConfigException('end_point undefined');
+            throw new RuntimeException('end_point undefined');
         }
 
         if(empty($config['control']))
         {
-            throw new ConfigException('control undefined');
+            throw new RuntimeException('control undefined');
         }
 
         if(empty($config['login']))
         {
-            throw new ConfigException('login undefined');
+            throw new RuntimeException('login undefined');
         }
 
         $this->config = $config;
@@ -151,7 +151,7 @@ implements      QueryInterface
 
         if (empty($result))
         {
-            throw new ConfigException('API method name not found in class name');
+            throw new RuntimeException('API method name not found in class name');
         }
 
         $name_chunks     = preg_split('/(?=[A-Z])/', $result[0], null, PREG_SPLIT_NO_EMPTY);

@@ -3,7 +3,7 @@
 namespace PaynetEasy\Paynet\Data;
 
 use Exception;
-use PaynetEasy\Paynet\Exceptions\ConfigException;
+use RuntimeException;
 
 /**
  * Container for order data
@@ -250,7 +250,7 @@ implements  OrderInterface
     {
         if (!in_array($state, static::getAllowedStates()))
         {
-            throw new ConfigException("Unknown state given: {$state}");
+            throw new RuntimeException("Unknown state given: {$state}");
         }
 
         $this->state = $state;
@@ -273,7 +273,7 @@ implements  OrderInterface
     {
         if (!in_array($status, static::getAllowedStatuses()))
         {
-            throw new ConfigException("Unknown state given: {$status}");
+            throw new RuntimeException("Unknown state given: {$status}");
         }
 
         $this->status = $status;
@@ -296,7 +296,7 @@ implements  OrderInterface
     {
         if(strlen($this->comment) > 50)
         {
-            throw new ConfigException('Cancellation reason is very long (over 50 characters)');
+            throw new RuntimeException('Cancellation reason is very long (over 50 characters)');
         }
 
         $this->cancelReason = $cancelReason;
@@ -413,12 +413,12 @@ implements  OrderInterface
     {
         if(!$this->getPaynetOrderId())
         {
-            throw new ConfigException('order.paynet_order_id undefined');
+            throw new RuntimeException('order.paynet_order_id undefined');
         }
 
         if(!$this->getOrderCode())
         {
-            throw new ConfigException('order.order_code undefined');
+            throw new RuntimeException('order.order_code undefined');
         }
     }
 }
