@@ -2,6 +2,8 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
+use PaynetEasy\Paynet\Transport\FakeGatewayClient;
+use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Data\Order;
 use PaynetEasy\Paynet\Data\Customer;
 use PaynetEasy\Paynet\Data\CreditCard;
@@ -87,14 +89,14 @@ class SaleTest extends WorkflowTestPrototype
             $order->setCreditCard($card);
         }
 
-        $this->transport->response  = array
+        FakeGatewayClient::$response  = new Response(array
         (
             'type'              => 'async-response',
             'status'            => 'processing',
             'paynet-order-id'   => 'PAYNET-112233',
             'merchant-order-id' => 'CLIENT-112233',
             'serial-number'     => md5(time())
-        );
+        ));
 
         $this->query->processOrder($order);
 
@@ -167,8 +169,8 @@ class SaleTest extends WorkflowTestPrototype
 
         foreach($request as $key => $value)
         {
-            $this->assertNotEmpty($this->transport->request[$key], 'Request property no exists: ' . $key);
-            $this->assertEquals($value, $this->transport->request[$key], "$key not equal '$value'");
+            $this->assertNotEmpty(FakeGatewayClient::$request[$key], 'Request property no exists: ' . $key);
+            $this->assertEquals($value, FakeGatewayClient::$request[$key], "$key not equal '$value'");
         }
     }
 
@@ -289,7 +291,7 @@ class SaleTest extends WorkflowTestPrototype
         list($customer, $card, $order) = $this->getTestData();
 
         $this->order = $order;
-        $this->transport->response  = $server_response;
+        FakeGatewayClient::$response  = new Response($server_response);
 
         $order->setCustomer($customer);
 
@@ -313,14 +315,14 @@ class SaleTest extends WorkflowTestPrototype
         list($customer, $card, $order) = $this->getTestData();
 
         $this->order = $order;
-        $this->transport->response          = array
+        FakeGatewayClient::$response = new Response(array
         (
             'type'              => 'async-response',
             'status'            => 'processing',
             'paynet-order-id'   => 'PAYNET-112233',
             'merchant-order-id' => 'CLIENT-112233',
             'serial-number'     => md5(time())
-        );
+        ));
 
         $order->setCustomer($customer);
 
@@ -335,7 +337,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $this->query->processOrder($order);
 
-        $this->transport->response = $server_response;
+        FakeGatewayClient::$response = new Response($server_response);
 
         parent::testProcess($assert, $server_response);
     }
@@ -500,14 +502,14 @@ class SaleTest extends WorkflowTestPrototype
         list($customer, $card, $order) = $this->getTestData();
 
         $this->order = $order;
-        $this->transport->response          = array
+        FakeGatewayClient::$response = new Response(array
         (
             'type'              => 'async-response',
             'status'            => 'processing',
             'paynet-order-id'   => 'PAYNET-112233',
             'merchant-order-id' => 'CLIENT-112233',
             'serial-number'     => md5(time())
-        );
+        ));
 
         $order->setCustomer($customer);
 
@@ -522,14 +524,14 @@ class SaleTest extends WorkflowTestPrototype
 
         $this->query->processOrder($order);
 
-        $this->transport->response          = array
+        FakeGatewayClient::$response = new Response(array
         (
             'type'              => 'status-response',
             'status'            => 'processing',
             'html'              => '<HTML>',
             'paynet-order-id'   => $order->getPaynetOrderId(),
             'serial-number'     => md5(time())
-        );
+        ));
 
         $this->query->processOrder($order);
 

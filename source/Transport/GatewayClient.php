@@ -5,31 +5,30 @@ use PaynetEasy\Paynet\Exceptions\RequestException;
 use PaynetEasy\Paynet\Transport\Response;
 use Exception;
 
-class PaynetClient implements GatewayClientInterface
+class GatewayClient implements GatewayClientInterface
 {
     /**
      * Full url to Paynet gateway
      *
      * @var string
      */
-    protected $gateway_url;
+    protected $gatewayUrl;
 
     /**
      * Gateway client user agent
      *
      * @var string
      */
-    protected $user_agent = 'PaynetEasy-Client/1.0';
+    protected $userAgent = 'PaynetEasy-Client/1.0';
 
     /**
      * Paynet gateway client
      *
-     * @param       string      $server     Domain
-     * @param       string      $base_url   Base Url
+     * @param       string      $gatewayUrl     Full url to Paynet API gateway
      */
-    public function __construct($server, $base_url = '/paynet/api/v2/')
+    public function __construct($gatewayUrl)
     {
-        $this->gateway_url = 'https://' . trim($server, '/') . '/' . trim($base_url, '/');
+        $this->gatewayUrl = rtrim($gatewayUrl, '/');
     }
 
     /**
@@ -42,7 +41,7 @@ class PaynetClient implements GatewayClientInterface
         try
         {
             $curl   = curl_init();
-            $url    = "{$this->gateway_url}/{$request->getApiMethod()}/{$request->getEndPoint()}";
+            $url    = "{$this->gatewayUrl}/{$request->getApiMethod()}/{$request->getEndPoint()}";
 
             /**
              * @todo add SSL client certificates
@@ -55,7 +54,7 @@ class PaynetClient implements GatewayClientInterface
                 (
                     CURLOPT_URL            => $url,
                     CURLOPT_HEADER         => 0,
-                    CURLOPT_USERAGENT      => $this->user_agent,
+                    CURLOPT_USERAGENT      => $this->userAgent,
                     CURLOPT_SSL_VERIFYHOST => 0,
                     CURLOPT_SSL_VERIFYPEER => 0,
                     CURLOPT_POST           => 1,

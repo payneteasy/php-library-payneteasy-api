@@ -2,7 +2,7 @@
 namespace PaynetEasy\Paynet\Workflow;
 
 use PHPUnit_Framework_TestCase;
-use PaynetEasy\Paynet\Transport\Transport;
+use PaynetEasy\Paynet\Transport\FakeGatewayClient;
 use PaynetEasy\Paynet\Queries\QueryFactory;
 use PaynetEasy\Paynet\Data\Order;
 use PaynetEasy\Paynet\Exceptions\PaynetException;
@@ -35,7 +35,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
     protected $order;
 
     /**
-     * @var \PaynetEasy\Paynet\Transport\Transport
+     * @var \PaynetEasy\Paynet\Transport\FakeGatewayClient
      */
     protected $transport;
 
@@ -50,7 +50,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->transport = new Transport();
+        $this->transport = new FakeGatewayClient();
 
         $this->class     = __NAMESPACE__.'\\'.$this->class;
 

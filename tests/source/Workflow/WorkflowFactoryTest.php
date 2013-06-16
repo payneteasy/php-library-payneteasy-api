@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
-use PaynetEasy\Paynet\Transport\PaynetClient;
+use PaynetEasy\Paynet\Transport\GatewayClient;
 use PaynetEasy\Paynet\Queries\QueryFactory;
 
 /**
@@ -21,7 +21,7 @@ class WorkflowFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new WorkflowFactory(new PaynetClient('_'), new QueryFactory);
+        $this->object = new WorkflowFactory(new GatewayClient('_'), new QueryFactory);
     }
 
     /**
@@ -30,9 +30,9 @@ class WorkflowFactoryTest extends \PHPUnit_Framework_TestCase
     public function testGetWorkflow()
     {
         $this->assertInstanceOf('PaynetEasy\Paynet\Workflow\MakeRebillWorkflow',
-                                $this->object->getWorkflow('make-rebill'));
+                                $this->object->getWorkflow('make-rebill', array()));
 
         $this->assertInstanceOf('PaynetEasy\Paynet\Workflow\SaleWorkflow',
-                                $this->object->getWorkflow('sale'));
+                                $this->object->getWorkflow('sale', array()));
     }
 }

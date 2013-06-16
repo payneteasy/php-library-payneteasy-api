@@ -3,14 +3,14 @@ require_once './config.php';
 require_once './Template.php';
 require_once './autoload.php';
 
-use PaynetEasy\Paynet\Transport\PaynetClient;
+use PaynetEasy\Paynet\Transport\GatewayClient;
 use PaynetEasy\Paynet\Data\Order;
 use PaynetEasy\Paynet\Data\OrderInterface;
 use PaynetEasy\Paynet\Data\Customer;
 use PaynetEasy\Paynet\Data\CreditCard;
 use PaynetEasy\Paynet\Data\RecurrentCardInterface;
 
-use PaynetEasy\Paynet\Workflow\Sale;
+use PaynetEasy\Paynet\Workflow\SaleWorkflow;
 
 use PaynetEasy\Paynet\Transport\Response;
 use Exception;
@@ -52,7 +52,7 @@ abstract class PaynetProcess
      */
     protected $order;
     /**
-     * @var Sale
+     * @var SaleWorkflow
      */
     protected $query;
 
@@ -72,7 +72,7 @@ abstract class PaynetProcess
     {
         // Step 1.
         // Initialize the transport driver and configurated it.
-        $this->transport        = new PaynetClient(PAYNET_SERVER);
+        $this->transport        = new GatewayClient(PAYNET_SERVER);
 
         // Step 2.
         // Make a order to be processed.
