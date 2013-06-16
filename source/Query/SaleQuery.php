@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\Paynet\Query;
 
-use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\OrderData\OrderInterface;
 use RuntimeException;
 
 class SaleQuery extends AbstractQuery

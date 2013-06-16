@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Query;
 
-use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\OrderData\OrderInterface;
 
 /**
  * The implementation of the query STATUS

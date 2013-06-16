@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
-use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\OrderData\OrderInterface;
 
 class FakeWorkflow extends AbstractWorkflow
 {

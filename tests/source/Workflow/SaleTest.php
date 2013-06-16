@@ -4,10 +4,10 @@ namespace PaynetEasy\Paynet\Workflow;
 
 use PaynetEasy\Paynet\Transport\FakeGatewayClient;
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Data\Order;
-use PaynetEasy\Paynet\Data\Customer;
-use PaynetEasy\Paynet\Data\CreditCard;
-use PaynetEasy\Paynet\Data\RecurrentCardInterface;
+use PaynetEasy\Paynet\OrderData\Order;
+use PaynetEasy\Paynet\OrderData\Customer;
+use PaynetEasy\Paynet\OrderData\CreditCard;
+use PaynetEasy\Paynet\OrderData\RecurrentCardInterface;
 
 /**
  * Test class for Sale.

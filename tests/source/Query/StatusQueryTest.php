@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\Paynet\Query;
 
-use PaynetEasy\Paynet\Data\Order;
+use PaynetEasy\Paynet\OrderData\Order;
 use PaynetEasy\Paynet\Transport\Response;
 
 /**

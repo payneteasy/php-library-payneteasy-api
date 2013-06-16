@@ -2,9 +2,9 @@
 
 namespace PaynetEasy\Paynet;
 
-use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\OrderData\OrderInterface;
 
-use PaynetEasy\Paynet\Data\Order;
+use PaynetEasy\Paynet\OrderData\Order;
 use PaynetEasy\Paynet\Transport\Request;
 use PaynetEasy\Paynet\Transport\Response;
 

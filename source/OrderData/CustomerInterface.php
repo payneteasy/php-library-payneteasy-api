@@ -4,12 +4,12 @@
  * @author Artem Ponomarenko <imenem@inbox.ru>
  */
 
-namespace PaynetEasy\Paynet\Data;
+namespace PaynetEasy\Paynet\OrderData;
 
 /**
  * @todo Implement interface
  */
-interface RecurrentCardInterface
+interface CustomerInterface
 {
 
 }

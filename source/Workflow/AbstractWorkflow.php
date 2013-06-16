@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
-use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Query\QueryFactoryInterface;
 
@@ -63,7 +63,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * Process Order with different state
      *
-     * @param       PaynetEasy\Paynet\Data\OrderInterface   $order              Order for processing
+     * @param       PaynetEasy\Paynet\OrderData\OrderInterface   $order              Order for processing
      * @param       array                                   $callbackData       Paynet callback data
      *
      * @return      \PaynetEasy\Paynet\Transport\Response
@@ -112,7 +112,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * Executes initial API method  query
      *
-     * @param       \PaynetEasy\Paynet\Data\OrderInterface      $order          Order for processing
+     * @param       \PaynetEasy\Paynet\OrderData\OrderInterface      $order          Order for processing
      *
      * @return      \PaynetEasy\Paynet\Transport\Response                       Query response
      */
@@ -124,7 +124,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * Executes status query
      *
-     * @param       \PaynetEasy\Paynet\Data\OrderInterface      $order          Order for processing
+     * @param       \PaynetEasy\Paynet\OrderData\OrderInterface      $order          Order for processing
      *
      * @return      \PaynetEasy\Paynet\Transport\Response                       Query response
      */
@@ -208,7 +208,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * and executes API method request
      *
      * @param       string                                      $queryName          API method name
-     * @param       \PaynetEasy\Paynet\Data\OrderInterface      $order              Order
+     * @param       \PaynetEasy\Paynet\OrderData\OrderInterface      $order              Order
      *
      * @return      \PaynetEasy\Paynet\Transport\Response                           Gateway response
      */

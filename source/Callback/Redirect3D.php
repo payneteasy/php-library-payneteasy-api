@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Callback;
 
-use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Query\AbstractQuery;
 
 class Redirect3D extends AbstractQuery

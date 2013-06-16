@@ -6,7 +6,7 @@ use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Query\QueryFactoryInterface;
 use PaynetEasy\Paynet\Workflow\WorkflowFactoryInterface;
 
-use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\Request;
 use PaynetEasy\Paynet\Transport\Response;
 
@@ -384,7 +384,7 @@ class OrderProcessor
      * Listener receives two parameters: OrderInterface and Response (optional)
      *
      * @param       string                                      $eventName      Event name
-     * @param       \PaynetEasy\Paynet\Data\OrderInterface      $order          Order
+     * @param       \PaynetEasy\Paynet\OrderData\OrderInterface      $order          Order
      * @param       \PaynetEasy\Paynet\Transport\Response       $response       Gateway response
      *
      * @return      self

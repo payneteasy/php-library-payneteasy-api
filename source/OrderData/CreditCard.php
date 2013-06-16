@@ -1,5 +1,5 @@
 <?PHP
-namespace PaynetEasy\Paynet\Data;
+namespace PaynetEasy\Paynet\OrderData;
 
 use \PaynetEasy\Paynet\Exception\PaynetException;
 

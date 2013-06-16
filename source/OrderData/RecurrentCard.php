@@ -1,5 +1,5 @@
 <?PHP
-namespace PaynetEasy\Paynet\Data;
+namespace PaynetEasy\Paynet\OrderData;
 
 /**
  * Container for Reccurent Credit Card data

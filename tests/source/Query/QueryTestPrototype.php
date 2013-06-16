@@ -3,7 +3,7 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Data\Order;
+use PaynetEasy\Paynet\OrderData\Order;
 
 abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 {
@@ -111,7 +111,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return      \PaynetEasy\Paynet\Data\Order
+     * @return      \PaynetEasy\Paynet\OrderData\Order
      */
     abstract protected function getOrder();
 

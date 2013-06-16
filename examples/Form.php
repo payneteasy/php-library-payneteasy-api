@@ -2,7 +2,7 @@
 require_once './PaynetProcess.php';
 
 use PaynetEasy\Paynet\Workflow\Form         as FormQuery;
-use PaynetEasy\Paynet\Data\Data;
+use PaynetEasy\Paynet\OrderData\Data;
 use Exception;
 
 class Form extends Sale

@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
-use PaynetEasy\Paynet\Data\RecurrentCard;
+use PaynetEasy\Paynet\OrderData\RecurrentCard;
 
 /**
  * Test class for MakeRebill.

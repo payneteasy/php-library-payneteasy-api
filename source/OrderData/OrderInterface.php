@@ -4,7 +4,7 @@
  * @author Artem Ponomarenko <imenem@inbox.ru>
  */
 
-namespace PaynetEasy\Paynet\Data;
+namespace PaynetEasy\Paynet\OrderData;
 
 use Exception;
 
@@ -32,7 +32,7 @@ interface OrderInterface
     /**
      * Set order customer
      *
-     * @param       \PaynetEasy\Paynet\Data\CustomerInterface        $customer       Order customer
+     * @param       \PaynetEasy\Paynet\OrderData\CustomerInterface        $customer       Order customer
      *
      * @return      self
      */
@@ -41,7 +41,7 @@ interface OrderInterface
     /**
      * Get order customer
      *
-     * @return      \PaynetEasy\Paynet\Data\CustomerInterface
+     * @return      \PaynetEasy\Paynet\OrderData\CustomerInterface
      */
     public function getCustomer();
 
@@ -55,7 +55,7 @@ interface OrderInterface
     /**
      * Set order credit card
      *
-     * @param       \PaynetEasy\Paynet\Data\CreditCardInterface     $creditCard
+     * @param       \PaynetEasy\Paynet\OrderData\CreditCardInterface     $creditCard
      *
      * @return      self
      */
@@ -64,7 +64,7 @@ interface OrderInterface
     /**
      * Get credit card
      *
-     * @return      \PaynetEasy\Paynet\Data\CreditCardInterface
+     * @return      \PaynetEasy\Paynet\OrderData\CreditCardInterface
      */
     public function getCreditCard();
 
@@ -87,7 +87,7 @@ interface OrderInterface
     /**
      * Set order recurrent card
      *
-     * @param       \PaynetEasy\Paynet\Data\RecurrentCardInterface  $recurrentCard
+     * @param       \PaynetEasy\Paynet\OrderData\RecurrentCardInterface  $recurrentCard
      *
      * @return      self
      */
@@ -96,7 +96,7 @@ interface OrderInterface
     /**
      * Get order recurrent card
      *
-     * @return      \PaynetEasy\Paynet\Data\RecurrentCardInterface
+     * @return      \PaynetEasy\Paynet\OrderData\RecurrentCardInterface
      */
     public function getRecurrentCard();
 

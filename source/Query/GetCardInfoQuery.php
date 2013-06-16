@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Query;
 
-use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Response\CardInfo;
 use PaynetEasy\Paynet\Transport\Response;
 

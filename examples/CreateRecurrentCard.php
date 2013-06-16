@@ -1,9 +1,9 @@
 <?PHP
 require_once './Sale.php';
 
-use PaynetEasy\Paynet\Data\OrderInterface;
+use PaynetEasy\Paynet\OrderData\OrderInterface;
 
-use PaynetEasy\Paynet\Data\RecurrentCard;
+use PaynetEasy\Paynet\OrderData\RecurrentCard;
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Query\CreateCardRefQuery;
 

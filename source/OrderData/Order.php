@@ -1,6 +1,6 @@
 <?php
 
-namespace PaynetEasy\Paynet\Data;
+namespace PaynetEasy\Paynet\OrderData;
 
 use Exception;
 use RuntimeException;
@@ -49,21 +49,21 @@ implements  OrderInterface
     /**
      * Order customer
      *
-     * @var \PaynetEasy\Paynet\Data\CustomerInterface
+     * @var \PaynetEasy\Paynet\OrderData\CustomerInterface
      */
     protected $customer;
 
     /**
      * Order credit card
      *
-     * @var \PaynetEasy\Paynet\Data\CreditCardInterface
+     * @var \PaynetEasy\Paynet\OrderData\CreditCardInterface
      */
     protected $creditCard;
 
     /**
      * Order recurrent card
      *
-     * @var \PaynetEasy\Paynet\Data\RecurrentCardInterface
+     * @var \PaynetEasy\Paynet\OrderData\RecurrentCardInterface
      */
     protected $recurrentCard;
 

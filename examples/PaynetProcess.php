@@ -4,11 +4,11 @@ require_once './Template.php';
 require_once './autoload.php';
 
 use PaynetEasy\Paynet\Transport\GatewayClient;
-use PaynetEasy\Paynet\Data\Order;
-use PaynetEasy\Paynet\Data\OrderInterface;
-use PaynetEasy\Paynet\Data\Customer;
-use PaynetEasy\Paynet\Data\CreditCard;
-use PaynetEasy\Paynet\Data\RecurrentCardInterface;
+use PaynetEasy\Paynet\OrderData\Order;
+use PaynetEasy\Paynet\OrderData\OrderInterface;
+use PaynetEasy\Paynet\OrderData\Customer;
+use PaynetEasy\Paynet\OrderData\CreditCard;
+use PaynetEasy\Paynet\OrderData\RecurrentCardInterface;
 
 use PaynetEasy\Paynet\Workflow\SaleWorkflow;
 
