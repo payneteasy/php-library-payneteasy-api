@@ -27,7 +27,7 @@ class MakeRebillQueryTest extends SaleQueryTest
                 self::END_POINT .
                 self::CLIENT_ORDER_ID .
                 '99' .                          // amount
-                self::RECURRENT_CARD_ID .
+                self::RECURRENT_CARD_FROM_ID .
                 self::SIGN_KEY
             )
         ));
@@ -36,6 +36,6 @@ class MakeRebillQueryTest extends SaleQueryTest
     public function getOrder()
     {
         return parent::getOrder()
-            ->setRecurrentCard(new RecurrentCard(self::RECURRENT_CARD_ID));
+            ->setRecurrentCardFrom(new RecurrentCard(self::RECURRENT_CARD_FROM_ID));
     }
 }

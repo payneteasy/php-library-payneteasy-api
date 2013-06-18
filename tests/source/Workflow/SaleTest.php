@@ -82,7 +82,7 @@ class SaleTest extends WorkflowTestPrototype
 
         if($card instanceof RecurrentCardInterface)
         {
-            $order->setRecurrentCard($card);
+            $order->setRecurrentCardFrom($card);
         }
         else
         {
@@ -138,14 +138,14 @@ class SaleTest extends WorkflowTestPrototype
 
         if($card instanceof RecurrentCardInterface)
         {
-            $request['cardrefid']   = $card->cardrefid();
+            $request['cardrefid']   = $card->getCardRefId();
 
             $request['control']     = sha1
             (
                 $this->config['end_point'].
                 'CLIENT-112233'.
                 '99'.
-                $card->cardrefid().
+                $card->getCardRefId().
                 $this->config['control']
             );
 
@@ -297,7 +297,7 @@ class SaleTest extends WorkflowTestPrototype
 
         if($card instanceof RecurrentCardInterface)
         {
-            $order->setRecurrentCard($card);
+            $order->setRecurrentCardFrom($card);
         }
         else
         {
@@ -328,7 +328,7 @@ class SaleTest extends WorkflowTestPrototype
 
         if($card instanceof RecurrentCardInterface)
         {
-            $order->setRecurrentCard($card);
+            $order->setRecurrentCardFrom($card);
         }
         else
         {
@@ -515,7 +515,7 @@ class SaleTest extends WorkflowTestPrototype
 
         if($card instanceof RecurrentCardInterface)
         {
-            $order->setRecurrentCard($card);
+            $order->setRecurrentCardFrom($card);
         }
         else
         {

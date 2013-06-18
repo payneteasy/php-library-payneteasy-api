@@ -3,7 +3,6 @@ require_once './Sale.php';
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 
-use PaynetEasy\Paynet\OrderData\RecurrentCard;
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Query\CreateCardRefQuery;
 
@@ -43,7 +42,7 @@ class   CreateRecurrentCard extends Sale
 
         if($response->isApproved())
         {
-            $this->order->setRecurrentCard(new RecurrentCard($response['cardrefid']));
+            $this->order->createRecurrentCardFrom($response['cardrefid']);
         }
 
         return $response;

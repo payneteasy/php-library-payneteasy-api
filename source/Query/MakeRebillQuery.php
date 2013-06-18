@@ -17,7 +17,7 @@ class MakeRebillQuery extends AbstractQuery
         $query = array_merge
         (
             $order->getData(),
-            $order->getRecurrentCard()->getData(),
+            $order->getRecurrentCardFrom()->getData(),
             $this->commonQueryOptions(),
             $this->createControlCode($order)
         );
@@ -35,13 +35,13 @@ class MakeRebillQuery extends AbstractQuery
      */
     public function validateOrder(OrderInterface $order)
     {
-        if(!$order->hasRecurrentCard())
+        if(!$order->hasRecurrentCardFrom())
         {
             throw new RuntimeException('Recurrent card is not defined');
         }
 
         $order->validate();
-        $order->getRecurrentCard()->validate();
+        $order->getRecurrentCardFrom()->validate();
     }
 
     /**
@@ -54,7 +54,7 @@ class MakeRebillQuery extends AbstractQuery
             $this->config['end_point'].
             $order->getOrderCode().
             $order->getAmountInCents().
-            $order->getRecurrentCard()->cardRefId().
+            $order->getRecurrentCardFrom()->getCardRefId().
             $this->config['control']
         ));
     }

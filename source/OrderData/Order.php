@@ -61,11 +61,18 @@ implements  OrderInterface
     protected $creditCard;
 
     /**
-     * Order recurrent card
+     * Order source recurrent card
      *
      * @var \PaynetEasy\Paynet\OrderData\RecurrentCardInterface
      */
-    protected $recurrentCard;
+    protected $recurrentCardFrom;
+
+    /**
+     * Order destination recurrent card
+     *
+     * @var \PaynetEasy\Paynet\OrderData\RecurrentCardInterface
+     */
+    protected $recurrentCardTo;
 
     /**
      * Order state
@@ -210,9 +217,9 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function createRecurrentCard($cardRefId)
+    public function createRecurrentCardFrom($cardRefId)
     {
-        $this->setRecurrentCard(new RecurrentCard($cardRefId));
+        $this->setRecurrentCardFrom(new RecurrentCard($cardRefId));
 
         return $this;
     }
@@ -220,9 +227,9 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function setRecurrentCard(RecurrentCardInterface $recurrentCard)
+    public function setRecurrentCardFrom(RecurrentCardInterface $recurrentCard)
     {
-        $this->recurrentCard = $recurrentCard;
+        $this->recurrentCardFrom = $recurrentCard;
 
         return $this;
     }
@@ -230,17 +237,43 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function getRecurrentCard()
+    public function getRecurrentCardFrom()
     {
-        return $this->recurrentCard;
+        return $this->recurrentCardFrom;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasRecurrentCard()
+    public function hasRecurrentCardFrom()
     {
-        return is_object($this->getRecurrentCard());
+        return is_object($this->getRecurrentCardFrom());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRecurrentCardTo(RecurrentCardInterface $recurrentCard)
+    {
+        $this->recurrentCardTo = $recurrentCard;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecurrentCardTo()
+    {
+        return $this->recurrentCardTo;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasRecurrentCardTo()
+    {
+        return is_object($this->getRecurrentCardTo());
     }
 
     /**

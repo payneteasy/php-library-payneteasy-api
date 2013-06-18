@@ -82,30 +82,56 @@ interface OrderInterface
      *
      * @return      self
      */
-    public function createRecurrentCard($cardRefId);
+    /**
+     * @todo Move to another object
+     */
+    public function createRecurrentCardFrom($cardRefId);
 
     /**
-     * Set order recurrent card
+     * Set order sorce recurrent card
      *
      * @param       \PaynetEasy\Paynet\OrderData\RecurrentCardInterface  $recurrentCard
      *
      * @return      self
      */
-    public function setRecurrentCard(RecurrentCardInterface $recurrentCard);
+    public function setRecurrentCardFrom(RecurrentCardInterface $recurrentCard);
 
     /**
-     * Get order recurrent card
+     * Get order source recurrent card
      *
      * @return      \PaynetEasy\Paynet\OrderData\RecurrentCardInterface
      */
-    public function getRecurrentCard();
+    public function getRecurrentCardFrom();
 
     /**
-     * True if order has recurrent card
+     * True if order has source recurrent card
      *
      * @return      boolean
      */
-    public function hasRecurrentCard();
+    public function hasRecurrentCardFrom();
+
+    /**
+     * Set order destination recurrent card
+     *
+     * @param       \PaynetEasy\Paynet\OrderData\RecurrentCardInterface  $recurrentCard
+     *
+     * @return      self
+     */
+    public function setRecurrentCardTo(RecurrentCardInterface $recurrentCard);
+
+    /**
+     * Get order destination recurrent card
+     *
+     * @return      \PaynetEasy\Paynet\OrderData\RecurrentCardInterface
+     */
+    public function getRecurrentCardTo();
+
+    /**
+     * True if order has destination recurrent card
+     *
+     * @return      boolean
+     */
+    public function hasRecurrentCardTo();
 
     /**
      * Get all allowed order states

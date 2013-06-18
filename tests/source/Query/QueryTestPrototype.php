@@ -12,7 +12,9 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     const SIGN_KEY          = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
     const CLIENT_ORDER_ID   = 'CLIENT-112233';
     const PAYNET_ORDER_ID   = 'PAYNET-112233';
-    const RECURRENT_CARD_ID = '5588943';
+
+    const RECURRENT_CARD_FROM_ID    = '5588943';
+    const RECURRENT_CARD_TO_ID      = '5588978';
 
     /**
      * @dataProvider testCreateRequestProvider

@@ -61,8 +61,8 @@ class CreateCardRefQueryTest extends SaleQueryTest
 
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertTrue($order->hasRecurrentCard());
-        $this->assertInstanceOf('\PaynetEasy\Paynet\OrderData\RecurrentCard', $order->getRecurrentCard());
+        $this->assertTrue($order->hasRecurrentCardFrom());
+        $this->assertInstanceOf('\PaynetEasy\Paynet\OrderData\RecurrentCard', $order->getRecurrentCardFrom());
         $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_APPROVED);
         $this->assertFalse($order->hasErrors());
     }
@@ -73,7 +73,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
         (
             'type'              => 'create-card-ref-response',
             'status'            => 'approved',
-            'card-ref-id'       =>  self::RECURRENT_CARD_ID,
+            'card-ref-id'       =>  self::RECURRENT_CARD_FROM_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -84,7 +84,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
         (
             'type'              => 'create-card-ref-response',
             'status'            => 'filtered',
-            'card-ref-id'       =>  self::RECURRENT_CARD_ID,
+            'card-ref-id'       =>  self::RECURRENT_CARD_FROM_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test filtered message',
             'error-code'        => '8876'
@@ -97,7 +97,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
         (
             'type'              => 'create-card-ref-response',
             'status'            => 'processing',
-            'card-ref-id'       =>  self::RECURRENT_CARD_ID,
+            'card-ref-id'       =>  self::RECURRENT_CARD_FROM_ID,
             'serial-number'     => md5(time())
         )));
     }
@@ -109,7 +109,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
         (
             'type'              => 'create-card-ref-response',
             'status'            => 'error',
-            'card-ref-id'       =>  self::RECURRENT_CARD_ID,
+            'card-ref-id'       =>  self::RECURRENT_CARD_FROM_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test error message',
             'error-code'        => '2'

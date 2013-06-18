@@ -252,7 +252,7 @@ $(document).ready(progress_bar);
 
                 if($this->reccurent_card instanceof RecurrentCardInterface)
                 {
-                    $this->template->content    .= '<p><b>ReccurentCardId</b>: '.$this->reccurent_card->cardRefId().'</p>';
+                    $this->template->content    .= '<p><b>ReccurentCardId</b>: '.$this->reccurent_card->getCardRefId().'</p>';
                 }
             break;
             case OrderInterface::STATUS_DECLINED:

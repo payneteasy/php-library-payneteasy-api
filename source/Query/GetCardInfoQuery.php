@@ -22,7 +22,7 @@ class GetCardInfoQuery extends AbstractQuery
 
         $query = array_merge
         (
-            $order->getRecurrentCard()->getData(),
+            $order->getRecurrentCardFrom()->getData(),
             $this->commonQueryOptions(),
             $this->createControlCode($order)
         );
@@ -45,12 +45,12 @@ class GetCardInfoQuery extends AbstractQuery
      */
     protected function validateOrder(OrderInterface $order)
     {
-        if(!$order->hasRecurrentCard())
+        if(!$order->hasRecurrentCardFrom())
         {
             throw new RuntimeException('Order is not instance of Order');
         }
 
-        $order->getRecurrentCard()->validate();
+        $order->getRecurrentCardFrom()->validate();
     }
 
     /**
@@ -63,7 +63,7 @@ class GetCardInfoQuery extends AbstractQuery
         return array('control' => sha1
         (
             $this->config['login'].
-            $order->getRecurrentCard()->cardRefId().
+            $order->getRecurrentCardFrom()->getCardRefId().
             $this->config['control']
         ));
     }

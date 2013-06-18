@@ -9,6 +9,13 @@ class       RecurrentCard
 extends     Data
 implements  RecurrentCardInterface
 {
+    /**
+     * RecurrentCard CVV2
+     *
+     * @var integer
+     */
+    protected $cvv2;
+
     public function __construct($cardrefid)
     {
         $this->properties = array
@@ -24,15 +31,31 @@ implements  RecurrentCardInterface
         parent::__construct(array('cardrefid' => $cardrefid));
     }
 
-    public function cardRefId()
+    /**
+     * {@inheritdoc}
+     */
+    public function getCardRefId()
     {
-        if(!$this->offsetExists('cardrefid'))
-        {
-            return '';
-        }
-        else
+        if($this->offsetExists('cardrefid'))
         {
             return $this->offsetGet('cardrefid');
         }
+    }
+
+    /**
+     * Set RecurrentCard CVV2
+     * @param type $cvv2
+     */
+    public function setCvv2($cvv2)
+    {
+        $this->cvv2 = $cvv2;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCvv2()
+    {
+        return $this->cvv2;
     }
 }
