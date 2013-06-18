@@ -34,5 +34,19 @@ class WorkflowFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('PaynetEasy\Paynet\Workflow\SaleWorkflow',
                                 $this->object->getWorkflow('sale', array()));
+
+        $formWorflow = $this->object->getWorkflow('sale-form', array());
+
+        $this->assertInstanceOf('PaynetEasy\Paynet\Workflow\FormWorkflow', $formWorflow);
+        $this->assertEquals('sale-form', $this->readAttribute($formWorflow, 'initialApiMethod'));
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Unknown workflow class PaynetEasy\Paynet\Workflow\UnknownWorkflow for workflow with name unknown
+     */
+    public function testGetWorkflowWithException()
+    {
+        $this->object->getWorkflow('unknown', array());
     }
 }

@@ -38,5 +38,19 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('PaynetEasy\Paynet\Query\ReturnQuery',
                                 $this->object->getQuery('return', $config));
+
+        $formQuery = $this->object->getQuery('sale-form', $config);
+
+        $this->assertInstanceOf('PaynetEasy\Paynet\Query\FormQuery', $formQuery);
+        $this->assertEquals('sale-form', $this->readAttribute($formQuery, 'apiMethod'));
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Unknown query class PaynetEasy\Paynet\Query\UnknownQuery for query with name unknown
+     */
+    public function testGetQueryWithException()
+    {
+        $this->object->getQuery('unknown', array());
     }
 }

@@ -8,5 +8,13 @@ namespace PaynetEasy\Paynet\Workflow;
  */
 class FormWorkflow extends SaleWorkflow
 {
-    protected $initialApiMethod = 'sale-form';
+    /**
+     * Indirectly sets initial API query method
+     *
+     * @param       string      $apiMethod      Initial API query method
+     */
+    public function setInitialApiMethod($apiMethod)
+    {
+        $this->initialApiMethod = $apiMethod;
+    }
 }
