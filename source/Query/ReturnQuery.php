@@ -3,6 +3,8 @@ namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 
+use RuntimeException;
+
 /**
  * The implementation of the query Return
  * http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
@@ -16,7 +18,7 @@ class ReturnQuery extends AbstractQuery
     {
         $this->validateOrder($order);
 
-        $query              = array_merge
+        $query = array_merge
         (
             $this->createControlCode($order),
             $this->commonQueryOptions(),
@@ -32,12 +34,22 @@ class ReturnQuery extends AbstractQuery
             $query['currency']  = $order->getCurrency();
         }
 
-        if($order->getCancelReason())
-        {
-            $query['comment']       = $order->getCancelReason();
-        }
+        $query['comment']   = $order->getCancelReason();
 
         return $this->wrapToRequest($query);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function validateOrder(OrderInterface $order)
+    {
+        $order->validateShort();
+
+        if (strlen($order->getCancelReason()) == 0)
+        {
+            throw new RuntimeException('Cancel reason must be defined');
+        }
     }
 
     /**
@@ -51,7 +63,7 @@ class ReturnQuery extends AbstractQuery
         // if amount is not specified,
         // and login + client_orderid + orderid + amount_in_cents +
         // currency + merchant-control if amount is specified
-        $sign                   = array
+        $sign = array
         (
             $this->config['login'],
             $order->getOrderCode(),
@@ -63,11 +75,11 @@ class ReturnQuery extends AbstractQuery
          */
         if($order->getAmount())
         {
-            $sign[]             = $order->getAmountInCents();
-            $sign[]             = $order->getCurrency();
+            $sign[] = $order->getAmountInCents();
+            $sign[] = $order->getCurrency();
         }
 
-        $sign[]                 = $this->config['control'];
+        $sign[] = $this->config['control'];
 
         return array('control' => sha1(implode('', $sign)));
     }

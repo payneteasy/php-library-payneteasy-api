@@ -47,7 +47,7 @@ class Data extends ArrayObject
     {
         if(count($this->errors))
         {
-            throw new PaynetException(__CLASS__.'::'.__METHOD__.' failed', $this->errors);
+            throw new PaynetException(__METHOD__.' failed: ' . implode(', ', $this->errors));
         }
 
         return $this->getArrayCopy();
@@ -55,17 +55,17 @@ class Data extends ArrayObject
 
     protected function checkRequired()
     {
-        foreach ($this->properties as $k => $v)
+        foreach ($this->properties as $propertyName => $isPropertyRequired)
         {
-            if($v && empty($this[$k]))
+            if($isPropertyRequired && empty($this[$propertyName]))
             {
-                $this->errors[$k]       = '%s is required!';
+                $this->errors[] = "{$propertyName} is required!";
             }
         }
 
         if(count($this->errors))
         {
-            throw new PaynetException(__CLASS__.'::'.__METHOD__.' failed', $this->errors);
+            throw new PaynetException(__METHOD__.' failed: ' . implode(', ', $this->errors));
         }
     }
 
@@ -83,7 +83,7 @@ class Data extends ArrayObject
 
         if(count($this->errors))
         {
-            throw new PaynetException(__CLASS__.'::'.__METHOD__.' failed', $this->errors);
+            throw new PaynetException(__METHOD__.' failed: ' . implode(', ', $this->errors));
         }
     }
 

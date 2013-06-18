@@ -294,7 +294,7 @@ implements  OrderInterface
      */
     public function setCancelReason($cancelReason)
     {
-        if(strlen($this->comment) > 50)
+        if(strlen($cancelReason) > 50)
         {
             throw new RuntimeException('Cancellation reason is very long (over 50 characters)');
         }

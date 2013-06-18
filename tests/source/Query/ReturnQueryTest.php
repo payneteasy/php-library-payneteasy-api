@@ -153,12 +153,16 @@ class ReturnQueryTest extends QueryTestPrototype
      */
     protected function getOrder()
     {
-        return new Order(array
+        $order = new Order(array
         (
             'client_orderid'        => self::CLIENT_ORDER_ID,
             'paynet_order_id'       => self::PAYNET_ORDER_ID,
             'amount'                => 99.1,
             'currency'              => 'EUR'
         ));
+
+        $order->setCancelReason('cancel order');
+
+        return $order;
     }
 }
