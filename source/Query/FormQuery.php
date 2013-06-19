@@ -8,12 +8,37 @@ use RuntimeException;
 class FormQuery extends AbstractQuery
 {
     /**
+     * Allowed form query methods
+     *
+     * @var array
+     */
+    static protected $allowedApiMethods = array
+    (
+        'sale-form',
+        'preauth-form',
+        'transfer-form'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(array $config = array())
+    {
+        $this->setConfig($config);
+    }
+
+    /**
      * Indirectly sets gateway API query method
      *
      * @param       string      $apiMethod      Gateway API method
      */
     public function setApiMethod($apiMethod)
     {
+        if (!in_array($apiMethod, static::$allowedApiMethods))
+        {
+            throw new RuntimeException("Unknown api method: {$apiMethod}");
+        }
+
         $this->apiMethod = $apiMethod;
     }
 
