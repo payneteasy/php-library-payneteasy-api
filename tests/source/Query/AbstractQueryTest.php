@@ -21,9 +21,6 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
         $this->object = new ConcreteQuery(array());
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Query\AbstractQuery::setApiMethod
-     */
     public function testSetApiMethod()
     {
         $this->object->setApiMethod('\PaynetEasy\Paynet\Query\GetCardInfoQuery');
@@ -33,7 +30,7 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('get-card-info', $this->object->apiMethod);
 
         $this->object->apiMethod = null;
-        
+
         $this->object->setApiMethod('\PaynetEasy\Paynet\Query\ReturnQuery');
         $this->assertEquals('return', $this->object->apiMethod);
     }

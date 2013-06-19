@@ -23,9 +23,6 @@ class CallbackFactoryTest extends \PHPUnit_Framework_TestCase
         $this->object = new CallbackFactory;
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Callback\CallbackFactory::getCallback
-     */
     public function testGetCallback()
     {
         $config     = array('control' => '_');

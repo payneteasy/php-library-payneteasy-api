@@ -27,9 +27,6 @@ class WorkflowFactoryTest extends \PHPUnit_Framework_TestCase
                                             new CallbackFactory);
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Workflow\WorkflowFactory::getWorkflow
-     */
     public function testGetWorkflow()
     {
         $this->assertInstanceOf('PaynetEasy\Paynet\Workflow\MakeRebillWorkflow',

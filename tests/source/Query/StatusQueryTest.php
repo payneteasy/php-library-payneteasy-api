@@ -39,7 +39,6 @@ class StatusQueryTest extends QueryTestPrototype
     }
 
     /**
-     * @covers PaynetEasy\Paynet\Query\StatusQuery::processResponse
      * @dataProvider testProcessRedirectProvider
      */
     public function testProcessRedirect(array $response)

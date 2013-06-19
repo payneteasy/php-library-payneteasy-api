@@ -32,9 +32,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Transport\Response::isError
-     */
     public function testIsError()
     {
         $this->object->exchangeArray(array('type' => 'validation-error'));
@@ -47,9 +44,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->object->isError());
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Transport\Response::isProcessing
-     */
     public function testIsProcessing()
     {
         $this->object->exchangeArray(array('status' => 'processing'));
@@ -65,9 +59,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->object->isProcessing());
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Transport\Response::isDeclined
-     */
     public function testIsDeclined()
     {
         $this->assertFalse($this->object->isDeclined());
@@ -76,21 +67,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->isDeclined());
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Transport\Response::redirect
-     * @todo   Implement testRedirect().
-     */
-    public function testRedirect()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers PaynetEasy\Paynet\Transport\Response::getAnyKey
-     */
     public function testGetAnyKey()
     {
         $method = new ReflectionMethod('PaynetEasy\Paynet\Transport\Response', 'getAnyKey');
@@ -103,9 +79,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($method->invoke($this->object, array('first', 'firstkey')));
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Transport\Response::getValue
-     */
     public function testGetValue()
     {
         $method = new ReflectionMethod('PaynetEasy\Paynet\Transport\Response', 'getValue');

@@ -24,7 +24,6 @@ class AbstractWorkflowTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers PaynetEasy\Paynet\Workflow\AbstractWorkflow::setNeededAction
      * @dataProvider testSetNeededActionProvider
      */
     public function testSetNeededAction($responseData, $neededAction)
@@ -56,9 +55,6 @@ class AbstractWorkflowTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Workflow\AbstractWorkflow::setInitialApiMethod
-     */
     public function testSetApiMethod()
     {
         $this->object->setInitialApiMethod('\PaynetEasy\Paynet\Workflow\SaleWorkflow');

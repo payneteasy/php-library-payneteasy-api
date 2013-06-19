@@ -21,9 +21,6 @@ class AbstractCallbackTest extends \PHPUnit_Framework_TestCase
         $this->object = new ConcreteCallback();
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Callback\AbstractCallback::setCallbackType
-     */
     public function testSetCallbackType()
     {
         $this->object->setCallbackType('PaynetEasy\Paynet\Callback\ConcreteCallback');

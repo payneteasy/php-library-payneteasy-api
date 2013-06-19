@@ -21,9 +21,6 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
         $this->object = new QueryFactory;
     }
 
-    /**
-     * @covers PaynetEasy\Paynet\Query\QueryFactory::getQuery
-     */
     public function testGetQuery()
     {
         $config = array
