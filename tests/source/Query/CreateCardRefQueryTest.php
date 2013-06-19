@@ -35,7 +35,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
     }
 
     /**
-     * @expectedException PaynetEasy\Paynet\Exception\ResponseException
+     * @expectedException \RuntimeException
      * @expectedExceptionMessage card-ref-id undefined
      */
     public function testProcessResponseWithException()
@@ -127,5 +127,15 @@ class CreateCardRefQueryTest extends SaleQueryTest
             'error_message'     => 'test type error message',
             'error_code'        => '5'
         )));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getOrder()
+    {
+        return parent::getOrder()
+            ->setState(Order::STATE_END)
+            ->setStatus(Order::STATUS_APPROVED);
     }
 }

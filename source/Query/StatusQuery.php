@@ -12,18 +12,21 @@ class StatusQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    public function createRequest(OrderInterface $order)
+    protected function orderToRequest(OrderInterface $order)
     {
-        $this->validateOrder($order);
-
-        $query = array_merge
+        return array_merge
         (
             $order->getContextData(),
-            $this->commonQueryOptions(),
-            $this->createControlCode($order)
+            $this->commonQueryOptions($order)
         );
+    }
 
-        return $this->wrapToRequest($query);
+    /**
+     * {@inheritdoc}
+     */
+    protected function validateOrder(OrderInterface $order)
+    {
+        $order->validateShort();
     }
 
     /**
@@ -33,12 +36,12 @@ class StatusQuery extends AbstractQuery
     {
         // This is SHA-1 checksum of the concatenation
         // login + client-order-id + paynet-order-id + merchant-control.
-        return array('control' => sha1
+        return sha1
         (
             $this->config['login'].
             $order->getOrderCode().
             $order->getPaynetOrderId().
             $this->config['control']
-        ));
+        );
     }
 }

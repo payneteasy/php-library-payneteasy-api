@@ -3,7 +3,7 @@ namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Exception\ResponseException;
+use RuntimeException;
 
 /**
  * The implementation of the query STATUS
@@ -14,41 +14,48 @@ class CreateCardRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    public function createRequest(OrderInterface $order)
+    protected function orderToRequest(OrderInterface $order)
     {
-        $this->validateOrder($order);
-
-        $query = array_merge
+        return array_merge
         (
             $order->getContextData(),
-            $this->commonQueryOptions(),
-            $this->createControlCode($order)
+            $this->commonQueryOptions()
         );
-
-        return $this->wrapToRequest($query);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function processResponse(OrderInterface $order, Response $response)
+    protected function validateOrder(OrderInterface $order)
+    {
+        $order->validateShort();
+        $this->checkOrderState($order);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function validateResponse(OrderInterface $order, Response $response)
     {
         if(!isset($response['card-ref-id']))
         {
-            $error = new ResponseException('card-ref-id undefined');
-
-            $order->addError($error);
-            $order->setState(OrderInterface::STATE_END);
-
-            throw $error;
+            throw new RuntimeException('card-ref-id undefined');
         }
 
+        $this->checkOrderState($order);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function updateOrder(OrderInterface $order, Response $response)
+    {
         if($response->isApproved())
         {
             $order->createRecurrentCardFrom($response['card-ref-id']);
         }
 
-        parent::processResponse($order, $response);
+        parent::updateOrder($order, $response);
     }
 
     /**
@@ -58,12 +65,27 @@ class CreateCardRefQuery extends AbstractQuery
     {
         // This is SHA-1 checksum of the concatenation
         // login + client-order-id + paynet-order-id + merchant-control.
-        return array('control' => sha1
+        return sha1
         (
             $this->config['login'].
             $order->getOrderCode().
             $order->getPaynetOrderId().
             $this->config['control']
-        ));
+        );
+    }
+
+    /**
+     * Check Order state and status.
+     * State must be STATE_END and status must be STATUS_APPROVED.
+     *
+     * @param       OrderInterface      $order      Order for checking
+     */
+    protected function checkOrderState(OrderInterface $order)
+    {
+        if (    $order->getState()  !== OrderInterface::STATE_END
+            ||  $order->getStatus() !== OrderInterface::STATUS_APPROVED)
+        {
+            throw new RuntimeException('Only approved Order can be used for create-card-ref-id');
+        }
     }
 }

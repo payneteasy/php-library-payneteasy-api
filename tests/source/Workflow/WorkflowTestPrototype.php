@@ -81,6 +81,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
             'type'              => 'status-response',
             'status'            => 'approved',
             'paynet-order-id'   => 'PAYNET-112233',
+            'merchant-order-id' => 'CLIENT-112233',
             'serial-number'     =>  md5(time())
         );
 
@@ -98,6 +99,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
             'type'              => 'status-response',
             'status'            => 'declined',
             'paynet-order-id'   => 'PAYNET-112233',
+            'merchant-order-id' => 'CLIENT-112233',
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test error message',
             'error-code'        => '578'
@@ -119,6 +121,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
             'type'              => 'status-response',
             'status'            => 'filtered',
             'paynet-order-id'   => 'PAYNET-112233',
+            'merchant-order-id' => 'CLIENT-112233',
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test filtered message',
             'error-code'        => '8876'
@@ -140,6 +143,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
             'type'              => 'status-response',
             'status'            => 'processing',
             'paynet-order-id'   => 'PAYNET-112233',
+            'merchant-order-id' => 'CLIENT-112233',
             'serial-number'     => md5(time())
         );
 
@@ -158,6 +162,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
             'status'            => 'processing',
             'html'              => '<HTML>',
             'paynet-order-id'   => 'PAYNET-112233',
+            'merchant-order-id' => 'CLIENT-112233',
             'serial-number'     => md5(time())
         );
 
@@ -176,6 +181,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
             'status'            => 'processing',
             'redirect-url'      => 'http://testdomain.com/',
             'paynet-order-id'   => 'PAYNET-112233',
+            'merchant-order-id' => 'CLIENT-112233',
             'serial-number'     =>  md5(time())
         );
 

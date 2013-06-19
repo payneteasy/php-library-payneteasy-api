@@ -14,20 +14,14 @@ class ReturnQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    public function createRequest(OrderInterface $order)
+    protected function orderToRequest(OrderInterface $order)
     {
-        $this->validateOrder($order);
-
         $query = array_merge
         (
-            $this->createControlCode($order),
-            $this->commonQueryOptions(),
+            $this->commonQueryOptions($order),
             $order->getContextData()
         );
 
-        /**
-         * @todo Amount MUST be setted in the order
-         */
         if($order->getAmount())
         {
             $query['amount']    = $order->getAmount();
@@ -36,7 +30,7 @@ class ReturnQuery extends AbstractQuery
 
         $query['comment']   = $order->getCancelReason();
 
-        return $this->wrapToRequest($query);
+        return $query;
     }
 
     /**
@@ -70,9 +64,6 @@ class ReturnQuery extends AbstractQuery
             $order->getPaynetOrderId()
         );
 
-        /**
-         * @todo Amount MUST be setted in the order
-         */
         if($order->getAmount())
         {
             $sign[] = $order->getAmountInCents();
@@ -81,6 +72,6 @@ class ReturnQuery extends AbstractQuery
 
         $sign[] = $this->config['control'];
 
-        return array('control' => sha1(implode('', $sign)));
+        return sha1(implode('', $sign));
     }
 }

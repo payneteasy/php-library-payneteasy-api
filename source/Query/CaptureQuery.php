@@ -2,6 +2,7 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
+use RuntimeException;
 
 /**
  * The implementation of the query Capture
@@ -12,27 +13,36 @@ class CaptureQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    public function createRequest(OrderInterface $order)
+    protected function orderToRequest(OrderInterface $order)
     {
-        $this->validateOrder($order);
-
-        $query = array_merge
+        return array_merge
         (
             $order->getContextData(),
             $this->commonQueryOptions(),
-            $this->createControlCode($order)
+            array
+            (
+                'amount'    => $order->getAmount(),
+                'currency'  => $order->getCurrency()
+            )
         );
+    }
 
-        /**
-         * @todo Amount MUST be setted in the order
-         */
-        if($order->getAmount())
+    /**
+     * {@inheritdoc}
+     */
+    protected function validateOrder(OrderInterface $order)
+    {
+        $order->validateShort();
+
+        if (strlen($order->getAmount()) == 0)
         {
-            $query['amount']    = $order->getAmount();
-            $query['currency']  = $order->getCurrency();
+            throw new RuntimeException('Amount must be defined');
         }
 
-        return $this->wrapToRequest($query);
+        if (strlen($order->getCurrency()) == 0)
+        {
+            throw new RuntimeException('Currency must be defined');
+        }
     }
 
     /**
@@ -46,24 +56,14 @@ class CaptureQuery extends AbstractQuery
         // if amount is not specified,
         // and login + client_orderid + orderid + amount_in_cents +
         // currency + merchant-control if amount is specified
-        $sign = array
+        return sha1
         (
-            $this->config['login'],
-            $order->getOrderCode(),
-            $order->getPaynetOrderId()
+            $this->config['login'] .
+            $order->getOrderCode() .
+            $order->getPaynetOrderId() .
+            $order->getAmountInCents() .
+            $order->getCurrency() .
+            $this->config['control']
         );
-
-        /**
-         * @todo Amount MUST be setted in the order
-         */
-        if($order->getAmount())
-        {
-            $sign[] = $order->getAmountInCents();
-            $sign[] = $order->getCurrency();
-        }
-
-        $sign[] = $this->config['control'];
-
-        return array('control' => sha1(implode('', $sign)));
     }
 }

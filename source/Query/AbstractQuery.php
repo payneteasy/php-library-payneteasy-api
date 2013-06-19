@@ -7,7 +7,6 @@ use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Transport\Request;
 
 use RuntimeException;
-use PaynetEasy\Paynet\Exception\InvalidControlCodeException;
 
 /**
  * Abstract Query
@@ -16,26 +15,20 @@ abstract class  AbstractQuery
 implements      QueryInterface
 {
     /**
-     * Config for PaynetEasy
-     * @var \ArrayObject
+     * Config for API query object
+     *
+     * @var array
      */
     protected $config;
 
     /**
-     * Method API
+     * API gateway method
+     *
      * @var string
      */
     protected $apiMethod;
 
     /**
-     * Flag is true, if the response must be signed by the control code
-     * @var boolean
-     */
-    protected $is_control   = false;
-
-    /**
-     * Constructor
-     *
      * @param       array       $config         API query object config
      */
     public function __construct(array $config = array())
@@ -47,23 +40,104 @@ implements      QueryInterface
     /**
      * {@inheritdoc}
      */
-    public function createRequest(OrderInterface $order)
+    final public function createRequest(OrderInterface $order)
     {
-        $this->validateOrder($order);
+        try
+        {
+            $this->validateOrder($order);
+        }
+        catch (Exception $e)
+        {
+            $order->addError($e)
+                  ->setState(OrderInterface::STATE_END)
+                  ->setStatus(OrderInterface::STATUS_ERROR);
 
-        return $this->wrapToRequest($order->getData());
+            throw $e;
+        }
+
+        $request = new Request($this->orderToRequest($order));
+
+        $request['control'] = $this->createControlCode($order);
+
+        $request->setApiMethod($this->apiMethod)
+                ->setEndPoint($this->config['end_point']);
+
+        return $request;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function processResponse(OrderInterface $order, Response $response)
+    final public function processResponse(OrderInterface $order, Response $response)
     {
-        if($response->control())
+        try
         {
-            $this->validateControlCode($response);
+            $this->validateResponse($order, $response);
+        }
+        catch (Exception $e)
+        {
+            $order->addError($e)
+                  ->setState(OrderInterface::STATE_END)
+                  ->setStatus(OrderInterface::STATUS_ERROR);
+
+            throw $e;
         }
 
+        $this->updateOrder($order, $response);
+
+        return $response;
+    }
+
+    /**
+     * Validates order before query constructing
+     *
+     * @param       OrderInterface          $order          Order for validation
+     */
+    abstract protected function validateOrder(OrderInterface $order);
+
+    /**
+     * Creates request from Order
+     *
+     * @param       OrderInterface          $order          Order for request
+     *
+     * @return      array                                   Request
+     */
+    abstract protected function orderToRequest(OrderInterface $order);
+
+    /**
+     * Generates the control code is used to ensure that it is a particular
+     * Merchant (and not a fraudster) that initiates the transaction.
+     *
+     * @param       OrderInterface          $order          Order to generate control code
+     *
+     * @return      string                                  Generated control code
+     */
+    abstract protected function createControlCode(OrderInterface $order);
+
+    /**
+     * Validates response before Order updating
+     *
+     * @param       OrderInterface          $order          Order
+     * @param       Response                $response       Response for validating
+     */
+    protected function validateResponse(OrderInterface $order, Response $response)
+    {
+        if (    !$response->isError()
+            &&   $order->getOrderId() !== $response->orderId())
+        {
+            throw new RuntimeException("Response client_orderid '{$response->orderId()}' does " .
+                                       "not match Order client_orderid '{$order->getOrderId()}'");
+        }
+    }
+
+    /**
+     * Updates Order by Response data
+     *
+     * @param       OrderInterface         $order          Order for updating
+     * @param       Response               $response       Response for order updating
+     */
+    protected function updateOrder(OrderInterface $order, Response $response)
+    {
         if($response->isError())
         {
             $order->setState(OrderInterface::STATE_END);
@@ -92,14 +166,13 @@ implements      QueryInterface
         elseif($response->isProcessing())
         {
             $order->setState(OrderInterface::STATE_PROCESSING);
+            $order->setStatus(OrderInterface::STATUS_PROCESSING);
         }
 
         if(strlen($response->paynetOrderId()) > 0)
         {
             $order->setPaynetOrderId($response->paynetOrderId());
         }
-
-        return $response;
     }
 
     /**
@@ -159,18 +232,6 @@ implements      QueryInterface
     }
 
     /**
-     * Common validator for Query
-     *
-     */
-    /**
-     * @todo Get common code from other classes
-     */
-    protected function validateOrder(OrderInterface $order)
-    {
-        $order->validateShort();
-    }
-
-    /**
      * Method forms the common parameters for the query
      *
      * @return      array
@@ -195,32 +256,6 @@ implements      QueryInterface
 
         return $commonOptions;
     }
-
-    /**
-     * Validate control code
-     *
-     * @param       Response      $response
-     *
-     * @throws      InvalidControlCodeException
-     */
-    protected function validateControlCode(Response $response)
-    {
-        // This is SHA-1 checksum of the concatenation
-        // status + orderid + client_orderid + merchant-control.
-        $sign   = sha1
-        (
-            $response->status().
-            $response->paynetOrderId().
-            $response->orderId().
-            $this->config['control']
-        );
-
-        if($sign !== $response->control())
-        {
-            throw new InvalidControlCodeException($sign, $response->control());
-        }
-    }
-
 
     /**
      * Wrap query data by Request object

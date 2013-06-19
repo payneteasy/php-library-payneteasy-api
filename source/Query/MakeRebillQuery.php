@@ -10,30 +10,27 @@ class MakeRebillQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    public function createRequest(OrderInterface $order)
+    protected function orderToRequest(OrderInterface $order)
     {
-        $this->validateOrder($order);
-
         $query = array_merge
         (
             $order->getData(),
             $order->getRecurrentCardFrom()->getData(),
-            $this->commonQueryOptions(),
-            $this->createControlCode($order)
+            $this->commonQueryOptions($order)
         );
 
         if($order->getCancelReason())
         {
-            $query['comment']       = $order->getCancelReason();
+            $query['comment'] = $order->getCancelReason();
         }
 
-        return $this->wrapToRequest($query);
+        return $query;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateOrder(OrderInterface $order)
+    protected function validateOrder(OrderInterface $order)
     {
         if(!$order->hasRecurrentCardFrom())
         {
@@ -49,13 +46,13 @@ class MakeRebillQuery extends AbstractQuery
      */
     protected function createControlCode(OrderInterface $order)
     {
-        return array('control' => sha1
+        return sha1
         (
             $this->config['end_point'].
             $order->getOrderCode().
             $order->getAmountInCents().
             $order->getRecurrentCardFrom()->getCardRefId().
             $this->config['control']
-        ));
+        );
     }
 }

@@ -18,7 +18,7 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new ConcreteQuery(array());
+        $this->object = new FakeQuery;
     }
 
     public function testSetApiMethod()
@@ -33,19 +33,5 @@ class AbstractQueryTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setApiMethod('\PaynetEasy\Paynet\Query\ReturnQuery');
         $this->assertEquals('return', $this->object->apiMethod);
-    }
-}
-
-class ConcreteQuery extends AbstractQuery
-{
-    public $apiMethod;
-
-    public function __construct(array $config = array())
-    {
-    }
-
-    public function setApiMethod($class)
-    {
-        parent::setApiMethod($class);
     }
 }

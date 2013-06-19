@@ -11,15 +11,12 @@ class TransferByRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    public function createRequest(OrderInterface $order)
+    protected function orderToRequest(OrderInterface $order)
     {
-        $this->validateOrder($order);
-
-        $query = array_merge
+        return array_merge
         (
             $order->getData(),
-            $this->commonQueryOptions(),
-            $this->createControlCode($order),
+            $this->commonQueryOptions($order),
             array
             (
                 'cvv2'                      => $order->getRecurrentCardFrom()->getCvv2(),
@@ -29,8 +26,6 @@ class TransferByRefQuery extends AbstractQuery
                 'currency'                  => $order->getCurrency()
             )
         );
-
-        return $this->wrapToRequest($query);
     }
 
     /**
@@ -67,7 +62,7 @@ class TransferByRefQuery extends AbstractQuery
         // This is SHA-1 checksum of the concatenation
         // login + client_orderid + source-card-ref-id + destination-card-ref-id +
         // amount_in_cents + currency + merchant_control
-        return array('control' => sha1
+        return sha1
         (
             $this->config['login'] .
             $order->getOrderCode() .
@@ -76,6 +71,6 @@ class TransferByRefQuery extends AbstractQuery
             $order->getAmountInCents() .
             $order->getCurrency() .
             $this->config['control']
-        ));
+        );
     }
 }

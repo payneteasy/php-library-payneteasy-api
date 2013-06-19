@@ -20,7 +20,7 @@ class AbstractWorkflowTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new ConcreteWorkflow();
+        $this->object = new FakeWorkflow;
     }
 
     /**
@@ -67,24 +67,5 @@ class AbstractWorkflowTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setInitialApiMethod('\PaynetEasy\Paynet\Workflow\MakeRebillWorkflow');
         $this->assertEquals('make-rebill', $this->object->initialApiMethod);
-    }
-}
-
-class ConcreteWorkflow extends AbstractWorkflow
-{
-    public $initialApiMethod;
-
-    public function __construct()
-    {
-    }
-
-    public function setNeededAction(Response $response)
-    {
-        return parent::setNeededAction($response);
-    }
-
-    public function setInitialApiMethod($class)
-    {
-        parent::setInitialApiMethod($class);
     }
 }

@@ -2,9 +2,7 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
-use PaynetEasy\Paynet\Response\CardInfo;
 use PaynetEasy\Paynet\Transport\Response;
-
 use RuntimeException;
 
 /**
@@ -16,28 +14,26 @@ class GetCardInfoQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    public function createRequest(OrderInterface $order)
+    protected function orderToRequest(OrderInterface $order)
     {
-        $this->validateOrder($order);
-
-        $query = array_merge
+        return array_merge
         (
             $order->getRecurrentCardFrom()->getData(),
-            $this->commonQueryOptions(),
-            $this->createControlCode($order)
+            $this->commonQueryOptions($order)
         );
-
-        return $this->wrapToRequest($query);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function processResponse(OrderInterface $order, Response $response)
+    protected function updateOrder(OrderInterface $order, Response $response)
     {
-        parent::processResponse($order, $response);
+        parent::updateOrder($order, $response);
 
-        return new CardInfo($response->getArrayCopy());
+        /**
+         * @todo Remove CardInfo, use RecurrentCard instead
+         */
+//        return new CardInfo($response->getArrayCopy());
     }
 
     /**
@@ -60,11 +56,11 @@ class GetCardInfoQuery extends AbstractQuery
     {
         // This is SHA-1 checksum of the concatenation
         // login + cardrefid + merchant-control.
-        return array('control' => sha1
+        return sha1
         (
             $this->config['login'].
             $order->getRecurrentCardFrom()->getCardRefId().
             $this->config['control']
-        ));
+        );
     }
 }

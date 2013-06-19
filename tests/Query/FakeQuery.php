@@ -9,17 +9,36 @@ class FakeQuery extends AbstractQuery
 {
     static public $request;
 
+    public $apiMethod;
+
     public function __construct()
     {
     }
 
-    public function createRequest(OrderInterface $order)
+    public function setApiMethod($class)
     {
-        return static::$request;
+        parent::setApiMethod($class);
     }
 
-    public function processResponse(OrderInterface $order, Response $response)
+    protected function createControlCode(OrderInterface $order)
     {
-        return $response;
+        return 'control';
+    }
+
+    protected function orderToRequest(OrderInterface $order)
+    {
+        return array();
+    }
+
+    protected function validateOrder(OrderInterface $order)
+    {
+    }
+
+    protected function validateResponse(OrderInterface $order, Response $response)
+    {
+    }
+
+    protected function updateOrder(OrderInterface $order, Response $response)
+    {
     }
 }

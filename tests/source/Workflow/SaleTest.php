@@ -535,6 +535,8 @@ class SaleTest extends WorkflowTestPrototype
             'type'              => 'status-response',
             'status'            => 'processing',
             'html'              => '<HTML>',
+            'paynet-order-id'   => 'PAYNET-112233',
+            'merchant-order-id' => 'CLIENT-112233',
             'paynet-order-id'   => $order->getPaynetOrderId(),
             'serial-number'     => md5(time())
         ));

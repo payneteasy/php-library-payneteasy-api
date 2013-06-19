@@ -10,20 +10,15 @@ class SaleQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    public function createRequest(OrderInterface $order)
+    protected function orderToRequest(OrderInterface $order)
     {
-        $this->validateOrder($order);
-
-        $query = array_merge
+        return array_merge
         (
             $order->getCustomer()->getData(),
             $order->getCreditCard()->getData(),
             $order->getData(),
-            $this->commonQueryOptions(),
-            $this->createControlCode($order)
+            $this->commonQueryOptions($order)
         );
-
-        return $this->wrapToRequest($query);
     }
 
     /**
@@ -43,11 +38,7 @@ class SaleQuery extends AbstractQuery
 
         $order->validate();
         $order->getCustomer()->validate();
-
-        if ($order->hasCreditCard())
-        {
-            $order->getCreditCard()->validate();
-        }
+        $order->getCreditCard()->validate();
     }
 
     /**
@@ -55,13 +46,13 @@ class SaleQuery extends AbstractQuery
      */
     protected function createControlCode(OrderInterface $order)
     {
-        return array('control' => sha1
+        return sha1
         (
             $this->config['end_point'] .
             $order->getOrderCode() .
             $order->getAmountInCents() .
             $order->getCustomer()->getEmail() .
             $this->config['control']
-        ));
+        );
     }
 }

@@ -61,6 +61,7 @@ class StatusQueryTest extends QueryTestPrototype
             'status'            => 'processing',
             'html'              => '<HTML>',
             'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
+            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'serial-number'     =>  md5(time())
         ),
         // URL redirect
@@ -70,6 +71,7 @@ class StatusQueryTest extends QueryTestPrototype
             'status'            => 'processing',
             'redirect-url'      => 'http://testdomain.com/',
             'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
+            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -94,6 +96,7 @@ class StatusQueryTest extends QueryTestPrototype
             'type'              => 'status-response',
             'status'            => 'approved',
             'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
+            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -118,6 +121,7 @@ class StatusQueryTest extends QueryTestPrototype
             'type'              => 'status-response',
             'status'            => 'declined',
             'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
+            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test error message',
             'error-code'        =>  578
@@ -131,6 +135,7 @@ class StatusQueryTest extends QueryTestPrototype
             'type'              => 'status-response',
             'status'            => 'filtered',
             'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
+            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test filtered message',
             'error-code'        =>  8876
@@ -144,6 +149,7 @@ class StatusQueryTest extends QueryTestPrototype
             'type'              => 'status-response',
             'status'            => 'processing',
             'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
+            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -157,6 +163,7 @@ class StatusQueryTest extends QueryTestPrototype
             'type'              => 'status-response',
             'status'            => 'error',
             'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
+            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'status error message',
             'error-code'        =>  2

@@ -61,7 +61,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertOrderStates($order, Order::STATE_PROCESSING, null);
+        $this->assertOrderStates($order, Order::STATE_PROCESSING, Order::STATUS_PROCESSING);
         $this->assertFalse($order->hasErrors());
     }
 
