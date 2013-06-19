@@ -52,35 +52,22 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * {@inheritdoc}
      */
-    public function processCallback(OrderInterface $order, CallbackResponse $callbackResponse)
+    final public function processCallback(OrderInterface $order, CallbackResponse $callbackResponse)
     {
-        $this->validateCallback($order, $callbackResponse);
+        try
+        {
+            $this->validateCallback($order, $callbackResponse);
+        }
+        catch (Exception $e)
+        {
+            $order->addError($e)
+                  ->setState(OrderInterface::STATE_END)
+                  ->setStatus(OrderInterface::STATUS_ERROR);
 
-        if($callbackResponse->isError())
-        {
-            $order->setState(OrderInterface::STATE_END);
-            $order->setStatus(OrderInterface::STATUS_ERROR);
-            $order->addError($callbackResponse->error());
-        }
-        elseif($callbackResponse->isApproved())
-        {
-            $order->setState(OrderInterface::STATE_END);
-            $order->setStatus(OrderInterface::STATUS_APPROVED);
-        }
-        // "filtered" status is interpreted as the "DECLINED"
-        elseif($callbackResponse->isDeclined())
-        {
-            $order->setState(OrderInterface::STATE_END);
-            $order->setStatus(OrderInterface::STATUS_DECLINED);
-        }
-        // If it does not redirect, it's processing
-        elseif($callbackResponse->isProcessing())
-        {
-            $order->setState(OrderInterface::STATE_PROCESSING);
-            $order->setStatus(OrderInterface::STATUS_PROCESSING);
+            throw $e;
         }
 
-        $order->setPaynetOrderId($callbackResponse->paynetOrderId());
+        $this->updateOrder($order, $callbackResponse);
 
         return $callbackResponse;
     }
@@ -144,21 +131,21 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Validates callback
      *
-     * @param       \PaynetEasy\Paynet\OrderData\OrderInterface         $order          Order
-     * @param       \PaynetEasy\Paynet\Transport\CallbackResponse               $callback       Callback from paynet
+     * @param       OrderInterface                 $order                  Order
+     * @param       CallbackResponse               $callbackResponse       Callback from paynet
      *
-     * @throws      \PaynetEasy\Paynet\Exception\PaynetException                        Validation error
-     * @throws      \PaynetEasy\Paynet\Exception\InvalidControlCodeException            Invalid control code
+     * @throws      PaynetException                                        Validation error
+     * @throws      InvalidControlCodeException                            Invalid control code
      */
-    protected function validateCallback(OrderInterface $order, CallbackResponse $callback)
+    protected function validateCallback(OrderInterface $order, CallbackResponse $callbackResponse)
     {
-        $this->validateControlCode($callback);
+        $this->validateControlCode($callbackResponse);
 
         $missedKeys = array();
 
         foreach (static::$allowedFields as $fieldName => $isFieldRequired)
         {
-            if ($isFieldRequired && empty($callback[$fieldName]))
+            if ($isFieldRequired && empty($callbackResponse[$fieldName]))
             {
                 $missedKeys[] = $fieldName;
             }
@@ -170,22 +157,57 @@ abstract class AbstractCallback implements CallbackInterface
                                       implode(', ', $missedKeys));
         }
 
-        if (!in_array($callback->status(), static::$allowedStatuses))
+        if (!in_array($callbackResponse->status(), static::$allowedStatuses))
         {
-            throw new PaynetException("Invalid callback status: {$callback->status()}");
+            throw new PaynetException("Invalid callback status: {$callbackResponse->status()}");
         }
 
-        if ($callback->orderId() !== $order->getOrderId())
+        if ($callbackResponse->orderId() !== $order->getOrderId())
         {
-            throw new PaynetException("Callback client_orderid '{$callback->orderId()}' does " .
+            throw new PaynetException("Callback client_orderid '{$callbackResponse->orderId()}' does " .
                                       "not match Order client_orderid '{$order->getOrderId()}'");
         }
 
-        if ($callback->amount() !== $order->getAmount())
+        if ($callbackResponse->amount() !== $order->getAmount())
         {
-            throw new PaynetException("Callback amount '{$callback->amount()}' does " .
+            throw new PaynetException("Callback amount '{$callbackResponse->amount()}' does " .
                                       "not match Order amount '{$order->getAmount()}'");
         }
+    }
+
+    /**
+     * Updates Order by Callback data
+     *
+     * @param       OrderInterface         $order          Order for updating
+     * @param       CallbackResponse       $response       Callback for order updating
+     */
+    protected function updateOrder(OrderInterface $order, CallbackResponse $callbackResponse)
+    {
+        if($callbackResponse->isError())
+        {
+            $order->setState(OrderInterface::STATE_END);
+            $order->setStatus(OrderInterface::STATUS_ERROR);
+            $order->addError($callbackResponse->error());
+        }
+        elseif($callbackResponse->isApproved())
+        {
+            $order->setState(OrderInterface::STATE_END);
+            $order->setStatus(OrderInterface::STATUS_APPROVED);
+        }
+        // "filtered" status is interpreted as the "DECLINED"
+        elseif($callbackResponse->isDeclined())
+        {
+            $order->setState(OrderInterface::STATE_END);
+            $order->setStatus(OrderInterface::STATUS_DECLINED);
+        }
+        // If it does not redirect, it's processing
+        elseif($callbackResponse->isProcessing())
+        {
+            $order->setState(OrderInterface::STATE_PROCESSING);
+            $order->setStatus(OrderInterface::STATUS_PROCESSING);
+        }
+
+        $order->setPaynetOrderId($callbackResponse->paynetOrderId());
     }
 
     /**
