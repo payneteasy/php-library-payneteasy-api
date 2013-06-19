@@ -10,6 +10,7 @@ use PaynetEasy\Paynet\Callback\CallbackFactoryInterface;
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\Request;
 use PaynetEasy\Paynet\Transport\Response;
+use PaynetEasy\Paynet\Transport\CallbackResponse;
 
 use PaynetEasy\Paynet\Transport\GatewayClient;
 use PaynetEasy\Paynet\Query\QueryFactory;
@@ -126,6 +127,7 @@ class OrderProcessor
         }
         catch (Exception $e)
         {
+            $order->addError($e);
             $this->fireEvent(self::EVENT_ORDER_CHANGED, $order);
             throw $e;
         }
@@ -168,6 +170,7 @@ class OrderProcessor
         }
         catch (Exception $e)
         {
+            $order->addError($e);
             $this->fireEvent(self::EVENT_ORDER_CHANGED, $order);
             throw $e;
         }
@@ -175,7 +178,11 @@ class OrderProcessor
         try
         {
             $query->processResponse($order, $response);
-        }catch (Exception $e) {}
+        }
+        catch (Exception $e)
+        {
+            $order->addError($e);
+        }
         // finally
         {
             $this->fireEvent(self::EVENT_ORDER_CHANGED, $order, $response);
@@ -183,6 +190,37 @@ class OrderProcessor
         }
 
         return $response;
+    }
+
+    /**
+     * Executes payment gateway callback processor
+     *
+     * @param       array               $callbackData           Callback data from payment gateway
+     * @param       array               $callbackConfig         Callback processor config
+     * @param       OrderInterface      $order                  Order for processing
+     *
+     * @return      CallbackResponse                            Validated payment gateway callback
+     */
+    public function executeCallback(array $callbackData, array $callbackConfig, OrderInterface $order)
+    {
+        $callbackResponse   = new CallbackResponse($callbackData);
+
+        try
+        {
+            $this->getCallback($callbackResponse, $callbackConfig)
+                 ->processCallback($order, $callbackResponse);
+        }
+        catch (Exception $e)
+        {
+            $order->addError($e);
+        }
+        // finally
+        {
+            $this->fireEvent(self::EVENT_ORDER_CHANGED, $order, $callbackResponse);
+            if (isset($e)) throw $e;
+        }
+
+        return $callbackResponse;
     }
 
     /**
@@ -206,12 +244,26 @@ class OrderProcessor
      * @param       string              $apiQueryName                       API query method
      * @param       array               $apiQueryConfig                     API query config
      *
-     * @return      \PaynetEasy\Paynet\Query\QueryInterface               API query object
+     * @return      \PaynetEasy\Paynet\Query\QueryInterface                 API query object
      */
     public function getQuery($apiQueryName, $apiQueryConfig)
     {
         return $this->getQueryFactory()
                     ->getQuery($apiQueryName, $apiQueryConfig);
+    }
+
+    /**
+     * Create API callback processor by callback response
+     *
+     * @param       \PaynetEasy\Paynet\Transport\CallbackResponse       $callbackResponse       Callback response
+     * @param       array                                               $callbackConfig         Config for callback processor
+     *
+     * @return      \PaynetEasy\Paynet\Callback\CallbackInterface                               Callback processor
+     */
+    public function getCallback(CallbackResponse $callbackResponse, array $callbackConfig)
+    {
+        return $this->getCallbackFactory()
+                    ->getCallback($callbackResponse, $callbackConfig);
     }
 
     /**

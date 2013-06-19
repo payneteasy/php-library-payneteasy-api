@@ -4,7 +4,7 @@ namespace PaynetEasy\Paynet\Workflow;
 
 use PaynetEasy\Paynet\Transport\FakeGatewayClient;
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Transport\Callback;
+use PaynetEasy\Paynet\Transport\CallbackResponse;
 use PaynetEasy\Paynet\OrderData\Order;
 use PaynetEasy\Paynet\OrderData\Customer;
 use PaynetEasy\Paynet\OrderData\CreditCard;

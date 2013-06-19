@@ -8,7 +8,7 @@ use PaynetEasy\Paynet\Query\QueryFactoryInterface;
 use PaynetEasy\Paynet\Callback\CallbackFactoryInterface;
 
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Transport\Callback;
+use PaynetEasy\Paynet\Transport\CallbackResponse;
 use PaynetEasy\Paynet\Callback\RedirectUrlCallback;
 use PaynetEasy\Paynet\Callback\ServerCallbackUrlCallback;
 
@@ -176,7 +176,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      */
     protected function processCallback(OrderInterface $order, $data)
     {
-        $callback = new Callback($data);
+        $callback = new CallbackResponse($data);
 
         $this->callbackFactory
             ->getCallback($callback, $this->queryConfig)

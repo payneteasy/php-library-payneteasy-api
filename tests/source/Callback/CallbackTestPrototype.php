@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\Paynet\Callback;
 
-use PaynetEasy\Paynet\Transport\Callback;
+use PaynetEasy\Paynet\Transport\CallbackResponse;
 use PaynetEasy\Paynet\OrderData\Order;
 
 abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
@@ -20,7 +20,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $callback['control'] = $this->createControlCode($callback);
 
-        $this->object->processCallback($order, new Callback($callback));
+        $this->object->processCallback($order, new CallbackResponse($callback));
 
         $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_APPROVED);
         $this->assertFalse($order->hasErrors());
@@ -37,7 +37,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $callback['control'] = $this->createControlCode($callback);
 
-        $this->object->processCallback($order, new Callback($callback));
+        $this->object->processCallback($order, new CallbackResponse($callback));
 
         $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_DECLINED);
         $this->assertFalse($order->hasErrors());
@@ -54,7 +54,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $callback['control'] = $this->createControlCode($callback);
 
-        $this->object->processCallback($order, new Callback($callback));
+        $this->object->processCallback($order, new CallbackResponse($callback));
 
         $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_DECLINED);
         $this->assertFalse($order->hasErrors());
@@ -72,7 +72,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
         $callback['control'] = $this->createControlCode($callback);
 
         // Payment error after check
-        $this->object->processCallback($order, new Callback($callback));
+        $this->object->processCallback($order, new CallbackResponse($callback));
 
         $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_ERROR);
         $this->assertOrderError($order, $callback['error_message'], $callback['error_code']);

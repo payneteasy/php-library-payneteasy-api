@@ -9,7 +9,7 @@ use PaynetEasy\Paynet\Transport\Response;
  *
  * see: http://wiki.payneteasy.com/index.php/PnE:Merchant_Callback#Sale.2C_Return_Callback_Parameters
  */
-class Callback extends Response
+class CallbackResponse extends Response
 {
     public function amount()
     {

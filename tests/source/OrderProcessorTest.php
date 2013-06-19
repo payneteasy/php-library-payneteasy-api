@@ -92,6 +92,21 @@ class OrderProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($listenerCalled);
     }
 
+    public function testExecuteCallback()
+    {
+        $listenerCalled = false;
+        $eventListener  = function() use (&$listenerCalled)
+        {
+            $listenerCalled = true;
+        };
+
+        $this->object->setEventListener(OrderProcessor::EVENT_ORDER_CHANGED, $eventListener);
+
+        $this->object->executeCallback(array('type' => 'fake'), array(), new Order(array()));
+
+        $this->assertTrue($listenerCalled);
+    }
+
     public function testEventListeners()
     {
         $this->object->setEventListeners(array

@@ -350,7 +350,10 @@ implements  OrderInterface
      */
     public function addError(Exception $error)
     {
-        $this->errors[] = $error;
+        // :NOTICE:         Imenem          19.06.13
+        //
+        // Use spl_object_hash to prevent duplicated errors
+        $this->errors[spl_object_hash($error)] = $error;
     }
 
     /**

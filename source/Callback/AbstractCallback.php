@@ -3,7 +3,7 @@
 namespace PaynetEasy\Paynet\Callback;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
-use PaynetEasy\Paynet\Transport\Callback;
+use PaynetEasy\Paynet\Transport\CallbackResponse;
 
 use RuntimeException;
 use PaynetEasy\Paynet\Exception\PaynetException;
@@ -52,37 +52,37 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * {@inheritdoc}
      */
-    public function processCallback(OrderInterface $order, Callback $callback)
+    public function processCallback(OrderInterface $order, CallbackResponse $callbackResponse)
     {
-        $this->validateCallback($order, $callback);
+        $this->validateCallback($order, $callbackResponse);
 
-        if($callback->isError())
+        if($callbackResponse->isError())
         {
             $order->setState(OrderInterface::STATE_END);
             $order->setStatus(OrderInterface::STATUS_ERROR);
-            $order->addError($callback->error());
+            $order->addError($callbackResponse->error());
         }
-        elseif($callback->isApproved())
+        elseif($callbackResponse->isApproved())
         {
             $order->setState(OrderInterface::STATE_END);
             $order->setStatus(OrderInterface::STATUS_APPROVED);
         }
         // "filtered" status is interpreted as the "DECLINED"
-        elseif($callback->isDeclined())
+        elseif($callbackResponse->isDeclined())
         {
             $order->setState(OrderInterface::STATE_END);
             $order->setStatus(OrderInterface::STATUS_DECLINED);
         }
         // If it does not redirect, it's processing
-        elseif($callback->isProcessing())
+        elseif($callbackResponse->isProcessing())
         {
             $order->setState(OrderInterface::STATE_PROCESSING);
             $order->setStatus(OrderInterface::STATUS_PROCESSING);
         }
 
-        $order->setPaynetOrderId($callback->paynetOrderId());
+        $order->setPaynetOrderId($callbackResponse->paynetOrderId());
 
-        return $callback;
+        return $callbackResponse;
     }
 
     /**
@@ -145,12 +145,12 @@ abstract class AbstractCallback implements CallbackInterface
      * Validates callback
      *
      * @param       \PaynetEasy\Paynet\OrderData\OrderInterface         $order          Order
-     * @param       \PaynetEasy\Paynet\Transport\Callback               $callback       Callback from paynet
+     * @param       \PaynetEasy\Paynet\Transport\CallbackResponse               $callback       Callback from paynet
      *
      * @throws      \PaynetEasy\Paynet\Exception\PaynetException                        Validation error
      * @throws      \PaynetEasy\Paynet\Exception\InvalidControlCodeException            Invalid control code
      */
-    protected function validateCallback(OrderInterface $order, Callback $callback)
+    protected function validateCallback(OrderInterface $order, CallbackResponse $callback)
     {
         $this->validateControlCode($callback);
 
@@ -191,11 +191,11 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Validate control code
      *
-     * @param       Callback      $callback
+     * @param       CallbackResponse      $callback
      *
      * @throws      InvalidControlCodeException
      */
-    protected function validateControlCode(Callback $callback)
+    protected function validateControlCode(CallbackResponse $callback)
     {
         // This is SHA-1 checksum of the concatenation
         // status + orderid + client_orderid + merchant-control.
