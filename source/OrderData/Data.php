@@ -2,14 +2,12 @@
 namespace PaynetEasy\Paynet\OrderData;
 
 use ArrayObject;
-use PaynetEasy\Paynet\Exception\PaynetException;
-use RuntimeException;
+use PaynetEasy\Paynet\Exception\ValidationException;
 
 class Data extends ArrayObject
 {
     protected $properties       = array();
     protected $validate_preg    = array();
-    protected $errors           = array();
 
     public function __construct($array = array())
     {
@@ -19,7 +17,7 @@ class Data extends ArrayObject
     /**
      * Validate Customer Data.
      *
-     * @throws PaynetException
+     * @throws ValidationException
      */
     public function validate()
     {
@@ -29,60 +27,54 @@ class Data extends ArrayObject
     }
 
     /**
-     * Return validating errors.
-     * @return      array
-     */
-    public function getErrors()
-    {
-        return $this->errors;
-    }
-
-    /**
      * Returned Data for query.
      *
      * @return      array
      */
     public function getData()
     {
-        if(count($this->errors))
-        {
-            throw new PaynetException(__METHOD__.' failed: ' . implode(', ', $this->errors));
-        }
+        $this->validate();
 
         return $this->getArrayCopy();
     }
 
     protected function checkRequired()
     {
-        foreach ($this->properties as $propertyName => $isPropertyRequired)
+        $missedFields = array();
+
+        foreach ($this->properties as $fieldName => $isFieldRequired)
         {
-            if($isPropertyRequired && empty($this[$propertyName]))
+            if(   $isFieldRequired
+               && empty($this[$fieldName]))
             {
-                $this->errors[] = "{$propertyName} is required!";
+                $missedFields[] = $fieldName;
             }
         }
 
-        if(count($this->errors))
+        if(count($missedFields))
         {
-            throw new PaynetException(__METHOD__.' failed: ' . implode(', ', $this->errors));
+            throw new ValidationException('Some required fields missed or empty : ' .
+                                          implode(', ', $missedFields));
         }
     }
 
     protected function validatePreg()
     {
-        foreach($this->validate_preg as $property  => $preg)
+        $errors = array();
+
+        foreach($this->validate_preg as $fieldName  => $regExp)
         {
-            if($this->offsetExists($property)
-            && !preg_match($preg, $this[$property])
-            )
+            if(    $this->offsetExists($fieldName)
+               && !preg_match($regExp, $this[$fieldName]))
             {
-                $this->errors[$property] = '%s is incorrect';
+                $errors[$fieldName] = "{$fieldName} does not match {$regExp}";
             }
         }
 
-        if(count($this->errors))
+        if(count($errors))
         {
-            throw new PaynetException(__METHOD__.' failed: ' . implode(', ', $this->errors));
+            throw new ValidationException('Some fields has invalid value: ' .
+                                          implode(', ', $errors));
         }
     }
 
@@ -91,10 +83,6 @@ class Data extends ArrayObject
         if($this->offsetExists($key))
         {
             return $this->offsetGet($key);
-        }
-        else
-        {
-            return '';
         }
     }
 
@@ -105,18 +93,20 @@ class Data extends ArrayObject
      * @param       string      $regExp             Regular expression for validation
      * @param       string      $errorMessage       Error message
      *
-     * @throws      RuntimeException        Value does not match regexp
+     * @throws      ValidationException             Value does not match regexp
      */
     protected function validateValue($value, $regExp, $errorMessage = '')
     {
-        if (!filter_var($value, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $regExp))))
+        if (filter_var($value, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $regExp))))
         {
-            if (empty($errorMessage))
-            {
-                $errorMessage = "Value '{$value}' does not match the regexp '{$regExp}'";
-            }
-
-            throw new RuntimeException($errorMessage);
+            return;
         }
+
+        if (empty($errorMessage))
+        {
+            $errorMessage = "Value '{$value}' does not match the regexp '{$regExp}'";
+        }
+
+        throw new ValidationException($errorMessage);
     }
 }

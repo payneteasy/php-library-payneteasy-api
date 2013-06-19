@@ -3,7 +3,7 @@ namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\Response;
-use RuntimeException;
+use PaynetEasy\Paynet\Exception\ValidationException;
 
 /**
  * The implementation of the query STATUS
@@ -45,12 +45,12 @@ class GetCardInfoQuery extends AbstractQuery
     {
         if(!$order->hasRecurrentCardFrom())
         {
-            throw new RuntimeException('Order is not instance of Order');
+            throw new ValidationException('Recurrent card must be defined in Order');
         }
 
         if (!$order->getRecurrentCardFrom()->getCardRefId())
         {
-            throw new RuntimeException('Recurrent card reference ID is not defined');
+            throw new ValidationException('Recurrent card reference ID is not defined');
         }
     }
 
@@ -60,7 +60,7 @@ class GetCardInfoQuery extends AbstractQuery
 
         if(!$order->hasRecurrentCardFrom())
         {
-            throw new RuntimeException('Order is not instance of Order');
+            throw new ValidationException('Recurrent card must be defined in Order');
         }
     }
 

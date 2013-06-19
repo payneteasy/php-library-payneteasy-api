@@ -2,7 +2,7 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
-use RuntimeException;
+use PaynetEasy\Paynet\Exception\ValidationException;
 
 /**
  * The implementation of the query Capture
@@ -36,12 +36,12 @@ class CaptureQuery extends AbstractQuery
 
         if (strlen($order->getAmount()) == 0)
         {
-            throw new RuntimeException('Amount must be defined');
+            throw new ValidationException('Amount must be defined');
         }
 
         if (strlen($order->getCurrency()) == 0)
         {
-            throw new RuntimeException('Currency must be defined');
+            throw new ValidationException('Currency must be defined');
         }
     }
 

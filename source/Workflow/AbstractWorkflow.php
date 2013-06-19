@@ -9,8 +9,6 @@ use PaynetEasy\Paynet\Callback\CallbackFactoryInterface;
 
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Transport\CallbackResponse;
-use PaynetEasy\Paynet\Callback\RedirectUrlCallback;
-use PaynetEasy\Paynet\Callback\ServerCallbackUrlCallback;
 
 use RuntimeException;
 

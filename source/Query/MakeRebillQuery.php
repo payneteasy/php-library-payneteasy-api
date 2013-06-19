@@ -3,7 +3,7 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
-use RuntimeException;
+use PaynetEasy\Paynet\Exception\ValidationException;
 
 class MakeRebillQuery extends AbstractQuery
 {
@@ -40,19 +40,19 @@ class MakeRebillQuery extends AbstractQuery
     {
         if(!$order->hasRecurrentCardFrom())
         {
-            throw new RuntimeException('Recurrent card is not defined');
+            throw new ValidationException('Recurrent card is not defined');
         }
 
         $recurrentCard = $order->getRecurrentCardFrom();
 
         if (!$recurrentCard->getCvv2())
         {
-            throw new RuntimeException('Recurrent card CVV2 is not defined');
+            throw new ValidationException('Recurrent card CVV2 is not defined');
         }
 
         if (!$recurrentCard->getCardRefId())
         {
-            throw new RuntimeException('Recurrent card reference ID is not defined');
+            throw new ValidationException('Recurrent card reference ID is not defined');
         }
 
         $order->validate();

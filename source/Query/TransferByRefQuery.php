@@ -3,8 +3,7 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
-
-use RuntimeException;
+use PaynetEasy\Paynet\Exception\ValidationException;
 
 class TransferByRefQuery extends AbstractQuery
 {
@@ -35,17 +34,17 @@ class TransferByRefQuery extends AbstractQuery
     {
         if(!$order->hasRecurrentCardFrom())
         {
-            throw new RuntimeException('Source RecurrentCard must be defined');
+            throw new ValidationException('Source RecurrentCard must be defined');
         }
 
         if(strlen($order->getRecurrentCardFrom()->getCvv2()) == 0)
         {
-            throw new RuntimeException('Source RecurrentCard CVV2 must be defined');
+            throw new ValidationException('Source RecurrentCard CVV2 must be defined');
         }
 
         if(!$order->hasRecurrentCardTo())
         {
-            throw new RuntimeException('Destination RecurrentCard must be defined');
+            throw new ValidationException('Destination RecurrentCard must be defined');
         }
 
         $order->validate();

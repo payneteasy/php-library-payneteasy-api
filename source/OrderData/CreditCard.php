@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\OrderData;
 
-use \PaynetEasy\Paynet\Exception\PaynetException;
+use PaynetEasy\Paynet\Exception\ValidationException;
 
 /**
  * Container for credit card data
@@ -46,9 +46,7 @@ implements  CreditCardInterface
 
         if($this['expire_month'] < 1 || $this['expire_month'] > 12)
         {
-            $this->errors['expire_month'] = '%s is failed';
-
-            throw new PaynetException(__METHOD__.' failed', $this->errors);
+            throw new ValidationException("Invalid expire month: '{$this['expire_month']}'");
         }
     }
 }

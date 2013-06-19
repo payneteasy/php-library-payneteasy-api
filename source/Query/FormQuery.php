@@ -3,6 +3,8 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
+
+use PaynetEasy\Paynet\Exception\ValidationException;
 use RuntimeException;
 
 class FormQuery extends AbstractQuery
@@ -62,12 +64,12 @@ class FormQuery extends AbstractQuery
     {
         if(!$order->hasCustomer())
         {
-            throw new RuntimeException('Customer is not defined');
+            throw new ValidationException('Customer is not defined');
         }
 
         if($order->hasCreditCard())
         {
-            throw new RuntimeException('Credir Card must not be defined for Form API');
+            throw new ValidationException('Credir Card must not be defined for Form API');
         }
 
         $order->validate();

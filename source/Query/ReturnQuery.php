@@ -2,8 +2,7 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
-
-use RuntimeException;
+use PaynetEasy\Paynet\Exception\ValidationException;
 
 /**
  * The implementation of the query Return
@@ -42,7 +41,7 @@ class ReturnQuery extends AbstractQuery
 
         if (strlen($order->getCancelReason()) == 0)
         {
-            throw new RuntimeException('Cancel reason must be defined');
+            throw new ValidationException('Cancel reason must be defined');
         }
     }
 

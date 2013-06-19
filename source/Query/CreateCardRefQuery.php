@@ -3,7 +3,7 @@ namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\Response;
-use RuntimeException;
+use PaynetEasy\Paynet\Exception\ValidationException;
 
 /**
  * The implementation of the query STATUS
@@ -39,7 +39,7 @@ class CreateCardRefQuery extends AbstractQuery
     {
         if(!isset($response['card-ref-id']))
         {
-            throw new RuntimeException('card-ref-id undefined');
+            throw new ValidationException('Field card-ref-id must be defined in response');
         }
 
         $this->checkOrderState($order);
@@ -85,7 +85,7 @@ class CreateCardRefQuery extends AbstractQuery
         if (    $order->getState()  !== OrderInterface::STATE_END
             ||  $order->getStatus() !== OrderInterface::STATUS_APPROVED)
         {
-            throw new RuntimeException('Only approved Order can be used for create-card-ref-id');
+            throw new ValidationException('Only approved Order can be used for create-card-ref-id');
         }
     }
 }

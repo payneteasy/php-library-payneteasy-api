@@ -6,7 +6,9 @@ use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Transport\Request;
 
+use PaynetEasy\Paynet\Exception\ValidationException;
 use RuntimeException;
+use Exception;
 
 /**
  * Abstract Query
@@ -125,8 +127,8 @@ implements      QueryInterface
         if (    !$response->isError()
             &&   $order->getOrderId() !== $response->orderId())
         {
-            throw new RuntimeException("Response client_orderid '{$response->orderId()}' does " .
-                                       "not match Order client_orderid '{$order->getOrderId()}'");
+            throw new ValidationException("Response client_orderid '{$response->orderId()}' does " .
+                                          "not match Order client_orderid '{$order->getOrderId()}'");
         }
     }
 

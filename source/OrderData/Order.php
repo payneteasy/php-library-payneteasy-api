@@ -101,6 +101,13 @@ implements  OrderInterface
      */
     protected $cancelReason;
 
+    /**
+     * Order processing errors
+     *
+     * @var array
+     */
+    protected $errors = array();
+
     public function __construct($array)
     {
         if(isset($array['order_code']))
@@ -354,6 +361,8 @@ implements  OrderInterface
         //
         // Use spl_object_hash to prevent duplicated errors
         $this->errors[spl_object_hash($error)] = $error;
+
+        return $this;
     }
 
     /**
@@ -362,6 +371,14 @@ implements  OrderInterface
     public function hasErrors()
     {
         return count($this->getErrors()) > 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
 
     /**

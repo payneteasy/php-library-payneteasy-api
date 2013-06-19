@@ -5,9 +5,9 @@ namespace PaynetEasy\Paynet\Callback;
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\CallbackResponse;
 
+use PaynetEasy\Paynet\Exception\ValidationException;
 use RuntimeException;
-use PaynetEasy\Paynet\Exception\PaynetException;
-use PaynetEasy\Paynet\Exception\InvalidControlCodeException;
+use Exception;
 
 abstract class AbstractCallback implements CallbackInterface
 {
@@ -93,7 +93,7 @@ abstract class AbstractCallback implements CallbackInterface
 
         if(empty($config['control']))
         {
-            throw new RuntimeException('control undefined');
+            throw new RuntimeException("You must set 'control' field in config");
         }
 
         $this->config = $config;
@@ -134,8 +134,7 @@ abstract class AbstractCallback implements CallbackInterface
      * @param       OrderInterface                 $order                  Order
      * @param       CallbackResponse               $callbackResponse       Callback from paynet
      *
-     * @throws      PaynetException                                        Validation error
-     * @throws      InvalidControlCodeException                            Invalid control code
+     * @throws      ValidationException                                    Validation error
      */
     protected function validateCallback(OrderInterface $order, CallbackResponse $callbackResponse)
     {
@@ -153,25 +152,25 @@ abstract class AbstractCallback implements CallbackInterface
 
         if (!empty($missedKeys))
         {
-            throw new PaynetException("Some required fields missed or empty in callback: " .
-                                      implode(', ', $missedKeys));
+            throw new ValidationException("Some required fields missed or empty in callback: " .
+                                          implode(', ', $missedKeys));
         }
 
         if (!in_array($callbackResponse->status(), static::$allowedStatuses))
         {
-            throw new PaynetException("Invalid callback status: {$callbackResponse->status()}");
+            throw new ValidationException("Invalid callback status: {$callbackResponse->status()}");
         }
 
         if ($callbackResponse->orderId() !== $order->getOrderId())
         {
-            throw new PaynetException("Callback client_orderid '{$callbackResponse->orderId()}' does " .
-                                      "not match Order client_orderid '{$order->getOrderId()}'");
+            throw new ValidationException("Callback client_orderid '{$callbackResponse->orderId()}' does " .
+                                          "not match Order client_orderid '{$order->getOrderId()}'");
         }
 
         if ($callbackResponse->amount() !== $order->getAmount())
         {
-            throw new PaynetException("Callback amount '{$callbackResponse->amount()}' does " .
-                                      "not match Order amount '{$order->getAmount()}'");
+            throw new ValidationException("Callback amount '{$callbackResponse->amount()}' does " .
+                                          "not match Order amount '{$order->getAmount()}'");
         }
     }
 
@@ -211,17 +210,17 @@ abstract class AbstractCallback implements CallbackInterface
     }
 
     /**
-     * Validate control code
+     * Validate callback response control code
      *
-     * @param       CallbackResponse      $callback
+     * @param       CallbackResponse        $callback       Callback for control code checking
      *
-     * @throws      InvalidControlCodeException
+     * @throws      ValidationException                     Invalid control code
      */
     protected function validateControlCode(CallbackResponse $callback)
     {
         // This is SHA-1 checksum of the concatenation
         // status + orderid + client_orderid + merchant-control.
-        $sign   = sha1
+        $expectedControl   = sha1
         (
             $callback->status().
             $callback->paynetOrderId().
@@ -229,9 +228,10 @@ abstract class AbstractCallback implements CallbackInterface
             $this->config['control']
         );
 
-        if($sign !== $callback->control())
+        if($expectedControl !== $callback->control())
         {
-            throw new InvalidControlCodeException($sign, $callback->control());
+            throw new ValidationException("Actual control code '{$callback->control()}' does " .
+                                          "not equal expected '{$expectedControl}'");
         }
     }
 }
