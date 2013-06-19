@@ -4,6 +4,7 @@ namespace PaynetEasy\Paynet\Workflow;
 
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Query\QueryFactoryInterface;
+use PaynetEasy\Paynet\Callback\CallbackFactoryInterface;
 
 use RuntimeException;
 
@@ -24,15 +25,25 @@ class WorkflowFactory implements WorkflowFactoryInterface
     protected $queryFactory;
 
     /**
+     * API callbacks factory
+     *
+     * @var PaynetEasy\Paynet\Callback\CallbackFactoryInterface
+     */
+    protected $callbackFactory;
+
+    /**
      *
      * @param       \PaynetEasy\Paynet\Transport\GatewayClientInterface         $gatewayClient      API gateway client
-     * @param       \PaynetEasy\Paynet\Query\QueryFactoryInterface            $queryFactory       API queries factory
+     * @param       \PaynetEasy\Paynet\Query\QueryFactoryInterface              $queryFactory       API queries factory
+     * @param       \PaynetEasy\Paynet\Callback\CallbackFactoryInterface        $callbackFactory    API callbacks factory
      */
-    public function __construct(GatewayClientInterface  $gatewayClient,
-                                QueryFactoryInterface   $queryFactory)
+    public function __construct(GatewayClientInterface      $gatewayClient,
+                                QueryFactoryInterface       $queryFactory,
+                                CallbackFactoryInterface    $callbackFactory)
     {
-        $this->gatewayClient = $gatewayClient;
-        $this->queryFactory  = $queryFactory;
+        $this->gatewayClient    = $gatewayClient;
+        $this->queryFactory     = $queryFactory;
+        $this->callbackFactory  = $callbackFactory;
     }
 
 
@@ -46,7 +57,10 @@ class WorkflowFactory implements WorkflowFactoryInterface
 
         if (class_exists($workflowClass, true))
         {
-            return new $workflowClass($this->gatewayClient, $this->queryFactory, $workflowConfig);
+            return new $workflowClass($this->gatewayClient,
+                                      $this->queryFactory,
+                                      $this->callbackFactory,
+                                      $workflowConfig);
         }
 
         // :NOTICE:         Imenem          18.06.13
@@ -55,7 +69,11 @@ class WorkflowFactory implements WorkflowFactoryInterface
         // therefore they have only one class - FormWorkflow
         if (end($nameChunks) == 'Form')
         {
-            $workflow = new FormWorkflow($this->gatewayClient, $this->queryFactory, $workflowConfig);
+            $workflow = new FormWorkflow($this->gatewayClient,
+                                         $this->queryFactory,
+                                         $this->callbackFactory,
+                                         $workflowConfig);
+            
             $workflow->setInitialApiMethod($workflowName);
 
             return $workflow;

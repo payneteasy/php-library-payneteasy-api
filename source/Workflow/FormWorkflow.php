@@ -4,6 +4,8 @@ namespace PaynetEasy\Paynet\Workflow;
 
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Query\QueryFactoryInterface;
+use PaynetEasy\Paynet\Callback\CallbackFactoryInterface;
+
 use RuntimeException;
 
 /**
@@ -27,13 +29,15 @@ class FormWorkflow extends AbstractWorkflow
     /**
      * {@inheritdoc}
      */
-    public function __construct(GatewayClientInterface  $gatewayClient,
-                                QueryFactoryInterface   $queryFactory,
-                                array                   $queryConfig  = array())
+    public function __construct(GatewayClientInterface      $gatewayClient,
+                                QueryFactoryInterface       $queryFactory,
+                                CallbackFactoryInterface    $callbackFactory,
+                                array                       $queryConfig        = array())
     {
-        $this->gatewayClient = $gatewayClient;
-        $this->queryFactory  = $queryFactory;
-        $this->queryConfig   = $queryConfig;
+        $this->gatewayClient    = $gatewayClient;
+        $this->queryFactory     = $queryFactory;
+        $this->queryConfig      = $queryConfig;
+        $this->callbackFactory  = $callbackFactory;
     }
 
     /**

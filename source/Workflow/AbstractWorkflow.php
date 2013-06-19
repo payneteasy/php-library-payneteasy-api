@@ -5,6 +5,7 @@ namespace PaynetEasy\Paynet\Workflow;
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Query\QueryFactoryInterface;
+use PaynetEasy\Paynet\Callback\CallbackFactoryInterface;
 
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Transport\Callback;
@@ -40,6 +41,13 @@ abstract class AbstractWorkflow implements WorkflowInterface
     protected $queryFactory;
 
     /**
+     * API callbacks factory
+     *
+     * @var PaynetEasy\Paynet\Callback\CallbackFactoryInterface
+     */
+    protected $callbackFactory;
+
+    /**
      * Config for API queries
      *
      * @var array
@@ -49,15 +57,18 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * @param       GatewayClientInterface          $gatewayClient          Client for API gateway
      * @param       QueryFactoryInterface           $queryFactory           Factory for API qieries
+     * @param       CallbackFactoryInterface        $callbackFactory        Factory for API callbacks
      * @param       array                           $queryConfig            Config for queries
      */
-    public function __construct(GatewayClientInterface  $gatewayClient,
-                                QueryFactoryInterface   $queryFactory,
-                                array                   $queryConfig  = array())
+    public function __construct(GatewayClientInterface      $gatewayClient,
+                                QueryFactoryInterface       $queryFactory,
+                                CallbackFactoryInterface    $callbackFactory,
+                                array                       $queryConfig        = array())
     {
-        $this->gatewayClient = $gatewayClient;
-        $this->queryFactory  = $queryFactory;
-        $this->queryConfig   = $queryConfig;
+        $this->gatewayClient    = $gatewayClient;
+        $this->queryFactory     = $queryFactory;
+        $this->queryConfig      = $queryConfig;
+        $this->callbackFactory  = $callbackFactory;
 
         $this->setInitialApiMethod(get_called_class());
     }
@@ -167,17 +178,9 @@ abstract class AbstractWorkflow implements WorkflowInterface
     {
         $callback = new Callback($data);
 
-        if (strlen($callback->type()) > 0)
-        {
-            $callbackProcessor  = new ServerCallbackUrlCallback($this->queryConfig);
-            $callbackProcessor->setCallbackType($callback->type());
-        }
-        else
-        {
-            $callbackProcessor  = new RedirectUrlCallback($this->queryConfig);
-        }
-
-        $callbackProcessor->processCallback($order, $callback);
+        $this->callbackFactory
+            ->getCallback($callback, $this->queryConfig)
+            ->processCallback($order, $callback);
 
         return $callback;
     }

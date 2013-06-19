@@ -2,7 +2,6 @@
 namespace PaynetEasy\Paynet\Transport;
 
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Exception\CallbackException;
 
 /**
  * Merchant Callback
@@ -12,23 +11,6 @@ use PaynetEasy\Paynet\Exception\CallbackException;
  */
 class Callback extends Response
 {
-    const SALE          = 'sale';
-    const REVERSAL      = 'reversal';
-    const CHARGEBACK    = 'chargeback';
-
-    public function type()
-    {
-        $type = parent::type();
-
-        if (    !empty($type)
-            &&  !in_array($type, array(self::SALE, self::REVERSAL, self::CHARGEBACK)))
-        {
-            throw new CallbackException("Invalid callback result type: '{$type}'");
-        }
-
-        return $type;
-    }
-
     public function amount()
     {
         return (float) $this->getValue('amount');

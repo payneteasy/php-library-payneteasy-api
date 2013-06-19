@@ -4,6 +4,7 @@ namespace PaynetEasy\Paynet\Workflow;
 use PHPUnit_Framework_TestCase;
 use PaynetEasy\Paynet\Transport\FakeGatewayClient;
 use PaynetEasy\Paynet\Query\QueryFactory;
+use PaynetEasy\Paynet\Callback\CallbackFactory;
 use PaynetEasy\Paynet\OrderData\Order;
 use PaynetEasy\Paynet\Exception\PaynetException;
 
@@ -64,7 +65,10 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
             'server_callback_url' => 'https://example.com/callback_url'
         );
 
-        $this->query     = new $this->class($this->transport, new QueryFactory, $this->config);
+        $this->query     = new $this->class($this->transport,
+                                            new QueryFactory,
+                                            new CallbackFactory,
+                                            $this->config);
     }
 
     public function testStatusProvider()

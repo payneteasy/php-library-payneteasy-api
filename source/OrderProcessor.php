@@ -5,6 +5,7 @@ namespace PaynetEasy\Paynet;
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Query\QueryFactoryInterface;
 use PaynetEasy\Paynet\Workflow\WorkflowFactoryInterface;
+use PaynetEasy\Paynet\Callback\CallbackFactoryInterface;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\Request;
@@ -13,6 +14,7 @@ use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Transport\GatewayClient;
 use PaynetEasy\Paynet\Query\QueryFactory;
 use PaynetEasy\Paynet\Workflow\WorkflowFactory;
+use PaynetEasy\Paynet\Callback\CallbackFactory;
 
 use RuntimeException;
 use Exception;
@@ -72,6 +74,13 @@ class OrderProcessor
      * @var \PaynetEasy\Paynet\Workflow\WorkflowFactoryInterface
      */
     protected $workflowFactory;
+
+    /**
+     * API callbacks factory
+     *
+     * @var \PaynetEasy\Paynet\Callback\CallbackFactoryInterface
+     */
+    protected $callbackFactory;
 
     /**
      * Full url to Paynet API gateway
@@ -334,6 +343,20 @@ class OrderProcessor
     }
 
     /**
+     * Set callback factory
+     *
+     * @param       \PaynetEasy\Paynet\Callback\CallbackFactoryInterface        $callbackFactory        Callback factory
+     *
+     * @return      self
+     */
+    public function setCallbackFactory(CallbackFactoryInterface $callbackFactory)
+    {
+        $this->callbackFactory = $callbackFactory;
+
+        return $this;
+    }
+
+    /**
      * Get getaway client
      *
      * @return      \PaynetEasy\Paynet\Transport\GatewayClientInterface         Gateway client
@@ -373,19 +396,35 @@ class OrderProcessor
         if (!is_object($this->workflowFactory))
         {
             $this->workflowFactory = new WorkflowFactory($this->getGatewayClient(),
-                                                         $this->getQueryFactory());
+                                                         $this->getQueryFactory(),
+                                                         $this->getCallbackFactory());
         }
 
         return $this->workflowFactory;
     }
 
     /**
+     * Get callback factory
+     *
+     * @return      \PaynetEasy\Paynet\Callback\CallbackFactoryInterface        Callback factory
+     */
+    public function getCallbackFactory()
+    {
+        if (!is_object($this->callbackFactory))
+        {
+            $this->callbackFactory = new CallbackFactory;
+        }
+
+        return $this->callbackFactory;
+    }
+
+    /**
      * Executes event listener.
      * Listener receives two parameters: OrderInterface and Response (optional)
      *
-     * @param       string                                      $eventName      Event name
-     * @param       \PaynetEasy\Paynet\OrderData\OrderInterface      $order          Order
-     * @param       \PaynetEasy\Paynet\Transport\Response       $response       Gateway response
+     * @param       string                                          $eventName      Event name
+     * @param       \PaynetEasy\Paynet\OrderData\OrderInterface     $order          Order
+     * @param       \PaynetEasy\Paynet\Transport\Response           $response       Gateway response
      *
      * @return      self
      */

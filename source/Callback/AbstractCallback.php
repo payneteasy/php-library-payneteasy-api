@@ -9,7 +9,7 @@ use RuntimeException;
 use PaynetEasy\Paynet\Exception\PaynetException;
 use PaynetEasy\Paynet\Exception\InvalidControlCodeException;
 
-abstract class AbstractCallback
+abstract class AbstractCallback implements CallbackInterface
 {
     /**
      * Config for Paynet callback
