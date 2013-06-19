@@ -25,5 +25,3 @@ class MakeRebillTest extends SaleTest
         return array($customer, new RecurrentCard(self::CARD_REF_ID), $order);
     }
 }
-
-?>

@@ -538,5 +538,3 @@ class SaleTest extends WorkflowTestPrototype
         parent::testProcess($assert, $callback);
     }
 }
-
-?>

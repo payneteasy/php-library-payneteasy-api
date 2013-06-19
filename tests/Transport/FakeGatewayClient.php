@@ -23,5 +23,3 @@ class FakeGatewayClient implements GatewayClientInterface
         return $response;
     }
 }
-
-?>
