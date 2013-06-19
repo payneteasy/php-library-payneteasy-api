@@ -144,7 +144,6 @@ abstract class PaynetProcess
         switch($this->query->state())
         {
             case SaleQuery::STATE_PROCESSING:
-            case SaleQuery::STATE_WAIT:
             {
                 $this->out_form_wait();
                 break;

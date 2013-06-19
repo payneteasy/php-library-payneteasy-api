@@ -4,6 +4,7 @@ namespace PaynetEasy\Paynet\Workflow;
 
 use PaynetEasy\Paynet\Transport\FakeGatewayClient;
 use PaynetEasy\Paynet\Transport\Response;
+use PaynetEasy\Paynet\Transport\Callback;
 use PaynetEasy\Paynet\OrderData\Order;
 use PaynetEasy\Paynet\OrderData\Customer;
 use PaynetEasy\Paynet\OrderData\CreditCard;
@@ -191,7 +192,7 @@ class SaleTest extends WorkflowTestPrototype
         $assert                 = array
         (
             'state'             => Order::STATE_PROCESSING,
-            'status'            => null
+            'status'            => Order::STATUS_PROCESSING
         );
 
         $dataset[]              = array($assert, $response);
@@ -354,6 +355,7 @@ class SaleTest extends WorkflowTestPrototype
             'orderid'           => 'PAYNET-112233',
             'merchant_order'    => 'CLIENT-112233',
             'client_orderid'    => 'CLIENT-112233',
+            'amount'            => 0.99,
             'descriptor'        => 'http://descriptor.example.com/',
             // status + orderid + client_orderid + merchant-control
             'control'           => sha1
@@ -381,6 +383,7 @@ class SaleTest extends WorkflowTestPrototype
             'orderid'           => 'PAYNET-112233',
             'merchant_order'    => 'CLIENT-112233',
             'client_orderid'    => 'CLIENT-112233',
+            'amount'            => 0.99,
             'descriptor'        => 'http://descriptor.example.com/',
             // status + orderid + client_orderid + merchant-control
             'control'           => sha1
@@ -395,7 +398,7 @@ class SaleTest extends WorkflowTestPrototype
         $assert                 = array
         (
             'state'             => Order::STATE_PROCESSING,
-            'status'            => null
+            'status'            => Order::STATUS_PROCESSING
         );
 
         $dataset[]              = array($assert, $response);
@@ -408,6 +411,7 @@ class SaleTest extends WorkflowTestPrototype
             'orderid'           => 'PAYNET-112233',
             'merchant_order'    => 'CLIENT-112233',
             'client_orderid'    => 'CLIENT-112233',
+            'amount'            => 0.99,
             'descriptor'        => 'http://descriptor.example.com/',
             'error_message'     => 'decline message',
             'error_code'        => '1000000',
@@ -438,6 +442,7 @@ class SaleTest extends WorkflowTestPrototype
             'orderid'           => 'PAYNET-112233',
             'merchant_order'    => 'CLIENT-112233',
             'client_orderid'    => 'CLIENT-112233',
+            'amount'            => 0.99,
             'descriptor'        => 'http://descriptor.example.com/',
             'error_message'     => 'filtered message',
             'error_code'        => '1000000',
@@ -468,6 +473,7 @@ class SaleTest extends WorkflowTestPrototype
             'orderid'           => 'PAYNET-112233',
             'merchant_order'    => 'CLIENT-112233',
             'client_orderid'    => 'CLIENT-112233',
+            'amount'            => 0.99,
             'descriptor'        => 'http://descriptor.example.com/',
             'error_message'     => 'error message',
             'error_code'        => '1',

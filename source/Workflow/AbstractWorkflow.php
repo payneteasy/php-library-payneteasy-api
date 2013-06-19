@@ -7,7 +7,9 @@ use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Query\QueryFactoryInterface;
 
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Callback\Redirect3D;
+use PaynetEasy\Paynet\Transport\Callback;
+use PaynetEasy\Paynet\Callback\RedirectUrlCallback;
+use PaynetEasy\Paynet\Callback\ServerCallbackUrlCallback;
 
 use RuntimeException;
 
@@ -79,7 +81,6 @@ abstract class AbstractWorkflow implements WorkflowInterface
                 break;
             }
             case OrderInterface::STATE_PROCESSING:
-            case OrderInterface::STATE_WAIT:
             {
                 $response = $this->updateStatus($order);
                 break;
@@ -164,13 +165,21 @@ abstract class AbstractWorkflow implements WorkflowInterface
      */
     protected function processCallback(OrderInterface $order, $data)
     {
-        $callback   = new Redirect3D($this->queryConfig);
+        $callback = new Callback($data);
 
-        $request    = $callback->createRequest($order, $data);
-        $response   = new Response($request->getArrayCopy());
-        $callback->processResponse($order, $response);
+        if (strlen($callback->type()) > 0)
+        {
+            $callbackProcessor  = new ServerCallbackUrlCallback($this->queryConfig);
+            $callbackProcessor->setCallbackType($callback->type());
+        }
+        else
+        {
+            $callbackProcessor  = new RedirectUrlCallback($this->queryConfig);
+        }
 
-        return $response;
+        $callbackProcessor->processCallback($order, $callback);
+
+        return $callback;
     }
 
     /**

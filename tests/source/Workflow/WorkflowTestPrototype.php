@@ -142,7 +142,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
         $assert                 = array
         (
             'state'             => Order::STATE_PROCESSING,
-            'status'            => null
+            'status'            => Order::STATUS_PROCESSING
         );
 
         $dataset[]              = array($assert, $response);

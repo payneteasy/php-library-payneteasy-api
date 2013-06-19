@@ -18,15 +18,16 @@ interface OrderInterface
     const STATE_INIT        = 'init';
     const STATE_REDIRECT    = 'redirect';
     const STATE_PROCESSING  = 'processing';
-    const STATE_WAIT        = 'wait';
     const STATE_END         = 'end';
 
     /**
      * @todo Compare with Paynet Wiki
      * @todo Add comments
      */
+    const STATUS_PROCESSING = 'processing';
     const STATUS_APPROVED   = 'approved';
     const STATUS_DECLINED   = 'declined';
+    const STATUS_FILTERED   = 'filtered';
     const STATUS_ERROR      = 'error';
 
     /**

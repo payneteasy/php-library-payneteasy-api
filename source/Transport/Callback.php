@@ -1,5 +1,5 @@
 <?PHP
-namespace PaynetEasy\Paynet\Response;
+namespace PaynetEasy\Paynet\Transport;
 
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Exception\CallbackException;
@@ -10,7 +10,7 @@ use PaynetEasy\Paynet\Exception\CallbackException;
  *
  * see: http://wiki.payneteasy.com/index.php/PnE:Merchant_Callback#Sale.2C_Return_Callback_Parameters
  */
-class CallbackResult extends Response
+class Callback extends Response
 {
     const SALE          = 'sale';
     const REVERSAL      = 'reversal';
@@ -20,7 +20,8 @@ class CallbackResult extends Response
     {
         $type = parent::type();
 
-        if (!in_array($type, array(self::SALE, self::REVERSAL, self::CHARGEBACK)))
+        if (    !empty($type)
+            &&  !in_array($type, array(self::SALE, self::REVERSAL, self::CHARGEBACK)))
         {
             throw new CallbackException("Invalid callback result type: '{$type}'");
         }

@@ -27,7 +27,6 @@ implements  OrderInterface
         self::STATE_INIT,
         self::STATE_REDIRECT,
         self::STATE_PROCESSING,
-        self::STATE_WAIT,
         self::STATE_END
     );
 
@@ -41,6 +40,7 @@ implements  OrderInterface
      */
     static protected $allowedStatuses = array
     (
+        self::STATE_PROCESSING,
         self::STATUS_APPROVED,
         self::STATUS_DECLINED,
         self::STATUS_ERROR
