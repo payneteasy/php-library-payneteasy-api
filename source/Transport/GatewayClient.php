@@ -36,7 +36,7 @@ class GatewayClient implements GatewayClientInterface
      */
     public function makeRequest(Request $request)
     {
-        $request->validate();
+        $this->validateRequest($request);
 
         try
         {
@@ -44,7 +44,6 @@ class GatewayClient implements GatewayClientInterface
             $url    = "{$this->gatewayUrl}/{$request->getApiMethod()}/{$request->getEndPoint()}";
 
             /**
-             * @todo add SSL client certificates
              * @todo add method for change curl options
              */
             curl_setopt_array
@@ -112,5 +111,30 @@ class GatewayClient implements GatewayClientInterface
         }
 
         return new Response($result);
+    }
+
+    /**
+     * Validates Request
+     *
+     * @param       Request                 $request        Request for validation
+     *
+     * @throws      ValidationException                     Request data is invalid
+     */
+    protected function validateRequest(Request $request)
+    {
+        if (strlen($request->getApiMethod()) == 0)
+        {
+            throw new ValidationException('Request api method is empty');
+        }
+
+        if (strlen($request->getEndPoint()) == 0)
+        {
+            throw new ValidationException('Request endpoint is empty');
+        }
+
+        if ($request->count() === 0)
+        {
+            throw new ValidationException('Request data is empty');
+        }
     }
 }

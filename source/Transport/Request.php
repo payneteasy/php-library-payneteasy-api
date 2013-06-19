@@ -7,7 +7,6 @@
 namespace PaynetEasy\Paynet\Transport;
 
 use ArrayObject;
-use PaynetEasy\Paynet\Exception\ValidationException;
 
 /**
  * @todo implement class
@@ -74,31 +73,5 @@ class Request extends ArrayObject
     public function getEndPoint()
     {
         return $this->endPoint;
-    }
-
-    /**
-     * Validates request data
-     *
-     * @throws      \RuntimeException           Some request data missed
-     */
-    /**
-     * @todo Move to gateway client
-     */
-    public function validate()
-    {
-        if (!$this->getApiMethod())
-        {
-            throw new ValidationException('Request api method is empty');
-        }
-
-        if (!$this->getEndPoint())
-        {
-            throw new ValidationException('Request endpoint is empty');
-        }
-
-        if ($this->count() === 0)
-        {
-            throw new ValidationException('Request data is empty');
-        }
     }
 }
