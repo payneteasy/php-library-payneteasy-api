@@ -30,10 +30,12 @@ class GetCardInfoQuery extends AbstractQuery
     {
         parent::updateOrder($order, $response);
 
-        /**
-         * @todo Remove CardInfo, use RecurrentCard instead
-         */
-//        return new CardInfo($response->getArrayCopy());
+        $order->getRecurrentCardFrom()
+            ->setCardPrintedName($response['card-printed-name'])
+            ->setExpireYear($response['expire-year'])
+            ->setExpireMonth($response['expire-month'])
+            ->setBin($response['bin'])
+            ->setLastFourDigits($response['last-four-digits']);
     }
 
     /**
@@ -46,7 +48,20 @@ class GetCardInfoQuery extends AbstractQuery
             throw new RuntimeException('Order is not instance of Order');
         }
 
-        $order->getRecurrentCardFrom()->validate();
+        if (!$order->getRecurrentCardFrom()->getCardRefId())
+        {
+            throw new RuntimeException('Recurrent card reference ID is not defined');
+        }
+    }
+
+    protected function validateResponse(OrderInterface $order, Response $response)
+    {
+        parent::validateResponse($order, $response);
+
+        if(!$order->hasRecurrentCardFrom())
+        {
+            throw new RuntimeException('Order is not instance of Order');
+        }
     }
 
     /**

@@ -1,16 +1,15 @@
 <?PHP
 namespace PaynetEasy\Paynet\OrderData;
 
-use \ArrayObject;
-use \PaynetEasy\Paynet\Exception\PaynetException;
+use ArrayObject;
+use PaynetEasy\Paynet\Exception\PaynetException;
+use RuntimeException;
 
 class Data extends ArrayObject
 {
-    protected $properties;
-
-    protected $validate_preg;
-
-    protected $errors       = array();
+    protected $properties       = array();
+    protected $validate_preg    = array();
+    protected $errors           = array();
 
     public function __construct($array = array())
     {
@@ -96,6 +95,28 @@ class Data extends ArrayObject
         else
         {
             return '';
+        }
+    }
+
+    /**
+     * Validates value by regExp.
+     *
+     * @param       string      $value              Value for validation
+     * @param       string      $regExp             Regular expression for validation
+     * @param       string      $errorMessage       Error message
+     *
+     * @throws      RuntimeException        Value does not match regexp
+     */
+    protected function validateValue($value, $regExp, $errorMessage = '')
+    {
+        if (!filter_var($value, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $regExp))))
+        {
+            if (empty($errorMessage))
+            {
+                $errorMessage = "Value '{$value}' does not match the regexp '{$regExp}'";
+            }
+
+            throw new RuntimeException($errorMessage);
         }
     }
 }

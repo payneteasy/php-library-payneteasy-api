@@ -12,11 +12,17 @@ class MakeRebillQuery extends AbstractQuery
      */
     protected function orderToRequest(OrderInterface $order)
     {
+        $recurrentCard = $order->getRecurrentCardFrom();
+
         $query = array_merge
         (
             $order->getData(),
-            $order->getRecurrentCardFrom()->getData(),
-            $this->commonQueryOptions($order)
+            $this->commonQueryOptions(),
+            array
+            (
+                'cardrefid' => $recurrentCard->getCardRefId(),
+                'cvv2'      => $recurrentCard->getCvv2()
+            )
         );
 
         if($order->getCancelReason())
@@ -37,8 +43,19 @@ class MakeRebillQuery extends AbstractQuery
             throw new RuntimeException('Recurrent card is not defined');
         }
 
+        $recurrentCard = $order->getRecurrentCardFrom();
+
+        if (!$recurrentCard->getCvv2())
+        {
+            throw new RuntimeException('Recurrent card CVV2 is not defined');
+        }
+
+        if (!$recurrentCard->getCardRefId())
+        {
+            throw new RuntimeException('Recurrent card reference ID is not defined');
+        }
+
         $order->validate();
-        $order->getRecurrentCardFrom()->validate();
     }
 
     /**

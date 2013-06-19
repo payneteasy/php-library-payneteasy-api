@@ -10,25 +10,75 @@ extends     Data
 implements  RecurrentCardInterface
 {
     /**
+     * RecurrentCard referense ID
+     *
+     * @var integer
+     */
+    protected $cardRefId;
+
+    /**
      * RecurrentCard CVV2
      *
      * @var integer
      */
     protected $cvv2;
 
-    public function __construct($cardrefid)
+    /**
+     * Card holder name
+     *
+     * @var string
+     */
+    protected $cardPrintedName;
+
+    /**
+     * Card expiration year
+     *
+     * @var integer
+     */
+    protected $expireYear;
+
+    /**
+     * Card expiration month
+     *
+     * @var integer
+     */
+    protected $expireMonth;
+
+    /**
+     * Bank Identification Number
+     *
+     * @var integer
+     */
+    protected $bin;
+
+    /**
+     * The last four digits of PAN (card number)
+     *
+     * @var integer
+     */
+    protected $lastFourDigits;
+
+    /**
+     * @param       integer     $cardRefId          RecurrentCard referense ID
+     */
+    public function __construct($cardRefId = null)
     {
-        $this->properties = array
-        (
-            'cardrefid'                 => true,
-        );
+        if (!empty($cardRefId))
+        {
+            $this->setCardRefId($cardRefId);
+        }
+    }
 
-        $this->validate_preg = array
-        (
-            'cardrefid'                 => '|^[0-9]{1,20}$|i'
-        );
+    /**
+     * {@inheritdoc}
+     */
+    public function setCardRefId($cardRefId)
+    {
+        $this->validateValue($cardRefId, '#^[0-9]{1,20}$#i');
 
-        parent::__construct(array('cardrefid' => $cardrefid));
+        $this->cardRefId = $cardRefId;
+
+        return $this;
     }
 
     /**
@@ -36,15 +86,11 @@ implements  RecurrentCardInterface
      */
     public function getCardRefId()
     {
-        if($this->offsetExists('cardrefid'))
-        {
-            return $this->offsetGet('cardrefid');
-        }
+        return $this->cardRefId;
     }
 
     /**
-     * Set RecurrentCard CVV2
-     * @param type $cvv2
+     * {@inheritdoc}
      */
     public function setCvv2($cvv2)
     {
@@ -57,5 +103,95 @@ implements  RecurrentCardInterface
     public function getCvv2()
     {
         return $this->cvv2;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCardPrintedName($cardPrintedName)
+    {
+        $this->cardPrintedName = $cardPrintedName;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCardPrintedName()
+    {
+        return $this->cardPrintedName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setExpireYear($expireYear)
+    {
+        $this->expireYear = $expireYear;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExpireYear()
+    {
+        return $this->expireYear;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setExpireMonth($expireMonth)
+    {
+        $this->expireMonth = $expireMonth;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExpireMonth()
+    {
+        return $this->expireMonth;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setBin($bin)
+    {
+        $this->bin = $bin;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBin()
+    {
+        return $this->bin;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLastFourDigits($lastFourDigits)
+    {
+        $this->lastFourDigits = $lastFourDigits;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLastFourDigits()
+    {
+        return $this->lastFourDigits;
     }
 }
