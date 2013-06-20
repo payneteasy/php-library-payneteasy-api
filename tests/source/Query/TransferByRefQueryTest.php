@@ -141,18 +141,26 @@ class TransferByRefQueryTest extends QueryTestPrototype
     {
         $order = new Order(array
         (
-            'order_code'                =>  self::CLIENT_ORDER_ID,
-            'desc'                      => 'This is test order',
+            'client_orderid'            =>  self::CLIENT_ORDER_ID,
+            'order_desc'                => 'This is test order',
             'amount'                    =>  99.1,
             'currency'                  => 'EUR',
             'ipaddress'                 => '127.0.0.1',
             'site_url'                  => 'http://example.com'
         ));
 
-        $sourceCard = new RecurrentCard(self::RECURRENT_CARD_FROM_ID);
-        $sourceCard->setCvv2(123);
+        $sourceCard = new RecurrentCard(array
+        (
+            'cardrefid' => self::RECURRENT_CARD_FROM_ID,
+            'cvv2' => 123
+        ));
+
+        $destCard = new RecurrentCard(array
+        (
+            'cardrefid' => self::RECURRENT_CARD_TO_ID,
+        ));
 
         return $order->setRecurrentCardFrom($sourceCard)
-                     ->setRecurrentCardTo(new RecurrentCard(self::RECURRENT_CARD_TO_ID));
+                     ->setRecurrentCardTo($destCard);
     }
 }

@@ -59,7 +59,7 @@ class ReturnQuery extends AbstractQuery
         $sign = array
         (
             $this->config['login'],
-            $order->getOrderCode(),
+            $order->getClientOrderId(),
             $order->getPaynetOrderId()
         );
 

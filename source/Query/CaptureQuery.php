@@ -59,7 +59,7 @@ class CaptureQuery extends AbstractQuery
         return sha1
         (
             $this->config['login'] .
-            $order->getOrderCode() .
+            $order->getClientOrderId() .
             $order->getPaynetOrderId() .
             $order->getAmountInCents() .
             $order->getCurrency() .

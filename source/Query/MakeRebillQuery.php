@@ -20,7 +20,7 @@ class MakeRebillQuery extends AbstractQuery
             $this->commonQueryOptions(),
             array
             (
-                'cardrefid' => $recurrentCard->getCardRefId(),
+                'cardrefid' => $recurrentCard->getCardReferenceId(),
                 'cvv2'      => $recurrentCard->getCvv2()
             )
         );
@@ -50,12 +50,10 @@ class MakeRebillQuery extends AbstractQuery
             throw new ValidationException('Recurrent card CVV2 is not defined');
         }
 
-        if (!$recurrentCard->getCardRefId())
+        if (!$recurrentCard->getCardReferenceId())
         {
             throw new ValidationException('Recurrent card reference ID is not defined');
         }
-
-        $order->validate();
     }
 
     /**
@@ -66,9 +64,9 @@ class MakeRebillQuery extends AbstractQuery
         return sha1
         (
             $this->config['end_point'].
-            $order->getOrderCode().
+            $order->getClientOrderId().
             $order->getAmountInCents().
-            $order->getRecurrentCardFrom()->getCardRefId().
+            $order->getRecurrentCardFrom()->getCardReferenceId().
             $this->config['control']
         );
     }

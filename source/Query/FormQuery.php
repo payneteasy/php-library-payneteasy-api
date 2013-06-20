@@ -71,9 +71,6 @@ class FormQuery extends AbstractQuery
         {
             throw new ValidationException('Credir Card must not be defined for Form API');
         }
-
-        $order->validate();
-        $order->getCustomer()->validate();
     }
 
     /**
@@ -84,7 +81,7 @@ class FormQuery extends AbstractQuery
         return sha1
         (
             $this->config['end_point'].
-            $order->getOrderCode().
+            $order->getClientOrderId().
             $order->getAmountInCents().
             $order->getCustomer()->getEmail().
             $this->config['control']

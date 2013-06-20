@@ -80,7 +80,7 @@ abstract class PaynetProcess
         (
             array
             (
-                'order_code'    => 'ORDER-'.strtoupper(uniqid()),
+                'client_orderid'    => 'ORDER-'.strtoupper(uniqid()),
                 'desc'          => 'This is test order',
                 'amount'        => 1.99,
                 'currency'      => 'RUB',
@@ -251,7 +251,7 @@ $(document).ready(progress_bar);
 
                 if($this->reccurent_card instanceof RecurrentCardInterface)
                 {
-                    $this->template->content    .= '<p><b>ReccurentCardId</b>: '.$this->reccurent_card->getCardRefId().'</p>';
+                    $this->template->content    .= '<p><b>ReccurentCardId</b>: '.$this->reccurent_card->getCardReferenceId().'</p>';
                 }
             break;
             case OrderInterface::STATUS_DECLINED:

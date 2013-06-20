@@ -35,8 +35,11 @@ class MakeRebillQueryTest extends SaleQueryTest
 
     public function getOrder()
     {
-        $recurrentCard = new RecurrentCard(self::RECURRENT_CARD_FROM_ID);
-        $recurrentCard->setCvv2(123);
+        $recurrentCard = new RecurrentCard(array
+        (
+            'cardrefid' => self::RECURRENT_CARD_FROM_ID,
+            'cvv2' => 123
+        ));
 
         return parent::getOrder()
             ->setRecurrentCardFrom($recurrentCard);

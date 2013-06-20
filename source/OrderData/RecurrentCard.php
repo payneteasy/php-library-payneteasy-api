@@ -14,7 +14,7 @@ implements  RecurrentCardInterface
      *
      * @var integer
      */
-    protected $cardRefId;
+    protected $cardReferenceId;
 
     /**
      * RecurrentCard CVV2
@@ -59,24 +59,13 @@ implements  RecurrentCardInterface
     protected $lastFourDigits;
 
     /**
-     * @param       integer     $cardRefId          RecurrentCard referense ID
-     */
-    public function __construct($cardRefId = null)
-    {
-        if (!empty($cardRefId))
-        {
-            $this->setCardRefId($cardRefId);
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function setCardRefId($cardRefId)
+    public function setCardReferenceId($cardReferenceId)
     {
-        $this->validateValue($cardRefId, '#^[0-9]{1,20}$#i');
+        $this->validateValue($cardReferenceId, '#^[0-9]{1,20}$#i');
 
-        $this->cardRefId = $cardRefId;
+        $this->cardReferenceId = $cardReferenceId;
 
         return $this;
     }
@@ -84,9 +73,9 @@ implements  RecurrentCardInterface
     /**
      * {@inheritdoc}
      */
-    public function getCardRefId()
+    public function getCardReferenceId()
     {
-        return $this->cardRefId;
+        return $this->cardReferenceId;
     }
 
     /**
@@ -94,6 +83,8 @@ implements  RecurrentCardInterface
      */
     public function setCvv2($cvv2)
     {
+        $this->validateValue($cvv2, '#^[0-9]{3,4}$#i');
+
         $this->cvv2 = $cvv2;
     }
 
@@ -110,6 +101,8 @@ implements  RecurrentCardInterface
      */
     public function setCardPrintedName($cardPrintedName)
     {
+        $this->validateValue($cardPrintedName, '#^[\S\s]{1,128}$#i');
+
         $this->cardPrintedName = $cardPrintedName;
 
         return $this;
@@ -128,6 +121,8 @@ implements  RecurrentCardInterface
      */
     public function setExpireYear($expireYear)
     {
+        $this->validateValue($expireYear, '#^[0-9]{1,2}$#i');
+
         $this->expireYear = $expireYear;
 
         return $this;
@@ -146,6 +141,14 @@ implements  RecurrentCardInterface
      */
     public function setExpireMonth($expireMonth)
     {
+        $this->validateValue($expireMonth, '#^[0-9]{1,2}$#i');
+
+        if($expireMonth < 1 || $expireMonth > 12)
+        {
+            throw new ValidationException("Expire month must be beetween 1 and 12, " .
+                                          "'{$expireMonth}' given");
+        }
+
         $this->expireMonth = $expireMonth;
 
         return $this;
@@ -164,6 +167,8 @@ implements  RecurrentCardInterface
      */
     public function setBin($bin)
     {
+        $this->validateValue($bin, '#^[0-9]{4,6}$#i');
+
         $this->bin = $bin;
 
         return $this;
@@ -182,6 +187,8 @@ implements  RecurrentCardInterface
      */
     public function setLastFourDigits($lastFourDigits)
     {
+        $this->validateValue($lastFourDigits, '#^[0-9]{4}$#i');
+
         $this->lastFourDigits = $lastFourDigits;
 
         return $this;
@@ -193,5 +200,43 @@ implements  RecurrentCardInterface
     public function getLastFourDigits()
     {
         return $this->lastFourDigits;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getSetterByField($fieldName)
+    {
+        switch ($fieldName)
+        {
+            case 'id':
+            case 'cardrefid':
+            case 'card_ref_id':
+            {
+                return 'setCardReferenceId';
+            }
+            default:
+            {
+                return parent::getSetterByField($fieldName);
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getFieldByProperty($propertyName)
+    {
+        switch ($propertyName)
+        {
+            case 'cardReferenceId':
+            {
+                return 'cardrefid';
+            }
+            default:
+            {
+                return parent::getFieldByProperty($propertyName);
+            }
+        }
     }
 }

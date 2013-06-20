@@ -2,8 +2,9 @@
 
 namespace PaynetEasy\Paynet\OrderData;
 
-use Exception;
+use PaynetEasy\Paynet\Exception\ValidationException;
 use RuntimeException;
+use Exception;
 
 /**
  * Container for order data
@@ -47,6 +48,82 @@ implements  OrderInterface
     );
 
     /**
+     * Merchant order identifier
+     *
+     * @var string
+     */
+    protected $clientOrderId;
+
+    /**
+     * Unique identifier of transaction assigned by PaynetEasy
+     *
+     * @var string
+     */
+    protected $paynetOrderId;
+
+    /**
+     * Brief order description
+     *
+     * @var string
+     */
+    protected $description;
+
+    /**
+     * Amount to be charged
+     *
+     * @var float
+     */
+    protected $amount;
+
+    /**
+     * Currency the transaction is charged in (three-letter currency code)
+     *
+     * @var string
+     */
+    protected $currency;
+
+    /**
+     * Customer’s IP address
+     *
+     * @var string
+     */
+    protected $ipAddress;
+
+    /**
+     * URL the original payment is made from
+     *
+     * @var string
+     */
+    protected $siteUrl;
+
+    /**
+     * Order cancellation reason (up to 50 chars)
+     *
+     * @var string
+     */
+    protected $cancelReason;
+
+    /**
+     * Order state
+     *
+     * @var string
+     */
+    /**
+     * @todo More specific name and description needed
+     */
+    protected $state = self::STATE_NULL;
+
+    /**
+     * Order status
+     *
+     * @var string
+     */
+    /**
+     * @todo More specific name and description needed
+     */
+    protected $status = '';
+
+    /**
      * Order customer
      *
      * @var \PaynetEasy\Paynet\OrderData\CustomerInterface
@@ -75,83 +152,11 @@ implements  OrderInterface
     protected $recurrentCardTo;
 
     /**
-     * Order state
-     *
-     * @var string
-     */
-    /**
-     * @todo More specific name and description needed
-     */
-    protected $state = self::STATE_NULL;
-
-    /**
-     * Order status
-     *
-     * @var string
-     */
-    /**
-     * @todo More specific name and description needed
-     */
-    protected $status = '';
-
-    /**
-     * Order cancellation reason (up to 50 chars)
-     *
-     * @var string
-     */
-    protected $cancelReason;
-
-    /**
      * Order processing errors
      *
      * @var array
      */
     protected $errors = array();
-
-    public function __construct($array)
-    {
-        if(isset($array['order_code']))
-        {
-            $array['client_orderid']    = $array['order_code'];
-            unset($array['order_code']);
-        }
-
-        if(isset($array['paynet_order_id']))
-        {
-            $array['orderid']    = $array['paynet_order_id'];
-            unset($array['paynet_order_id']);
-        }
-
-        if(isset($array['desc']))
-        {
-            $array['order_desc']        = $array['desc'];
-            unset($array['desc']);
-        }
-
-        $this->properties = array
-        (
-            'client_orderid'            => true,
-            'order_desc'                => true,
-            'amount'                    => true,
-            'currency'                  => true,
-            'ipaddress'                 => true,
-            'site_url'                  => false,
-            'orderid'                   => false
-        );
-
-        $this->validate_preg = array
-        (
-            'client_orderid'            => '|^[\S\s]{1,128}$|i',
-            'order_desc'                => '|^[\S\s]{1,128}$|i',
-            'amount'                    => '|^[0-9\.]{1,11}$|i',
-            'currency'                  => '|^[A-Z]{1,3}$|i',
-            'ipaddress'                 => '|^[0-9\.]{1,20}$|i',
-            'site_url'                  => '|^[\S\s]{1,128}$|i',
-            'orderid'                   => '|^[\S\s]{1,32}$|i'
-        );
-
-        parent::__construct($array);
-    }
 
     /**
      * {@inheritdoc}
@@ -167,6 +172,184 @@ implements  OrderInterface
     public static function getAllowedStatuses()
     {
         return static::$allowedStatuses;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setClientOrderId($clientOrderId)
+    {
+        $this->validateValue($clientOrderId, '#^[\S\s]{1,128}$#i');
+
+        $this->clientOrderId = $clientOrderId;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClientOrderId()
+    {
+        return $this->clientOrderId;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPaynetOrderId($paynetOrderId)
+    {
+        $this->validateValue($paynetOrderId, '#^[\S\s]{1,20}$#i');
+
+        $this->paynetOrderId = $paynetOrderId;
+
+        return $this;
+    }
+
+    /**
+     * Get unique identifier of transaction assigned by PaynetEasy
+     *
+     * @return       string
+     */
+    public function getPaynetOrderId()
+    {
+        return $this->paynetOrderId;
+    }
+
+    /**
+     * Set brief order description
+     *
+     * @param       string      $description        Brief order description
+     */
+    public function setDescription($description)
+    {
+        $this->validateValue($description, '#^[\S\s]{1,125}$#i');
+
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get brief order description
+     *
+     * @return      string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Get amount to be charged
+     *
+     * @param       float       $amount             Amount to be charged
+     */
+    public function setAmount($amount)
+    {
+        $this->validateValue($amount, '#^[0-9\.]{1,11}$#i');
+
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Get amount to be charged
+     *
+     * @return      float
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * Get amount in cents (for control code generation)
+     *
+     * @return integer
+     */
+    public function getAmountInCents()
+    {
+        return (int) ($this->getAmount() * 100);
+    }
+
+    /**
+     * Set currency the transaction is charged in (three-letter currency code)
+     *
+     * @param       string      $currency           Currency the transaction is charged in
+     */
+    public function setCurrency($currency)
+    {
+        $this->validateValue($currency, '#^[A-Z]{1,3}$#i');
+
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Get currency the transaction is charged in (three-letter currency code)
+     *
+     * @return      string
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
+     * Set customer’s IP address
+     *
+     * @param       string      $ipAddress          Customer’s IP address
+     */
+    public function setIpAddress($ipAddress)
+    {
+        if (!filter_var($ipAddress, FILTER_VALIDATE_IP))
+        {
+            throw new ValidationException("Invalid IP address '{$ipAddress}'");
+        }
+
+        $this->ipAddress = $ipAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get customer’s IP address
+     *
+     * @return      string
+     */
+    public function getIpAddress()
+    {
+        return $this->ipAddress;
+    }
+
+    /**
+     * Set URL the original payment is made from
+     *
+     * @param       string      $siteUrl            URL the original payment is made from
+     */
+    public function setSiteUrl($siteUrl)
+    {
+        if (!filter_var($siteUrl, FILTER_VALIDATE_URL))
+        {
+            throw new ValidationException("Invalid site URL '{$siteUrl}'");
+        }
+
+        $this->siteUrl = $siteUrl;
+
+        return $this;
+    }
+
+    /**
+     * Get URL the original payment is made from
+     *
+     * @return      string
+     */
+    public function getSiteUrl()
+    {
+        return $this->siteUrl;
     }
 
     /**
@@ -224,9 +407,9 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function createRecurrentCardFrom($cardRefId)
+    public function createRecurrentCardFrom($cardReferenceId)
     {
-        $this->setRecurrentCardFrom(new RecurrentCard($cardRefId));
+        $this->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => $cardReferenceId)));
 
         return $this;
     }
@@ -393,75 +576,21 @@ implements  OrderInterface
         }
     }
 
-    public function getOrderCode()
-    {
-        return $this->getValue('client_orderid');
-    }
-
-    public function getOrderId()
-    {
-        return $this->getOrderCode();
-    }
-
-    public function getPaynetOrderId()
-    {
-        return $this->getValue('orderid');
-    }
-
-    public function setPaynetOrderId($paynet_order_id)
-    {
-        $this->offsetSet('orderid', $paynet_order_id);
-    }
-
-    public function getAmount()
-    {
-        return $this->getValue('amount');
-    }
-
     /**
-     * Return amount in cents (use for control code)
-     * @return type
+     * @todo Move to AbstractQuery
      */
-    public function getAmountInCents()
-    {
-        $amount         = (float)$this->getValue('amount');
-        $amount         = explode('.', $amount);
-        if(empty($amount[1]))
-        {
-            $amount[1]  = '00';
-        }
-        elseif(strlen($amount[1]) < 2)
-        {
-            $amount[1]  .= '0';
-        }
-
-        if(empty($amount[0]))
-        {
-            $amount[0]  = '';
-        }
-
-        return          $amount[0].$amount[1];
-    }
-
-    public function getCurrency()
-    {
-        return $this->getValue('currency');
-    }
-
-    public function getDesc()
-    {
-        return $this->getValue('order_desc');
-    }
-
     public function getContextData()
     {
         return array
         (
-            'client_orderid'    => $this->getOrderCode(),
+            'client_orderid'    => $this->getClientOrderId(),
             'orderid'           => $this->getPaynetOrderId()
         );
     }
 
+    /**
+     * @todo Move to AbstractQuery
+     */
     public function validateShort()
     {
         if(!$this->getPaynetOrderId())
@@ -469,9 +598,72 @@ implements  OrderInterface
             throw new RuntimeException('order.paynet_order_id undefined');
         }
 
-        if(!$this->getOrderCode())
+        if(!$this->getClientOrderId())
         {
-            throw new RuntimeException('order.order_code undefined');
+            throw new RuntimeException('order.client_orderid undefined');
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getSetterByField($fieldName)
+    {
+        switch ($fieldName)
+        {
+            case 'client_orderid':
+            case 'client_order_id':
+            {
+                return 'setClientOrderId';
+            }
+            case 'paynet_order_id':
+            case 'orderid':
+            case 'order_id':
+            {
+                return 'setPaynetOrderId';
+            }
+            case 'order_desc':
+            {
+                return 'setDescription';
+            }
+            case 'ipaddress':
+            {
+                return 'setIpAddress';
+            }
+            default:
+            {
+                return parent::getSetterByField($fieldName);
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getFieldByProperty($propertyName)
+    {
+        switch ($propertyName)
+        {
+            case 'clientOrderId':
+            {
+                return 'client_orderid';
+            }
+            case 'paynetOrderId':
+            {
+                return 'orderid';
+            }
+            case 'description':
+            {
+                return 'order_desc';
+            }
+            case 'ipAddress':
+            {
+                return 'ipaddress';
+            }
+            default:
+            {
+                return parent::getFieldByProperty($propertyName);
+            }
         }
     }
 }

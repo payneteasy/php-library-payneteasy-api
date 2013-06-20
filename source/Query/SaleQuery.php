@@ -35,10 +35,6 @@ class SaleQuery extends AbstractQuery
         {
             throw new ValidationException('CreditCard must be defined');
         }
-
-        $order->validate();
-        $order->getCustomer()->validate();
-        $order->getCreditCard()->validate();
     }
 
     /**
@@ -49,7 +45,7 @@ class SaleQuery extends AbstractQuery
         return sha1
         (
             $this->config['end_point'] .
-            $order->getOrderCode() .
+            $order->getClientOrderId() .
             $order->getAmountInCents() .
             $order->getCustomer()->getEmail() .
             $this->config['control']

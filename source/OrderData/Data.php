@@ -1,89 +1,136 @@
 <?PHP
 namespace PaynetEasy\Paynet\OrderData;
 
-use ArrayObject;
 use PaynetEasy\Paynet\Exception\ValidationException;
+use RuntimeException;
 
-class Data extends ArrayObject
+class Data
 {
-    protected $properties       = array();
-    protected $validate_preg    = array();
-
-    public function __construct($array = array())
+    /**
+     * Initialize object from input array.
+     * For each array field will be called property setter.
+     * If the setter is not found, and $failOnUnknownField = true,
+     * exception will be trown.
+     *
+     * :NOTICE:         Imenem          20.06.13
+     *
+     * Every child class can have own logic
+     * to find setter by array field name
+     *
+     * @param       array       $array                  Input array with object data
+     * @param       boolean     $failOnUnknownField     If true, exception will be trown if the setter is not found
+     *
+     * @throws      RuntimeException                    Setter is not found
+     */
+    public function __construct($array = array(), $failOnUnknownField = true)
     {
-        parent::__construct($array);
+        foreach ($array as $fieldName => $fieldValue)
+        {
+            $setter = array($this, $this->getSetterByField($fieldName));
+
+            if (is_callable($setter))
+            {
+                call_user_func($setter, $fieldValue);
+            }
+            elseif ($failOnUnknownField === true)
+            {
+                throw new RuntimeException("Can not find setter for field '{$fieldName}'");
+            }
+        }
     }
 
     /**
-     * Validate Customer Data.
+     * Get all object scalar properties values as array.
      *
-     * @throws ValidationException
+     * :NOTICE:         Imenem          20.06.13
+     *
+     * Every child class can have own logic
+     * to find array field name by property name
+     *
+     * @param       boolean     $failOnUnknownField     If true, exception will be trown if the setter is not found
+     *
+     * @return      array                               Array with all object scalar properties values
      */
-    public function validate()
+    public function getData($failOnUnknownField = true)
     {
-        $this->checkRequired();
+        $data = array();
 
-        $this->validatePreg();
+        foreach ($this as $propertyName => $propertyValue)
+        {
+            if (!is_scalar($propertyValue))
+            {
+                continue;
+            }
+
+            $getter = array($this, $this->getGetterByProperty($propertyName));
+
+            if (is_callable($getter))
+            {
+                $data[$this->getFieldByProperty($propertyName)] = call_user_func($getter);
+            }
+            elseif ($failOnUnknownField === true)
+            {
+                throw new RuntimeException("Can not find getter for property '{$propertyName}'");
+            }
+        }
+
+        return $data;
     }
 
     /**
-     * Returned Data for query.
+     * Convert string from format <this_is_the_string> or
+     * <this-is-the-string> to format <ThisIsTheString>
      *
-     * @return      array
+     * @param       string      $string         String to coversion
+     *
+     * @return      string                      Converted string
      */
-    public function getData()
+    static public function camelize($string)
     {
-        $this->validate();
-
-        return $this->getArrayCopy();
+        return implode('', array_map('ucfirst', preg_split('/_|-/', $string)));
     }
 
-    protected function checkRequired()
+    /**
+     * Convert string from format <ThisIsTheString> to format
+     * <this-is-the-string> or <this-is-the-string> or etc
+     *
+     * @param       string      $string         String to coversion
+     * @param       string      $delimeter      Delimeter for string chunks
+     *
+     * @return      string                      Converted string
+     */
+    static public function uncamelize($string, $delimeter = '_')
     {
-        $missedFields = array();
-
-        foreach ($this->properties as $fieldName => $isFieldRequired)
-        {
-            if(   $isFieldRequired
-               && empty($this[$fieldName]))
-            {
-                $missedFields[] = $fieldName;
-            }
-        }
-
-        if(count($missedFields))
-        {
-            throw new ValidationException('Some required fields missed or empty : ' .
-                                          implode(', ', $missedFields));
-        }
+        return strtolower(implode($delimeter, preg_split('/(?=[A-Z])/', lcfirst($string))));
     }
 
-    protected function validatePreg()
+    /**
+     * Get property setter name by input array field name
+     *
+     * @param       string      $fieldName          Input array field name
+     *
+     * @return      string                          Property setter name
+     */
+    protected function getSetterByField($fieldName)
     {
-        $errors = array();
-
-        foreach($this->validate_preg as $fieldName  => $regExp)
-        {
-            if(    $this->offsetExists($fieldName)
-               && !preg_match($regExp, $this[$fieldName]))
-            {
-                $errors[$fieldName] = "{$fieldName} does not match {$regExp}";
-            }
-        }
-
-        if(count($errors))
-        {
-            throw new ValidationException('Some fields has invalid value: ' .
-                                          implode(', ', $errors));
-        }
+        return 'set' . static::camelize($fieldName);
     }
 
-    protected function getValue($key)
+    /**
+     * Get output array field name by property name
+     *
+     * @param       string      $propertyName       Property name
+     *
+     * @return      string                          Output array field name
+     */
+    protected function getFieldByProperty($propertyName)
     {
-        if($this->offsetExists($key))
-        {
-            return $this->offsetGet($key);
-        }
+        return static::uncamelize($propertyName);
+    }
+
+    protected function getGetterByProperty($propertyName)
+    {
+        return 'get' . ucfirst($propertyName);
     }
 
     /**

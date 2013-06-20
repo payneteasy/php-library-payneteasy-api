@@ -19,8 +19,8 @@ class TransferByRefQuery extends AbstractQuery
             array
             (
                 'cvv2'                      => $order->getRecurrentCardFrom()->getCvv2(),
-                'source-card-ref-id'        => $order->getRecurrentCardFrom()->getCardRefId(),
-                'destination-card-ref-id'   => $order->getRecurrentCardTo()->getCardRefId(),
+                'source-card-ref-id'        => $order->getRecurrentCardFrom()->getCardReferenceId(),
+                'destination-card-ref-id'   => $order->getRecurrentCardTo()->getCardReferenceId(),
                 'amount'                    => $order->getAmount(),
                 'currency'                  => $order->getCurrency()
             )
@@ -46,10 +46,6 @@ class TransferByRefQuery extends AbstractQuery
         {
             throw new ValidationException('Destination RecurrentCard must be defined');
         }
-
-        $order->validate();
-        $order->getRecurrentCardFrom()->validate();
-        $order->getRecurrentCardTo()->validate();
     }
 
     /**
@@ -64,9 +60,9 @@ class TransferByRefQuery extends AbstractQuery
         return sha1
         (
             $this->config['login'] .
-            $order->getOrderCode() .
-            $order->getRecurrentCardFrom()->getCardRefId() .
-            $order->getRecurrentCardTo()->getCardRefId() .
+            $order->getClientOrderId() .
+            $order->getRecurrentCardFrom()->getCardReferenceId() .
+            $order->getRecurrentCardTo()->getCardReferenceId() .
             $order->getAmountInCents() .
             $order->getCurrency() .
             $this->config['control']

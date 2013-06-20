@@ -2,6 +2,8 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
+use PaynetEasy\Paynet\OrderData\Data;
+
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Query\QueryFactoryInterface;
@@ -208,9 +210,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
             throw new RuntimeException('Initial API method name not found in class name');
         }
 
-        $name_chunks = preg_split('/(?=[A-Z])/', $result[0], null, PREG_SPLIT_NO_EMPTY);
-
-        $this->initialApiMethod    = strtolower(implode('-', $name_chunks));
+        $this->initialApiMethod    = Data::uncamelize($result[0], '-');
     }
 
     /**

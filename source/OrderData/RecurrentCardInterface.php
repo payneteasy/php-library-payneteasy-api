@@ -11,18 +11,18 @@ interface RecurrentCardInterface
     /**
      * Set RecurrentCard referense ID
      *
-     * @param       integer     $cardRefId              RecurrentCard referense ID
+     * @param       integer     $cardReferenceId        RecurrentCard referense ID
      *
      * @return      self
      */
-    public function setCardRefId($cardRefId);
+    public function setCardReferenceId($cardReferenceId);
 
     /**
      * Get RecurrentCard referense ID
      *
      * @return  integer
      */
-    public function getCardRefId();
+    public function getCardReferenceId();
 
     /**
      * Set RecurrentCard CVV2

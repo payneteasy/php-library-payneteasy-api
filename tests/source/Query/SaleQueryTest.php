@@ -119,8 +119,8 @@ class SaleQueryTest extends QueryTestPrototype
         $order = new Order(array
         (
             'paynet_order_id'           =>  self::PAYNET_ORDER_ID,
-            'order_code'                =>  self::CLIENT_ORDER_ID,
-            'desc'                      => 'This is test order',
+            'client_orderid'            =>  self::CLIENT_ORDER_ID,
+            'order_desc'                => 'This is test order',
             'amount'                    =>  0.99,
             'currency'                  => 'USD',
             'ipaddress'                 => '127.0.0.1',

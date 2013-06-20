@@ -11,42 +11,144 @@ class       CreditCard
 extends     Data
 implements  CreditCardInterface
 {
-    public function __construct($array)
+    /**
+     * RecurrentCard CVV2
+     *
+     * @var integer
+     */
+    protected $cvv2;
+
+    /**
+     * Card holder name
+     *
+     * @var string
+     */
+    protected $cardPrintedName;
+
+    /**
+     * Credit card number
+     *
+     * @var integer
+     */
+    protected $creditCardNumber;
+
+    /**
+     * Card expiration year
+     *
+     * @var integer
+     */
+    protected $expireYear;
+
+    /**
+     * Card expiration month
+     *
+     * @var integer
+     */
+    protected $expireMonth;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCvv2($cvv2)
     {
-        $this->properties = array
-        (
-            'card_printed_name'         => true,
-            'credit_card_number'        => true,
-            'expire_month'              => true,
-            'expire_year'               => true,
-            'cvv2'                      => true
-        );
+        $this->validateValue($cvv2, '#^[0-9]{3,4}$#i');
 
-        $this->validate_preg = array
-        (
-            'card_printed_name'         => '|^[\S\s]{1,128}$|i',
-            'credit_card_number'        => '|^[0-9]{1,20}$|i',
-            'expire_month'              => '|^[0-9]{1,2}$|i',
-            'expire_year'               => '|^[0-9]{1,2}$|i',
-            'cvv2'                      => '|^[0-9]{3,4}$|'
-        );
-
-        parent::__construct($array);
+        $this->cvv2 = $cvv2;
     }
 
-    public function validate()
+    /**
+     * {@inheritdoc}
+     */
+    public function getCvv2()
     {
-        // Normalize value
-        if(isset($this['credit_card_number']))
+        return $this->cvv2;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCardPrintedName($cardPrintedName)
+    {
+        $this->validateValue($cardPrintedName, '#^[\S\s]{1,128}$#i');
+
+        $this->cardPrintedName = $cardPrintedName;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCardPrintedName()
+    {
+        return $this->cardPrintedName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCreditCardNumber($creditCardNumber)
+    {
+        $cleanNumber = str_replace(array(' ','-','.',','), '', $creditCardNumber);
+
+        $this->validateValue($cleanNumber, '#^[0-9]{1,20}$#i');
+
+        $this->creditCardNumber = $cleanNumber;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCreditCardNumber()
+    {
+        return $this->creditCardNumber;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setExpireYear($expireYear)
+    {
+        $this->validateValue($expireYear, '#^[0-9]{1,2}$#i');
+
+        $this->expireYear = $expireYear;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExpireYear()
+    {
+        return $this->expireYear;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setExpireMonth($expireMonth)
+    {
+        $this->validateValue($expireMonth, '#^[0-9]{1,2}$#i');
+
+        if($expireMonth < 1 || $expireMonth > 12)
         {
-            $this['credit_card_number']     = str_replace(array(' ','-','.',','), '', $this['credit_card_number']);
+            throw new ValidationException("Expire month must be beetween 1 and 12, " .
+                                          "'{$expireMonth}' given");
         }
 
-        parent::validate();
+        $this->expireMonth = $expireMonth;
 
-        if($this['expire_month'] < 1 || $this['expire_month'] > 12)
-        {
-            throw new ValidationException("Invalid expire month: '{$this['expire_month']}'");
-        }
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExpireMonth()
+    {
+        return $this->expireMonth;
     }
 }

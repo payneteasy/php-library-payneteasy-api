@@ -113,8 +113,8 @@ class FormQueryTest extends QueryTestPrototype
 
         $order = new Order(array
         (
-            'order_code'                =>  self::CLIENT_ORDER_ID,
-            'desc'                      => 'This is test order',
+            'client_orderid'            =>  self::CLIENT_ORDER_ID,
+            'order_desc'                => 'This is test order',
             'amount'                    =>  99.1,
             'currency'                  => 'USD',
             'ipaddress'                 => '127.0.0.1',

@@ -31,6 +31,125 @@ interface OrderInterface
     const STATUS_ERROR      = 'error';
 
     /**
+     * Set Merchant order identifier
+     *
+     * @param       string      $clientOrderId      Merchant order identifier
+     *
+     * @return      self
+     */
+    public function setClientOrderId($clientOrderId);
+
+    /**
+     * Get merchant order identifier
+     *
+     * @return      string
+     */
+    public function getClientOrderId();
+
+    /**
+     * Set unique identifier of transaction assigned by PaynetEasy
+     *
+     * @param       string      $paynetOrderId      Unique identifier of transaction assigned by PaynetEasy
+     *
+     * @return      self
+     */
+    public function setPaynetOrderId($paynetOrderId);
+
+    /**
+     * Get unique identifier of transaction assigned by PaynetEasy
+     *
+     * @return       string
+     */
+    public function getPaynetOrderId();
+
+    /**
+     * Set brief order description
+     *
+     * @param       string      $description        Brief order description
+     *
+     * @return      self
+     */
+    public function setDescription($description);
+
+    /**
+     * Get brief order description
+     *
+     * @return      string
+     */
+    public function getDescription();
+
+    /**
+     * Get amount to be charged
+     *
+     * @param       float       $amount             Amount to be charged
+     *
+     * @return      self
+     */
+    public function setAmount($amount);
+
+    /**
+     * Get amount to be charged
+     *
+     * @return      float
+     */
+    public function getAmount();
+
+    /**
+     * Get amount in cents (for control code generation)
+     *
+     * @return      integer
+     */
+    public function getAmountInCents();
+
+    /**
+     * Set currency the transaction is charged in (three-letter currency code)
+     *
+     * @param       string      $currency           Currency the transaction is charged in
+     *
+     * @return      self
+     */
+    public function setCurrency($currency);
+
+    /**
+     * Get currency the transaction is charged in (three-letter currency code)
+     *
+     * @return      string
+     */
+    public function getCurrency();
+
+    /**
+     * Set customer’s IP address
+     *
+     * @param       string      $ipAddress          Customer’s IP address
+     *
+     * @return      self
+     */
+    public function setIpAddress($ipAddress);
+
+    /**
+     * Get customer’s IP address
+     *
+     * @return      string
+     */
+    public function getIpAddress();
+
+    /**
+     * Set URL the original payment is made from
+     *
+     * @param       string      $siteUrl            URL the original payment is made from
+     *
+     * @return      self
+     */
+    public function setSiteUrl($siteUrl);
+
+    /**
+     * Get URL the original payment is made from
+     *
+     * @return      string
+     */
+    public function getSiteUrl();
+
+    /**
      * Set order customer
      *
      * @param       \PaynetEasy\Paynet\OrderData\CustomerInterface        $customer       Order customer
@@ -79,14 +198,14 @@ interface OrderInterface
     /**
      * Creates recurrent credit card for given id
      *
-     * @param       string      $cardRefId      Recurrent credit card reference id
+     * @param       string      $cardReferenceId      Recurrent credit card reference id
      *
      * @return      self
      */
     /**
      * @todo Move to another object
      */
-    public function createRecurrentCardFrom($cardRefId);
+    public function createRecurrentCardFrom($cardReferenceId);
 
     /**
      * Set order sorce recurrent card

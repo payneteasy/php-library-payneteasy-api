@@ -1,6 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Query;
 
+use PaynetEasy\Paynet\OrderData\Data;
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 
 use PaynetEasy\Paynet\Transport\Response;
@@ -125,10 +126,10 @@ implements      QueryInterface
     protected function validateResponse(OrderInterface $order, Response $response)
     {
         if (    !$response->isError()
-            &&   $order->getOrderId() !== $response->orderId())
+            &&   $order->getClientOrderId() !== $response->orderId())
         {
             throw new ValidationException("Response client_orderid '{$response->orderId()}' does " .
-                                          "not match Order client_orderid '{$order->getOrderId()}'");
+                                          "not match Order client_orderid '{$order->getClientOrderId()}'");
         }
     }
 
@@ -229,8 +230,7 @@ implements      QueryInterface
             throw new RuntimeException('API method name not found in class name');
         }
 
-        $name_chunks     = preg_split('/(?=[A-Z])/', $result[0], null, PREG_SPLIT_NO_EMPTY);
-        $this->apiMethod = strtolower(implode('-', $name_chunks));
+        $this->apiMethod = Data::uncamelize($result[0], '-');
     }
 
     /**

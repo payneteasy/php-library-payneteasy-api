@@ -22,9 +22,12 @@ class MakeRebillTest extends SaleTest
     {
         list($customer, $card, $order) = parent::getTestData();
 
-        $recurrentCard = new RecurrentCard(self::CARD_REF_ID);
-        $recurrentCard->setCvv2(123);
-
+        $recurrentCard = new RecurrentCard(array
+        (
+            'cardrefid' => self::CARD_REF_ID,
+            'cvv2' => 123
+        ));
+        
         return array($customer, $recurrentCard, $order);
     }
 }

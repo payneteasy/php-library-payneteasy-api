@@ -4,7 +4,6 @@ namespace PaynetEasy\Paynet\Workflow;
 
 use PaynetEasy\Paynet\Transport\FakeGatewayClient;
 use PaynetEasy\Paynet\Transport\Response;
-use PaynetEasy\Paynet\Transport\CallbackResponse;
 use PaynetEasy\Paynet\OrderData\Order;
 use PaynetEasy\Paynet\OrderData\Customer;
 use PaynetEasy\Paynet\OrderData\CreditCard;
@@ -58,8 +57,8 @@ class SaleTest extends WorkflowTestPrototype
         (
             array
             (
-                'order_code'                => 'CLIENT-112233',
-                'desc'                      => 'This is test order',
+                'client_orderid'            => 'CLIENT-112233',
+                'order_desc'                => 'This is test order',
                 'amount'                    => 0.99,
                 'currency'                  => 'USD',
                 'ipaddress'                 => '127.0.0.1',
@@ -139,14 +138,14 @@ class SaleTest extends WorkflowTestPrototype
 
         if($card instanceof RecurrentCardInterface)
         {
-            $request['cardrefid']   = $card->getCardRefId();
+            $request['cardrefid']   = $card->getCardReferenceId();
 
             $request['control']     = sha1
             (
                 $this->config['end_point'].
                 'CLIENT-112233'.
                 '99'.
-                $card->getCardRefId().
+                $card->getCardReferenceId().
                 $this->config['control']
             );
 

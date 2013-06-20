@@ -116,7 +116,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     {
         return new Order(array
         (
-            'order_code'                =>  self::CLIENT_ORDER_ID,
+            'client_orderid'                =>  self::CLIENT_ORDER_ID,
             'amount'                    =>  0.99,
             'currency'                  => 'USD'
         ));

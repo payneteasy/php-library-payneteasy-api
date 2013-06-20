@@ -48,7 +48,7 @@ class GetCardInfoQuery extends AbstractQuery
             throw new ValidationException('Recurrent card must be defined in Order');
         }
 
-        if (!$order->getRecurrentCardFrom()->getCardRefId())
+        if (!$order->getRecurrentCardFrom()->getCardReferenceId())
         {
             throw new ValidationException('Recurrent card reference ID is not defined');
         }
@@ -74,7 +74,7 @@ class GetCardInfoQuery extends AbstractQuery
         return sha1
         (
             $this->config['login'].
-            $order->getRecurrentCardFrom()->getCardRefId().
+            $order->getRecurrentCardFrom()->getCardReferenceId().
             $this->config['control']
         );
     }

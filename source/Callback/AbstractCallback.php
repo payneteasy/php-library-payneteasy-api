@@ -161,10 +161,10 @@ abstract class AbstractCallback implements CallbackInterface
             throw new ValidationException("Invalid callback status: {$callbackResponse->status()}");
         }
 
-        if ($callbackResponse->orderId() !== $order->getOrderId())
+        if ($callbackResponse->orderId() !== $order->getClientOrderId())
         {
             throw new ValidationException("Callback client_orderid '{$callbackResponse->orderId()}' does " .
-                                          "not match Order client_orderid '{$order->getOrderId()}'");
+                                          "not match Order client_orderid '{$order->getClientOrderId()}'");
         }
 
         if ($callbackResponse->amount() !== $order->getAmount())
