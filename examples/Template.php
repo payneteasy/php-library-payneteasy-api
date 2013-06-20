@@ -1,4 +1,4 @@
-<?PHP
+<?php
 class Template
 {
     public $title       = '';
@@ -88,6 +88,6 @@ class Template
     </div> <!-- /container -->
   </body>
 </html>
-<?PHP
+<?php
     }
 }

@@ -1,4 +1,4 @@
-<?PHP
+<?php
 require_once './PaynetProcess.php';
 
 use \PaynetEasy\Paynet\Query\SaleQuery         as PaynetSale;

@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 define('SITE_HOST',                 $_SERVER['HTTP_HOST']);
 

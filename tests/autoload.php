@@ -1,4 +1,4 @@
-<?PHP
+<?php
 define('UNIT_TEST_ROOT', dirname(__FILE__));
 
 set_include_path

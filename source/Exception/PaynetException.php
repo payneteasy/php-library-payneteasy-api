@@ -1,4 +1,4 @@
-<?PHP
+<?php
 namespace PaynetEasy\Paynet\Exception;
 
 use Exception;

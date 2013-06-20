@@ -1,4 +1,4 @@
-<?PHP
+<?php
 namespace PaynetEasy\Paynet\Callback;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;

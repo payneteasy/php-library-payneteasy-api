@@ -1,4 +1,4 @@
-<?PHP
+<?php
 set_include_path
 (
     dirname(__FILE__).PATH_SEPARATOR.

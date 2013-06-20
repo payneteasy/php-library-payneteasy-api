@@ -1,4 +1,4 @@
-<?PHP
+<?php
 switch(empty($_GET['page']) ? '' : $_GET['page'] )
 {
     case 'Sale':

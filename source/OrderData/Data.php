@@ -1,4 +1,4 @@
-<?PHP
+<?php
 namespace PaynetEasy\Paynet\OrderData;
 
 use PaynetEasy\Paynet\Utils\String;

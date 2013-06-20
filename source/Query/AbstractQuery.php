@@ -1,4 +1,4 @@
-<?PHP
+<?php
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Utils\String;

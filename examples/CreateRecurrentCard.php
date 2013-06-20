@@ -1,4 +1,4 @@
-<?PHP
+<?php
 require_once './Sale.php';
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
