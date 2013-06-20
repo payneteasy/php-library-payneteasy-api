@@ -2,6 +2,7 @@
 
 namespace PaynetEasy\Paynet\Query;
 
+use PaynetEasy\Paynet\Utils\String;
 use RuntimeException;
 
 class       QueryFactory
@@ -12,8 +13,7 @@ implements  QueryFactoryInterface
      */
     public function getQuery($apiQueryName, array $apiQueryConfig)
     {
-        $nameChunks = array_map('ucfirst', explode('-', $apiQueryName));
-        $queryClass = __NAMESPACE__ . '\\' . implode('', $nameChunks) . 'Query';
+        $queryClass = __NAMESPACE__ . '\\' . String::camelize($apiQueryName) . 'Query';
 
         if (class_exists($queryClass, true))
         {
@@ -24,7 +24,7 @@ implements  QueryFactoryInterface
         //
         // All "*-form" methods has the same format,
         // therefore they have only one class - FormQuery
-        if (end($nameChunks) == 'Form')
+        if (preg_match('#.*-form$#i', $apiQueryName))
         {
             $query = new FormQuery($apiQueryConfig);
             $query->setApiMethod($apiQueryName);

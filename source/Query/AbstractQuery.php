@@ -1,7 +1,7 @@
 <?PHP
 namespace PaynetEasy\Paynet\Query;
 
-use PaynetEasy\Paynet\OrderData\Data;
+use PaynetEasy\Paynet\Utils\String;
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 
 use PaynetEasy\Paynet\Transport\Response;
@@ -230,7 +230,7 @@ implements      QueryInterface
             throw new RuntimeException('API method name not found in class name');
         }
 
-        $this->apiMethod = Data::uncamelize($result[0], '-');
+        $this->apiMethod = String::uncamelize($result[0], '-');
     }
 
     /**

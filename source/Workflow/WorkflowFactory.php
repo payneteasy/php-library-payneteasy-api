@@ -2,6 +2,8 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
+use PaynetEasy\Paynet\Utils\String;
+
 use PaynetEasy\Paynet\Transport\GatewayClientInterface;
 use PaynetEasy\Paynet\Query\QueryFactoryInterface;
 use PaynetEasy\Paynet\Callback\CallbackFactoryInterface;
@@ -52,8 +54,7 @@ class WorkflowFactory implements WorkflowFactoryInterface
      */
     public function getWorkflow($workflowName, array $workflowConfig)
     {
-        $nameChunks     = array_map('ucfirst', explode('-', $workflowName));
-        $workflowClass  = __NAMESPACE__ . '\\' . implode('', $nameChunks) . 'Workflow';
+        $workflowClass  = __NAMESPACE__ . '\\' . String::camelize($workflowName) . 'Workflow';
 
         if (class_exists($workflowClass, true))
         {
@@ -67,13 +68,13 @@ class WorkflowFactory implements WorkflowFactoryInterface
         //
         // All "*-form" methods has the same format,
         // therefore they have only one class - FormWorkflow
-        if (end($nameChunks) == 'Form')
+        if (preg_match('#.*-form$#i', $workflowName))
         {
             $workflow = new FormWorkflow($this->gatewayClient,
                                          $this->queryFactory,
                                          $this->callbackFactory,
                                          $workflowConfig);
-            
+
             $workflow->setInitialApiMethod($workflowName);
 
             return $workflow;

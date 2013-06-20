@@ -2,6 +2,8 @@
 
 namespace PaynetEasy\Paynet\Callback;
 
+use PaynetEasy\Paynet\Utils\String;
+
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\CallbackResponse;
 
@@ -124,8 +126,7 @@ abstract class AbstractCallback implements CallbackInterface
             throw new RuntimeException('Callback type not found in class name');
         }
 
-        $nameChunks     = preg_split('/(?=[A-Z])/', $result[0], null, PREG_SPLIT_NO_EMPTY);
-        $this->callbackType = strtolower(implode('-', $nameChunks));
+        $this->callbackType = String::uncamelize($result[0]);
     }
 
     /**
