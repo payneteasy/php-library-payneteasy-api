@@ -1,8 +1,6 @@
 <?php
 namespace PaynetEasy\Paynet\Query;
 
-use PaynetEasy\Paynet\OrderData\OrderInterface;
-
 /**
  * The implementation of the query Capture
  * http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Process_Capture_Transaction
@@ -28,22 +26,13 @@ class CaptureQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function createControlCode(OrderInterface $order)
-    {
-        // Checksum used to ensure that it is Merchant (and not a fraudster)
-        // that initiates the return request.
-        // This is SHA-1 checksum of the concatenation login + client_orderid + orderid + merchant-control
-        // if amount is not specified,
-        // and login + client_orderid + orderid + amount_in_cents +
-        // currency + merchant-control if amount is specified
-        return sha1
-        (
-            $this->config['login'] .
-            $order->getClientOrderId() .
-            $order->getPaynetOrderId() .
-            $order->getAmountInCents() .
-            $order->getCurrency() .
-            $this->config['control']
-        );
-    }
+    static protected $controlCodeDefinition = array
+    (
+        'login',
+        'clientOrderId',
+        'paynetOrderId',
+        'amountInCents',
+        'currency',
+        'control'
+    );
 }

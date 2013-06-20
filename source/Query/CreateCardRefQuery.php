@@ -28,6 +28,17 @@ class CreateCardRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
+    static protected $controlCodeDefinition = array
+    (
+        'login',
+        'clientOrderId',
+        'paynetOrderId',
+        'control'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
     protected function validateOrder(OrderInterface $order)
     {
         parent::validateOrder($order);
@@ -59,22 +70,6 @@ class CreateCardRefQuery extends AbstractQuery
         {
             $order->createRecurrentCardFrom($response['card-ref-id']);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createControlCode(OrderInterface $order)
-    {
-        // This is SHA-1 checksum of the concatenation
-        // login + client-order-id + paynet-order-id + merchant-control.
-        return sha1
-        (
-            $this->config['login'].
-            $order->getClientOrderId().
-            $order->getPaynetOrderId().
-            $this->config['control']
-        );
     }
 
     /**

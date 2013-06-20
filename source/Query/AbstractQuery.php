@@ -43,6 +43,14 @@ implements      QueryInterface
     static protected $requestFieldsDefinition = array();
 
     /**
+     * Request control code definition in format
+     * [<first part property path>, <second part property path> ... <last part property path>]
+     *
+     * @var array
+     */
+    static protected $controlCodeDefinition = array();
+
+    /**
      * @param       array       $config         API query object config
      */
     public function __construct(array $config = array())
@@ -213,7 +221,31 @@ implements      QueryInterface
      *
      * @return      string                                  Generated control code
      */
-    abstract protected function createControlCode(OrderInterface $order);
+    protected function createControlCode(OrderInterface $order)
+    {
+        $controlCode = '';
+
+        foreach (static::$controlCodeDefinition as $propertyPath)
+        {
+            // get value from config
+            if (!empty($this->config[$propertyPath]))
+            {
+                $controlCode .= $this->config[$propertyPath];
+            }
+            // get value from order
+            else
+            {
+                $fieldValue = PropertyAccessor::getValue($order, $propertyPath);
+
+                if (!empty($fieldValue))
+                {
+                    $controlCode .= $fieldValue;
+                }
+            }
+        }
+
+        return sha1($controlCode);
+    }
 
     /**
      * Validates response before Order updating
@@ -288,6 +320,11 @@ implements      QueryInterface
         if (empty(static::$requestFieldsDefinition))
         {
             throw new RuntimeException('You must configure requestFieldsDefinition property');
+        }
+
+        if (empty(static::$controlCodeDefinition))
+        {
+            throw new RuntimeException('You must configure controlCodeDefinition property');
         }
 
         if(empty($config['end_point']))

@@ -1,8 +1,6 @@
 <?php
 namespace PaynetEasy\Paynet\Query;
 
-use PaynetEasy\Paynet\OrderData\OrderInterface;
-
 /**
  * The implementation of the query STATUS
  * http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Order_status
@@ -26,16 +24,11 @@ class StatusQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function createControlCode(OrderInterface $order)
-    {
-        // This is SHA-1 checksum of the concatenation
-        // login + client-order-id + paynet-order-id + merchant-control.
-        return sha1
-        (
-            $this->config['login'].
-            $order->getClientOrderId().
-            $order->getPaynetOrderId().
-            $this->config['control']
-        );
-    }
+    static protected $controlCodeDefinition = array
+    (
+        'login',
+        'clientOrderId',
+        'paynetOrderId',
+        'control'
+    );
 }

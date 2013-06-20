@@ -3,7 +3,6 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Utils\Validator;
-use PaynetEasy\Paynet\OrderData\OrderInterface;
 
 class MakeRebillQuery extends AbstractQuery
 {
@@ -32,15 +31,12 @@ class MakeRebillQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function createControlCode(OrderInterface $order)
-    {
-        return sha1
-        (
-            $this->config['end_point'].
-            $order->getClientOrderId().
-            $order->getAmountInCents().
-            $order->getRecurrentCardFrom()->getCardReferenceId().
-            $this->config['control']
-        );
-    }
+    static protected $controlCodeDefinition = array
+    (
+        'end_point',
+        'clientOrderId',
+        'amountInCents',
+        'recurrentCardFrom.cardReferenceId',
+        'control'
+    );
 }

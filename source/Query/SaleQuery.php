@@ -3,7 +3,6 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Utils\Validator;
-use PaynetEasy\Paynet\OrderData\OrderInterface;
 
 class SaleQuery extends AbstractQuery
 {
@@ -48,15 +47,12 @@ class SaleQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function createControlCode(OrderInterface $order)
-    {
-        return sha1
-        (
-            $this->config['end_point'] .
-            $order->getClientOrderId() .
-            $order->getAmountInCents() .
-            $order->getCustomer()->getEmail() .
-            $this->config['control']
-        );
-    }
+    static protected $controlCodeDefinition = array
+    (
+        'end_point',
+        'clientOrderId',
+        'amountInCents',
+        'customer.email',
+        'control'
+    );
 }

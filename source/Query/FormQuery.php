@@ -3,7 +3,6 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Utils\Validator;
-use PaynetEasy\Paynet\OrderData\OrderInterface;
 use RuntimeException;
 
 class FormQuery extends AbstractQuery
@@ -55,6 +54,18 @@ class FormQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
+    static protected $controlCodeDefinition = array
+    (
+        'end_point',
+        'clientOrderId',
+        'amountInCents',
+        'customer.email',
+        'control'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
     public function __construct(array $config = array())
     {
         $this->setConfig($config);
@@ -73,20 +84,5 @@ class FormQuery extends AbstractQuery
         }
 
         $this->apiMethod = $apiMethod;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createControlCode(OrderInterface $order)
-    {
-        return sha1
-        (
-            $this->config['end_point'].
-            $order->getClientOrderId().
-            $order->getAmountInCents().
-            $order->getCustomer()->getEmail().
-            $this->config['control']
-        );
     }
 }

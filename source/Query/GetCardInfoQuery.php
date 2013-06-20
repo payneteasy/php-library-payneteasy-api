@@ -27,6 +27,16 @@ class GetCardInfoQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
+    static protected $controlCodeDefinition = array
+    (
+        'login',
+        'recurrentCardFrom.cardReferenceId',
+        'control'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
     protected function updateOrder(OrderInterface $order, Response $response)
     {
         parent::updateOrder($order, $response);
@@ -47,20 +57,5 @@ class GetCardInfoQuery extends AbstractQuery
         {
             throw new ValidationException('Recurrent card must be defined in Order');
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createControlCode(OrderInterface $order)
-    {
-        // This is SHA-1 checksum of the concatenation
-        // login + cardrefid + merchant-control.
-        return sha1
-        (
-            $this->config['login'].
-            $order->getRecurrentCardFrom()->getCardReferenceId().
-            $this->config['control']
-        );
     }
 }
