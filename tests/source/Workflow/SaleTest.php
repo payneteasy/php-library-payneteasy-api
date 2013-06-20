@@ -79,15 +79,7 @@ class SaleTest extends WorkflowTestPrototype
         $this->order = $order;
 
         $order->setCustomer($customer);
-
-        if($card instanceof RecurrentCardInterface)
-        {
-            $order->setRecurrentCardFrom($card);
-        }
-        else
-        {
-            $order->setCreditCard($card);
-        }
+        $order->setCreditCard($card);
 
         FakeGatewayClient::$response  = new Response(array
         (
@@ -135,37 +127,6 @@ class SaleTest extends WorkflowTestPrototype
             'redirect_url'      => $this->config['redirect_url'],
             'server_callback_url' => $this->config['server_callback_url']
         );
-
-        if($card instanceof RecurrentCardInterface)
-        {
-            $request['cardrefid']   = $card->getCardReferenceId();
-
-            $request['control']     = sha1
-            (
-                $this->config['end_point'].
-                'CLIENT-112233'.
-                '99'.
-                $card->getCardReferenceId().
-                $this->config['control']
-            );
-
-            unset($request['card_printed_name']);
-            unset($request['cvv2']);
-            unset($request['credit_card_number']);
-            unset($request['expire_month']);
-            unset($request['expire_year']);
-            unset($request['first_name']);
-            unset($request['last_name']);
-            unset($request['birthday']);
-            unset($request['address1']);
-            unset($request['city']);
-            unset($request['state']);
-            unset($request['country']);
-            unset($request['zip_code']);
-            unset($request['email']);
-            unset($request['phone']);
-            unset($request['cell_phone']);
-        }
 
         foreach($request as $key => $value)
         {

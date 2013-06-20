@@ -101,8 +101,6 @@ implements  CustomerInterface
      */
     public function setFirstName($firstName)
     {
-        $this->validateValue($firstName, '#^[^0-9]{2,50}$#i');
-
         $this->firstName = $firstName;
 
         return $this;
@@ -121,8 +119,6 @@ implements  CustomerInterface
      */
     public function setLastName($lastName)
     {
-        $this->validateValue($lastName, '#^[^0-9]{2,50}$#i');
-
         $this->lastName = $lastName;
 
         return $this;
@@ -141,8 +137,6 @@ implements  CustomerInterface
      */
     public function setAddress($address)
     {
-        $this->validateValue($address, '#^[\S\s]{2,50}$#i');
-
         $this->address = $address;
 
         return $this;
@@ -161,8 +155,6 @@ implements  CustomerInterface
      */
     public function setCountry($country)
     {
-        $this->validateValue($country, '#^[A-Z]{1,2}$#i');
-
         $this->country = strtoupper($country);
 
         return $this;
@@ -181,8 +173,6 @@ implements  CustomerInterface
      */
     public function setState($state)
     {
-        $this->validateValue($state, '#^[A-Z]{1,2}$#i');
-
         $this->state = strtoupper($state);
 
         return $this;
@@ -201,8 +191,6 @@ implements  CustomerInterface
      */
     public function setCity($city)
     {
-        $this->validateValue($city, '#^[\S\s]{2,50}$#i');
-
         $this->city = $city;
 
         return $this;
@@ -221,8 +209,6 @@ implements  CustomerInterface
      */
     public function setZipCode($zipCode)
     {
-        $this->validateValue($zipCode, '#^[\S\s]{1,10}$#i');
-
         $this->zipCode = $zipCode;
 
         return $this;
@@ -241,8 +227,6 @@ implements  CustomerInterface
      */
     public function setPhone($phone)
     {
-        $this->validateValue($phone, '#^[0-9\-\+\(\)\s]{6,15}$#i');
-
         $this->phone = $phone;
 
         return $this;
@@ -261,8 +245,6 @@ implements  CustomerInterface
      */
     public function setCellPhone($cellPhone)
     {
-        $this->validateValue($cellPhone, '#^[0-9\-\+\(\)\s]{6,15}$#i');
-
         $this->cellPhone = $cellPhone;
 
         return $this;
@@ -281,16 +263,6 @@ implements  CustomerInterface
      */
     public function setEmail($email)
     {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
-        {
-            throw new ValidationException("Invalid email '{$email}'");
-        }
-
-        if (strlen($email) > 50)
-        {
-            throw new ValidationException('Email is very long (over 50 characters)');
-        }
-
         $this->email = $email;
 
         return $this;
@@ -309,9 +281,6 @@ implements  CustomerInterface
      */
     public function setBirthday($birthday)
     {
-        $this->validateValue($birthday, '#^[0-9]{6}$#i', "Invalid birthday '{$birthday}'. " .
-                                                         "Birthday format must be MMDDYY.");
-
         $this->birthday = $birthday;
 
         return $this;
@@ -330,8 +299,6 @@ implements  CustomerInterface
      */
     public function setSsn($ssn)
     {
-        $this->validateValue($ssn, '#^[0-9]{1,4}$#i');
-
         $this->ssn = $ssn;
 
         return $this;
@@ -353,30 +320,13 @@ implements  CustomerInterface
         switch ($fieldName)
         {
             case 'address1':
+            case 'address':
             {
                 return 'setAddress';
             }
             default:
             {
                 return parent::getSetterByField($fieldName);
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getFieldByProperty($propertyName)
-    {
-        switch ($propertyName)
-        {
-            case 'address':
-            {
-                return 'address1';
-            }
-            default:
-            {
-                return parent::getFieldByProperty($propertyName);
             }
         }
     }

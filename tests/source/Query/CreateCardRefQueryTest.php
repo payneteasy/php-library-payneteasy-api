@@ -61,7 +61,6 @@ class CreateCardRefQueryTest extends SaleQueryTest
 
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertTrue($order->hasRecurrentCardFrom());
         $this->assertInstanceOf('\PaynetEasy\Paynet\OrderData\RecurrentCard', $order->getRecurrentCardFrom());
         $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_APPROVED);
         $this->assertFalse($order->hasErrors());

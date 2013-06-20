@@ -2,7 +2,6 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
-use PaynetEasy\Paynet\Exception\ValidationException;
 
 /**
  * The implementation of the query Capture
@@ -13,37 +12,18 @@ class CaptureQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function orderToRequest(OrderInterface $order)
-    {
-        return array_merge
-        (
-            $order->getContextData(),
-            $this->commonQueryOptions(),
-            array
-            (
-                'amount'    => $order->getAmount(),
-                'currency'  => $order->getCurrency()
-            )
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function validateOrder(OrderInterface $order)
-    {
-        $order->validateShort();
-
-        if (strlen($order->getAmount()) == 0)
-        {
-            throw new ValidationException('Amount must be defined');
-        }
-
-        if (strlen($order->getCurrency()) == 0)
-        {
-            throw new ValidationException('Currency must be defined');
-        }
-    }
+    static protected $requestFieldsDefinition = array
+    (
+        // mandatory
+        array('client_orderid',     'clientOrderId',                true,   '#^[\S\s]{1,128}$#i'),
+        array('orderid',            'paynetOrderId',                true,   '#^[\S\s]{1,20}$#i'),
+        array('amount',             'amount',                       true,   '#^[0-9\.]{1,11}$#i'),
+        array('currency',           'currency',                     true,   '#^[A-Z]{1,3}$#i'),
+        // generated
+        array('control',             null,                          true,    null),
+        // from config
+        array('login',               null,                          true,    null)
+    );
 
     /**
      * {@inheritdoc}

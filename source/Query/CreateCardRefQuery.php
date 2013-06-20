@@ -14,21 +14,24 @@ class CreateCardRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function orderToRequest(OrderInterface $order)
-    {
-        return array_merge
-        (
-            $order->getContextData(),
-            $this->commonQueryOptions()
-        );
-    }
+    static protected $requestFieldsDefinition = array
+    (
+        // mandatory
+        array('client_orderid',     'clientOrderId',                true,   '#^[\S\s]{1,128}$#i'),
+        array('orderid',            'paynetOrderId',                true,   '#^[\S\s]{1,20}$#i'),
+        // generated
+        array('control',             null,                          true,    null),
+        // from config
+        array('login',               null,                          true,    null)
+    );
 
     /**
      * {@inheritdoc}
      */
     protected function validateOrder(OrderInterface $order)
     {
-        $order->validateShort();
+        parent::validateOrder($order);
+
         $this->checkOrderState($order);
     }
 
@@ -50,12 +53,12 @@ class CreateCardRefQuery extends AbstractQuery
      */
     protected function updateOrder(OrderInterface $order, Response $response)
     {
+        parent::updateOrder($order, $response);
+
         if($response->isApproved())
         {
             $order->createRecurrentCardFrom($response['card-ref-id']);
         }
-
-        parent::updateOrder($order, $response);
     }
 
     /**

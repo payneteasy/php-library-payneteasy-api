@@ -139,8 +139,6 @@ abstract class AbstractCallback implements CallbackInterface
      */
     protected function validateCallback(OrderInterface $order, CallbackResponse $callbackResponse)
     {
-        $this->validateControlCode($callbackResponse);
-
         $missedKeys = array();
 
         foreach (static::$allowedFields as $fieldName => $isFieldRequired)
@@ -156,6 +154,8 @@ abstract class AbstractCallback implements CallbackInterface
             throw new ValidationException("Some required fields missed or empty in callback: " .
                                           implode(', ', $missedKeys));
         }
+
+        $this->validateControlCode($callbackResponse);
 
         if (!in_array($callbackResponse->status(), static::$allowedStatuses))
         {

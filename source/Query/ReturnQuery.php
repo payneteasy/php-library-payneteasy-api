@@ -13,37 +13,19 @@ class ReturnQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function orderToRequest(OrderInterface $order)
-    {
-        $query = array_merge
-        (
-            $this->commonQueryOptions($order),
-            $order->getContextData()
-        );
-
-        if($order->getAmount())
-        {
-            $query['amount']    = $order->getAmount();
-            $query['currency']  = $order->getCurrency();
-        }
-
-        $query['comment']   = $order->getCancelReason();
-
-        return $query;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function validateOrder(OrderInterface $order)
-    {
-        $order->validateShort();
-
-        if (strlen($order->getCancelReason()) == 0)
-        {
-            throw new ValidationException('Cancel reason must be defined');
-        }
-    }
+    static protected $requestFieldsDefinition = array
+    (
+        // mandatory
+        array('client_orderid',     'clientOrderId',                    true,   '#^[\S\s]{1,128}$#i'),
+        array('orderid',            'paynetOrderId',                    true,   '#^[\S\s]{1,20}$#i'),
+        array('amount',             'amount',                           true,   '#^[0-9\.]{1,11}$#i'),
+        array('currency',           'currency',                         true,   '#^[A-Z]{1,3}$#i'),
+        array('comment',            'comment',                          true,  '#^[\S\s]{1,50}$#i'),
+        // generated
+        array('control',             null,                              true,    null),
+        // from config
+        array('login',               null,                              true,    null)
+    );
 
     /**
      * {@inheritdoc}

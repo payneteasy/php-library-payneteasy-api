@@ -79,6 +79,20 @@ interface OrderInterface
     public function getDescription();
 
     /**
+     * Set destination to where the payment goes
+     *
+     * @param       string      $destination        Destination to where the payment goes
+     */
+    public function setDestination($destination);
+
+    /**
+     * Get destination to where the payment goes
+     *
+     * @return      string
+     */
+    public function getDestination();
+
+    /**
      * Get amount to be charged
      *
      * @param       float       $amount             Amount to be charged
@@ -166,13 +180,6 @@ interface OrderInterface
     public function getCustomer();
 
     /**
-     * True if order has customer
-     *
-     * @return      boolean
-     */
-    public function hasCustomer();
-
-    /**
      * Set order credit card
      *
      * @param       \PaynetEasy\Paynet\OrderData\CreditCardInterface     $creditCard
@@ -187,13 +194,6 @@ interface OrderInterface
      * @return      \PaynetEasy\Paynet\OrderData\CreditCardInterface
      */
     public function getCreditCard();
-
-    /**
-     * True if order has credit card
-     *
-     * @return      boolean
-     */
-    public function hasCreditCard();
 
     /**
      * Creates recurrent credit card for given id
@@ -224,13 +224,6 @@ interface OrderInterface
     public function getRecurrentCardFrom();
 
     /**
-     * True if order has source recurrent card
-     *
-     * @return      boolean
-     */
-    public function hasRecurrentCardFrom();
-
-    /**
      * Set order destination recurrent card
      *
      * @param       \PaynetEasy\Paynet\OrderData\RecurrentCardInterface  $recurrentCard
@@ -245,13 +238,6 @@ interface OrderInterface
      * @return      \PaynetEasy\Paynet\OrderData\RecurrentCardInterface
      */
     public function getRecurrentCardTo();
-
-    /**
-     * True if order has destination recurrent card
-     *
-     * @return      boolean
-     */
-    public function hasRecurrentCardTo();
 
     /**
      * Get all allowed order states
@@ -318,20 +304,20 @@ interface OrderInterface
     public function getStatus();
 
     /**
-     * Set order cancellation reason (up to 50 chars)
+     * Set order short comment
      *
-     * @param       string      cancelReason        Cancellation reason
+     * @param       string      $comment    A short comment
      *
      * @return      self
      */
-    public function setCancelReason($cancelReason);
+    public function setComment($comment);
 
     /**
      * Get order cancellation reason (up to 50 chars)
      *
-     * @return      string                          Cancellation reason
+     * @return      string                  Cancellation reason
      */
-    public function getCancelReason();
+    public function getComment();
 
     /**
      * Adds new order error

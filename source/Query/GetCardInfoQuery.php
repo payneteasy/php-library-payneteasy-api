@@ -14,14 +14,15 @@ class GetCardInfoQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function orderToRequest(OrderInterface $order)
-    {
-        return array_merge
-        (
-            $order->getRecurrentCardFrom()->getData(),
-            $this->commonQueryOptions($order)
-        );
-    }
+    static protected $requestFieldsDefinition = array
+    (
+        // mandatory
+        array('cardrefid',          'recurrentCardFrom.cardReferenceId',    true,   '#^[\S\s]{1,20}$#i'),
+        // generated
+        array('control',             null,                                  true,    null),
+        // from config
+        array('login',               null,                                  true,    null)
+    );
 
     /**
      * {@inheritdoc}
@@ -38,27 +39,11 @@ class GetCardInfoQuery extends AbstractQuery
             ->setLastFourDigits($response['last-four-digits']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function validateOrder(OrderInterface $order)
-    {
-        if(!$order->hasRecurrentCardFrom())
-        {
-            throw new ValidationException('Recurrent card must be defined in Order');
-        }
-
-        if (!$order->getRecurrentCardFrom()->getCardReferenceId())
-        {
-            throw new ValidationException('Recurrent card reference ID is not defined');
-        }
-    }
-
     protected function validateResponse(OrderInterface $order, Response $response)
     {
         parent::validateResponse($order, $response);
 
-        if(!$order->hasRecurrentCardFrom())
+        if(!$order->getRecurrentCardFrom())
         {
             throw new ValidationException('Recurrent card must be defined in Order');
         }

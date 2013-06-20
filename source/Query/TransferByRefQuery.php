@@ -2,51 +2,33 @@
 
 namespace PaynetEasy\Paynet\Query;
 
+use PaynetEasy\Paynet\Utils\Validator;
 use PaynetEasy\Paynet\OrderData\OrderInterface;
-use PaynetEasy\Paynet\Exception\ValidationException;
 
 class TransferByRefQuery extends AbstractQuery
 {
     /**
      * {@inheritdoc}
      */
-    protected function orderToRequest(OrderInterface $order)
-    {
-        return array_merge
-        (
-            $order->getData(),
-            $this->commonQueryOptions($order),
-            array
-            (
-                'cvv2'                      => $order->getRecurrentCardFrom()->getCvv2(),
-                'source-card-ref-id'        => $order->getRecurrentCardFrom()->getCardReferenceId(),
-                'destination-card-ref-id'   => $order->getRecurrentCardTo()->getCardReferenceId(),
-                'amount'                    => $order->getAmount(),
-                'currency'                  => $order->getCurrency()
-            )
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function validateOrder(OrderInterface $order)
-    {
-        if(!$order->hasRecurrentCardFrom())
-        {
-            throw new ValidationException('Source RecurrentCard must be defined');
-        }
-
-        if(strlen($order->getRecurrentCardFrom()->getCvv2()) == 0)
-        {
-            throw new ValidationException('Source RecurrentCard CVV2 must be defined');
-        }
-
-        if(!$order->hasRecurrentCardTo())
-        {
-            throw new ValidationException('Destination RecurrentCard must be defined');
-        }
-    }
+    static protected $requestFieldsDefinition = array
+    (
+        // mandatory
+        array('client_orderid',             'clientOrderId',                        true,   '#^[\S\s]{1,128}$#i'),
+        array('amount',                     'amount',                               true,   '#^[0-9\.]{1,11}$#i'),
+        array('currency',                   'currency',                             true,   '#^[A-Z]{1,3}$#i'),
+        array('ipaddress',                  'ipAddress',                            true,   Validator::IP),
+        array('destination-card-ref-id',    'recurrentCardFrom.cardReferenceId',    true,   '#^[\S\s]{1,20}$#i'),
+        // optional
+        array('order_desc',                 'description',                          false,  '#^[\S\s]{1,125}$#i'),
+        array('source-card-ref-id',         'recurrentCardFrom.cardReferenceId',    false,  '#^[\S\s]{1,20}$#i'),
+        array('cvv2',                       'recurrentCardFrom.cvv2',               false,  '#^[\S\s]{1,20}$#i'),
+        // generated
+        array('control',                    null,                                   true,    null),
+        // from config
+        array('login',                      null,                                   true,    null),
+        array('redirect_url',               null,                                   false,   null),
+        array('server_callback_url',        null,                                   false,   null)
+    );
 
     /**
      * {@inheritdoc}

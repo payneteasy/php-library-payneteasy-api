@@ -26,8 +26,6 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         $request = $this->object->createRequest($order);
 
         $this->assertInstanceOf('PaynetEasy\Paynet\Transport\Request', $request);
-        $this->assertNotNull($request['login']);
-        $this->assertNotNull($request['end_point']);
         $this->assertNotNull($request->getApiMethod());
         $this->assertNotNull($request->getEndPoint());
         $this->assertNotNull($request['control']);

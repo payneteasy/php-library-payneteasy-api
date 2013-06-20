@@ -161,7 +161,7 @@ class ReturnQueryTest extends QueryTestPrototype
             'currency'              => 'EUR'
         ));
 
-        $order->setCancelReason('cancel order');
+        $order->setComment('cancel order');
 
         return $order;
     }

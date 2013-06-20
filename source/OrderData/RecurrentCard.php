@@ -63,8 +63,6 @@ implements  RecurrentCardInterface
      */
     public function setCardReferenceId($cardReferenceId)
     {
-        $this->validateValue($cardReferenceId, '#^[0-9]{1,20}$#i');
-
         $this->cardReferenceId = $cardReferenceId;
 
         return $this;
@@ -83,8 +81,6 @@ implements  RecurrentCardInterface
      */
     public function setCvv2($cvv2)
     {
-        $this->validateValue($cvv2, '#^[0-9]{3,4}$#i');
-
         $this->cvv2 = $cvv2;
     }
 
@@ -101,8 +97,6 @@ implements  RecurrentCardInterface
      */
     public function setCardPrintedName($cardPrintedName)
     {
-        $this->validateValue($cardPrintedName, '#^[\S\s]{1,128}$#i');
-
         $this->cardPrintedName = $cardPrintedName;
 
         return $this;
@@ -121,8 +115,6 @@ implements  RecurrentCardInterface
      */
     public function setExpireYear($expireYear)
     {
-        $this->validateValue($expireYear, '#^[0-9]{1,2}$#i');
-
         $this->expireYear = $expireYear;
 
         return $this;
@@ -141,14 +133,6 @@ implements  RecurrentCardInterface
      */
     public function setExpireMonth($expireMonth)
     {
-        $this->validateValue($expireMonth, '#^[0-9]{1,2}$#i');
-
-        if($expireMonth < 1 || $expireMonth > 12)
-        {
-            throw new ValidationException("Expire month must be beetween 1 and 12, " .
-                                          "'{$expireMonth}' given");
-        }
-
         $this->expireMonth = $expireMonth;
 
         return $this;
@@ -167,8 +151,6 @@ implements  RecurrentCardInterface
      */
     public function setBin($bin)
     {
-        $this->validateValue($bin, '#^[0-9]{4,6}$#i');
-
         $this->bin = $bin;
 
         return $this;
@@ -187,8 +169,6 @@ implements  RecurrentCardInterface
      */
     public function setLastFourDigits($lastFourDigits)
     {
-        $this->validateValue($lastFourDigits, '#^[0-9]{4}$#i');
-
         $this->lastFourDigits = $lastFourDigits;
 
         return $this;
@@ -212,30 +192,15 @@ implements  RecurrentCardInterface
             case 'id':
             case 'cardrefid':
             case 'card_ref_id':
+            case 'card-ref-id':
+            case 'source-card-ref-id':
+            case 'destination-card-ref-id':
             {
                 return 'setCardReferenceId';
             }
             default:
             {
                 return parent::getSetterByField($fieldName);
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getFieldByProperty($propertyName)
-    {
-        switch ($propertyName)
-        {
-            case 'cardReferenceId':
-            {
-                return 'cardrefid';
-            }
-            default:
-            {
-                return parent::getFieldByProperty($propertyName);
             }
         }
     }

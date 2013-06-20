@@ -2,6 +2,9 @@
 namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Utils\String;
+use PaynetEasy\Paynet\Utils\PropertyAccessor;
+use PaynetEasy\Paynet\Utils\Validator;
+
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 
 use PaynetEasy\Paynet\Transport\Response;
@@ -32,6 +35,14 @@ implements      QueryInterface
     protected $apiMethod;
 
     /**
+     * Request fields definition in format
+     * [<field name>:string, <order property path>:string,  <is field required>:boolean, <validation rule>:string]
+     *
+     * @var array
+     */
+    static protected $requestFieldsDefinition = array();
+
+    /**
      * @param       array       $config         API query object config
      */
     public function __construct(array $config = array())
@@ -59,8 +70,6 @@ implements      QueryInterface
         }
 
         $request = new Request($this->orderToRequest($order));
-
-        $request['control'] = $this->createControlCode($order);
 
         $request->setApiMethod($this->apiMethod)
                 ->setEndPoint($this->config['end_point']);
@@ -96,7 +105,58 @@ implements      QueryInterface
      *
      * @param       OrderInterface          $order          Order for validation
      */
-    abstract protected function validateOrder(OrderInterface $order);
+    protected function validateOrder(OrderInterface $order)
+    {
+        $errorMessage   = '';
+        $missedFields   = array();
+        $invalidFields  = array();
+
+        foreach (static::$requestFieldsDefinition as $fieldDescription)
+        {
+            list($fieldName, $propertyPath, $isFieldRequired, $validationRule) = $fieldDescription;
+
+            // generated field or field from config
+            if (empty($propertyPath))
+            {
+                continue;
+            }
+
+            $fieldValue = PropertyAccessor::getValue($order, $propertyPath, false);
+
+            if (!empty($fieldValue))
+            {
+                try
+                {
+                    Validator::validateByRule($fieldValue, $validationRule);
+                }
+                catch (ValidationException $e)
+                {
+                    $invalidFields[] = $e->getMessage();
+                }
+            }
+            elseif ($isFieldRequired)
+            {
+                $missedFields[] = $fieldName;
+            }
+        }
+
+        if (!empty($missedFields))
+        {
+            $errorMessage .= "Some required fields missed or empty in Order: " .
+                             implode(', ', $missedFields) . ". \n";
+        }
+
+        if (!empty($invalidFields))
+        {
+            $errorMessage .= "Some fields invalid in Order: " .
+                             implode(', ', $invalidFields) . ". \n";
+        }
+
+        if (!empty($errorMessage))
+        {
+            throw new ValidationException($errorMessage);
+        }
+    }
 
     /**
      * Creates request from Order
@@ -105,7 +165,45 @@ implements      QueryInterface
      *
      * @return      array                                   Request
      */
-    abstract protected function orderToRequest(OrderInterface $order);
+    protected function orderToRequest(OrderInterface $order)
+    {
+        $request = array();
+
+        foreach (static::$requestFieldsDefinition as $fieldDescription)
+        {
+            list($fieldName, $propertyPath, $isFieldRequired) = $fieldDescription;
+
+            // generate control code
+            if ($fieldName == 'control')
+            {
+                $request[$fieldName] = $this->createControlCode($order);
+            }
+            // get value from config
+            elseif (empty($propertyPath))
+            {
+                if (!empty($this->config[$fieldName]))
+                {
+                    $request[$fieldName] = $this->config[$fieldName];
+                }
+                elseif ($isFieldRequired === true)
+                {
+                    throw new RuntimeException("Field '{$fieldName}' missed in config");
+                }
+            }
+            // get value from order
+            else
+            {
+                $fieldValue = PropertyAccessor::getValue($order, $propertyPath);
+
+                if (!empty($fieldValue))
+                {
+                    $request[$fieldName] = $fieldValue;
+                }
+            }
+        }
+
+        return $request;
+    }
 
     /**
      * Generates the control code is used to ensure that it is a particular
@@ -187,19 +285,24 @@ implements      QueryInterface
      */
     protected function setConfig(array $config)
     {
+        if (empty(static::$requestFieldsDefinition))
+        {
+            throw new RuntimeException('You must configure requestFieldsDefinition property');
+        }
+
         if(empty($config['end_point']))
         {
-            throw new RuntimeException('end_point undefined');
+            throw new RuntimeException('Node end_point does not defined in config');
         }
 
         if(empty($config['control']))
         {
-            throw new RuntimeException('control undefined');
+            throw new RuntimeException('Node control does not defined in config');
         }
 
         if(empty($config['login']))
         {
-            throw new RuntimeException('login undefined');
+            throw new RuntimeException('Node login does not defined in config');
         }
 
         $this->config = $config;

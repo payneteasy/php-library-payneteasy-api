@@ -2,7 +2,13 @@
 
 namespace PaynetEasy\Paynet\Workflow;
 
+use PaynetEasy\Paynet\OrderData\Order;
+use PaynetEasy\Paynet\OrderData\Customer;
 use PaynetEasy\Paynet\OrderData\RecurrentCard;
+
+use PaynetEasy\Paynet\Transport\Response;
+
+use PaynetEasy\Paynet\Transport\FakeGatewayClient;
 
 /**
  * Test class for MakeRebill.
@@ -20,14 +26,92 @@ class MakeRebillTest extends SaleTest
 
     public function getTestData()
     {
-        list($customer, $card, $order) = parent::getTestData();
+        $customer = new Customer
+        (
+            array
+            (
+                'first_name'    => 'Vasya',
+                'last_name'     => 'Pupkin',
+                'email'         => 'vass.pupkin@example.com',
+                'address'       => '2704 Colonial Drive',
+                'birthday'      => '112681',
+                'city'          => 'Houston',
+                'state'         => 'TX',
+                'zip_code'      => '1235',
+                'country'       => 'US',
+                'phone'         => '660-485-6353',
+                'cell_phone'    => '660-485-6353'
+            )
+        );
 
         $recurrentCard = new RecurrentCard(array
         (
             'cardrefid' => self::CARD_REF_ID,
             'cvv2' => 123
         ));
-        
+
+        $order = new Order
+        (
+            array
+            (
+                'client_orderid'            => 'CLIENT-112233',
+                'order_desc'                => 'This is test order',
+                'amount'                    => 0.99,
+                'currency'                  => 'USD',
+                'ipaddress'                 => '127.0.0.1',
+                'site_url'                  => 'http://example.com'
+            )
+        );
+
         return array($customer, $recurrentCard, $order);
+    }
+
+    /**
+     * Checking the output parameters
+     */
+    public function testRequest()
+    {
+        list($customer, $card, $order) = $this->getTestData();
+
+        $this->order = $order;
+
+        $order->setCustomer($customer);
+        $order->setRecurrentCardFrom($card);
+
+        FakeGatewayClient::$response  = new Response(array
+        (
+            'type'              => 'async-response',
+            'status'            => 'processing',
+            'paynet-order-id'   => 'PAYNET-112233',
+            'merchant-order-id' => 'CLIENT-112233',
+            'serial-number'     => md5(time())
+        ));
+
+        $this->query->processOrder($order);
+
+        $request                = array
+        (
+            'client_orderid'    => 'CLIENT-112233',
+            'order_desc'        => 'This is test order',
+            'amount'            => 0.99,
+            'currency'          => 'USD',
+            'ipaddress'         => '127.0.0.1',
+            'cardrefid'         => $card->getCardReferenceId(),
+            'control'           => sha1
+            (
+                $this->config['end_point'].
+                'CLIENT-112233'.
+                '99'.
+                $card->getCardReferenceId().
+                $this->config['control']
+            ),
+            'server_callback_url' => $this->config['server_callback_url']
+        );
+
+        foreach($request as $key => $value)
+        {
+            $this->assertNotEmpty(FakeGatewayClient::$request[$key], 'Request property no exists: ' . $key);
+            $this->assertEquals($value, FakeGatewayClient::$request[$key], "$key not equal '$value'");
+        }
     }
 }

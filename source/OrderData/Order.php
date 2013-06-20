@@ -2,7 +2,6 @@
 
 namespace PaynetEasy\Paynet\OrderData;
 
-use PaynetEasy\Paynet\Exception\ValidationException;
 use RuntimeException;
 use Exception;
 
@@ -69,6 +68,13 @@ implements  OrderInterface
     protected $description;
 
     /**
+     * Destination to where the payment goes
+     *
+     * @var string
+     */
+    protected $destination;
+
+    /**
      * Amount to be charged
      *
      * @var float
@@ -97,11 +103,11 @@ implements  OrderInterface
     protected $siteUrl;
 
     /**
-     * Order cancellation reason (up to 50 chars)
+     * A short comment for payment
      *
      * @var string
      */
-    protected $cancelReason;
+    protected $comment;
 
     /**
      * Order state
@@ -179,8 +185,6 @@ implements  OrderInterface
      */
     public function setClientOrderId($clientOrderId)
     {
-        $this->validateValue($clientOrderId, '#^[\S\s]{1,128}$#i');
-
         $this->clientOrderId = $clientOrderId;
 
         return $this;
@@ -199,17 +203,13 @@ implements  OrderInterface
      */
     public function setPaynetOrderId($paynetOrderId)
     {
-        $this->validateValue($paynetOrderId, '#^[\S\s]{1,20}$#i');
-
         $this->paynetOrderId = $paynetOrderId;
 
         return $this;
     }
 
     /**
-     * Get unique identifier of transaction assigned by PaynetEasy
-     *
-     * @return       string
+     * {@inheritdoc}
      */
     public function getPaynetOrderId()
     {
@@ -217,23 +217,17 @@ implements  OrderInterface
     }
 
     /**
-     * Set brief order description
-     *
-     * @param       string      $description        Brief order description
+     * {@inheritdoc}
      */
     public function setDescription($description)
     {
-        $this->validateValue($description, '#^[\S\s]{1,125}$#i');
-
         $this->description = $description;
 
         return $this;
     }
 
     /**
-     * Get brief order description
-     *
-     * @return      string
+     * {@inheritdoc}
      */
     public function getDescription()
     {
@@ -241,23 +235,35 @@ implements  OrderInterface
     }
 
     /**
-     * Get amount to be charged
-     *
-     * @param       float       $amount             Amount to be charged
+     * {@inheritdoc}
+     */
+    public function setDestination($destination)
+    {
+        $this->destination = $destination;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDestination()
+    {
+        return $this->destination;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function setAmount($amount)
     {
-        $this->validateValue($amount, '#^[0-9\.]{1,11}$#i');
-
         $this->amount = $amount;
 
         return $this;
     }
 
     /**
-     * Get amount to be charged
-     *
-     * @return      float
+     * {@inheritdoc}
      */
     public function getAmount()
     {
@@ -265,9 +271,7 @@ implements  OrderInterface
     }
 
     /**
-     * Get amount in cents (for control code generation)
-     *
-     * @return integer
+     * {@inheritdoc}
      */
     public function getAmountInCents()
     {
@@ -275,23 +279,17 @@ implements  OrderInterface
     }
 
     /**
-     * Set currency the transaction is charged in (three-letter currency code)
-     *
-     * @param       string      $currency           Currency the transaction is charged in
+     * {@inheritdoc}
      */
     public function setCurrency($currency)
     {
-        $this->validateValue($currency, '#^[A-Z]{1,3}$#i');
-
         $this->currency = $currency;
 
         return $this;
     }
 
     /**
-     * Get currency the transaction is charged in (three-letter currency code)
-     *
-     * @return      string
+     * {@inheritdoc}
      */
     public function getCurrency()
     {
@@ -299,26 +297,17 @@ implements  OrderInterface
     }
 
     /**
-     * Set customer’s IP address
-     *
-     * @param       string      $ipAddress          Customer’s IP address
+     * {@inheritdoc}
      */
     public function setIpAddress($ipAddress)
     {
-        if (!filter_var($ipAddress, FILTER_VALIDATE_IP))
-        {
-            throw new ValidationException("Invalid IP address '{$ipAddress}'");
-        }
-
         $this->ipAddress = $ipAddress;
 
         return $this;
     }
 
     /**
-     * Get customer’s IP address
-     *
-     * @return      string
+     * {@inheritdoc}
      */
     public function getIpAddress()
     {
@@ -326,26 +315,17 @@ implements  OrderInterface
     }
 
     /**
-     * Set URL the original payment is made from
-     *
-     * @param       string      $siteUrl            URL the original payment is made from
+     * {@inheritdoc}
      */
     public function setSiteUrl($siteUrl)
     {
-        if (!filter_var($siteUrl, FILTER_VALIDATE_URL))
-        {
-            throw new ValidationException("Invalid site URL '{$siteUrl}'");
-        }
-
         $this->siteUrl = $siteUrl;
 
         return $this;
     }
 
     /**
-     * Get URL the original payment is made from
-     *
-     * @return      string
+     * {@inheritdoc}
      */
     public function getSiteUrl()
     {
@@ -373,14 +353,6 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function hasCustomer()
-    {
-        return is_object($this->getCustomer());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setCreditCard(CreditCardInterface $creditCard)
     {
         $this->creditCard = $creditCard;
@@ -394,14 +366,6 @@ implements  OrderInterface
     public function getCreditCard()
     {
         return $this->creditCard;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasCreditCard()
-    {
-        return is_object($this->getCreditCard());
     }
 
     /**
@@ -435,14 +399,6 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function hasRecurrentCardFrom()
-    {
-        return is_object($this->getRecurrentCardFrom());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setRecurrentCardTo(RecurrentCardInterface $recurrentCard)
     {
         $this->recurrentCardTo = $recurrentCard;
@@ -456,14 +412,6 @@ implements  OrderInterface
     public function getRecurrentCardTo()
     {
         return $this->recurrentCardTo;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasRecurrentCardTo()
-    {
-        return is_object($this->getRecurrentCardTo());
     }
 
     /**
@@ -515,14 +463,9 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function setCancelReason($cancelReason)
+    public function setComment($comment)
     {
-        if(strlen($cancelReason) > 50)
-        {
-            throw new RuntimeException('Cancellation reason is very long (over 50 characters)');
-        }
-
-        $this->cancelReason = $cancelReason;
+        $this->comment = $comment;
 
         return $this;
     }
@@ -530,9 +473,9 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function getCancelReason()
+    public function getComment()
     {
-        return $this->cancelReason;
+        return $this->comment;
     }
 
     /**
@@ -577,34 +520,6 @@ implements  OrderInterface
     }
 
     /**
-     * @todo Move to AbstractQuery
-     */
-    public function getContextData()
-    {
-        return array
-        (
-            'client_orderid'    => $this->getClientOrderId(),
-            'orderid'           => $this->getPaynetOrderId()
-        );
-    }
-
-    /**
-     * @todo Move to AbstractQuery
-     */
-    public function validateShort()
-    {
-        if(!$this->getPaynetOrderId())
-        {
-            throw new RuntimeException('order.paynet_order_id undefined');
-        }
-
-        if(!$this->getClientOrderId())
-        {
-            throw new RuntimeException('order.client_orderid undefined');
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function getSetterByField($fieldName)
@@ -612,57 +527,36 @@ implements  OrderInterface
         switch ($fieldName)
         {
             case 'client_orderid':
+            case 'client-orderid':
             case 'client_order_id':
+            case 'client-order-id':
             {
                 return 'setClientOrderId';
             }
             case 'paynet_order_id':
+            case 'paynet-order-id':
             case 'orderid':
             case 'order_id':
+            case 'order-id':
             {
                 return 'setPaynetOrderId';
             }
             case 'order_desc':
+            case 'order-desc':
+            case 'desc':
+            case 'description':
             {
                 return 'setDescription';
             }
             case 'ipaddress':
+            case 'ip_address':
+            case 'ip-address':
             {
                 return 'setIpAddress';
             }
             default:
             {
                 return parent::getSetterByField($fieldName);
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getFieldByProperty($propertyName)
-    {
-        switch ($propertyName)
-        {
-            case 'clientOrderId':
-            {
-                return 'client_orderid';
-            }
-            case 'paynetOrderId':
-            {
-                return 'orderid';
-            }
-            case 'description':
-            {
-                return 'order_desc';
-            }
-            case 'ipAddress':
-            {
-                return 'ipaddress';
-            }
-            default:
-            {
-                return parent::getFieldByProperty($propertyName);
             }
         }
     }
