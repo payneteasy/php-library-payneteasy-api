@@ -12,15 +12,15 @@ class TransferByRefQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',             'clientOrderId',                        true,   '#^[\S\s]{1,128}$#i'),
-        array('amount',                     'amount',                               true,   '#^[0-9\.]{1,11}$#i'),
-        array('currency',                   'currency',                             true,   '#^[A-Z]{1,3}$#i'),
-        array('ipaddress',                  'ipAddress',                            true,   Validator::IP),
-        array('destination-card-ref-id',    'recurrentCardFrom.cardReferenceId',    true,   '#^[\S\s]{1,20}$#i'),
+        array('client_orderid',             'clientOrderId',                        true,    Validator::ID),
+        array('amount',                     'amount',                               true,    Validator::AMOUNT),
+        array('currency',                   'currency',                             true,    Validator::CURRENCY),
+        array('ipaddress',                  'ipAddress',                            true,    Validator::IP),
+        array('destination-card-ref-id',    'recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
         // optional
-        array('order_desc',                 'description',                          false,  '#^[\S\s]{1,125}$#i'),
-        array('source-card-ref-id',         'recurrentCardFrom.cardReferenceId',    false,  '#^[\S\s]{1,20}$#i'),
-        array('cvv2',                       'recurrentCardFrom.cvv2',               false,  '#^[\S\s]{1,20}$#i'),
+        array('order_desc',                 'description',                          false,   Validator::LONG_STRING),
+        array('source-card-ref-id',         'recurrentCardFrom.cardReferenceId',    false,   Validator::ID),
+        array('cvv2',                       'recurrentCardFrom.cvv2',               false,   Validator::CVV2),
         // generated
         array('control',                    null,                                   true,    null),
         // from config

@@ -1,6 +1,8 @@
 <?php
 namespace PaynetEasy\Paynet\Query;
 
+use PaynetEasy\Paynet\Utils\Validator;
+
 /**
  * The implementation of the query Return
  * http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
@@ -13,11 +15,11 @@ class ReturnQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',     'clientOrderId',                    true,   '#^[\S\s]{1,128}$#i'),
-        array('orderid',            'paynetOrderId',                    true,   '#^[\S\s]{1,20}$#i'),
-        array('amount',             'amount',                           true,   '#^[0-9\.]{1,11}$#i'),
-        array('currency',           'currency',                         true,   '#^[A-Z]{1,3}$#i'),
-        array('comment',            'comment',                          true,  '#^[\S\s]{1,50}$#i'),
+        array('client_orderid',     'clientOrderId',                    true,   Validator::ID),
+        array('orderid',            'paynetOrderId',                    true,   Validator::ID),
+        array('amount',             'amount',                           true,   Validator::AMOUNT),
+        array('currency',           'currency',                         true,   Validator::CURRENCY),
+        array('comment',            'comment',                          true,   Validator::MEDIUM_STRING),
         // generated
         array('control',             null,                              true,    null),
         // from config

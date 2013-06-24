@@ -1,6 +1,7 @@
 <?php
 namespace PaynetEasy\Paynet\Query;
 
+use PaynetEasy\Paynet\Utils\Validator;
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Exception\ValidationException;
@@ -17,7 +18,7 @@ class GetCardInfoQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('cardrefid',          'recurrentCardFrom.cardReferenceId',    true,   '#^[\S\s]{1,20}$#i'),
+        array('cardrefid',          'recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
         // generated
         array('control',             null,                                  true,    null),
         // from config
