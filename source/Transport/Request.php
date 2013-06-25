@@ -6,12 +6,9 @@
 
 namespace PaynetEasy\Paynet\Transport;
 
-use ArrayObject;
+use RuntimeException;
 
-/**
- * @todo implement class
- */
-class Request extends ArrayObject
+class Request
 {
     /**
      * Paynet payment API method
@@ -26,6 +23,36 @@ class Request extends ArrayObject
      * @var integet
      */
     protected $endPoint;
+
+    /**
+     * Request data fields
+     *
+     * @var array
+     */
+    protected $requestFields;
+
+    /**
+     * @param       array       $requestFields      Request fields array
+     */
+    public function __construct(array $requestFields)
+    {
+        if (empty($requestFields))
+        {
+            throw new RuntimeException('Request fields can not be empty');
+        }
+
+        $this->requestFields = $requestFields;
+    }
+
+    /**
+     * Get request fields array
+     *
+     * @return      array
+     */
+    public function getRequestFields()
+    {
+        return $this->requestFields;
+    }
 
     /**
      * Set API method

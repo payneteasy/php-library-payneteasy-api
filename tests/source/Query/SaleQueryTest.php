@@ -30,21 +30,6 @@ class SaleQueryTest extends QueryTestPrototype
         $this->object = new SaleQuery($this->getConfig());
     }
 
-    /**
-     * @dataProvider testCreateRequestProvider
-     */
-    public function testCreateRequest($controlCode)
-    {
-        $order = $this->getOrder();
-
-        $request = $this->object->createRequest($order);
-
-        $this->assertInstanceOf('PaynetEasy\Paynet\Transport\Request', $request);
-        $this->assertNotNull($request['control']);
-        $this->assertEquals($controlCode, $request['control']);
-        $this->assertFalse($order->hasErrors());
-    }
-
     public function testCreateRequestProvider()
     {
         return array(array

@@ -58,7 +58,7 @@ class GatewayClient implements GatewayClientInterface
                     CURLOPT_SSL_VERIFYPEER => 0,
                     CURLOPT_POST           => 1,
                     CURLOPT_RETURNTRANSFER => 1,
-                    CURLOPT_POSTFIELDS     => http_build_query($request->getArrayCopy())
+                    CURLOPT_POSTFIELDS     => http_build_query($request->getRequestFields())
                 )
             );
 

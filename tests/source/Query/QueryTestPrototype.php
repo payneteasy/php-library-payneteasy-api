@@ -23,13 +23,15 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     {
         $order  = $this->getOrder();
 
-        $request = $this->object->createRequest($order);
+        $request        = $this->object->createRequest($order);
+        $requestFields  = $request->getRequestFields();
+
 
         $this->assertInstanceOf('PaynetEasy\Paynet\Transport\Request', $request);
         $this->assertNotNull($request->getApiMethod());
         $this->assertNotNull($request->getEndPoint());
-        $this->assertNotNull($request['control']);
-        $this->assertEquals($controlCode, $request['control']);
+        $this->assertNotNull($requestFields['control']);
+        $this->assertEquals($controlCode, $requestFields['control']);
         $this->assertFalse($order->hasErrors());
     }
 

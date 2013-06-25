@@ -75,7 +75,7 @@ class OrderProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testExecuteQuery()
     {
-        FakeQuery::$request             = new Request;
+        FakeQuery::$request             = new Request(array('_'));
         FakeGatewayClient::$response    = new Response;
 
         $listenerCalled = false;

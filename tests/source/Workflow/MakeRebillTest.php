@@ -89,7 +89,7 @@ class MakeRebillTest extends SaleTest
 
         $this->query->processOrder($order);
 
-        $request                = array
+        $assertRequest                = array
         (
             'client_orderid'    => 'CLIENT-112233',
             'order_desc'        => 'This is test order',
@@ -108,10 +108,12 @@ class MakeRebillTest extends SaleTest
             'server_callback_url' => $this->config['server_callback_url']
         );
 
-        foreach($request as $key => $value)
+        $gatewayRequest = FakeGatewayClient::$request->getRequestFields();
+
+        foreach($assertRequest as $key => $value)
         {
-            $this->assertNotEmpty(FakeGatewayClient::$request[$key], 'Request property no exists: ' . $key);
-            $this->assertEquals($value, FakeGatewayClient::$request[$key], "$key not equal '$value'");
+            $this->assertNotEmpty($gatewayRequest[$key], 'Request property no exists: ' . $key);
+            $this->assertEquals($value, $gatewayRequest[$key], "$key not equal '$value'");
         }
     }
 }

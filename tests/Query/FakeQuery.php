@@ -27,7 +27,7 @@ class FakeQuery extends AbstractQuery
 
     protected function orderToRequest(OrderInterface $order)
     {
-        return array();
+        return array('_');
     }
 
     protected function validateOrder(OrderInterface $order)

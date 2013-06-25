@@ -256,8 +256,8 @@ $(document).ready(progress_bar);
             break;
             case OrderInterface::STATUS_DECLINED:
                 $this->template->content    = '<div class="alert alert-block"><h4 class="alert-heading">Declined!</h4>';
-                $this->template->content    .= '<p><b>Error Text</b>: '.$response->errorMessage().'</p>';
-                $this->template->content    .= '<p><b>Error Code</b>: '.$response->errorCode().'</p>';
+                $this->template->content    .= '<p><b>Error Text</b>: '.$response->getErrorMessage().'</p>';
+                $this->template->content    .= '<p><b>Error Code</b>: '.$response->getErrorCode().'</p>';
             break;
             case OrderInterface::STATUS_ERROR:
                 $this->template->content    = '<div class="alert alert-error"><h4 class="alert-heading">Error!</h4>';
