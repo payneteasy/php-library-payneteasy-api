@@ -240,26 +240,6 @@ interface OrderInterface
     public function getRecurrentCardTo();
 
     /**
-     * Get all allowed order states
-     *
-     * @return      array
-     */
-    /**
-     * @todo More specific name and description needed
-     */
-    static public function getAllowedStates();
-
-    /**
-     * Get all allowed order statuses
-     *
-     * @return      array
-     */
-    /**
-     * @todo More specific name and description needed
-     */
-    static public function getAllowedStatuses();
-
-    /**
      * Set order state
      *
      * @param       string      $state      Order state

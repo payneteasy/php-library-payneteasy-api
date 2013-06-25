@@ -50,9 +50,4 @@ class Data
     {
         return 'set' . String::camelize($fieldName);
     }
-
-    protected function getGetterByProperty($propertyName)
-    {
-        return 'get' . ucfirst($propertyName);
-    }
 }

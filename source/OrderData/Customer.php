@@ -1,8 +1,6 @@
 <?php
 namespace PaynetEasy\Paynet\OrderData;
 
-use PaynetEasy\Paynet\Exception\ValidationException;
-
 /**
  * Container for customer data
  *

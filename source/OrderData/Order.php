@@ -167,22 +167,6 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public static function getAllowedStates()
-    {
-        return static::$allowedStates;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getAllowedStatuses()
-    {
-        return static::$allowedStatuses;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setClientOrderId($clientOrderId)
     {
         $this->clientOrderId = $clientOrderId;
@@ -419,7 +403,7 @@ implements  OrderInterface
      */
     public function setState($state)
     {
-        if (!in_array($state, static::getAllowedStates()))
+        if (!in_array($state, static::$allowedStates))
         {
             throw new RuntimeException("Unknown state given: {$state}");
         }
@@ -442,7 +426,7 @@ implements  OrderInterface
      */
     public function setStatus($status)
     {
-        if (!in_array($status, static::getAllowedStatuses()))
+        if (!in_array($status, static::$allowedStatuses))
         {
             throw new RuntimeException("Unknown state given: {$status}");
         }

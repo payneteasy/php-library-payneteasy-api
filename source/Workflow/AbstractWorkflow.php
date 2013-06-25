@@ -174,7 +174,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * @param       array $data
      * @return      Response
      */
-    protected function processCallback(OrderInterface $order, $data)
+    protected function processCallback(OrderInterface $order, array $data)
     {
         $callback = new CallbackResponse($data);
 
