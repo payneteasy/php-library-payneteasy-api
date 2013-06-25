@@ -64,14 +64,14 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     abstract public function testProcessCallbackErrorProvider();
 
     /**
-     * Validates order state and status
+     * Validates order transport stage and bank status
      *
-     * @param       string      $state      Order state
-     * @param       string      $status     Order status
+     * @param       string      $transportStage     Order transport stage
+     * @param       string      $status             Order bank status
      */
-    protected function assertOrderStates(Order $order, $state, $status)
+    protected function assertOrderStates(Order $order, $transportStage, $status)
     {
-        $this->assertEquals($state, $order->getTransportStage());
+        $this->assertEquals($transportStage, $order->getTransportStage());
         $this->assertEquals($status, $order->getStatus());
     }
 

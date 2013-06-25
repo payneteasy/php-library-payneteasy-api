@@ -146,7 +146,7 @@ class OrderProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Unknown event name: _
+     * @expectedExceptionMessage Unknown event name: '_'
      */
     public function testSetEventListenerWrongName()
     {

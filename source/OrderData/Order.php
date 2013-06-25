@@ -377,14 +377,14 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function setTransportStage($state)
+    public function setTransportStage($transportStage)
     {
-        if (!in_array($state, static::$allowedTransportStages))
+        if (!in_array($transportStage, static::$allowedTransportStages))
         {
-            throw new RuntimeException("Unknown state given: '{$state}'");
+            throw new RuntimeException("Unknown transport stage given: '{$transportStage}'");
         }
 
-        $this->transportStage = $state;
+        $this->transportStage = $transportStage;
 
         return $this;
     }
@@ -404,7 +404,7 @@ implements  OrderInterface
     {
         if (!in_array($status, static::$allowedStatuses))
         {
-            throw new RuntimeException("Unknown state given: {$status}");
+            throw new RuntimeException("Unknown bank status given: {$status}");
         }
 
         $this->status = $status;

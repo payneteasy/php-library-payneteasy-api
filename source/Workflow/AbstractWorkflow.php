@@ -74,12 +74,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     }
 
     /**
-     * Process Order with different state
-     *
-     * @param       PaynetEasy\Paynet\OrderData\OrderInterface   $order              Order for processing
-     * @param       array                                   $callbackData       Paynet callback data
-     *
-     * @return      \PaynetEasy\Paynet\Transport\Response
+     * {@inheritdoc}
      */
     public function processOrder(OrderInterface $order, array $callbackData = array())
     {

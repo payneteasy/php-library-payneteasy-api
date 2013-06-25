@@ -43,7 +43,7 @@ class WorkflowFactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage Unknown workflow class PaynetEasy\Paynet\Workflow\UnknownWorkflow for workflow with name unknown
+     * @expectedExceptionMessage Unknown workflow class 'PaynetEasy\Paynet\Workflow\UnknownWorkflow' for workflow with name 'unknown'
      */
     public function testGetWorkflowWithException()
     {

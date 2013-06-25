@@ -250,11 +250,11 @@ interface OrderInterface
     /**
      * Set order transport stage
      *
-     * @param       string      $state      Order state
+     * @param       string      $transportStage      Order transport stage
      *
      * @return      self
      */
-    public function setTransportStage($state);
+    public function setTransportStage($transportStage);
 
     /**
      * Get order transport state
@@ -266,7 +266,7 @@ interface OrderInterface
     /**
      * Set order bank status
      *
-     * @param       string      $state      Order status
+     * @param       string      $status             Order bank status
      *
      * @return      self
      */

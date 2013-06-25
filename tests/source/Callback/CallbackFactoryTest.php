@@ -41,7 +41,7 @@ class CallbackFactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage Unknown callback class PaynetEasy\Paynet\Callback\UnknownCallback for callback with type unknown
+     * @expectedExceptionMessage Unknown callback class 'PaynetEasy\Paynet\Callback\UnknownCallback' for callback with type 'unknown'
      */
     public function testGetQueryWithException()
     {

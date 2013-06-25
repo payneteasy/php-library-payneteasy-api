@@ -7,7 +7,7 @@ use PaynetEasy\Paynet\OrderData\OrderInterface;
 interface WorkflowInterface
 {
     /**
-     * Process Order with different state
+     * Process Order with different transport stage
      *
      * @param       PaynetEasy\Paynet\OrderData\OrderInterface   $order              Order for processing
      * @param       array                                   $callbackData       Paynet callback data

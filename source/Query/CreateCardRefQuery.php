@@ -97,7 +97,7 @@ class CreateCardRefQuery extends AbstractQuery
     }
 
     /**
-     * Check Order state and status.
+     * Check Order transport stage and bank status.
      * State must be STAGE_ENDED and status must be STATUS_APPROVED.
      *
      * @param       OrderInterface      $order      Order for checking

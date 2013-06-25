@@ -44,7 +44,7 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage Unknown query class PaynetEasy\Paynet\Query\UnknownQuery for query with name unknown
+     * @expectedExceptionMessage Unknown query class 'PaynetEasy\Paynet\Query\UnknownQuery' for query with name 'unknown'
      */
     public function testGetQueryWithException()
     {

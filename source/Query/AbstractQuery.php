@@ -353,15 +353,11 @@ implements      QueryInterface
             $order->setTransportStage(OrderInterface::STAGE_ENDED);
             $order->setStatus(OrderInterface::STATUS_APPROVED);
         }
-        // For the 3D mode is set to the state "REDIRECT"
-        // or for Form API redirect_url
         elseif($response->hasHtml() || $response->hasRedirectUrl())
         {
             $order->setTransportStage(OrderInterface::STAGE_REDIRECTED);
             $order->setStatus(OrderInterface::STATUS_PROCESSING);
         }
-        //
-        // If it does not redirect, it's processing
         elseif($response->isProcessing())
         {
             $order->setTransportStage(OrderInterface::STAGE_CREATED);
