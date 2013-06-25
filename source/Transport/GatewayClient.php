@@ -5,7 +5,6 @@ use PaynetEasy\Paynet\Transport\Response;
 
 use PaynetEasy\Paynet\Exception\RequestException;
 use PaynetEasy\Paynet\Exception\ResponseException;
-use Exception;
 
 class GatewayClient implements GatewayClientInterface
 {
@@ -92,58 +91,53 @@ class GatewayClient implements GatewayClientInterface
     {
         $this->validateRequest($request);
 
-        try
-        {
-            $curl           = curl_init();
-            $responseString = $this->executeCurl($curl, $request);
-            $responseObject = $this->parseReponse($responseString);
-        }catch (Exception $e){}
-        // finally
-        {
-            curl_close($curl);
-            if(isset($e)) throw $e;
-        }
+        $responseString = $this->sendRequest($request);
 
-        return $responseObject;
+        return $this->parseReponse($responseString);
     }
 
     /**
      * Executes request
      *
-     * @param       resource        $curl           Curl instance
      * @param       Request         $request        Request to execute
      *
      * @return      string                          Paynet response
      *
      * @throws      RequestException                Error while executing request
      */
-    protected function executeCurl($curl, Request $request)
+    protected function sendRequest(Request $request)
     {
-        $url    = "{$this->gatewayUrl}/{$request->getApiMethod()}/{$request->getEndPoint()}";
+        $url  = "{$this->gatewayUrl}/{$request->getApiMethod()}/{$request->getEndPoint()}";
+        $curl = curl_init($url);
 
-        curl_setopt_array($curl, array_merge
-        (
-            $this->curlOptions,
-            array
-            (
-                CURLOPT_URL         => $url,
-                CURLOPT_POSTFIELDS  => http_build_query($request->getRequestFields())
-            )
-        ));
+        curl_setopt_array($curl, $this->curlOptions);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request->getRequestFields()));
 
         $response = curl_exec($curl);
 
+        $error_message  = '';
+        $error_code     = 0;
+
         if(curl_errno($curl))
         {
-            throw new RequestException('Error occured: ' . curl_error($curl), curl_errno($curl));
+            $error_message  = 'Error occured: ' . curl_error($curl);
+            $error_code     = curl_errno($curl);
         }
-
-        if(curl_getinfo($curl, CURLINFO_HTTP_CODE) != 200)
+        elseif(curl_getinfo($curl, CURLINFO_HTTP_CODE) != 200)
         {
-            throw new RequestException('Error occured. HTTP code: ' . curl_getinfo($curl, CURLINFO_HTTP_CODE));
+            $error_message  = 'Error occured. HTTP code: ' . curl_getinfo($curl, CURLINFO_HTTP_CODE);
         }
 
-        return $response;
+        curl_close($curl);
+
+        if (!empty($error_message))
+        {
+            throw new RequestException($error_message, $error_code);
+        }
+        else
+        {
+            return $response;
+        }
     }
 
     /**
@@ -193,7 +187,7 @@ class GatewayClient implements GatewayClientInterface
             throw new ValidationException('Request endpoint is empty');
         }
 
-        if ($request->count() === 0)
+        if (count($request->getRequestFields()) === 0)
         {
             throw new ValidationException('Request data is empty');
         }
