@@ -35,12 +35,12 @@ abstract class AbstractCallback implements CallbackInterface
     static protected $allowedStatuses = array();
 
     /**
-     * Allowed callback fields
-     * in format [<field name>:string => <is field required>:boolean]
+     * Callback fields definition if format:
+     * [<first field_name>:string, <second field_name>:string ... <last field_name>:string]
      *
      * @var array
      */
-    static protected $allowedFields = array();
+    static protected $callbackFieldsDefinition = array();
 
     /**
      * @param       array       $config         Paynet callback object config
@@ -88,9 +88,9 @@ abstract class AbstractCallback implements CallbackInterface
             throw new RuntimeException('You must configure allowedStatuses property');
         }
 
-        if (empty(static::$allowedFields))
+        if (empty(static::$callbackFieldsDefinition))
         {
-            throw new RuntimeException('You must configure allowedFields property');
+            throw new RuntimeException('You must configure callbackFieldsDefinition property');
         }
 
         if(empty($config['control']))
@@ -141,9 +141,9 @@ abstract class AbstractCallback implements CallbackInterface
     {
         $missedKeys = array();
 
-        foreach (static::$allowedFields as $fieldName => $isFieldRequired)
+        foreach (static::$callbackFieldsDefinition as $fieldName)
         {
-            if ($isFieldRequired && empty($callbackResponse[$fieldName]))
+            if (empty($callbackResponse[$fieldName]))
             {
                 $missedKeys[] = $fieldName;
             }

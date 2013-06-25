@@ -20,15 +20,12 @@ class RedirectUrlCallback extends AbstractCallback
     /**
      * {@inheritdoc}
      */
-    static protected $allowedFields = array
+    static protected $callbackFieldsDefinition = array
     (
-        'status'            => true,
-        'orderid'           => true,
-        'merchant_order'    => true,
-        'client_orderid' 	=> true,
-        'control'           => true,
-
-        'descriptor'        => false,
-        'error_message' 	=> false
+        'status',
+        'orderid',
+        'merchant_order',
+        'client_orderid',
+        'control'
     );
 }

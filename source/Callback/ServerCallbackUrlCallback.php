@@ -33,31 +33,15 @@ class ServerCallbackUrlCallback extends AbstractCallback
     /**
      * {@inheritdoc}
      */
-    static protected $allowedFields = array
+    static protected $callbackFieldsDefinition = array
     (
-        'status'                => true,
-        'merchant_order'        => true,
-        'client_orderid'        => true,
-        'orderid'               => true,
-        'type'                  => true,
-        'amount'                => true,
-        'control'               => true,
-
-        'descriptor'            => false,
-        'error_code'            => false,
-        'error_message'         => false,
-        'name'                  => false,
-        'email'                 => false,
-        'approval-code'         => false,
-        'last-four-digits'      => false,
-        'bin'                   => false,
-        'card-type'             => false,
-        'gate-partial-reversal' => false,
-        'gate-partial-capture'  => false,
-        'reason-code'           => false,
-        'processor-rrn'         => false,
-        'comment'               => false,
-        'merchantdata'          => false
+        'status',
+        'merchant_order',
+        'client_orderid',
+        'orderid',
+        'type',
+        'amount',
+        'control'
     );
 
     /**
