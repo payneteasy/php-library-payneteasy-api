@@ -112,14 +112,17 @@ class OrderProcessor
      * @param       array               $workflowConfig         Payment workflow config
      * @param       OrderInterface      $order                  Order for processing
      * @param       array               $callbackData           Paynet callback data (optional)
-     *
-     * @return      Response                                    Current workflow query response
      */
     public function executeWorkflow(                $workflowName,
                                     array           $workflowConfig,
                                     OrderInterface  $order,
                                     array           $callbackData       = array())
     {
+        if ($order->getState() == OrderInterface::STATE_END)
+        {
+            return;
+        }
+
         try
         {
             $response = $this->getWorkflow($workflowName, $workflowConfig)
@@ -146,8 +149,6 @@ class OrderProcessor
                 $this->fireEvent(self::EVENT_REDIRECT_RECEIVED,     $order, $response);
             break;
         }
-
-        return $response;
     }
 
     /**
