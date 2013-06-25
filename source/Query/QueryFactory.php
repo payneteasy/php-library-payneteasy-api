@@ -32,6 +32,6 @@ implements  QueryFactoryInterface
             return $query;
         }
 
-        throw new RuntimeException("Unknown query class {$queryClass} for query with name {$apiQueryName}");
+        throw new RuntimeException("Unknown query class '{$queryClass}' for query with name '{$apiQueryName}'");
     }
 }

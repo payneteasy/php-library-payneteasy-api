@@ -46,6 +46,6 @@ class CallbackFactory implements CallbackFactoryInterface
             return $callbackProcessor;
         }
 
-        throw new RuntimeException("Unknown callback class {$callbackClass} for callback with type {$callbackType}");
+        throw new RuntimeException("Unknown callback class '{$callbackClass}' for callback with type '{$callbackType}'");
     }
 }

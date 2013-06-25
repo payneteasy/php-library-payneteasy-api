@@ -49,7 +49,7 @@ class FormWorkflow extends AbstractWorkflow
     {
         if (!in_array($apiMethod, static::$allowedInitialApiMethods))
         {
-            throw new RuntimeException("Unknown initial api method: {$apiMethod}");
+            throw new RuntimeException("Unknown initial api method: '{$apiMethod}'");
         }
 
         $this->initialApiMethod = $apiMethod;

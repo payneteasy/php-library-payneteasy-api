@@ -381,7 +381,7 @@ implements  OrderInterface
     {
         if (!in_array($state, static::$allowedTransportStages))
         {
-            throw new RuntimeException("Unknown state given: {$state}");
+            throw new RuntimeException("Unknown state given: '{$state}'");
         }
 
         $this->transportStage = $state;

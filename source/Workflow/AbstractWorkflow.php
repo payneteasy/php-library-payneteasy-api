@@ -99,7 +99,8 @@ abstract class AbstractWorkflow implements WorkflowInterface
             {
                 if(empty($callbackData))
                 {
-                    throw new RuntimeException("Data parameter can not be empty for state {$order->getTransportStage()}");
+                    throw new RuntimeException("Data parameter can not be empty " .
+                                               "for transport stage '{$order->getTransportStage()}'");
                 }
 
                 $response = $this->processCallback($order, $callbackData);
@@ -111,7 +112,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
             }
             default:
             {
-                throw new RuntimeException("Undefined state: {$order->getTransportStage()}");
+                throw new RuntimeException("Undefined order transport stage: '{$order->getTransportStage()}'");
             }
         }
 

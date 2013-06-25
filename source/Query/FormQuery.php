@@ -98,7 +98,7 @@ class FormQuery extends AbstractQuery
     {
         if (!in_array($apiMethod, static::$allowedApiMethods))
         {
-            throw new RuntimeException("Unknown api method: {$apiMethod}");
+            throw new RuntimeException("Unknown api method: '{$apiMethod}'");
         }
 
         $this->apiMethod = $apiMethod;

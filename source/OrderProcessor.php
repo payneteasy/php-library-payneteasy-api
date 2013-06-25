@@ -504,7 +504,7 @@ class OrderProcessor
     {
         if (!in_array($eventName, static::$allowedEvents))
         {
-            throw new RuntimeException("Unknown event name: {$eventName}");
+            throw new RuntimeException("Unknown event name: '{$eventName}'");
         }
     }
 

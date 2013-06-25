@@ -42,8 +42,8 @@ class PropertyAccessor
 
         if ($failOnError === true)
         {
-            throw new RuntimeException("Object expected for property path {$firstPropertyPath}, " .
-                                        gettype($firstObject) . ' given');
+            throw new RuntimeException("Object expected for property path '{$firstPropertyPath}', '" .
+                                        gettype($firstObject) . "' given");
         }
     }
 

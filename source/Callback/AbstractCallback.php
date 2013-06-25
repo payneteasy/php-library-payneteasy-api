@@ -159,7 +159,7 @@ abstract class AbstractCallback implements CallbackInterface
 
         if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
         {
-            throw new ValidationException("Invalid callback status: {$callbackResponse->getStatus()}");
+            throw new ValidationException("Invalid callback status: '{$callbackResponse->getStatus()}'");
         }
 
         if ($callbackResponse->getClientOrderId() !== $order->getClientOrderId())

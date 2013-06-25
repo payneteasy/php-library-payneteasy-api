@@ -57,7 +57,7 @@ class Response extends ArrayObject
     {
         if (!in_array($neededAction, static::$allowedNeededActions))
         {
-            throw new RuntimeException("Unknown needed action: {$neededAction}");
+            throw new RuntimeException("Unknown needed action: '{$neededAction}'");
         }
 
         $this->neededAction = $neededAction;

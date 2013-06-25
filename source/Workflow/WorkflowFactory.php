@@ -80,6 +80,6 @@ class WorkflowFactory implements WorkflowFactoryInterface
             return $workflow;
         }
 
-        throw new RuntimeException("Unknown workflow class {$workflowClass} for workflow with name {$workflowName}");
+        throw new RuntimeException("Unknown workflow class '{$workflowClass}' for workflow with name '{$workflowName}'");
     }
 }

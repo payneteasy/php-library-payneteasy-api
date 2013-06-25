@@ -61,7 +61,7 @@ class ServerCallbackUrlCallback extends AbstractCallback
     {
         if (!in_array($callbackType, static::$allowedCallbackTypes))
         {
-            throw new RuntimeException("Unknown callback type: {$callbackType}");
+            throw new RuntimeException("Unknown callback type: '{$callbackType}'");
         }
 
         $this->callbackType = $callbackType;
