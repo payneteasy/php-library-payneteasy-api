@@ -63,7 +63,7 @@ class FormQueryTest extends QueryTestPrototype
 
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertOrderStates($order, Order::STATE_REDIRECT, Order::STATUS_PROCESSING);
+        $this->assertOrderStates($order, Order::STAGE_REDIRECTED, Order::STATUS_PROCESSING);
         $this->assertFalse($order->hasErrors());
     }
 

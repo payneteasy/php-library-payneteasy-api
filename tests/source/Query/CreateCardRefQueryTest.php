@@ -62,7 +62,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
         $this->object->processResponse($order, new Response($response));
 
         $this->assertInstanceOf('\PaynetEasy\Paynet\OrderData\RecurrentCard', $order->getRecurrentCardFrom());
-        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_APPROVED);
+        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_APPROVED);
         $this->assertFalse($order->hasErrors());
     }
 
@@ -134,7 +134,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
     protected function getOrder()
     {
         return parent::getOrder()
-            ->setState(Order::STATE_END)
+            ->setTransportStage(Order::STAGE_ENDED)
             ->setStatus(Order::STATUS_APPROVED);
     }
 }

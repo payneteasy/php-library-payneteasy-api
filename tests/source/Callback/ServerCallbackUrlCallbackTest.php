@@ -35,7 +35,7 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
 
         $this->object->processCallback($order, new CallbackResponse($callback));
 
-        $this->assertOrderStates($order, Order::STATE_PROCESSING, Order::STATUS_PROCESSING);
+        $this->assertOrderStates($order, Order::STAGE_CREATED, Order::STATUS_PROCESSING);
         $this->assertFalse($order->hasErrors());
     }
 

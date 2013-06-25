@@ -118,7 +118,7 @@ class OrderProcessor
                                     OrderInterface  $order,
                                     array           $callbackData       = array())
     {
-        if ($order->getState() == OrderInterface::STATE_END)
+        if ($order->getTransportStage() == OrderInterface::STAGE_ENDED)
         {
             return;
         }

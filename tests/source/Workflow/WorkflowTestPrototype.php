@@ -87,7 +87,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_APPROVED
         );
 
@@ -107,7 +107,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_DECLINED,
             'error_message'     => 'test error message',
             'error_code'        => '578'
@@ -129,7 +129,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_DECLINED,
             'error_message'     => 'test filtered message',
             'error_code'        => '8876'
@@ -149,7 +149,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
         $assert                 = array
         (
-            'state'             => Order::STATE_PROCESSING,
+            'state'             => Order::STAGE_CREATED,
             'status'            => Order::STATUS_PROCESSING
         );
 
@@ -168,7 +168,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
         $assert                 = array
         (
-            'state'             => Order::STATE_REDIRECT,
+            'state'             => Order::STAGE_REDIRECTED,
             'status'            => null
         );
 
@@ -187,7 +187,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
         $assert                 = array
         (
-            'state'             => Order::STATE_REDIRECT,
+            'state'             => Order::STAGE_REDIRECTED,
             'status'            => null
         );
 
@@ -206,7 +206,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_ERROR,
             'error_message'     => 'test error message',
             'error_code'        => '2',
@@ -225,7 +225,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_ERROR,
             'error_message'     => 'test validation message',
             'error_code'        => '1',
@@ -244,7 +244,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_ERROR,
             'error_message'     => 'test error message',
             'error_code'        => '1',
@@ -296,7 +296,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
         if (isset($assert['state']))
         {
-            $this->assertEquals($assert['state'], $this->order->getState(), 'query.state not equal ' . $assert['state']);
+            $this->assertEquals($assert['state'], $this->order->getTransportStage(), 'query.state not equal ' . $assert['state']);
         }
 
         if (isset($assert['status']))

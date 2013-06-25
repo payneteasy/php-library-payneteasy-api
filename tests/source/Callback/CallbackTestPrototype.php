@@ -22,7 +22,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processCallback($order, new CallbackResponse($callback));
 
-        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_APPROVED);
+        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_APPROVED);
         $this->assertFalse($order->hasErrors());
     }
 
@@ -39,7 +39,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processCallback($order, new CallbackResponse($callback));
 
-        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_DECLINED);
+        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_DECLINED);
         $this->assertTrue($order->hasErrors());
     }
 
@@ -57,7 +57,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
         // Payment error after check
         $this->object->processCallback($order, new CallbackResponse($callback));
 
-        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_ERROR);
+        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_ERROR);
         $this->assertOrderError($order, $callback['error_message'], $callback['error_code']);
     }
 
@@ -71,7 +71,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      */
     protected function assertOrderStates(Order $order, $state, $status)
     {
-        $this->assertEquals($state, $order->getState());
+        $this->assertEquals($state, $order->getTransportStage());
         $this->assertEquals($status, $order->getStatus());
     }
 

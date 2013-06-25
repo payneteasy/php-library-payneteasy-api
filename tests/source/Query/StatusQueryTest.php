@@ -47,7 +47,7 @@ class StatusQueryTest extends QueryTestPrototype
 
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertOrderStates($order, Order::STATE_REDIRECT, Order::STATUS_PROCESSING);
+        $this->assertOrderStates($order, Order::STAGE_REDIRECTED, Order::STATUS_PROCESSING);
         $this->assertFalse($order->hasErrors());
     }
 
@@ -85,7 +85,7 @@ class StatusQueryTest extends QueryTestPrototype
 
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_APPROVED);
+        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_APPROVED);
         $this->assertFalse($order->hasErrors());
     }
 

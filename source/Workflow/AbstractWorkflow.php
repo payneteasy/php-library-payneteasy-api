@@ -83,36 +83,35 @@ abstract class AbstractWorkflow implements WorkflowInterface
      */
     public function processOrder(OrderInterface $order, array $callbackData = array())
     {
-        switch($order->getState())
+        switch($order->getTransportStage())
         {
-            case OrderInterface::STATE_NULL:
-            case OrderInterface::STATE_INIT:
+            case null:
             {
                 $response = $this->initializeProcessing($order);
                 break;
             }
-            case OrderInterface::STATE_PROCESSING:
+            case OrderInterface::STAGE_CREATED:
             {
                 $response = $this->updateStatus($order);
                 break;
             }
-            case OrderInterface::STATE_REDIRECT:
+            case OrderInterface::STAGE_REDIRECTED:
             {
                 if(empty($callbackData))
                 {
-                    throw new RuntimeException("Data parameter can not be empty for state {$order->getState()}");
+                    throw new RuntimeException("Data parameter can not be empty for state {$order->getTransportStage()}");
                 }
 
                 $response = $this->processCallback($order, $callbackData);
                 break;
             }
-            case OrderInterface::STATE_END:
+            case OrderInterface::STAGE_ENDED:
             {
                 throw new RuntimeException('Payment has been completed');
             }
             default:
             {
-                throw new RuntimeException("Undefined state: {$order->getState()}");
+                throw new RuntimeException("Undefined state: {$order->getTransportStage()}");
             }
         }
 

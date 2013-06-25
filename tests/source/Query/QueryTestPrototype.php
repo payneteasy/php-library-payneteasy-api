@@ -46,7 +46,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_DECLINED);
+        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_DECLINED);
         $this->assertTrue($order->hasErrors());
     }
 
@@ -61,7 +61,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertOrderStates($order, Order::STATE_PROCESSING, Order::STATUS_PROCESSING);
+        $this->assertOrderStates($order, Order::STAGE_CREATED, Order::STATUS_PROCESSING);
         $this->assertFalse($order->hasErrors());
     }
 
@@ -77,7 +77,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         // Payment error after check
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_ERROR);
+        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_ERROR);
         $this->assertOrderError($order, $response['error-message'], $response['error-code']);
     }
 
@@ -91,7 +91,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     protected function assertOrderStates(Order $order, $state, $status)
     {
-        $this->assertEquals($state, $order->getState());
+        $this->assertEquals($state, $order->getTransportStage());
         $this->assertEquals($status, $order->getStatus());
     }
 

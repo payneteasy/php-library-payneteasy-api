@@ -151,7 +151,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $assert                 = array
         (
-            'state'             => Order::STATE_PROCESSING,
+            'state'             => Order::STAGE_CREATED,
             'status'            => Order::STATUS_PROCESSING
         );
 
@@ -168,7 +168,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_ERROR,
             'error_message'     => $response['error-message'],
             'error_code'        => $response['error-code'],
@@ -191,7 +191,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_DECLINED,
             'error_message'     => $response['error-message'],
             'error_code'        => $response['error-code']
@@ -209,7 +209,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_ERROR,
             'error_message'     => $response['error_message'],
             'error_code'        => $response['error_code'],
@@ -232,7 +232,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_ERROR,
             'error_message'     => $response['error-message'],
             'error_code'        => $response['error-code'],
@@ -329,7 +329,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_APPROVED
         );
 
@@ -357,7 +357,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $assert                 = array
         (
-            'state'             => Order::STATE_PROCESSING,
+            'state'             => Order::STAGE_CREATED,
             'status'            => Order::STATUS_PROCESSING
         );
 
@@ -386,7 +386,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_DECLINED,
             'error_message'     => 'decline message',
             'error_code'        => '1000000'
@@ -417,7 +417,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_DECLINED,
             'error_message'     => 'filtered message',
             'error_code'        => '1000000'
@@ -448,7 +448,7 @@ class SaleTest extends WorkflowTestPrototype
 
         $assert                 = array
         (
-            'state'             => Order::STATE_END,
+            'state'             => Order::STAGE_ENDED,
             'status'            => Order::STATUS_ERROR,
             'error_message'     => 'error message',
             'error_code'        => '1',

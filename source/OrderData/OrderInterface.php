@@ -11,23 +11,43 @@ use Exception;
 interface OrderInterface
 {
     /**
-     * @todo Compare with Paynet Wiki
-     * @todo Add comments
+     * Order created
      */
-    const STATE_NULL        = 'null';
-    const STATE_INIT        = 'init';
-    const STATE_REDIRECT    = 'redirect';
-    const STATE_PROCESSING  = 'processing';
-    const STATE_END         = 'end';
+    const STAGE_CREATED     = 'created';
 
     /**
-     * @todo Compare with Paynet Wiki
-     * @todo Add comments
+     * Customer is redirected to Paynet to perform additional steps
+     */
+    const STAGE_REDIRECTED  = 'redirected';
+
+    /**
+     * Order processing is ended
+     */
+    const STAGE_ENDED       = 'ended';
+
+    /**
+     * Order is now processing
      */
     const STATUS_PROCESSING = 'processing';
+
+    /**
+     * Order approved
+     */
     const STATUS_APPROVED   = 'approved';
+
+    /**
+     * Order declined by bank
+     */
     const STATUS_DECLINED   = 'declined';
+
+    /**
+     * Order declined by Paynet filters
+     */
     const STATUS_FILTERED   = 'filtered';
+
+    /**
+     * Order processed with error
+     */
     const STATUS_ERROR      = 'error';
 
     /**
@@ -240,46 +260,34 @@ interface OrderInterface
     public function getRecurrentCardTo();
 
     /**
-     * Set order state
+     * Set order transport stage
      *
      * @param       string      $state      Order state
      *
      * @return      self
      */
-    /**
-     * @todo More specific name and description needed
-     */
-    public function setState($state);
+    public function setTransportStage($state);
 
     /**
-     * Get order state
+     * Get order transport state
      *
      * @return      string
      */
-    /**
-     * @todo More specific name and description needed
-     */
-    public function getState();
+    public function getTransportStage();
 
     /**
-     * Set order status
+     * Set order bank status
      *
      * @param       string      $state      Order status
      *
      * @return      self
      */
-    /**
-     * @todo More specific name and description needed
-     */
     public function setStatus($status);
 
     /**
-     * Get order status
+     * Get order bank status
      *
      * @return      string
-     */
-    /**
-     * @todo More specific name and description needed
      */
     public function getStatus();
 

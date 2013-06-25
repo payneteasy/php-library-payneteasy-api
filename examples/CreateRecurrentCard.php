@@ -12,7 +12,7 @@ class   CreateRecurrentCard extends Sale
 {
     protected function processResponse(Response $response)
     {
-        if(   $this->query->getOrder()->getState() === OrderInterface::STATE_END
+        if(   $this->query->getOrder()->getTransportStage() === OrderInterface::STAGE_ENDED
            && $response->isApproved())
         {
             // Create Reccurent Card

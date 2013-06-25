@@ -14,33 +14,25 @@ extends     Data
 implements  OrderInterface
 {
     /**
-     * All allowed order states
+     * All allowed order transport stages
      *
      * @var array
      */
-    /**
-     * @todo More specific name and description needed
-     */
-    static protected $allowedStates = array
+    static protected $allowedTransportStages = array
     (
-        self::STATE_NULL,
-        self::STATE_INIT,
-        self::STATE_REDIRECT,
-        self::STATE_PROCESSING,
-        self::STATE_END
+        self::STAGE_CREATED,
+        self::STAGE_REDIRECTED,
+        self::STAGE_ENDED
     );
 
     /**
-     * All allowed order statuses
+     * All allowed order statuses in bank
      *
      * @var array
      */
-    /**
-     * @todo More specific name and description needed
-     */
     static protected $allowedStatuses = array
     (
-        self::STATE_PROCESSING,
+        self::STATUS_PROCESSING,
         self::STATUS_APPROVED,
         self::STATUS_DECLINED,
         self::STATUS_ERROR
@@ -110,24 +102,18 @@ implements  OrderInterface
     protected $comment;
 
     /**
-     * Order state
+     * Order processing stage on transport level
      *
      * @var string
      */
-    /**
-     * @todo More specific name and description needed
-     */
-    protected $state = self::STATE_NULL;
+    protected $transportStage;
 
     /**
-     * Order status
+     * Order status in bank
      *
      * @var string
      */
-    /**
-     * @todo More specific name and description needed
-     */
-    protected $status = '';
+    protected $status;
 
     /**
      * Order customer
@@ -401,14 +387,14 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function setState($state)
+    public function setTransportStage($state)
     {
-        if (!in_array($state, static::$allowedStates))
+        if (!in_array($state, static::$allowedTransportStages))
         {
             throw new RuntimeException("Unknown state given: {$state}");
         }
 
-        $this->state = $state;
+        $this->transportStage = $state;
 
         return $this;
     }
@@ -416,9 +402,9 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function getState()
+    public function getTransportStage()
     {
-        return $this->state;
+        return $this->transportStage;
     }
 
     /**

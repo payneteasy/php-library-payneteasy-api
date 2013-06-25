@@ -91,7 +91,7 @@ implements      QueryInterface
         catch (Exception $e)
         {
             $order->addError($e)
-                  ->setState(OrderInterface::STATE_END)
+                  ->setTransportStage(OrderInterface::STAGE_ENDED)
                   ->setStatus(OrderInterface::STATUS_ERROR);
 
             throw $e;
@@ -129,7 +129,7 @@ implements      QueryInterface
         catch (Exception $e)
         {
             $order->addError($e)
-                  ->setState(OrderInterface::STATE_END)
+                  ->setTransportStage(OrderInterface::STAGE_ENDED)
                   ->setStatus(OrderInterface::STATUS_ERROR);
 
             throw $e;
@@ -350,21 +350,21 @@ implements      QueryInterface
     {
         if($response->isApproved())
         {
-            $order->setState(OrderInterface::STATE_END);
+            $order->setTransportStage(OrderInterface::STAGE_ENDED);
             $order->setStatus(OrderInterface::STATUS_APPROVED);
         }
         // For the 3D mode is set to the state "REDIRECT"
         // or for Form API redirect_url
         elseif($response->hasHtml() || $response->hasRedirectUrl())
         {
-            $order->setState(OrderInterface::STATE_REDIRECT);
+            $order->setTransportStage(OrderInterface::STAGE_REDIRECTED);
             $order->setStatus(OrderInterface::STATUS_PROCESSING);
         }
         //
         // If it does not redirect, it's processing
         elseif($response->isProcessing())
         {
-            $order->setState(OrderInterface::STATE_PROCESSING);
+            $order->setTransportStage(OrderInterface::STAGE_CREATED);
             $order->setStatus(OrderInterface::STATUS_PROCESSING);
         }
 
@@ -382,7 +382,7 @@ implements      QueryInterface
      */
     protected function updateOrderOnError(OrderInterface $order, Response $response)
     {
-        $order->setState(OrderInterface::STATE_END);
+        $order->setTransportStage(OrderInterface::STAGE_ENDED);
         $order->addError($response->getError());
 
         if ($response->isDeclined())
