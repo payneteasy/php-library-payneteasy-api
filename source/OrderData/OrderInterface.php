@@ -319,12 +319,9 @@ interface OrderInterface
     public function getErrors();
 
     /**
-     * Get order last message error
+     * Get order last error
      *
-     * @return      string
-     */
-    /**
-     * @todo        Possibly not needed
+     * @return      Exception
      */
     public function getLastError();
 }
