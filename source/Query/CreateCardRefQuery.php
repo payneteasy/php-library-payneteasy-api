@@ -54,6 +54,13 @@ class CreateCardRefQuery extends AbstractQuery
     static protected $successResponseType = 'create-card-ref-response';
 
     /**
+     * Recurrent card class
+     *
+     * @var string
+     */
+    static protected $recurrentCardClass  = '\PaynetEasy\Paynet\OrderData\RecurrentCard';
+
+    /**
      * {@inheritdoc}
      */
     protected function validateOrder(OrderInterface $order)
@@ -82,7 +89,10 @@ class CreateCardRefQuery extends AbstractQuery
 
         if($response->isApproved())
         {
-            $order->createRecurrentCardFrom($response->getCardReferenceId());
+            $recurrentCard = new static::$recurrentCardClass;
+            $recurrentCard->setCardReferenceId($response->getCardReferenceId());
+
+            $order->setRecurrentCardFrom($recurrentCard);
         }
     }
 
@@ -98,6 +108,19 @@ class CreateCardRefQuery extends AbstractQuery
             ||  $order->getStatus() !== OrderInterface::STATUS_APPROVED)
         {
             throw new ValidationException('Only approved Order can be used for create-card-ref-id');
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setConfig(array $config)
+    {
+        parent::setConfig($config);
+
+        if (!empty($config['recurrent_card_class']))
+        {
+            static::$recurrentCardClass = $config['recurrent_card_class'];
         }
     }
 }
