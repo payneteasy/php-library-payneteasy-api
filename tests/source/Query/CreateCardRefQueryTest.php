@@ -77,7 +77,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
         )));
     }
 
-    public function testProcessResponseFilteredProvider()
+    public function testProcessResponseDeclinedProvider()
     {
         return array(array(array
         (

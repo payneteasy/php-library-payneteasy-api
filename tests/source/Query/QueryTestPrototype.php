@@ -36,9 +36,9 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     abstract public function testCreateRequestProvider();
 
     /**
-     * @dataProvider testProcessResponseFilteredProvider
+     * @dataProvider testProcessResponseDeclinedProvider
      */
-    public function testProcessResponseFiltered(array $response)
+    public function testProcessResponseDeclined(array $response)
     {
         $order = $this->getOrder();
 
@@ -48,7 +48,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         $this->assertFalse($order->hasErrors());
     }
 
-    abstract public function testProcessResponseFilteredProvider();
+    abstract public function testProcessResponseDeclinedProvider();
 
     /**
      * @dataProvider testProcessResponseProcessingProvider

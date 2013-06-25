@@ -101,36 +101,10 @@ class StatusQueryTest extends QueryTestPrototype
         )));
     }
 
-    /**
-     * @dataProvider testProcessResponseDeclinedProvider
-     */
-    public function testProcessResponseDeclined(array $response)
-    {
-        $order = $this->getOrder();
-
-        $this->object->processResponse($order, new Response($response));
-
-        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_DECLINED);
-        $this->assertFalse($order->hasErrors());
-    }
-
     public function testProcessResponseDeclinedProvider()
     {
-        return array(array(array
-        (
-            'type'              => 'status-response',
-            'status'            => 'declined',
-            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
-            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
-            'serial-number'     =>  md5(time()),
-            'error-message'     => 'test error message',
-            'error-code'        =>  578
-        )));
-    }
-
-    public function testProcessResponseFilteredProvider()
-    {
-        return array(array(array
+        return array(array(
+        array
         (
             'type'              => 'status-response',
             'status'            => 'filtered',
@@ -139,6 +113,16 @@ class StatusQueryTest extends QueryTestPrototype
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test filtered message',
             'error-code'        =>  8876
+        ),
+        array
+        (
+            'type'              => 'status-response',
+            'status'            => 'declined',
+            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
+            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
+            'serial-number'     =>  md5(time()),
+            'error-message'     => 'test error message',
+            'error-code'        =>  578
         )));
     }
 

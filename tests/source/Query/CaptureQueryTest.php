@@ -39,7 +39,7 @@ class CaptureQueryTest extends QueryTestPrototype
         ));
     }
 
-    public function testProcessResponseFilteredProvider()
+    public function testProcessResponseDeclinedProvider()
     {
         return array(array(array
         (
