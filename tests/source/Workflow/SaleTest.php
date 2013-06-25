@@ -180,7 +180,7 @@ class SaleTest extends WorkflowTestPrototype
         // FILTERED
         $response               = array
         (
-            'type'              => 'status-response',
+            'type'              => 'async-response',
             'status'            => 'filtered',
             'paynet-order-id'   => 'PAYNET-112233',
             'merchant-order-id' => 'CLIENT-112233',

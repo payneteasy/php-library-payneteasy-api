@@ -2,6 +2,7 @@
 
 namespace PaynetEasy\Paynet\Query;
 
+use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\OrderData\Customer;
 use PaynetEasy\Paynet\OrderData\Order;
 
@@ -53,6 +54,19 @@ class FormQueryTest extends QueryTestPrototype
         )));
     }
 
+    /**
+     * @dataProvider testProcessResponseProcessingProvider
+     */
+    public function testProcessResponseProcessing(array $response)
+    {
+        $order = $this->getOrder();
+
+        $this->object->processResponse($order, new Response($response));
+
+        $this->assertOrderStates($order, Order::STATE_REDIRECT, Order::STATUS_PROCESSING);
+        $this->assertFalse($order->hasErrors());
+    }
+
     public function testProcessResponseProcessingProvider()
     {
         return array(array(array
@@ -60,7 +74,9 @@ class FormQueryTest extends QueryTestPrototype
             'type'              => 'async-response',
             'status'            => 'processing',
             'merchant-order-id' =>  self::CLIENT_ORDER_ID,
-            'serial-number'     =>  md5(time())
+            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
+            'serial-number'     =>  md5(time()),
+            'redirect-url'      => 'http://redirect-url.com'
         )));
     }
 

@@ -40,6 +40,22 @@ class CreateCardRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
+    static protected $responseFieldsDefinition = array
+    (
+        'type',
+        'status',
+        'card-ref-id',
+        'serial-number'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
+    static protected $successResponseType = 'create-card-ref-response';
+
+    /**
+     * {@inheritdoc}
+     */
     protected function validateOrder(OrderInterface $order)
     {
         parent::validateOrder($order);
@@ -50,12 +66,9 @@ class CreateCardRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function validateResponse(OrderInterface $order, Response $response)
+    protected function validateResponseOnSuccess(OrderInterface $order, Response $response)
     {
-        if(!isset($response['card-ref-id']))
-        {
-            throw new ValidationException('Field card-ref-id must be defined in response');
-        }
+        parent::validateResponseOnSuccess($order, $response);
 
         $this->checkOrderState($order);
     }
@@ -63,9 +76,9 @@ class CreateCardRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function updateOrder(OrderInterface $order, Response $response)
+    protected function updateOrderOnSuccess(OrderInterface $order, Response $response)
     {
-        parent::updateOrder($order, $response);
+        parent::updateOrderOnSuccess($order, $response);
 
         if($response->isApproved())
         {

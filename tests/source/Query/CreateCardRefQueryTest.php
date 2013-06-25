@@ -36,7 +36,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
 
     /**
      * @expectedException \PaynetEasy\Paynet\Exception\ValidationException
-     * @expectedExceptionMessage Field card-ref-id must be defined in response
+     * @expectedExceptionMessage Some required fields missed or empty in Response: card-ref-id
      */
     public function testProcessResponseWithException()
     {

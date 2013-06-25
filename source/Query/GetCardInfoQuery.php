@@ -38,9 +38,29 @@ class GetCardInfoQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function updateOrder(OrderInterface $order, Response $response)
+    static protected $responseFieldsDefinition = array
+    (
+        'type',
+        'card-printed-name',
+        'expire-year',
+        'expire-month',
+        'bin',
+        'last-four-digits',
+        'serial-number'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
+    static protected $successResponseType = 'async-response';
+    static protected $successResponseType = 'get-card-info-response';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function updateOrderOnSuccess(OrderInterface $order, Response $response)
     {
-        parent::updateOrder($order, $response);
+        parent::updateOrderOnSuccess($order, $response);
 
         $order->getRecurrentCardFrom()
             ->setCardPrintedName($response['card-printed-name'])
@@ -50,9 +70,9 @@ class GetCardInfoQuery extends AbstractQuery
             ->setLastFourDigits($response['last-four-digits']);
     }
 
-    protected function validateResponse(OrderInterface $order, Response $response)
+    protected function validateResponseOnSuccess(OrderInterface $order, Response $response)
     {
-        parent::validateResponse($order, $response);
+        parent::validateResponseOnSuccess($order, $response);
 
         if(!$order->getRecurrentCardFrom())
         {

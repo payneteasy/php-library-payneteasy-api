@@ -33,4 +33,21 @@ class StatusQuery extends AbstractQuery
         'paynetOrderId',
         'control'
     );
+
+    /**
+     * {@inheritdoc}
+     */
+    static protected $responseFieldsDefinition = array
+    (
+        'type',
+        'status',
+        'paynet-order-id',
+        'merchant-order-id',
+        'serial-number'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
+    static protected $successResponseType = 'status-response';
 }

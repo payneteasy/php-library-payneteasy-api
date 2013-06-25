@@ -36,7 +36,12 @@ implements      QueryInterface
 
     /**
      * Request fields definition in format
-     * [<field name>:string, <order property path>:string,  <is field required>:boolean, <validation rule>:string]
+     * [
+     *     [<first field name>:string,  <first order property path>:string,   <is field required>:boolean, <validation rule>:string],
+     *     [<second field name>:string, <second order property path>:string,  <is field required>:boolean, <validation rule>:string],
+     *     ...
+     *     [<last field name>:string,   <last order property path>:string,    <is field required>:boolean, <validation rule>:string]
+     * ]
      *
      * @var array
      */
@@ -44,11 +49,26 @@ implements      QueryInterface
 
     /**
      * Request control code definition in format
-     * [<first part property path>, <second part property path> ... <last part property path>]
+     * [<first part property path>:string, <second part property path>:string ... <last part property path>:string]
      *
      * @var array
      */
     static protected $controlCodeDefinition = array();
+
+    /**
+     * Response fields definition in format:
+     * [<first field_name>:string, <second field_name>:string ... <last field_name>:string]
+     *
+     * @var array
+     */
+    static protected $responseFieldsDefinition = array();
+
+    /**
+     * Success response type
+     *
+     * @var string
+     */
+    static protected $successResponseType;
 
     /**
      * @param       array       $config         API query object config
@@ -90,9 +110,21 @@ implements      QueryInterface
      */
     final public function processResponse(OrderInterface $order, Response $response)
     {
+        if(   !$response->isProcessing()
+           && !$response->isApproved())
+        {
+            $validate = array($this, 'validateResponseOnError');
+            $update   = array($this, 'updateOrderOnError');
+        }
+        else
+        {
+            $validate = array($this, 'validateResponseOnSuccess');
+            $update   = array($this, 'updateOrderOnSuccess');
+        }
+
         try
         {
-            $this->validateResponse($order, $response);
+            call_user_func($validate, $order, $response);
         }
         catch (Exception $e)
         {
@@ -103,7 +135,7 @@ implements      QueryInterface
             throw $e;
         }
 
-        $this->updateOrder($order, $response);
+        call_user_func($update, $order, $response);
 
         return $response;
     }
@@ -248,14 +280,36 @@ implements      QueryInterface
     }
 
     /**
-     * Validates response before Order updating
+     * Validates response before Order updating if Order is processing or approved
      *
      * @param       OrderInterface          $order          Order
      * @param       Response                $response       Response for validating
      */
-    protected function validateResponse(OrderInterface $order, Response $response)
+    protected function validateResponseOnSuccess(OrderInterface $order, Response $response)
     {
-        if (    !$response->isError()
+        if ($response->type() !== static::$successResponseType)
+        {
+            throw new ValidationException("Response type '{$response->type()}' does not match " .
+                                          "success response type '" . static::$successResponseType . "'");
+        }
+
+        $missedFields   = array();
+
+        foreach (static::$responseFieldsDefinition as $fieldName)
+        {
+            if (empty($response[$fieldName]))
+            {
+                $missedFields[] = $fieldName;
+            }
+        }
+
+        if (!empty($missedFields))
+        {
+            throw new ValidationException("Some required fields missed or empty in Response: " .
+                                          implode(', ', $missedFields) . ". \n");
+        }
+
+        if (     strlen($response->orderId()) > 0
             &&   $order->getClientOrderId() !== $response->orderId())
         {
             throw new ValidationException("Response client_orderid '{$response->orderId()}' does " .
@@ -264,35 +318,47 @@ implements      QueryInterface
     }
 
     /**
-     * Updates Order by Response data
+     * Validates response before Order updating if Order is not processing or approved
+     *
+     * @param       OrderInterface          $order          Order
+     * @param       Response                $response       Response for validating
+     */
+    protected function validateResponseOnError(OrderInterface $order, Response $response)
+    {
+        $allowedTypes = array(static::$successResponseType, 'error', 'validation-error');
+
+        if (!in_array($response->type(), $allowedTypes))
+        {
+            throw new ValidationException("Unknow response type '{$response->type()}'");
+        }
+
+        if (     strlen($response->orderId()) > 0
+            &&   $order->getClientOrderId() !== $response->orderId())
+        {
+            throw new ValidationException("Response client_orderid '{$response->orderId()}' does " .
+                                          "not match Order client_orderid '{$order->getClientOrderId()}'");
+        }
+    }
+
+    /**
+     * Updates Order by Response data if Order is processing or approved
      *
      * @param       OrderInterface         $order          Order for updating
      * @param       Response               $response       Response for order updating
      */
-    protected function updateOrder(OrderInterface $order, Response $response)
+    protected function updateOrderOnSuccess(OrderInterface $order, Response $response)
     {
-        if($response->isError())
-        {
-            $order->setState(OrderInterface::STATE_END);
-            $order->setStatus(OrderInterface::STATUS_ERROR);
-            $order->addError($response->error());
-        }
-        elseif($response->isApproved())
+        if($response->isApproved())
         {
             $order->setState(OrderInterface::STATE_END);
             $order->setStatus(OrderInterface::STATUS_APPROVED);
-        }
-        // "filtered" status is interpreted as the "DECLINED"
-        elseif($response->isDeclined())
-        {
-            $order->setState(OrderInterface::STATE_END);
-            $order->setStatus(OrderInterface::STATUS_DECLINED);
         }
         // For the 3D mode is set to the state "REDIRECT"
         // or for Form API redirect_url
         elseif($response->hasHtml() || $response->hasRedirectUrl())
         {
             $order->setState(OrderInterface::STATE_REDIRECT);
+            $order->setStatus(OrderInterface::STATUS_PROCESSING);
         }
         //
         // If it does not redirect, it's processing
@@ -305,6 +371,31 @@ implements      QueryInterface
         if(strlen($response->paynetOrderId()) > 0)
         {
             $order->setPaynetOrderId($response->paynetOrderId());
+        }
+    }
+
+    /**
+     * Updates Order by Response data if Order is not processing or approved
+     *
+     * @param       OrderInterface         $order          Order for updating
+     * @param       Response               $response       Response for order updating
+     */
+    protected function updateOrderOnError(OrderInterface $order, Response $response)
+    {
+        $order->setState(OrderInterface::STATE_END);
+
+        if ($response->isDeclined())
+        {
+            $order->setStatus(OrderInterface::STATUS_DECLINED);
+        }
+        else
+        {
+            $order->setStatus(OrderInterface::STATUS_ERROR);
+        }
+
+        if (strlen($response->error()))
+        {
+            $order->addError($response->error());
         }
     }
 
@@ -325,6 +416,16 @@ implements      QueryInterface
         if (empty(static::$controlCodeDefinition))
         {
             throw new RuntimeException('You must configure controlCodeDefinition property');
+        }
+
+        if (empty(static::$responseFieldsDefinition))
+        {
+            throw new RuntimeException('You must configure responseFieldsDefinition property');
+        }
+
+        if (empty(static::$successResponseType))
+        {
+            throw new RuntimeException('You must configure allowedResponseTypes property');
         }
 
         if(empty($config['end_point']))
@@ -371,47 +472,5 @@ implements      QueryInterface
         }
 
         $this->apiMethod = String::uncamelize($result[0], '-');
-    }
-
-    /**
-     * Method forms the common parameters for the query
-     *
-     * @return      array
-     */
-    protected function commonQueryOptions()
-    {
-        $commonOptions = array
-        (
-            'login'     => $this->config['login'],
-            'end_point' => $this->config['end_point']
-        );
-
-        if(isset($this->config['redirect_url']))
-        {
-            $commonOptions['redirect_url']          = $this->config['redirect_url'];
-        }
-
-        if(isset($this->config['server_callback_url']))
-        {
-            $commonOptions['server_callback_url']   = $this->config['server_callback_url'];
-        }
-
-        return $commonOptions;
-    }
-
-    /**
-     * Wrap query data by Request object
-     *
-     * @param       array       $query                          Query data
-     *
-     * @return      \PaynetEasy\Paynet\Transport\Request        Request object
-     */
-    protected function wrapToRequest(array $query)
-    {
-        $request = new Request($query);
-        $request->setApiMethod($this->apiMethod)
-                ->setEndPoint($this->config['end_point']);
-
-        return $request;
     }
 }

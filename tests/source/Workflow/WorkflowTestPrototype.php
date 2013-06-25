@@ -277,7 +277,7 @@ abstract class WorkflowTestPrototype extends PHPUnit_Framework_TestCase
 
             return;
         }
-        elseif(!empty($assert['error_message']) && $assert['status'] !== 'declined')
+        elseif(!empty($assert['error_message']) && $assert['status'] !== 'declined' && $assert['status'] !== 'filtered')
         {
             $e = $this->order->getLastError();
 

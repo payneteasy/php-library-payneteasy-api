@@ -38,4 +38,21 @@ class ReturnQuery extends AbstractQuery
         'currency',
         'control'
     );
+
+    /**
+     * {@inheritdoc}
+     */
+    static protected $responseFieldsDefinition = array
+    (
+        'type',
+        'status',
+        'paynet-order-id',
+        'merchant-order-id',
+        'serial-number'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
+    static protected $successResponseType = 'async-response';
 }

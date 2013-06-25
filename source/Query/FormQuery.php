@@ -66,6 +66,24 @@ class FormQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
+    static protected $responseFieldsDefinition = array
+    (
+        'type',
+        'status',
+        'paynet-order-id',
+        'merchant-order-id',
+        'serial-number',
+        'redirect-url'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
+    static protected $successResponseType = 'async-response';
+
+    /**
+     * {@inheritdoc}
+     */
     public function __construct(array $config = array())
     {
         $this->setConfig($config);

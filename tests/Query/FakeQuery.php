@@ -34,11 +34,19 @@ class FakeQuery extends AbstractQuery
     {
     }
 
-    protected function validateResponse(OrderInterface $order, Response $response)
+    protected function validateResponseOnSuccess(OrderInterface $order, Response $response)
     {
     }
 
-    protected function updateOrder(OrderInterface $order, Response $response)
+    protected function validateResponseOnError(OrderInterface $order, Response $response)
+    {
+    }
+
+    protected function updateOrderOnSuccess(OrderInterface $order, Response $response)
+    {
+    }
+
+    protected function updateOrderOnError(OrderInterface $order, Response $response)
     {
     }
 }
