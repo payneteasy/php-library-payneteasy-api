@@ -104,10 +104,10 @@ class CreateCardRefQuery extends AbstractQuery
      */
     protected function checkOrderTransportStage(OrderInterface $order)
     {
-        if (    $order->getTransportStage()  !== OrderInterface::STAGE_ENDED
-            ||  $order->getStatus() !== OrderInterface::STATUS_APPROVED)
+        if (    $order->getTransportStage() !== OrderInterface::STAGE_ENDED
+            ||  $order->getStatus()         !== OrderInterface::STATUS_APPROVED)
         {
-            throw new ValidationException('Only approved Order can be used for create-card-ref-id');
+            throw new ValidationException('Only approved and ended Order can be used for create-card-ref-id');
         }
     }
 

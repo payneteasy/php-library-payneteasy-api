@@ -1,10 +1,11 @@
 <?php
 namespace PaynetEasy\Paynet\OrderData;
 
+use Serializable;
 use PaynetEasy\Paynet\Utils\String;
 use RuntimeException;
 
-class Data
+class Data implements Serializable
 {
     /**
      * Initialize object from input array.
@@ -49,5 +50,40 @@ class Data
     protected function getSetterByField($fieldName)
     {
         return 'set' . String::camelize($fieldName);
+    }
+
+    /**
+     * Serialize all object scalar properties to string
+     *
+     * @return      string
+     */
+    public function serialize()
+    {
+        $objectData = array();
+
+        foreach ($this as $propertyName => $propertyValue)
+        {
+            if (is_scalar($propertyValue))
+            {
+                $objectData[$propertyName] = $propertyValue;
+            }
+        }
+
+        return serialize($objectData);
+    }
+
+    /**
+     * Unserialize object from string
+     *
+     * @param       string      $serialized     Object data
+     */
+    public function unserialize($serialized)
+    {
+        $objectData = unserialize($serialized);
+
+        foreach ($objectData as $propertyName => $propertyValue)
+        {
+            $this->{$propertyName} = $propertyValue;
+        }
     }
 }

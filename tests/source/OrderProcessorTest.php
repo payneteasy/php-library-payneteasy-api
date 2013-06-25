@@ -31,6 +31,23 @@ class OrderProcessorTest extends \PHPUnit_Framework_TestCase
         $this->object = new PublicOrderProcessor('_');
     }
 
+    public function testExecuteWorkflowWithEndedOrder()
+    {
+        $order = new Order;
+        $order->setTransportStage(OrderInterface::STAGE_ENDED);
+
+        $listenerCalled = false;
+        $eventListener  = function() use (&$listenerCalled)
+        {
+            $listenerCalled = true;
+        };
+
+        $this->object->setEventListener(OrderProcessor::EVENT_PROCESSING_ENDED, $eventListener);
+        $this->object->executeWorkflow('fake', array(), $order);
+
+        $this->assertTrue($listenerCalled);
+    }
+
     /**
      * @dataProvider testExecuteWorkflowProvider
      */
@@ -78,33 +95,20 @@ class OrderProcessorTest extends \PHPUnit_Framework_TestCase
         FakeQuery::$request             = new Request(array('_'));
         FakeGatewayClient::$response    = new Response;
 
-        $listenerCalled = false;
-        $eventListener  = function() use (&$listenerCalled)
-        {
-            $listenerCalled = true;
-        };
-
         $this->object->setGatewayClient(new FakeGatewayClient);
-        $this->object->setEventListener(OrderProcessor::EVENT_ORDER_CHANGED, $eventListener);
 
-        $this->object->executeQuery('fake', array(), new Order(array()));
+        $response = $this->object->executeQuery('fake', array(), new Order(array()));
 
-        $this->assertTrue($listenerCalled);
+        $this->assertNotNull($response);
+        $this->assertInstanceOf('\PaynetEasy\Paynet\Transport\Response', $response);
     }
 
     public function testExecuteCallback()
     {
-        $listenerCalled = false;
-        $eventListener  = function() use (&$listenerCalled)
-        {
-            $listenerCalled = true;
-        };
+        $response = $this->object->executeCallback(array('type' => 'fake'), array(), new Order(array()));
 
-        $this->object->setEventListener(OrderProcessor::EVENT_ORDER_CHANGED, $eventListener);
-
-        $this->object->executeCallback(array('type' => 'fake'), array(), new Order(array()));
-
-        $this->assertTrue($listenerCalled);
+        $this->assertNotNull($response);
+        $this->assertInstanceOf('PaynetEasy\Paynet\Transport\CallbackResponse', $response);
     }
 
     public function testEventListeners()

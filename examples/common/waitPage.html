@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Processing ...</title>
+
+        <script type="text/javascript">
+            var c = 5;
+            function fc() {
+                if (c > 0) {
+                    document.getElementById("seconds-remaining").innerHTML = c;
+                    c--;
+                    setTimeout(fc, 1000);
+                } else {
+                    document.getElementById("button-check").value = "Checking result...";
+                    document.checkform.submit();
+                }
+            }
+        </script>
+
+    </head>
+
+    <body onload="fc()">
+        <div class="container">
+            <div class="main">
+                <div class="box">
+                    <div class="box-left"></div>
+                    <div class="box-main">
+                        <h2 class="box-title as-title">Please wait, your order is being processed...</h2>
+
+                        <ul class="box-main-messages">
+                            <li class="box-main-message">
+                                This page refreshes automatically each 5 seconds...
+                            </li>
+                            <li class="box-main-message">
+                                Next time it will refresh in <strong><span id="seconds-remaining">10 seconds</span></strong>.
+                            </li>
+
+                            <li class="form-li-buttons">
+                                <form name="checkform" method="post">
+                                    <!--suppress HtmlFormInputWithoutLabel -->
+                                    <input type="submit" class="form-button form-button-ok" id="button-check" value="Check result" />
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

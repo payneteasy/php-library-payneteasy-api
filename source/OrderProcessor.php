@@ -43,6 +43,11 @@ class OrderProcessor
     const EVENT_REDIRECT_RECEIVED       = 'redirect_received';
 
     /**
+     * Order processing ended
+     */
+    const EVENT_PROCESSING_ENDED        = 'processing_ended';
+
+    /**
      * Allowed events list
      *
      * @var array
@@ -52,7 +57,8 @@ class OrderProcessor
         self::EVENT_ORDER_CHANGED,
         self::EVENT_STATUS_NOT_CHANGED,
         self::EVENT_HTML_RECEIVED,
-        self::EVENT_REDIRECT_RECEIVED
+        self::EVENT_REDIRECT_RECEIVED,
+        self::EVENT_PROCESSING_ENDED
     );
 
     /**
@@ -118,8 +124,10 @@ class OrderProcessor
                                     OrderInterface  $order,
                                     array           $callbackData       = array())
     {
+        // prevent double processing for ended order
         if ($order->getTransportStage() == OrderInterface::STAGE_ENDED)
         {
+            $this->fireEvent(self::EVENT_PROCESSING_ENDED, $order);
             return;
         }
 
@@ -136,6 +144,13 @@ class OrderProcessor
         }
 
         $this->fireEvent(self::EVENT_ORDER_CHANGED, $order, $response);
+
+        // no action needed if order is ended
+        if ($order->getTransportStage() == OrderInterface::STAGE_ENDED)
+        {
+            $this->fireEvent(self::EVENT_PROCESSING_ENDED, $order, $response);
+            return;
+        }
 
         switch ($response->getNeededAction())
         {
@@ -172,7 +187,6 @@ class OrderProcessor
         catch (Exception $e)
         {
             $order->addError($e);
-            $this->fireEvent(self::EVENT_ORDER_CHANGED, $order);
             throw $e;
         }
 
@@ -183,11 +197,7 @@ class OrderProcessor
         catch (Exception $e)
         {
             $order->addError($e);
-        }
-        // finally
-        {
-            $this->fireEvent(self::EVENT_ORDER_CHANGED, $order, $response);
-            if (isset($e)) throw $e;
+            throw $e;
         }
 
         return $response;
@@ -214,11 +224,7 @@ class OrderProcessor
         catch (Exception $e)
         {
             $order->addError($e);
-        }
-        // finally
-        {
-            $this->fireEvent(self::EVENT_ORDER_CHANGED, $order, $callbackResponse);
-            if (isset($e)) throw $e;
+            throw $e;
         }
 
         return $callbackResponse;
