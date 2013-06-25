@@ -52,7 +52,6 @@ class GetCardInfoQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    static protected $successResponseType = 'async-response';
     static protected $successResponseType = 'get-card-info-response';
 
     /**

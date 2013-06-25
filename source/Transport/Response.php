@@ -22,6 +22,11 @@ class Response extends ArrayObject
      */
     const NEEDED_REDIRECT       = 'redirect';
 
+    /**
+     * Allowed needed actions list
+     *
+     * @var array
+     */
     static protected $allowedNeededActions = array
     (
         self::NEEDED_STATUS_UPDATE,
@@ -77,7 +82,7 @@ class Response extends ArrayObject
      */
     public function hasHtml()
     {
-        return strlen($this->html()) > 0;
+        return strlen($this->getHtml()) > 0;
     }
 
     /**
@@ -87,7 +92,7 @@ class Response extends ArrayObject
      */
     public function hasRedirectUrl()
     {
-        return strlen($this->redirectUrl()) > 0;
+        return strlen($this->getRedirectUrl()) > 0;
     }
 
     /**
@@ -120,127 +125,179 @@ class Response extends ArrayObject
         return $this->getNeededAction() == self::NEEDED_REDIRECT;
     }
 
-    public function html()
+    /**
+     * Get response html
+     *
+     * @return      string
+     */
+    public function getHtml()
     {
         return $this->getValue('html');
     }
 
-    public function type()
+    /**
+     * Get response type
+     *
+     * @return      string
+     */
+    public function getType()
     {
         return strtolower($this->getValue('type'));
     }
 
-    public function status()
+    /**
+     * Get response status
+     *
+     * @return      string
+     */
+    public function getStatus()
     {
+        if (   !strlen($this->getValue('status'))
+            && !in_array($this->getType(), array('validation-error', 'error')))
+        {
+            $this->offsetSet('status', 'processing');
+        }
+
         return strtolower($this->getValue('status'));
     }
 
-    public function serialNumber()
-    {
-        return $this->getValue('serial-number');
-    }
-
-    public function descriptor()
-    {
-        return $this->getValue('descriptor');
-    }
-
-    public function orderId()
+    /**
+     * Get order client order id
+     *
+     * @return      string
+     */
+    public function getClientOrderId()
     {
         return $this->getAnyKey(array('merchant-order-id', 'client_orderid', 'merchant_order'));
     }
 
-    public function paynetOrderId()
+    /**
+     * Get order client order id
+     *
+     * @return      string
+     */
+    public function getCardReferenceId()
+    {
+        return $this->getValue('card-ref-id');
+    }
+
+    /**
+     * Get order paynet order id
+     *
+     * @return      string
+     */
+    public function getPaynetOrderId()
     {
         return $this->getAnyKey(array('orderid', 'paynet-order-id'));
     }
 
-    public function redirectUrl()
+    /**
+     * Get response redirect url
+     *
+     * @return      string
+     */
+    public function getRedirectUrl()
     {
         return $this->getValue('redirect-url');
     }
 
-    public function control()
+    /**
+     * Get response control code
+     *
+     * @return      string
+     */
+    public function getControlCode()
     {
         return $this->getAnyKey(array('control', 'merchant_control'));
     }
 
-    public function errorMessage()
+    /**
+     * Get response error message
+     *
+     * @return      string
+     */
+    public function getErrorMessage()
     {
         return $this->getAnyKey(array('error_message', 'error-message'));
     }
 
-    public function errorCode()
+    /**
+     * Get response error code
+     *
+     * @return      integer
+     */
+    public function getErrorCode()
     {
         return $this->getAnyKey(array('error_code', 'error-code'));
     }
 
+    /**
+     * True, if response has some kind of error
+     *
+     * @return      boolean
+     */
     public function isError()
     {
-                //  If type equals "validation-error" or "error", "error-message"
-                //  and "error-code" parameters contain error details.
-        return    in_array($this->type(), array('validation-error', 'error'))
-               || $this->status() == 'error';
-    }
-
-    public function isApproved()
-    {
-        return $this->status() === 'approved';
-    }
-
-    public function isProcessing()
-    {               // 1. If status defined and equal "processing"
-        return      ($this->status() === 'processing')
-                    // 2. Or status undefined but type not equal error
-                ||  (   !strlen($this->status())
-                     && !in_array($this->type(), array('validation-error', 'error')));
-    }
-
-    public function isDeclined()
-    {
-        // The state "declined" has a few cases:
-        // 1. When the status === declined
-        // 2. When the status === filtered
-        // 3. And in other statuses
-        //
-        // Therefore, the state declined calculated indirectly
-        return !$this->isApproved() && !$this->isProcessing() && !$this->isError();
+        return    in_array($this->getType(), array('validation-error', 'error'))
+               || $this->getStatus() == 'error';
     }
 
     /**
-     * This method or out HTML for redirect
-     * or send header Location
+     * True, if response is approved
+     *
+     * @return      boolean
      */
-    public function redirect()
+    public function isApproved()
     {
-        if($this->redirectUrl())
+        return $this->getStatus() === 'approved';
+    }
+
+    /**
+     * True, if response is processing
+     *
+     * @return      boolean
+     */
+    public function isProcessing()
+    {
+        return $this->getStatus() === 'processing';
+    }
+
+    /**
+     * True, if response is filtered or declined
+     *
+     * @return      boolean
+     */
+    public function isDeclined()
+    {
+        return in_array($this->getStatus(), array('filtered', 'declined'));
+    }
+
+    /**
+     * Get response error as Exception instance
+     *
+     * @return      \PaynetEasy\Paynet\Exception\PaynetException        Response error
+     *
+     * @throws      \RuntimeException                                   Response has no error
+     */
+    public function getError()
+    {
+        if($this->isError() || $this->isDeclined())
         {
-            header('Location: '.$this->redirectUrl());
-        }
-        elseif(strlen($this->html()))
-        {
-            echo $this->html();
+            return new PaynetException($this->getErrorMessage(), $this->getErrorCode());
         }
         else
         {
-            throw new PaynetException('Redirect inpossible!');
+            throw new RuntimeException('Response has no error');
         }
     }
 
-    public function error()
-    {
-        //  If type equals "validation-error" or "error", "error-message"
-        //  and "error-code" parameters contain error details.
-        if($this->isError())
-        {
-            return new PaynetException($this->errorMessage(), $this->errorCode());
-        }
-        else
-        {
-            return false;
-        }
-    }
-
+    /**
+     * Get value of first key that exists in Response
+     *
+     * @param       array                   $keys       Given keys
+     *
+     * @return      string|integer|null                 Value of first found key or null if all keys does not exists
+     */
     protected function getAnyKey(array $keys)
     {
         foreach($keys as $key)
@@ -254,6 +311,14 @@ class Response extends ArrayObject
         }
     }
 
+    /**
+     * Method get value by index
+     * without warning if index does not exists
+     *
+     * @param       string                  $index      Index
+     *
+     * @return      string|integer|null                 Index value or null if index not exists
+     */
     protected function getValue($index)
     {
         if($this->offsetExists($index))

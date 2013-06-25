@@ -157,20 +157,20 @@ abstract class AbstractCallback implements CallbackInterface
 
         $this->validateControlCode($callbackResponse);
 
-        if (!in_array($callbackResponse->status(), static::$allowedStatuses))
+        if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
         {
-            throw new ValidationException("Invalid callback status: {$callbackResponse->status()}");
+            throw new ValidationException("Invalid callback status: {$callbackResponse->getStatus()}");
         }
 
-        if ($callbackResponse->orderId() !== $order->getClientOrderId())
+        if ($callbackResponse->getClientOrderId() !== $order->getClientOrderId())
         {
-            throw new ValidationException("Callback client_orderid '{$callbackResponse->orderId()}' does " .
+            throw new ValidationException("Callback client_orderid '{$callbackResponse->getClientOrderId()}' does " .
                                           "not match Order client_orderid '{$order->getClientOrderId()}'");
         }
 
-        if ($callbackResponse->amount() !== $order->getAmount())
+        if ($callbackResponse->getAmount() !== $order->getAmount())
         {
-            throw new ValidationException("Callback amount '{$callbackResponse->amount()}' does " .
+            throw new ValidationException("Callback amount '{$callbackResponse->getAmount()}' does " .
                                           "not match Order amount '{$order->getAmount()}'");
         }
     }
@@ -187,7 +187,7 @@ abstract class AbstractCallback implements CallbackInterface
         {
             $order->setState(OrderInterface::STATE_END);
             $order->setStatus(OrderInterface::STATUS_ERROR);
-            $order->addError($callbackResponse->error());
+            $order->addError($callbackResponse->getError());
         }
         elseif($callbackResponse->isApproved())
         {
@@ -199,6 +199,7 @@ abstract class AbstractCallback implements CallbackInterface
         {
             $order->setState(OrderInterface::STATE_END);
             $order->setStatus(OrderInterface::STATUS_DECLINED);
+            $order->addError($callbackResponse->getError());
         }
         // If it does not redirect, it's processing
         elseif($callbackResponse->isProcessing())
@@ -207,7 +208,7 @@ abstract class AbstractCallback implements CallbackInterface
             $order->setStatus(OrderInterface::STATUS_PROCESSING);
         }
 
-        $order->setPaynetOrderId($callbackResponse->paynetOrderId());
+        $order->setPaynetOrderId($callbackResponse->getPaynetOrderId());
     }
 
     /**
@@ -223,15 +224,15 @@ abstract class AbstractCallback implements CallbackInterface
         // status + orderid + client_orderid + merchant-control.
         $expectedControl   = sha1
         (
-            $callback->status().
-            $callback->paynetOrderId().
-            $callback->orderId().
+            $callback->getStatus().
+            $callback->getPaynetOrderId().
+            $callback->getClientOrderId().
             $this->config['control']
         );
 
-        if($expectedControl !== $callback->control())
+        if($expectedControl !== $callback->getControlCode())
         {
-            throw new ValidationException("Actual control code '{$callback->control()}' does " .
+            throw new ValidationException("Actual control code '{$callback->getControlCode()}' does " .
                                           "not equal expected '{$expectedControl}'");
         }
     }

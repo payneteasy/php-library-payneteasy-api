@@ -47,7 +47,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         $this->object->processResponse($order, new Response($response));
 
         $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_DECLINED);
-        $this->assertFalse($order->hasErrors());
+        $this->assertTrue($order->hasErrors());
     }
 
     abstract public function testProcessResponseDeclinedProvider();

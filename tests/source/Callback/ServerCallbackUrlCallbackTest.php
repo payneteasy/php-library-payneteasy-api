@@ -65,25 +65,22 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
         )));
     }
 
-    public function testProcessCallbackFilteredProvider()
+    public function testProcessCallbackDeclinedProvider()
     {
-        return array(array(array
+        return array(array(
+        array
         (
             'type'              => 'sale',
-            'status'            => 'filtered',
+            'status'            => 'declined',
             'amount'            =>  0.99,
             'orderid'           =>  self::PAYNET_ORDER_ID,
             'merchant_order'    =>  self::CLIENT_ORDER_ID,
             'client_orderid'    =>  self::CLIENT_ORDER_ID,
-        )));
-    }
-
-    public function testProcessCallbackDeclinedProvider()
-    {
-        return array(array(array
+        ),
+        array
         (
             'type'              => 'sale',
-            'status'            => 'declined',
+            'status'            => 'filtered',
             'amount'            =>  0.99,
             'orderid'           =>  self::PAYNET_ORDER_ID,
             'merchant_order'    =>  self::CLIENT_ORDER_ID,

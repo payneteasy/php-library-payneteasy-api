@@ -29,23 +29,6 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     abstract public function testProcessCallbackApprovedProvider();
 
     /**
-     * @dataProvider testProcessCallbackFilteredProvider
-     */
-    public function testProcessCallbackFiltered(array $callback)
-    {
-        $order = $this->getOrder();
-
-        $callback['control'] = $this->createControlCode($callback);
-
-        $this->object->processCallback($order, new CallbackResponse($callback));
-
-        $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_DECLINED);
-        $this->assertFalse($order->hasErrors());
-    }
-
-    abstract public function testProcessCallbackFilteredProvider();
-
-    /**
      * @dataProvider testProcessCallbackDeclinedProvider
      */
     public function testProcessCallbackDeclined(array $callback)
@@ -57,7 +40,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
         $this->object->processCallback($order, new CallbackResponse($callback));
 
         $this->assertOrderStates($order, Order::STATE_END, Order::STATUS_DECLINED);
-        $this->assertFalse($order->hasErrors());
+        $this->assertTrue($order->hasErrors());
     }
 
     abstract public function testProcessCallbackDeclinedProvider();

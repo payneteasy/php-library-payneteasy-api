@@ -24,7 +24,7 @@ class CallbackFactory implements CallbackFactoryInterface
      */
     public function getCallback(CallbackResponse $callback, array $callbackConfig = array())
     {
-        $callbackType   = $callback->type();
+        $callbackType   = $callback->getType();
 
         if (empty($callbackType))
         {

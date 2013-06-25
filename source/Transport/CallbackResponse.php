@@ -11,17 +11,32 @@ use PaynetEasy\Paynet\Transport\Response;
  */
 class CallbackResponse extends Response
 {
-    public function amount()
+    /**
+     * Get order amount
+     *
+     * @return      float
+     */
+    public function getAmount()
     {
         return (float) $this->getValue('amount');
     }
 
-    public function comment()
+    /**
+     * Get order comment
+     *
+     * @return      string
+     */
+    public function getComment()
     {
         return $this->getValue('comment');
     }
 
-    public function merchantData()
+    /**
+     * Get merchant data
+     *
+     * @return      string
+     */
+    public function getMerchantData()
     {
         return $this->getValue('merchantdata');
     }

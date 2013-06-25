@@ -287,9 +287,9 @@ implements      QueryInterface
      */
     protected function validateResponseOnSuccess(OrderInterface $order, Response $response)
     {
-        if ($response->type() !== static::$successResponseType)
+        if ($response->getType() !== static::$successResponseType)
         {
-            throw new ValidationException("Response type '{$response->type()}' does not match " .
+            throw new ValidationException("Response type '{$response->getType()}' does not match " .
                                           "success response type '" . static::$successResponseType . "'");
         }
 
@@ -309,10 +309,10 @@ implements      QueryInterface
                                           implode(', ', $missedFields) . ". \n");
         }
 
-        if (     strlen($response->orderId()) > 0
-            &&   $order->getClientOrderId() !== $response->orderId())
+        if (     strlen($response->getClientOrderId()) > 0
+            &&   $order->getClientOrderId() !== $response->getClientOrderId())
         {
-            throw new ValidationException("Response client_orderid '{$response->orderId()}' does " .
+            throw new ValidationException("Response client_orderid '{$response->getClientOrderId()}' does " .
                                           "not match Order client_orderid '{$order->getClientOrderId()}'");
         }
     }
@@ -327,15 +327,15 @@ implements      QueryInterface
     {
         $allowedTypes = array(static::$successResponseType, 'error', 'validation-error');
 
-        if (!in_array($response->type(), $allowedTypes))
+        if (!in_array($response->getType(), $allowedTypes))
         {
-            throw new ValidationException("Unknow response type '{$response->type()}'");
+            throw new ValidationException("Unknow response type '{$response->getType()}'");
         }
 
-        if (     strlen($response->orderId()) > 0
-            &&   $order->getClientOrderId() !== $response->orderId())
+        if (     strlen($response->getClientOrderId()) > 0
+            &&   $order->getClientOrderId() !== $response->getClientOrderId())
         {
-            throw new ValidationException("Response client_orderid '{$response->orderId()}' does " .
+            throw new ValidationException("Response client_orderid '{$response->getClientOrderId()}' does " .
                                           "not match Order client_orderid '{$order->getClientOrderId()}'");
         }
     }
@@ -368,9 +368,9 @@ implements      QueryInterface
             $order->setStatus(OrderInterface::STATUS_PROCESSING);
         }
 
-        if(strlen($response->paynetOrderId()) > 0)
+        if(strlen($response->getPaynetOrderId()) > 0)
         {
-            $order->setPaynetOrderId($response->paynetOrderId());
+            $order->setPaynetOrderId($response->getPaynetOrderId());
         }
     }
 
@@ -383,6 +383,7 @@ implements      QueryInterface
     protected function updateOrderOnError(OrderInterface $order, Response $response)
     {
         $order->setState(OrderInterface::STATE_END);
+        $order->addError($response->getError());
 
         if ($response->isDeclined())
         {
@@ -391,11 +392,6 @@ implements      QueryInterface
         else
         {
             $order->setStatus(OrderInterface::STATUS_ERROR);
-        }
-
-        if (strlen($response->error()))
-        {
-            $order->addError($response->error());
         }
     }
 

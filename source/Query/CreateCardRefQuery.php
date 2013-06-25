@@ -82,7 +82,7 @@ class CreateCardRefQuery extends AbstractQuery
 
         if($response->isApproved())
         {
-            $order->createRecurrentCardFrom($response['card-ref-id']);
+            $order->createRecurrentCardFrom($response->getCardReferenceId());
         }
     }
 
