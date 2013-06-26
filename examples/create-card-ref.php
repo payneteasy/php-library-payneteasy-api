@@ -47,5 +47,3 @@ $orderProcessor->executeQuery('create-card-ref', $getConfig(), $order, $_REQUEST
  */
 $saveOrder($order);
 $displayEndedOrder($order);
-
-session_destroy();

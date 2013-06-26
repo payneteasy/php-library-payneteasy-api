@@ -25,40 +25,40 @@ class OrderProcessor
     /**
      * Order changed and should be saved
      */
-    const EVENT_ORDER_CHANGED           = 'order_changed';
+    const HANDLER_SAVE_ORDER        = 'save_order';
 
     /**
      * Order status not changed and should be updated
      */
-    const EVENT_STATUS_NOT_CHANGED      = 'status_not_changed';
+    const HANDLER_STATUS_UPDATE     = 'status_update';
 
     /**
      * Html received and should be displayed
      */
-    const EVENT_HTML_RECEIVED           = 'html_received';
+    const HANDLER_SHOW_HTML         = 'show_html';
 
     /**
      * Redirect url received, customer shoud be to it
      */
-    const EVENT_REDIRECT_RECEIVED       = 'redirect_received';
+    const HANDLER_REDIRECT          = 'redirect';
 
     /**
      * Order processing ended
      */
-    const EVENT_PROCESSING_ENDED        = 'processing_ended';
+    const HANDLER_FINISH_PROCESSING  = 'finish_processing';
 
     /**
-     * Allowed events list
+     * Allowed handlers list
      *
      * @var array
      */
-    static protected $allowedEvents = array
+    static protected $allowedHandlers = array
     (
-        self::EVENT_ORDER_CHANGED,
-        self::EVENT_STATUS_NOT_CHANGED,
-        self::EVENT_HTML_RECEIVED,
-        self::EVENT_REDIRECT_RECEIVED,
-        self::EVENT_PROCESSING_ENDED
+        self::HANDLER_SAVE_ORDER,
+        self::HANDLER_STATUS_UPDATE,
+        self::HANDLER_SHOW_HTML,
+        self::HANDLER_REDIRECT,
+        self::HANDLER_FINISH_PROCESSING
     );
 
     /**
@@ -97,11 +97,11 @@ class OrderProcessor
     protected $gatewayUrl;
 
     /**
-     * Listeners for processing events
+     * Handlers for processing actions
      *
      * @var array
      */
-    protected $eventListeners = array();
+    protected $handlers = array();
 
     /**
      * @param       string      $gatewayUrl     Full url to Paynet API gateway
@@ -127,7 +127,7 @@ class OrderProcessor
         // prevent double processing for ended order
         if ($order->getTransportStage() == OrderInterface::STAGE_ENDED)
         {
-            $this->fireEvent(self::EVENT_PROCESSING_ENDED, $order);
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $order);
             return;
         }
 
@@ -139,29 +139,29 @@ class OrderProcessor
         catch (Exception $e)
         {
             $order->addError($e);
-            $this->fireEvent(self::EVENT_ORDER_CHANGED, $order);
+            $this->callHandler(self::HANDLER_SAVE_ORDER, $order);
             throw $e;
         }
 
-        $this->fireEvent(self::EVENT_ORDER_CHANGED, $order, $response);
+        $this->callHandler(self::HANDLER_SAVE_ORDER, $order, $response);
 
         // no action needed if order is ended
         if ($order->getTransportStage() == OrderInterface::STAGE_ENDED)
         {
-            $this->fireEvent(self::EVENT_PROCESSING_ENDED, $order, $response);
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $order, $response);
             return;
         }
 
         switch ($response->getNeededAction())
         {
             case Response::NEEDED_STATUS_UPDATE:
-                $this->fireEvent(self::EVENT_STATUS_NOT_CHANGED,    $order, $response);
+                $this->callHandler(self::HANDLER_STATUS_UPDATE,    $order, $response);
             break;
             case Response::NEEDED_SHOW_HTML:
-                $this->fireEvent(self::EVENT_HTML_RECEIVED,         $order, $response);
+                $this->callHandler(self::HANDLER_SHOW_HTML,         $order, $response);
             break;
             case Response::NEEDED_REDIRECT:
-                $this->fireEvent(self::EVENT_REDIRECT_RECEIVED,     $order, $response);
+                $this->callHandler(self::HANDLER_REDIRECT,     $order, $response);
             break;
         }
     }
@@ -287,74 +287,74 @@ class OrderProcessor
     }
 
     /**
-     * Set listener for processing event.
-     * Listener receives two parameters: OrderInterface and Response.
+     * Set handler callback for processing action.
+     * Handler receives two parameters: OrderInterface and Response.
      *
-     * @see OrderProcessor::fireEvent()
+     * @see OrderProcessor::callHandler()
      *
-     * @param       string          $eventName              Event name
-     * @param       callable        $eventListener          Event listener
+     * @param       string          $handlerName            Handler name
+     * @param       callable        $handlerCallback        Handler callbac
      *
      * @return      self
      */
-    public function setEventListener($eventName, $eventListener)
+    public function setHandler($handlerName, $handlerCallback)
     {
-        $this->checkEventName($eventName);
+        $this->checkHandlerName($handlerName);
 
-        if (!is_callable($eventListener))
+        if (!is_callable($handlerCallback))
         {
-            throw new RuntimeException("Event listener must be callable");
+            throw new RuntimeException("Handler callback must be callable");
         }
 
-        $this->eventListeners[$eventName] = $eventListener;
+        $this->handlers[$handlerName] = $handlerCallback;
 
         return $this;
     }
 
     /**
-     * Set events listeners. Listeners array must follow new format:
-     * [<eventName>:string => <eventListener>:callable]
+     * Set handlers. Handlers array must follow new format:
+     * [<handlerName>:string => <handlerCallback>:callable]
      *
-     * @see OrderProcessor::setEventListener()
+     * @see OrderProcessor::setHandler()
      *
-     * @param       array       $eventListeners         Events listener
+     * @param       array       $handlers         Handlers callbacks
      *
      * @return      self
      */
-    public function setEventListeners(array $eventListeners)
+    public function setHandlers(array $handlers)
     {
-        foreach ($eventListeners as $eventName => $eventListener)
+        foreach ($handlers as $handlerName => $handlerCallback)
         {
-            $this->setEventListener($eventName, $eventListener);
+            $this->setHandler($handlerName, $handlerCallback);
         }
 
         return $this;
     }
 
     /**
-     * Remove listener for procesing event
+     * Remove handler for procesing action
      *
-     * @param       string          $eventName              Event name
+     * @param       string          $handlerName            Handler name
      *
      * @return      self
      */
-    public function removeEventListener($eventName)
+    public function removeHandler($handlerName)
     {
-        $this->checkEventName($eventName);
+        $this->checkHandlerName($handlerName);
 
-        unset($this->eventListeners[$eventName]);
+        unset($this->handlers[$handlerName]);
 
         return $this;
     }
 
     /**
-     * Remove all event listeners
+     * Remove all handlers
      *
      * @return     self
      */
-    public function removeEventListeners()
+    public function removeHandlers()
     {
-        $this->eventListeners = array();
+        $this->handlers = array();
 
         return $this;
     }
@@ -376,7 +376,7 @@ class OrderProcessor
     /**
      * Set query factory
      *
-     * @param       \PaynetEasy\Paynet\Query\QueryFactoryInterface            $queryFactory           Query factory
+     * @param       \PaynetEasy\Paynet\Query\QueryFactoryInterface              $queryFactory           Query factory
      *
      * @return      self
      */
@@ -433,7 +433,7 @@ class OrderProcessor
     /**
      * Get query factory
      *
-     * @return      \PaynetEasy\Paynet\Query\QueryFactoryInterface            Query factory
+     * @return      \PaynetEasy\Paynet\Query\QueryFactoryInterface              Query factory
      */
     public function getQueryFactory()
     {
@@ -478,56 +478,56 @@ class OrderProcessor
     }
 
     /**
-     * Executes event listener.
-     * Listener receives two parameters: OrderInterface and Response (optional)
+     * Executes handler callback.
+     * Handler callback receives two parameters: OrderInterface and Response (optional)
      *
-     * @param       string                                          $eventName      Event name
-     * @param       \PaynetEasy\Paynet\OrderData\OrderInterface     $order          Order
-     * @param       \PaynetEasy\Paynet\Transport\Response           $response       Gateway response
+     * @param       string                                          $handlerName        Handler name
+     * @param       \PaynetEasy\Paynet\OrderData\OrderInterface     $order              Order
+     * @param       \PaynetEasy\Paynet\Transport\Response           $response           Gateway response
      *
      * @return      self
      */
-    protected function fireEvent($eventName, OrderInterface $order, Response $response = null)
+    protected function callHandler($handlerName, OrderInterface $order, Response $response = null)
     {
-        $this->checkEventName($eventName);
+        $this->checkHandlerName($handlerName);
 
-        if ($this->hasEventListener($eventName))
+        if ($this->hasHandler($handlerName))
         {
-            call_user_func($this->eventListeners[$eventName], $order, $response);
+            call_user_func($this->handlers[$handlerName], $order, $response);
         }
 
         return $this;
     }
 
     /**
-     * Check if event name is allowed
+     * Check if handler name is allowed
      *
-     * @param       string      $eventName      Event name
+     * @param       string      $handlerName        Handler name
      *
-     * @throws      RuntimeException            Event name not allowed
+     * @throws      RuntimeException                Handler name not allowed
      */
-    protected function checkEventName($eventName)
+    protected function checkHandlerName($handlerName)
     {
-        if (!in_array($eventName, static::$allowedEvents))
+        if (!in_array($handlerName, static::$allowedHandlers))
         {
-            throw new RuntimeException("Unknown event name: '{$eventName}'");
+            throw new RuntimeException("Unknown handler name: '{$handlerName}'");
         }
     }
 
     /**
-     * True if processor has event listener for given event name
+     * True if processor has handler callback for given handler name
      *
-     * @param       string      $eventName      Event name
+     * @param       string      $handlerName        Handler name
      *
      * @return      boolean
      */
-    protected function hasEventListener($eventName)
+    protected function hasHandler($handlerName)
     {
-        if (!array_key_exists($eventName, $this->eventListeners))
+        if (!array_key_exists($handlerName, $this->handlers))
         {
             return false;
         }
 
-        return is_callable($this->eventListeners[$eventName]);
+        return is_callable($this->handlers[$handlerName]);
     }
 }

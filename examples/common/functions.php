@@ -126,4 +126,6 @@ $displayEndedOrder = function(OrderInterface $order, Response $response = null)
     print_r("Order state: {$order->getTransportStage()}\n");
     print_r("Order status: {$order->getStatus()}\n");
     print "</pre>";
+
+    session_destroy();
 };

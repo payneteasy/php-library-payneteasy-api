@@ -36,38 +36,38 @@ class OrderProcessorTest extends \PHPUnit_Framework_TestCase
         $order = new Order;
         $order->setTransportStage(OrderInterface::STAGE_ENDED);
 
-        $listenerCalled = false;
-        $eventListener  = function() use (&$listenerCalled)
+        $handlerCalled = false;
+        $handler  = function() use (&$handlerCalled)
         {
-            $listenerCalled = true;
+            $handlerCalled = true;
         };
 
-        $this->object->setEventListener(OrderProcessor::EVENT_PROCESSING_ENDED, $eventListener);
+        $this->object->setHandler(OrderProcessor::HANDLER_FINISH_PROCESSING, $handler);
         $this->object->executeWorkflow('fake', array(), $order);
 
-        $this->assertTrue($listenerCalled);
+        $this->assertTrue($handlerCalled);
     }
 
     /**
      * @dataProvider testExecuteWorkflowProvider
      */
-    public function testExecuteWorkflow($neededAction, $eventName)
+    public function testExecuteWorkflow($neededAction, $handlerName)
     {
         $response = new Response;
         $response->setNeededAction($neededAction);
 
         FakeWorkflow::$response = $response;
 
-        $listenerCalled = false;
-        $eventListener  = function() use (&$listenerCalled)
+        $handlerCalled = false;
+        $handler  = function() use (&$handlerCalled)
         {
-            $listenerCalled = true;
+            $handlerCalled = true;
         };
 
-        $this->object->setEventListener($eventName, $eventListener);
+        $this->object->setHandler($handlerName, $handler);
         $this->object->executeWorkflow('fake', array(), new Order(array()));
 
-        $this->assertTrue($listenerCalled);
+        $this->assertTrue($handlerCalled);
     }
 
     public function testExecuteWorkflowProvider()
@@ -76,17 +76,17 @@ class OrderProcessorTest extends \PHPUnit_Framework_TestCase
         array
         (
             Response::NEEDED_REDIRECT,
-            OrderProcessor::EVENT_REDIRECT_RECEIVED
+            OrderProcessor::HANDLER_REDIRECT
         ),
         array
         (
             Response::NEEDED_SHOW_HTML,
-            OrderProcessor::EVENT_HTML_RECEIVED
+            OrderProcessor::HANDLER_SHOW_HTML
         ),
         array
         (
             Response::NEEDED_STATUS_UPDATE,
-            OrderProcessor::EVENT_STATUS_NOT_CHANGED
+            OrderProcessor::HANDLER_STATUS_UPDATE
         )));
     }
 
@@ -111,68 +111,68 @@ class OrderProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PaynetEasy\Paynet\Transport\CallbackResponse', $response);
     }
 
-    public function testEventListeners()
+    public function testhandlers()
     {
-        $this->object->setEventListeners(array
+        $this->object->setHandlers(array
         (
-            OrderProcessor::EVENT_ORDER_CHANGED => function (){},
-            OrderProcessor::EVENT_HTML_RECEIVED => function (){}
+            OrderProcessor::HANDLER_SAVE_ORDER => function (){},
+            OrderProcessor::HANDLER_SHOW_HTML => function (){}
         ));
 
-        $this->assertCount(2, $this->object->eventListeners);
-        $this->assertArrayHasKey(OrderProcessor::EVENT_ORDER_CHANGED, $this->object->eventListeners);
-        $this->assertArrayHasKey(OrderProcessor::EVENT_HTML_RECEIVED, $this->object->eventListeners);
+        $this->assertCount(2, $this->object->handlers);
+        $this->assertArrayHasKey(OrderProcessor::HANDLER_SAVE_ORDER, $this->object->handlers);
+        $this->assertArrayHasKey(OrderProcessor::HANDLER_SHOW_HTML, $this->object->handlers);
 
-        $this->object->removeEventListener(OrderProcessor::EVENT_ORDER_CHANGED);
+        $this->object->removeHandler(OrderProcessor::HANDLER_SAVE_ORDER);
 
-        $this->assertCount(1, $this->object->eventListeners);
-        $this->assertArrayNotHasKey(OrderProcessor::EVENT_ORDER_CHANGED, $this->object->eventListeners);
-        $this->assertArrayHasKey(OrderProcessor::EVENT_HTML_RECEIVED, $this->object->eventListeners);
+        $this->assertCount(1, $this->object->handlers);
+        $this->assertArrayNotHasKey(OrderProcessor::HANDLER_SAVE_ORDER, $this->object->handlers);
+        $this->assertArrayHasKey(OrderProcessor::HANDLER_SHOW_HTML, $this->object->handlers);
 
-        $this->object->removeEventListeners();
+        $this->object->removeHandlers();
 
-        $this->assertEmpty($this->object->eventListeners);
+        $this->assertEmpty($this->object->handlers);
     }
 
-    public function testFireEvent()
+    public function testCallHandler()
     {
-        $listenerCalled = false;
-        $eventListener  = function() use (&$listenerCalled)
+        $handlerCalled = false;
+        $handler  = function() use (&$handlerCalled)
         {
-            $listenerCalled = true;
+            $handlerCalled = true;
         };
 
-        $this->object->setEventListener(OrderProcessor::EVENT_ORDER_CHANGED, $eventListener);
-        $this->object->fireEvent(OrderProcessor::EVENT_ORDER_CHANGED, new Order(array()), new Response);
+        $this->object->setHandler(OrderProcessor::HANDLER_SAVE_ORDER, $handler);
+        $this->object->callHandler(OrderProcessor::HANDLER_SAVE_ORDER, new Order(array()), new Response);
 
-        $this->assertTrue($listenerCalled);
+        $this->assertTrue($handlerCalled);
     }
 
     /**
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Unknown event name: '_'
+     * @expectedExceptionMessage Unknown handler name: '_'
      */
-    public function testSetEventListenerWrongName()
+    public function testSetHandlerWrongName()
     {
-        $this->object->setEventListener('_', 'not_callable');
+        $this->object->setHandler('_', 'not_callable');
     }
 
     /**
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Event listener must be callable
+     * @expectedExceptionMessage Handler callback must be callable
      */
-    public function testSetEventListenerNotCallable()
+    public function testSetHandlerNotCallable()
     {
-        $this->object->setEventListener(OrderProcessor::EVENT_ORDER_CHANGED, 'not_callable');
+        $this->object->setHandler(OrderProcessor::HANDLER_SAVE_ORDER, 'not_callable');
     }
 }
 
 class PublicOrderProcessor extends OrderProcessor
 {
-    public $eventListeners = array();
+    public $handlers = array();
 
-    public function fireEvent($eventName, OrderInterface $order, Response $response = null)
+    public function callHandler($handlerName, OrderInterface $order, Response $response = null)
     {
-        parent::fireEvent($eventName, $order, $response);
+        parent::callHandler($handlerName, $order, $response);
     }
 }

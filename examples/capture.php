@@ -33,14 +33,14 @@ $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
  *
  * @see ./common/functions.php
  * @see PaynetEasy\Paynet\OrderProcessor::executeWorkflow()
- * @see PaynetEasy\Paynet\OrderProcessor::fireEvent()
+ * @see PaynetEasy\Paynet\OrderProcessor::callHandler()
  */
-$orderProcessor->setEventListeners(array
+$orderProcessor->setHandlers(array
 (
-    OrderProcessor::EVENT_ORDER_CHANGED         => $saveOrder,
-    OrderProcessor::EVENT_STATUS_NOT_CHANGED    => $displayWaitPage,
-    OrderProcessor::EVENT_HTML_RECEIVED         => $displayResponseHtml,
-    OrderProcessor::EVENT_PROCESSING_ENDED      => $displayEndedOrder
+    OrderProcessor::HANDLER_SAVE_ORDER          => $saveOrder,
+    OrderProcessor::HANDLER_STATUS_UPDATE       => $displayWaitPage,
+    OrderProcessor::HANDLER_SHOW_HTML           => $displayResponseHtml,
+    OrderProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedOrder
 ));
 
 /**
@@ -52,5 +52,3 @@ $orderProcessor->setEventListeners(array
  * @see \PaynetEasy\Paynet\Workflow\AbstractWorkflow::processOrder()
  */
 $orderProcessor->executeWorkflow('capture', $getConfig(), $order, $_REQUEST);
-
-session_destroy();
