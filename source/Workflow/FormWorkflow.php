@@ -9,8 +9,7 @@ use PaynetEasy\Paynet\Callback\CallbackFactoryInterface;
 use RuntimeException;
 
 /**
- * The implementation of the query Form
- * http://wiki.payneteasy.com/index.php?title=PnE%3APayment_Form_integration
+ * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration
  */
 class FormWorkflow extends AbstractWorkflow
 {

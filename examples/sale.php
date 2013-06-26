@@ -20,7 +20,10 @@ session_start();
 $order = $loadOrder() ?: new Order(array
 (
     'client_orderid'            => 'CLIENT-112244',
-    'paynet_order_id'           =>  1969596
+    'order_desc'                => 'This is test order',
+    'amount'                    =>  0.99,
+    'currency'                  => 'USD',
+    'ipaddress'                 => '127.0.0.1'
 ));
 
 /**
@@ -32,17 +35,12 @@ $order = $loadOrder() ?: new Order(array
  */
 $order->setCustomer(new Customer(array
 (
-    'first_name'    => 'Vasya',
-    'last_name'     => 'Pupkin',
-    'email'         => 'vass.pupkin@example.com',
     'address'       => '2704 Colonial Drive',
-    'birthday'      => '112681',
     'city'          => 'Houston',
-    'state'         => 'TX',
     'zip_code'      => '1235',
     'country'       => 'US',
-    'phone'         => '660-485-6353',
-    'cell_phone'    => '660-485-6353'
+    'email'         => 'vass.pupkin@example.com',
+    'phone'         => '660-485-6353'
 )));
 
 /**

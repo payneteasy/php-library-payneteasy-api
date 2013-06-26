@@ -22,8 +22,7 @@ $order = $loadOrder() ?: new Order(array
     'desc'                      => 'This is test order',
     'amount'                    =>  9.99,
     'currency'                  => 'USD',
-    'ipaddress'                 => '127.0.0.1',
-    'site_url'                  => 'http://example.com'
+    'ipaddress'                 => '127.0.0.1'
 ));
 
 /**
@@ -35,17 +34,12 @@ $order = $loadOrder() ?: new Order(array
  */
 $order->setCustomer(new Customer(array
 (
-    'first_name'    => 'Vasya',
-    'last_name'     => 'Pupkin',
-    'email'         => 'vass.pupkin@example.com',
     'address'       => '2704 Colonial Drive',
-    'birthday'      => '112681',
     'city'          => 'Houston',
-    'state'         => 'TX',
     'zip_code'      => '1235',
     'country'       => 'US',
-    'phone'         => '660-485-6353',
-    'cell_phone'    => '660-485-6353'
+    'email'         => 'vass.pupkin@example.com',
+    'phone'         => '660-485-6353'
 )));
 
 /**

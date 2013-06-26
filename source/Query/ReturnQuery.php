@@ -4,8 +4,7 @@ namespace PaynetEasy\Paynet\Query;
 use PaynetEasy\Paynet\Utils\Validator;
 
 /**
- * The implementation of the query Return
- * http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
+ * @see http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
  */
 class ReturnQuery extends AbstractQuery
 {

@@ -4,6 +4,9 @@ namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Utils\Validator;
 
+/**
+ * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Process_Recurrent_Payment
+ */
 class MakeRebillQuery extends AbstractQuery
 {
     /**

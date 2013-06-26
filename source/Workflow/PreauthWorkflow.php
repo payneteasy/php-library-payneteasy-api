@@ -3,8 +3,7 @@
 namespace PaynetEasy\Paynet\Workflow;
 
 /**
- * The implementation of the query Preauth
- * http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions
+ * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Preauth_Transaction_General_Flow
  */
 class PreauthWorkflow extends AbstractWorkflow
 {

@@ -7,8 +7,7 @@ use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\Exception\ValidationException;
 
 /**
- * The implementation of the query STATUS
- * http://wiki.payneteasy.com/index.php?title=PnE%3ARecurrent_Transactions&setlang=en#Recurrent_Payments
+ * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Registration
  */
 class CreateCardRefQuery extends AbstractQuery
 {

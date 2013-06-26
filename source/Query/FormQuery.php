@@ -5,6 +5,9 @@ namespace PaynetEasy\Paynet\Query;
 use PaynetEasy\Paynet\Utils\Validator;
 use RuntimeException;
 
+/**
+ * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration
+ */
 class FormQuery extends AbstractQuery
 {
     /**
@@ -18,7 +21,6 @@ class FormQuery extends AbstractQuery
         array('amount',             'amount',                       true,   Validator::AMOUNT),
         array('currency',           'currency',                     true,   Validator::CURRENCY),
         array('ipaddress',          'ipAddress',                    true,   Validator::IP),
-        array('site_url',           'siteUrl',                      false,  Validator::URL),
         array('address1',           'customer.address',             true,   Validator::MEDIUM_STRING),
         array('city',               'customer.city',                true,   Validator::MEDIUM_STRING),
         array('zip_code',           'customer.zipCode',             true,   Validator::ZIP_CODE),
@@ -26,6 +28,7 @@ class FormQuery extends AbstractQuery
         array('phone',              'customer.phone',               true,   Validator::PHONE),
         array('email',              'customer.email',               true,   Validator::EMAIL),
         // optional
+        array('site_url',           'siteUrl',                      false,  Validator::URL),
         array('first_name',         'customer.firstName',           false,  Validator::MEDIUM_STRING),
         array('last_name',          'customer.lastName',            false,  Validator::MEDIUM_STRING),
         array('ssn',                'customer.ssn',                 false,  Validator::SSN),

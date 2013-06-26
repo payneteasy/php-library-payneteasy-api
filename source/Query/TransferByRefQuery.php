@@ -4,6 +4,9 @@ namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Utils\Validator;
 
+/**
+ * @see http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions
+ */
 class TransferByRefQuery extends AbstractQuery
 {
     /**
@@ -16,7 +19,7 @@ class TransferByRefQuery extends AbstractQuery
         array('amount',                     'amount',                               true,    Validator::AMOUNT),
         array('currency',                   'currency',                             true,    Validator::CURRENCY),
         array('ipaddress',                  'ipAddress',                            true,    Validator::IP),
-        array('destination-card-ref-id',    'recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
+        array('destination-card-ref-id',    'recurrentCardTo.cardReferenceId',      true,    Validator::ID),
         // optional
         array('order_desc',                 'description',                          false,   Validator::LONG_STRING),
         array('source-card-ref-id',         'recurrentCardFrom.cardReferenceId',    false,   Validator::ID),

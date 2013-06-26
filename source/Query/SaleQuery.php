@@ -4,6 +4,9 @@ namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Utils\Validator;
 
+/**
+ * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions
+ */
 class SaleQuery extends AbstractQuery
 {
     /**
