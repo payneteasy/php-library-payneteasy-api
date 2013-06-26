@@ -42,7 +42,7 @@ class OrderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('C:33:"PaynetEasy\Paynet\OrderData\Order":34:{a:1:{s:6:"status";s:8:"approved";}}', $serialized);
     }
 
-    public function unserialize()
+    public function testUnserialize()
     {
         $order = unserialize('C:33:"PaynetEasy\Paynet\OrderData\Order":34:{a:1:{s:6:"status";s:8:"approved";}}');
 
