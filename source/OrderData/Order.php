@@ -400,6 +400,30 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
+    public function isCreated()
+    {
+        return $this->getTransportStage() == self::STAGE_CREATED;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isRedirected()
+    {
+        return $this->getTransportStage() == self::STAGE_REDIRECTED;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEnded()
+    {
+        return $this->getTransportStage() == self::STAGE_ENDED;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setStatus($status)
     {
         if (!in_array($status, static::$allowedStatuses))
@@ -418,6 +442,38 @@ implements  OrderInterface
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isProcessing()
+    {
+        return $this->getStatus() == self::STATUS_PROCESSING;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isApproved()
+    {
+        return $this->getStatus() == self::STATUS_APPROVED;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isDeclined()
+    {
+        return $this->getStatus() == self::STATUS_DECLINED;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isError()
+    {
+        return $this->getStatus() == self::STATUS_ERROR;
     }
 
     /**

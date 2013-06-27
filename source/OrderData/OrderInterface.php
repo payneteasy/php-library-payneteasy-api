@@ -11,7 +11,7 @@ use Exception;
 interface OrderInterface
 {
     /**
-     * Order created
+     * Order created in bank
      */
     const STAGE_CREATED     = 'created';
 
@@ -264,6 +264,27 @@ interface OrderInterface
     public function getTransportStage();
 
     /**
+     * True, if order created in bank
+     *
+     * @return      boolean
+     */
+    public function isCreated();
+
+    /**
+     * True, if customer is redirected to Paynet to perform additional steps
+     *
+     * @return      boolean
+     */
+    public function isRedirected();
+
+    /**
+     * True, if transport stage is ended
+     *
+     * @return      boolean
+     */
+    public function isEnded();
+
+    /**
      * Set order bank status
      *
      * @param       string      $status             Order bank status
@@ -278,6 +299,34 @@ interface OrderInterface
      * @return      string
      */
     public function getStatus();
+
+    /**
+     * True, if order is now processing
+     *
+     * @return      boolean
+     */
+    public function isProcessing();
+
+    /**
+     * True, if order approved
+     *
+     * @return      boolean
+     */
+    public function isApproved();
+
+    /**
+     * True, if order declined
+     *
+     * @return      boolean
+     */
+    public function isDeclined();
+
+    /**
+     * True, if error occured when processing order
+     *
+     * @return      boolean
+     */
+    public function isError();
 
     /**
      * Set order short comment
