@@ -3,6 +3,7 @@
 namespace PaynetEasy\Paynet\Callback;
 
 use PaynetEasy\Paynet\Utils\String;
+use PaynetEasy\Paynet\Utils\PropertyAccessor;
 
 use PaynetEasy\Paynet\OrderData\OrderInterface;
 use PaynetEasy\Paynet\Transport\CallbackResponse;
@@ -36,7 +37,16 @@ abstract class AbstractCallback implements CallbackInterface
 
     /**
      * Callback fields definition if format:
-     * [<first field_name>:string, <second field_name>:string ... <last field_name>:string]
+     * [
+     *     [<first field name>:string, <first property path>:string]
+     *     [<second field name>:string, <second property path>:string]
+     *     ...
+     *     [<last field name>:string, <last property path>:string]
+     * ]
+     *
+     * If property name present in field definition,
+     * callback response field value and order property value will be compared.
+     * If values not equal validation exception will be throwned.
      *
      * @var array
      */
@@ -139,39 +149,61 @@ abstract class AbstractCallback implements CallbackInterface
      */
     protected function validateCallback(OrderInterface $order, CallbackResponse $callbackResponse)
     {
-        $missedKeys = array();
+        $errorMessage   = '';
+        $missedFields   = array();
+        $unequalValues  = array();
 
-        foreach (static::$callbackFieldsDefinition as $fieldName)
+        foreach (static::$callbackFieldsDefinition as $fieldDefinition)
         {
+            list($fieldName, $propertyPath) = $fieldDefinition;
+
             if (empty($callbackResponse[$fieldName]))
             {
-                $missedKeys[] = $fieldName;
+                $missedFields[] = $fieldName;
+            }
+
+            if ($propertyPath)
+            {
+                $propertyValue = PropertyAccessor::getValue($order, $propertyPath, false);
+                $callbackValue = $callbackResponse[$fieldName];
+
+                if ($propertyValue != $callbackValue)
+                {
+                    $unequalValues[] = "Field '{$fieldName}' value '{$callbackValue}' does not " .
+                                       "equal property '{$propertyPath}' value '{$propertyValue}'";
+                }
             }
         }
 
-        if (!empty($missedKeys))
+        if (!empty($missedFields))
         {
-            throw new ValidationException("Some required fields missed or empty in callback: " .
-                                          implode(', ', $missedKeys));
+            $errorMessage .= "Some required fields missed or empty in CallbackResponse: \n" .
+                             implode(', ', $missedFields) . ". \n";
         }
 
-        $this->validateControlCode($callbackResponse);
+        if (!empty($unequalValues))
+        {
+            $errorMessage .= "Some fields from CallbackResponse unequal fields from Order: \n" .
+                             implode(", \n", $unequalValues) . ". \n";
+        }
+
+        try
+        {
+            $this->validateControlCode($callbackResponse);
+        }
+        catch (Exception $e)
+        {
+            $errorMessage .= $e->getMessage() . "\n";
+        }
 
         if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
         {
-            throw new ValidationException("Invalid callback status: '{$callbackResponse->getStatus()}'");
+            $errorMessage .= "Invalid callback status: '{$callbackResponse->getStatus()}'. \n";
         }
 
-        if ($callbackResponse->getClientOrderId() !== $order->getClientOrderId())
+        if (!empty($errorMessage))
         {
-            throw new ValidationException("Callback client_orderid '{$callbackResponse->getClientOrderId()}' does " .
-                                          "not match Order client_orderid '{$order->getClientOrderId()}'");
-        }
-
-        if ($callbackResponse->getAmount() !== $order->getAmount())
-        {
-            throw new ValidationException("Callback amount '{$callbackResponse->getAmount()}' does " .
-                                          "not match Order amount '{$order->getAmount()}'");
+            throw new ValidationException($errorMessage);
         }
     }
 

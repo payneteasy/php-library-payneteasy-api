@@ -22,10 +22,10 @@ class RedirectUrlCallback extends AbstractCallback
      */
     static protected $callbackFieldsDefinition = array
     (
-        'status',
-        'orderid',
-        'merchant_order',
-        'client_orderid',
-        'control'
+        array('orderid',        'paynetOrderId'),
+        array('merchant_order', 'clientOrderId'),
+        array('client_orderid', 'clientOrderId'),
+        array('status',          null),
+        array('control',         null)
     );
 }

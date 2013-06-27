@@ -35,13 +35,13 @@ class ServerCallbackUrlCallback extends AbstractCallback
      */
     static protected $callbackFieldsDefinition = array
     (
-        'status',
-        'merchant_order',
-        'client_orderid',
-        'orderid',
-        'type',
-        'amount',
-        'control'
+        array('orderid',        'paynetOrderId'),
+        array('merchant_order', 'clientOrderId'),
+        array('client_orderid', 'clientOrderId'),
+        array('amount',         'amount'),
+        array('status',          null),
+        array('type',            null),
+        array('control',         null)
     );
 
     /**
