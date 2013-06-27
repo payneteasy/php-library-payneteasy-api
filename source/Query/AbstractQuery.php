@@ -171,7 +171,7 @@ implements      QueryInterface
                 }
                 catch (ValidationException $e)
                 {
-                    $invalidFields[] = $e->getMessage();
+                    $invalidFields[] = "Field '{$fieldName}', {$e->getMessage()}";
                 }
             }
             elseif ($isFieldRequired)
@@ -182,14 +182,14 @@ implements      QueryInterface
 
         if (!empty($missedFields))
         {
-            $errorMessage .= "Some required fields missed or empty in Order: " .
+            $errorMessage .= "Some required fields missed or empty in Order: \n" .
                              implode(', ', $missedFields) . ". \n";
         }
 
         if (!empty($invalidFields))
         {
-            $errorMessage .= "Some fields invalid in Order: " .
-                             implode(', ', $invalidFields) . ". \n";
+            $errorMessage .= "Some fields invalid in Order: \n" .
+                             implode(", \n", $invalidFields) . ". \n";
         }
 
         if (!empty($errorMessage))

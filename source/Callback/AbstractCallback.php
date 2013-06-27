@@ -169,8 +169,8 @@ abstract class AbstractCallback implements CallbackInterface
 
                 if ($propertyValue != $callbackValue)
                 {
-                    $unequalValues[] = "Field '{$fieldName}' value '{$callbackValue}' does not " .
-                                       "equal property '{$propertyPath}' value '{$propertyValue}'";
+                    $unequalValues[] = "CallbackResponse field '{$fieldName}' value '{$callbackValue}' does not " .
+                                       "equal Order property '{$propertyPath}' value '{$propertyValue}'";
                 }
             }
         }
@@ -183,7 +183,7 @@ abstract class AbstractCallback implements CallbackInterface
 
         if (!empty($unequalValues))
         {
-            $errorMessage .= "Some fields from CallbackResponse unequal fields from Order: \n" .
+            $errorMessage .= "Some fields from CallbackResponse unequal properties from Order: \n" .
                              implode(", \n", $unequalValues) . ". \n";
         }
 
