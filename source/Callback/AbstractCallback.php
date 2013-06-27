@@ -161,8 +161,7 @@ abstract class AbstractCallback implements CallbackInterface
             {
                 $missedFields[] = $fieldName;
             }
-
-            if ($propertyPath)
+            elseif ($propertyPath)
             {
                 $propertyValue = PropertyAccessor::getValue($order, $propertyPath, false);
                 $callbackValue = $callbackResponse[$fieldName];
@@ -187,23 +186,16 @@ abstract class AbstractCallback implements CallbackInterface
                              implode(", \n", $unequalValues) . ". \n";
         }
 
-        try
-        {
-            $this->validateControlCode($callbackResponse);
-        }
-        catch (Exception $e)
-        {
-            $errorMessage .= $e->getMessage() . "\n";
-        }
-
-        if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
-        {
-            $errorMessage .= "Invalid callback status: '{$callbackResponse->getStatus()}'. \n";
-        }
-
         if (!empty($errorMessage))
         {
             throw new ValidationException($errorMessage);
+        }
+
+        $this->validateControlCode($callbackResponse);
+
+        if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
+        {
+            throw new ValidationException("Invalid callback status: '{$callbackResponse->getStatus()}'. \n");
         }
     }
 
