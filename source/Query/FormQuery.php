@@ -17,7 +17,7 @@ class FormQuery extends AbstractQuery
     (
         // mandatory
         array('client_orderid',     'clientOrderId',                true,   Validator::ID),
-        array('order_desc',         'description',                  true,   Validator::ID),
+        array('order_desc',         'description',                  true,   Validator::LONG_STRING),
         array('amount',             'amount',                       true,   Validator::AMOUNT),
         array('currency',           'currency',                     true,   Validator::CURRENCY),
         array('ipaddress',          'ipAddress',                    true,   Validator::IP),
