@@ -82,7 +82,7 @@ class FormQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    static protected $successResponseType = 'async-response';
+    static protected $successResponseType = 'async-form-response';
 
     /**
      * {@inheritdoc}

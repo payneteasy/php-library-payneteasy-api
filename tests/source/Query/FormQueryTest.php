@@ -45,7 +45,7 @@ class FormQueryTest extends QueryTestPrototype
     {
         return array(array(array
         (
-            'type'              => 'async-response',
+            'type'              => 'async-form-response',
             'status'            => 'filtered',
             'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'serial-number'     =>  md5(time()),
@@ -71,7 +71,7 @@ class FormQueryTest extends QueryTestPrototype
     {
         return array(array(array
         (
-            'type'              => 'async-response',
+            'type'              => 'async-form-response',
             'status'            => 'processing',
             'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
@@ -86,7 +86,7 @@ class FormQueryTest extends QueryTestPrototype
         // Payment error after check
         array
         (
-            'type'              => 'async-response',
+            'type'              => 'async-form-response',
             'status'            => 'error',
             'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'serial-number'     =>  md5(time()),
