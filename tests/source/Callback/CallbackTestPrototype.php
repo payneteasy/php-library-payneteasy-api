@@ -4,6 +4,7 @@ namespace PaynetEasy\Paynet\Callback;
 
 use PaynetEasy\Paynet\Transport\CallbackResponse;
 use PaynetEasy\Paynet\OrderData\Order;
+use PaynetEasy\Paynet\Exception\PaynetException;
 
 abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 {
@@ -54,11 +55,21 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $callback['control'] = $this->createControlCode($callback);
 
-        // Payment error after check
-        $this->object->processCallback($order, new CallbackResponse($callback));
+        try
+        {
+            // Payment error after check
+            $this->object->processCallback($order, new CallbackResponse($callback));
+        }
+        catch (PaynetException $error)
+        {
+            $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_ERROR);
+            $this->assertOrderError($order, $callback['error_message'], $callback['error_code']);
+            $this->assertInstanceOf('\PaynetEasy\Paynet\Exception\PaynetException', $error);
 
-        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_ERROR);
-        $this->assertOrderError($order, $callback['error_message'], $callback['error_code']);
+            return;
+        }
+
+        $this->fail('Exception must be throwned');
     }
 
     abstract public function testProcessCallbackErrorProvider();

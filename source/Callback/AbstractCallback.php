@@ -81,6 +81,11 @@ abstract class AbstractCallback implements CallbackInterface
 
         $this->updateOrder($order, $callbackResponse);
 
+        if ($callbackResponse->isError())
+        {
+            throw $callbackResponse->getError();
+        }
+
         return $callbackResponse;
     }
 

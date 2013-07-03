@@ -35,16 +35,16 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
 
     public function testProcessCallbackDeclinedProvider()
     {
-        return array(array(
-        array
+        return array(
+        array(array
         (
             'status'            => 'declined',
             'amount'            =>  0.99,
             'orderid'           =>  self::PAYNET_ORDER_ID,
             'merchant_order'    =>  self::CLIENT_ORDER_ID,
             'client_orderid'    =>  self::CLIENT_ORDER_ID,
-        ),
-        array
+        )),
+        array(array
         (
             'status'            => 'filtered',
             'amount'            =>  0.99,

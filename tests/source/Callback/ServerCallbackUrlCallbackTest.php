@@ -67,8 +67,8 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
 
     public function testProcessCallbackDeclinedProvider()
     {
-        return array(array(
-        array
+        return array(
+        array(array
         (
             'type'              => 'sale',
             'status'            => 'declined',
@@ -76,8 +76,8 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
             'orderid'           =>  self::PAYNET_ORDER_ID,
             'merchant_order'    =>  self::CLIENT_ORDER_ID,
             'client_orderid'    =>  self::CLIENT_ORDER_ID,
-        ),
-        array
+        )),
+        array(array
         (
             'type'              => 'sale',
             'status'            => 'filtered',
