@@ -37,7 +37,10 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->object->exchangeArray(array('type' => 'validation-error'));
         $this->assertTrue($this->object->isError());
 
-        $this->object->exchangeArray(array('status' => 'error'));
+        $this->object->exchangeArray(array('type' => 'error'));
+        $this->assertTrue($this->object->isError());
+
+        $this->object->exchangeArray(array('type' => 'async-response', 'status' => 'error'));
         $this->assertTrue($this->object->isError());
 
         $this->object->exchangeArray(array('type' => 'async-response', 'status' => 'approved'));

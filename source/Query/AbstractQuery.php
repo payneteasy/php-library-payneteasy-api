@@ -137,6 +137,11 @@ implements      QueryInterface
 
         call_user_func($update, $order, $response);
 
+        if ($response->isError())
+        {
+            throw $response->getError();
+        }
+
         return $response;
     }
 

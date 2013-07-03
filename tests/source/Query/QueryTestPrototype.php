@@ -4,6 +4,7 @@ namespace PaynetEasy\Paynet\Query;
 
 use PaynetEasy\Paynet\Transport\Response;
 use PaynetEasy\Paynet\OrderData\Order;
+use PaynetEasy\Paynet\Exception\PaynetException;
 
 abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 {
@@ -74,11 +75,21 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     {
         $order = $this->getOrder();
 
-        // Payment error after check
-        $this->object->processResponse($order, new Response($response));
+        try
+        {
+            // Payment error after check
+            $this->object->processResponse($order, new Response($response));
+        }
+        catch (PaynetException $error)
+        {
+            $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_ERROR);
+            $this->assertOrderError($order, $response['error-message'], $response['error-code']);
+            $this->assertInstanceOf('\PaynetEasy\Paynet\Exception\PaynetException', $error);
 
-        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_ERROR);
-        $this->assertOrderError($order, $response['error-message'], $response['error-code']);
+            return;
+        }
+
+        $this->fail('Exception must be throwned');
     }
 
     abstract public function testProcessResponseErrorProvider();
