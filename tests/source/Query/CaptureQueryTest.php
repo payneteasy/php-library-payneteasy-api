@@ -67,9 +67,9 @@ class CaptureQueryTest extends QueryTestPrototype
 
     public function testProcessResponseErrorProvider()
     {
-        return array(array(
+        return array(
         // Payment error after check
-        array
+        array(array
         (
             'type'              => 'async-response',
             'status'            => 'error',
@@ -77,17 +77,17 @@ class CaptureQueryTest extends QueryTestPrototype
             'merchant-order-id' =>  self::CLIENT_ORDER_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'status error message',
-            'error-code'        =>  2
-        ),
+            'error-code'        =>  24
+        )),
         // Validation error
-        array
+        array(array
         (
             'type'              => 'validation-error',
             'error-message'     => 'validation error message',
             'error-code'        =>  1
-        ),
+        )),
         // Immediate payment error
-        array
+        array(array
         (
             'type'              => 'error',
             'error-message'     => 'immediate error message',

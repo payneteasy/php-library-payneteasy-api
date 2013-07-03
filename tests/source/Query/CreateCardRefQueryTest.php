@@ -103,8 +103,8 @@ class CreateCardRefQueryTest extends SaleQueryTest
 
     public function testProcessResponseErrorProvider()
     {
-        return array(array(
-        array
+        return array(
+        array(array
         (
             'type'              => 'create-card-ref-response',
             'status'            => 'error',
@@ -112,19 +112,19 @@ class CreateCardRefQueryTest extends SaleQueryTest
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test error message',
             'error-code'        => '2'
-        ),
-        array
+        )),
+        array(array
         (
             'type'              => 'validation-error',
             'serial-number'     =>  md5(time()),
             'error-message'     => 'validation-error message',
             'error-code'        => '1000'
-        ),
-        array
+        )),
+        array(array
         (
             'type'              => 'error',
-            'error_message'     => 'test type error message',
-            'error_code'        => '5'
+            'error-message'     => 'test type error message',
+            'error-code'        => '5'
         )));
     }
 
