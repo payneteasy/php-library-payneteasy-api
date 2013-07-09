@@ -315,7 +315,7 @@ implements      QueryInterface
         }
 
         if (     strlen($response->getClientOrderId()) > 0
-            &&   $order->getClientOrderId() !== $response->getClientOrderId())
+            &&   $order->getClientOrderId() != $response->getClientOrderId())
         {
             throw new ValidationException("Response client_orderid '{$response->getClientOrderId()}' does " .
                                           "not match Order client_orderid '{$order->getClientOrderId()}'");
