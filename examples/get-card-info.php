@@ -1,7 +1,7 @@
 <?php
 
-use PaynetEasy\Paynet\OrderData\Order;
-use PaynetEasy\Paynet\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\OrderData\Order;
+use PaynetEasy\PaynetEasyApi\OrderProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -18,8 +18,8 @@ session_start();
  * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый.
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Information_request_parameters
- * @see \PaynetEasy\Paynet\Query\GetCardInfoQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
  */
 $order = $loadOrder() ?: new Order(array());
 
@@ -27,8 +27,8 @@ $order = $loadOrder() ?: new Order(array());
  * Для этого запроса необходимо передать ID кредитной карты
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Information_request_parameters
- * @see \PaynetEasy\Paynet\Query\GetCardInfoQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\RecurrentCard
+ * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\RecurrentCard
  */
 $order->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058)));
 
@@ -37,7 +37,7 @@ $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
 /**
  * Вызов этого метода заполнит поля объекта RecurrentCard, размещенного в объекте Order
  *
- * @see \PaynetEasy\Paynet\Query\GetCardInfoQuery::updateOrderOnSuccess()
+ * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::updateOrderOnSuccess()
  */
 $orderProcessor->executeQuery('get-card-info', $getConfig(), $order, $_REQUEST);
 

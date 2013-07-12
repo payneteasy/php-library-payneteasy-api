@@ -1,9 +1,9 @@
 <?php
 
-use PaynetEasy\Paynet\OrderData\Order;
-use PaynetEasy\Paynet\OrderData\Customer;
-use PaynetEasy\Paynet\OrderData\CreditCard;
-use PaynetEasy\Paynet\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\OrderData\Order;
+use PaynetEasy\PaynetEasyApi\OrderData\Customer;
+use PaynetEasy\PaynetEasyApi\OrderData\CreditCard;
+use PaynetEasy\PaynetEasyApi\OrderProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -14,8 +14,8 @@ session_start();
  * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Sale_Request_Parameters
- * @see \PaynetEasy\Paynet\Query\PreauthQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
  */
 $order = $loadOrder() ?: new Order(array
 (
@@ -30,8 +30,8 @@ $order = $loadOrder() ?: new Order(array
  * Для этого запроса необходимо передать данные клиента
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Sale_Request_Parameters
- * @see \PaynetEasy\Paynet\Query\PreauthQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\Customer
+ * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Customer
  */
 $order->setCustomer(new Customer(array
 (
@@ -47,8 +47,8 @@ $order->setCustomer(new Customer(array
  * Для этого запроса необходимо передать данные кредитной карты
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Sale_Request_Parameters
- * @see \PaynetEasy\Paynet\Query\PreauthQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\CreditCard
+ * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\CreditCard
  */
 $order->setCreditCard(new CreditCard(array
 (
@@ -62,7 +62,7 @@ $order->setCreditCard(new CreditCard(array
 /**
  * Создадим обработчик платежей и передадим ему URL для доступа к платежному шлюзу
  *
- * @see \PaynetEasy\Paynet\Transport\GatewayClient::$gatewayUrl
+ * @see \PaynetEasy\PaynetEasyApi\Transport\GatewayClient::$gatewayUrl
  */
 $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
 
@@ -70,8 +70,8 @@ $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
  * Назначим обработчики для разных событий, происходящих при обработке платежа
  *
  * @see ./common/functions.php
- * @see PaynetEasy\Paynet\OrderProcessor::executeWorkflow()
- * @see PaynetEasy\Paynet\OrderProcessor::callHandler()
+ * @see PaynetEasy\PaynetEasyApi\OrderProcessor::executeWorkflow()
+ * @see PaynetEasy\PaynetEasyApi\OrderProcessor::callHandler()
  */
 $orderProcessor->setHandlers(array
 (
@@ -85,8 +85,8 @@ $orderProcessor->setHandlers(array
  * Каждый вызов этого метода выполняет определенный запрос к API Paynet,
  * выбор запроса зависит от этапа обработки заказа
  *
- * @see \PaynetEasy\Paynet\OrderData\Order::$transportStage
- * @see \PaynetEasy\Paynet\OrderProcessor::executeWorkflow()
- * @see \PaynetEasy\Paynet\Workflow\AbstractWorkflow::processOrder()
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Order::$transportStage
+ * @see \PaynetEasy\PaynetEasyApi\OrderProcessor::executeWorkflow()
+ * @see \PaynetEasy\PaynetEasyApi\Workflow\AbstractWorkflow::processOrder()
  */
 $orderProcessor->executeWorkflow('sale', $getConfig(), $order, $_REQUEST);

@@ -1,7 +1,7 @@
 <?php
 
-use PaynetEasy\Paynet\OrderData\Order;
-use PaynetEasy\Paynet\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\OrderData\Order;
+use PaynetEasy\PaynetEasyApi\OrderProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -22,8 +22,8 @@ session_start();
  * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый.
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Order_status_call_parameters
- * @see \PaynetEasy\Paynet\Query\StatusQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\Query\StatusQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
  */
 $order = $loadOrder() ?: new Order(array
 (
@@ -36,7 +36,7 @@ $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
 /**
  * Вызов этого метода обновит статус обработки заказа
  *
- * @see \PaynetEasy\Paynet\Query\Status::updateOrderOnSuccess()
+ * @see \PaynetEasy\PaynetEasyApi\Query\Status::updateOrderOnSuccess()
  */
 $orderProcessor->executeQuery('status', $getConfig(), $order, $_REQUEST);
 

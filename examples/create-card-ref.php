@@ -1,7 +1,7 @@
 <?php
 
-use PaynetEasy\Paynet\OrderData\Order;
-use PaynetEasy\Paynet\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\OrderData\Order;
+use PaynetEasy\PaynetEasyApi\OrderProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -18,8 +18,8 @@ session_start();
  * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый.
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_registration_request_parameters
- * @see \PaynetEasy\Paynet\Query\CreateCardRefQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
  */
 $order = $loadOrder() ?: new Order(array
 (
@@ -38,7 +38,7 @@ $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
 /**
  * Вызов этого метода создаст в объекте Order объект RecurrentCard
  *
- * @see \PaynetEasy\Paynet\Query\CreateCardRefQuery::updateOrderOnSuccess()
+ * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::updateOrderOnSuccess()
  */
 $orderProcessor->executeQuery('create-card-ref', $getConfig(), $order, $_REQUEST);
 

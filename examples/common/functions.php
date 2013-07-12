@@ -1,7 +1,7 @@
 <?php
 
-use PaynetEasy\Paynet\OrderData\OrderInterface;
-use PaynetEasy\Paynet\Transport\Response;
+use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 /**
  * Функция возвращает конфигурацию для выполнения запросов

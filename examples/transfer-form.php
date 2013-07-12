@@ -1,8 +1,8 @@
 <?php
 
-use PaynetEasy\Paynet\OrderData\Order;
-use PaynetEasy\Paynet\OrderData\Customer;
-use PaynetEasy\Paynet\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\OrderData\Order;
+use PaynetEasy\PaynetEasyApi\OrderData\Customer;
+use PaynetEasy\PaynetEasyApi\OrderProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -13,8 +13,8 @@ session_start();
  * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
- * @see \PaynetEasy\Paynet\Query\FormQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
  */
 $order = $loadOrder() ?: new Order(array
 (
@@ -29,8 +29,8 @@ $order = $loadOrder() ?: new Order(array
  * Для этого запроса необходимо передать данные клиента
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
- * @see \PaynetEasy\Paynet\Query\FormQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\Customer
+ * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Customer
  */
 $order->setCustomer(new Customer(array
 (
@@ -45,7 +45,7 @@ $order->setCustomer(new Customer(array
 /**
  * Создадим обработчик платежей и передадим ему URL для доступа к платежному шлюзу
  *
- * @see \PaynetEasy\Paynet\Transport\GatewayClient::$gatewayUrl
+ * @see \PaynetEasy\PaynetEasyApi\Transport\GatewayClient::$gatewayUrl
  */
 $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
 
@@ -53,8 +53,8 @@ $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
  * Назначим обработчики для разных событий, происходящих при обработке платежа
  *
  * @see ./common/functions.php
- * @see PaynetEasy\Paynet\OrderProcessor::executeWorkflow()
- * @see PaynetEasy\Paynet\OrderProcessor::callHandler()
+ * @see PaynetEasy\PaynetEasyApi\OrderProcessor::executeWorkflow()
+ * @see PaynetEasy\PaynetEasyApi\OrderProcessor::callHandler()
  */
 $orderProcessor->setHandlers(array
 (

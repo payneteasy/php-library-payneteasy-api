@@ -1,7 +1,7 @@
 <?php
 
-use PaynetEasy\Paynet\OrderData\Order;
-use PaynetEasy\Paynet\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\OrderData\Order;
+use PaynetEasy\PaynetEasyApi\OrderProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -12,8 +12,8 @@ session_start();
  * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions#Money_transfer_request_parameters
- * @see \PaynetEasy\Paynet\Query\TransferByRefQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\Query\TransferByRefQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
  */
 $order = $loadOrder() ?: new Order(array
 (
@@ -28,8 +28,8 @@ $order = $loadOrder() ?: new Order(array
  * между которыми будет происходить перевод средств
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions#Money_transfer_request_parameters
- * @see \PaynetEasy\Paynet\Query\TransferByRefQuery::$requestFieldsDefinition
- * @see \PaynetEasy\Paynet\OrderData\RecurrentCard
+ * @see \PaynetEasy\PaynetEasyApi\Query\TransferByRefQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\RecurrentCard
  */
 $order->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058, 'cvv2' => 123)));
 $order->setRecurrentCardTo(new RecurrentCard(array('cardrefid' => 8059)));
@@ -37,7 +37,7 @@ $order->setRecurrentCardTo(new RecurrentCard(array('cardrefid' => 8059)));
 /**
  * Создадим обработчик платежей и передадим ему URL для доступа к платежному шлюзу
  *
- * @see \PaynetEasy\Paynet\Transport\GatewayClient::$gatewayUrl
+ * @see \PaynetEasy\PaynetEasyApi\Transport\GatewayClient::$gatewayUrl
  */
 $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
 
@@ -45,8 +45,8 @@ $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
  * Назначим обработчики для разных событий, происходящих при обработке платежа
  *
  * @see ./common/functions.php
- * @see PaynetEasy\Paynet\OrderProcessor::executeWorkflow()
- * @see PaynetEasy\Paynet\OrderProcessor::callHandler()
+ * @see PaynetEasy\PaynetEasyApi\OrderProcessor::executeWorkflow()
+ * @see PaynetEasy\PaynetEasyApi\OrderProcessor::callHandler()
  */
 $orderProcessor->setHandlers(array
 (
@@ -60,8 +60,8 @@ $orderProcessor->setHandlers(array
  * Каждый вызов этого метода выполняет определенный запрос к API Paynet,
  * выбор запроса зависит от этапа обработки заказа
  *
- * @see \PaynetEasy\Paynet\OrderData\Order::$transportStage
- * @see \PaynetEasy\Paynet\OrderProcessor::executeWorkflow()
- * @see \PaynetEasy\Paynet\Workflow\AbstractWorkflow::processOrder()
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Order::$transportStage
+ * @see \PaynetEasy\PaynetEasyApi\OrderProcessor::executeWorkflow()
+ * @see \PaynetEasy\PaynetEasyApi\Workflow\AbstractWorkflow::processOrder()
  */
 $orderProcessor->executeWorkflow('transfer-by-ref', $getConfig(), $order, $_REQUEST);
