@@ -109,8 +109,9 @@ $displayResponseHtml = function(OrderInterface $order, Response $response)
  */
 $redirectToResponseUrl = function(OrderInterface $order, Response $response)
 {
-    // выводим полученную форму для редиректа на 3D-авторизацию
-    print $response->getHtml();
+    // Переадресуем пользователя на платежную форму
+    header("Location: {$response->getRedirectUrl()}");
+    exit;
 };
 
 /**
