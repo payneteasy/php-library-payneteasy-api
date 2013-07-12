@@ -1,0 +1,53 @@
+{
+    "name": "payneteasy/php-library-payneteasy-api",
+    "description": "PHP library for PaynetEasy payment API",
+    "version": "1.0.0-dev",
+    "type": "library",
+    "keywords":
+    [
+        "payment",
+        "payneteasy"
+    ],
+    "homepage": "http://payneteasy.com/",
+    "license": "MIT",
+    "authors":
+    [
+        {
+            "name": "Dmitry Kashinsky",
+            "email": "ed@yoyyo.biz",
+            "role": "developer"
+        },
+        {
+            "name": "Artem Ponomarenko",
+            "email": "imenem@inbox.ru",
+            "role": "developer"
+        }
+    ],
+    "require":
+    {
+        "php":          ">=5.3.0",
+        "ext-curl":     "*"
+    },
+    "autoload":
+    {
+        "psr-0":
+        {
+            "PaynetEasy\\PaynetEasyApi\\": "source/"
+        }
+    },
+    "archive":
+    {
+        "exclude":
+        [
+            "/examples",
+            "/tests"
+        ]
+    },
+    "extra":
+    {
+        "branch-alias":
+        {
+            "dev-master": "1.0.0-dev"
+        }
+    }
+}
