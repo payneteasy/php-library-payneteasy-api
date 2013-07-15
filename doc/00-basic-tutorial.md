@@ -76,7 +76,7 @@
         'redirect_url'          => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}"
     );
 
-    $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
+    $orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
 
     $orderProcessor->setHandlers(array
     (
@@ -134,7 +134,7 @@
         'control'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
     );
 
-    $orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
+    $orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
 
     $orderProcessor->setHandlers(array
     (

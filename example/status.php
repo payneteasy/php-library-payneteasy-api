@@ -31,7 +31,7 @@ $order = $loadOrder() ?: new Order(array
     'paynet_order_id'           =>  1969595
 ));
 
-$orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
+$orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
 
 /**
  * Вызов этого метода обновит статус обработки заказа

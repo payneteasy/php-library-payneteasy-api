@@ -64,7 +64,7 @@ $order->setCreditCard(new CreditCard(array
  *
  * @see \PaynetEasy\PaynetEasyApi\Transport\GatewayClient::$gatewayUrl
  */
-$orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
+$orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
 
 /**
  * Назначим обработчики для разных событий, происходящих при обработке платежа

@@ -33,7 +33,7 @@ $order = $loadOrder() ?: new Order(array
 $order->setTransportStage(Order::STAGE_ENDED);
 $order->setStatus(Order::STATUS_APPROVED);
 
-$orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
+$orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
 
 /**
  * Вызов этого метода создаст в объекте Order объект RecurrentCard

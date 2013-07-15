@@ -32,7 +32,7 @@ $order = $loadOrder() ?: new Order(array());
  */
 $order->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058)));
 
-$orderProcessor = new OrderProcessor('https://qa.clubber.me/paynet/api/v2/');
+$orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
 
 /**
  * Вызов этого метода заполнит поля объекта RecurrentCard, размещенного в объекте Order
