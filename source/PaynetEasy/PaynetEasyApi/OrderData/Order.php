@@ -22,7 +22,7 @@ implements  OrderInterface
     (
         self::STAGE_CREATED,
         self::STAGE_REDIRECTED,
-        self::STAGE_ENDED
+        self::STAGE_FINISHED
     );
 
     /**
@@ -418,7 +418,7 @@ implements  OrderInterface
      */
     public function isEnded()
     {
-        return $this->getTransportStage() == self::STAGE_ENDED;
+        return $this->getTransportStage() == self::STAGE_FINISHED;
     }
 
     /**

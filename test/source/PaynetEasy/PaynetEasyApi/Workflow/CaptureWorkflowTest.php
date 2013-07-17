@@ -109,7 +109,7 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             Order::STAGE_REDIRECTED,
-            Order::STAGE_ENDED,
+            Order::STAGE_FINISHED,
             null
         ));
     }

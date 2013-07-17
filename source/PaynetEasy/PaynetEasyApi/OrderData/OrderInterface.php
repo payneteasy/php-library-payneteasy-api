@@ -23,7 +23,7 @@ interface OrderInterface
     /**
      * Order processing is ended
      */
-    const STAGE_ENDED       = 'ended';
+    const STAGE_FINISHED    = 'ended';
 
     /**
      * Order is now processing

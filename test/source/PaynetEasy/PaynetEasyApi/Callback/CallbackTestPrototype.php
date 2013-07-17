@@ -23,7 +23,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processCallback($order, new CallbackResponse($callback));
 
-        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_APPROVED);
+        $this->assertOrderStates($order, Order::STAGE_FINISHED, Order::STATUS_APPROVED);
         $this->assertFalse($order->hasErrors());
     }
 
@@ -40,7 +40,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processCallback($order, new CallbackResponse($callback));
 
-        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_DECLINED);
+        $this->assertOrderStates($order, Order::STAGE_FINISHED, Order::STATUS_DECLINED);
         $this->assertTrue($order->hasErrors());
     }
 
@@ -62,7 +62,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
         }
         catch (PaynetException $error)
         {
-            $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_ERROR);
+            $this->assertOrderStates($order, Order::STAGE_FINISHED, Order::STATUS_ERROR);
             $this->assertOrderError($order, $callback['error_message'], $callback['error_code']);
             $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
 

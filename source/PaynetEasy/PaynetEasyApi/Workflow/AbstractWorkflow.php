@@ -101,7 +101,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
                 $response = $this->processCallback($order, $callbackData);
                 break;
             }
-            case OrderInterface::STAGE_ENDED:
+            case OrderInterface::STAGE_FINISHED:
             {
                 throw new RuntimeException('Payment has been completed');
             }

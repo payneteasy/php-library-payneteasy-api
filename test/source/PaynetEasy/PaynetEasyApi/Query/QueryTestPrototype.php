@@ -47,7 +47,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_DECLINED);
+        $this->assertOrderStates($order, Order::STAGE_FINISHED, Order::STATUS_DECLINED);
         $this->assertTrue($order->hasErrors());
     }
 
@@ -82,7 +82,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         }
         catch (PaynetException $error)
         {
-            $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_ERROR);
+            $this->assertOrderStates($order, Order::STAGE_FINISHED, Order::STATUS_ERROR);
             $this->assertOrderError($order, $response['error-message'], $response['error-code']);
             $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
 

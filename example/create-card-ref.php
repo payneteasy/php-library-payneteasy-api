@@ -30,7 +30,7 @@ $order = $loadOrder() ?: new Order(array
 /**
  * Платеж обязательно должен быть успешно завершен
  */
-$order->setTransportStage(Order::STAGE_ENDED);
+$order->setTransportStage(Order::STAGE_FINISHED);
 $order->setStatus(Order::STATUS_APPROVED);
 
 $orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');

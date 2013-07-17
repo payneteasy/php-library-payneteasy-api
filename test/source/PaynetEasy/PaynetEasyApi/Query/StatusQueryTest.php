@@ -85,7 +85,7 @@ class StatusQueryTest extends QueryTestPrototype
 
         $this->object->processResponse($order, new Response($response));
 
-        $this->assertOrderStates($order, Order::STAGE_ENDED, Order::STATUS_APPROVED);
+        $this->assertOrderStates($order, Order::STAGE_FINISHED, Order::STATUS_APPROVED);
         $this->assertFalse($order->hasErrors());
     }
 

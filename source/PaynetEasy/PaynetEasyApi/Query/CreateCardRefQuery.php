@@ -97,13 +97,13 @@ class CreateCardRefQuery extends AbstractQuery
 
     /**
      * Check Order transport stage and bank status.
-     * State must be STAGE_ENDED and status must be STATUS_APPROVED.
+     * State must be STAGE_FINISHED and status must be STATUS_APPROVED.
      *
      * @param       OrderInterface      $order      Order for checking
      */
     protected function checkOrderTransportStage(OrderInterface $order)
     {
-        if (    $order->getTransportStage() !== OrderInterface::STAGE_ENDED
+        if (    $order->getTransportStage() !== OrderInterface::STAGE_FINISHED
             ||  $order->getStatus()         !== OrderInterface::STATUS_APPROVED)
         {
             throw new ValidationException('Only approved and ended Order can be used for create-card-ref-id');

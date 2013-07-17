@@ -91,7 +91,7 @@ implements      QueryInterface
         catch (Exception $e)
         {
             $order->addError($e)
-                  ->setTransportStage(OrderInterface::STAGE_ENDED)
+                  ->setTransportStage(OrderInterface::STAGE_FINISHED)
                   ->setStatus(OrderInterface::STATUS_ERROR);
 
             throw $e;
@@ -129,7 +129,7 @@ implements      QueryInterface
         catch (Exception $e)
         {
             $order->addError($e)
-                  ->setTransportStage(OrderInterface::STAGE_ENDED)
+                  ->setTransportStage(OrderInterface::STAGE_FINISHED)
                   ->setStatus(OrderInterface::STATUS_ERROR);
 
             throw $e;
@@ -355,7 +355,7 @@ implements      QueryInterface
     {
         if($response->isApproved())
         {
-            $order->setTransportStage(OrderInterface::STAGE_ENDED);
+            $order->setTransportStage(OrderInterface::STAGE_FINISHED);
             $order->setStatus(OrderInterface::STATUS_APPROVED);
         }
         elseif($response->hasHtml() || $response->hasRedirectUrl())
@@ -383,7 +383,7 @@ implements      QueryInterface
      */
     protected function updateOrderOnError(OrderInterface $order, Response $response)
     {
-        $order->setTransportStage(OrderInterface::STAGE_ENDED);
+        $order->setTransportStage(OrderInterface::STAGE_FINISHED);
         $order->addError($response->getError());
 
         if ($response->isDeclined())
