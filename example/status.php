@@ -1,7 +1,7 @@
 <?php
 
-use PaynetEasy\PaynetEasyApi\OrderData\Order;
-use PaynetEasy\PaynetEasyApi\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -19,29 +19,29 @@ session_start();
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions
  * @see http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
  *
- * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый.
+ * Если платеж был сохранен - получим его сохраненную версию, иначе создадим новый.
  *
- * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Order_status_call_parameters
+ * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Payment_status_call_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\StatusQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
  */
-$order = $loadOrder() ?: new Order(array
+$payment = $loadPayment() ?: new Payment(array
 (
-    'client_orderid'            => 'CLIENT-112244',
-    'paynet_order_id'           =>  1969595
+    'client_payment_id'     => 'CLIENT-112244',
+    'paynet_payment_id'     =>  1969595
 ));
 
-$orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
+$paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
 
 /**
- * Вызов этого метода обновит статус обработки заказа
+ * Вызов этого метода обновит статус обработки платежа
  *
- * @see \PaynetEasy\PaynetEasyApi\Query\Status::updateOrderOnSuccess()
+ * @see \PaynetEasy\PaynetEasyApi\Query\Status::updatePaymentOnSuccess()
  */
-$orderProcessor->executeQuery('status', $getConfig(), $order, $_REQUEST);
+$paymentProcessor->executeQuery('status', $getConfig(), $payment, $_REQUEST);
 
 /**
- * Сохраним заказ и выведем его на экран
+ * Сохраним платеж и выведем его на экран
  */
-$saveOrder($order);
-$displayEndedOrder($order);
+$savePayment($payment);
+$displayEndedPayment($payment);

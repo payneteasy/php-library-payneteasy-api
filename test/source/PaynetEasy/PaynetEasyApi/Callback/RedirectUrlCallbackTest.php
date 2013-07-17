@@ -27,9 +27,9 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
         (
             'status'            => 'approved',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_ORDER_ID,
-            'merchant_order'    =>  self::CLIENT_ORDER_ID,
-            'client_orderid'    =>  self::CLIENT_ORDER_ID,
+            'orderid'           =>  self::PAYNET_PAYMENT_ID,
+            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
+            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
         )));
     }
 
@@ -40,17 +40,17 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
         (
             'status'            => 'declined',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_ORDER_ID,
-            'merchant_order'    =>  self::CLIENT_ORDER_ID,
-            'client_orderid'    =>  self::CLIENT_ORDER_ID,
+            'orderid'           =>  self::PAYNET_PAYMENT_ID,
+            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
+            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
         )),
         array(array
         (
             'status'            => 'filtered',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_ORDER_ID,
-            'merchant_order'    =>  self::CLIENT_ORDER_ID,
-            'client_orderid'    =>  self::CLIENT_ORDER_ID,
+            'orderid'           =>  self::PAYNET_PAYMENT_ID,
+            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
+            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
         )));
     }
 
@@ -60,9 +60,9 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
         (
             'status'            => 'error',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_ORDER_ID,
-            'merchant_order'    =>  self::CLIENT_ORDER_ID,
-            'client_orderid'    =>  self::CLIENT_ORDER_ID,
+            'orderid'           =>  self::PAYNET_PAYMENT_ID,
+            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
+            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
             'error_message'     => 'test type error message',
             'error_code'        =>  5
         )));

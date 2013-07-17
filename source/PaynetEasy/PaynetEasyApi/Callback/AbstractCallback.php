@@ -5,7 +5,7 @@ namespace PaynetEasy\PaynetEasyApi\Callback;
 use PaynetEasy\PaynetEasyApi\Utils\String;
 use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
 
-use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
@@ -45,7 +45,7 @@ abstract class AbstractCallback implements CallbackInterface
      * ]
      *
      * If property name present in field definition,
-     * callback response field value and order property value will be compared.
+     * callback response field value and payment property value will be compared.
      * If values not equal validation exception will be throwned.
      *
      * @var array
@@ -64,22 +64,22 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * {@inheritdoc}
      */
-    final public function processCallback(OrderInterface $order, CallbackResponse $callbackResponse)
+    final public function processCallback(PaymentInterface $payment, CallbackResponse $callbackResponse)
     {
         try
         {
-            $this->validateCallback($order, $callbackResponse);
+            $this->validateCallback($payment, $callbackResponse);
         }
         catch (Exception $e)
         {
-            $order->addError($e)
-                  ->setProcessingStage(OrderInterface::STAGE_FINISHED)
-                  ->setStatus(OrderInterface::STATUS_ERROR);
+            $payment->addError($e)
+                  ->setProcessingStage(PaymentInterface::STAGE_FINISHED)
+                  ->setStatus(PaymentInterface::STATUS_ERROR);
 
             throw $e;
         }
 
-        $this->updateOrder($order, $callbackResponse);
+        $this->updatePayment($payment, $callbackResponse);
 
         if ($callbackResponse->isError())
         {
@@ -147,12 +147,12 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Validates callback
      *
-     * @param       OrderInterface                 $order                  Order
+     * @param       PaymentInterface               $payment                Payment
      * @param       CallbackResponse               $callbackResponse       Callback from paynet
      *
      * @throws      ValidationException                                    Validation error
      */
-    protected function validateCallback(OrderInterface $order, CallbackResponse $callbackResponse)
+    protected function validateCallback(PaymentInterface $payment, CallbackResponse $callbackResponse)
     {
         $errorMessage   = '';
         $missedFields   = array();
@@ -168,13 +168,13 @@ abstract class AbstractCallback implements CallbackInterface
             }
             elseif ($propertyPath)
             {
-                $propertyValue = PropertyAccessor::getValue($order, $propertyPath, false);
+                $propertyValue = PropertyAccessor::getValue($payment, $propertyPath, false);
                 $callbackValue = $callbackResponse[$fieldName];
 
                 if ($propertyValue != $callbackValue)
                 {
                     $unequalValues[] = "CallbackResponse field '{$fieldName}' value '{$callbackValue}' does not " .
-                                       "equal Order property '{$propertyPath}' value '{$propertyValue}'";
+                                       "equal Payment property '{$propertyPath}' value '{$propertyValue}'";
                 }
             }
         }
@@ -187,7 +187,7 @@ abstract class AbstractCallback implements CallbackInterface
 
         if (!empty($unequalValues))
         {
-            $errorMessage .= "Some fields from CallbackResponse unequal properties from Order: \n" .
+            $errorMessage .= "Some fields from CallbackResponse unequal properties from Payment: \n" .
                              implode(", \n", $unequalValues) . ". \n";
         }
 
@@ -205,39 +205,39 @@ abstract class AbstractCallback implements CallbackInterface
     }
 
     /**
-     * Updates Order by Callback data
+     * Updates Payment by Callback data
      *
-     * @param       OrderInterface         $order          Order for updating
-     * @param       CallbackResponse       $response       Callback for order updating
+     * @param       PaymentInterface        $payment        Payment for updating
+     * @param       CallbackResponse        $response       Callback for payment updating
      */
-    protected function updateOrder(OrderInterface $order, CallbackResponse $callbackResponse)
+    protected function updatePayment(PaymentInterface $payment, CallbackResponse $callbackResponse)
     {
         if($callbackResponse->isError())
         {
-            $order->setProcessingStage(OrderInterface::STAGE_FINISHED);
-            $order->setStatus(OrderInterface::STATUS_ERROR);
-            $order->addError($callbackResponse->getError());
+            $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
+            $payment->setStatus(PaymentInterface::STATUS_ERROR);
+            $payment->addError($callbackResponse->getError());
         }
         elseif($callbackResponse->isApproved())
         {
-            $order->setProcessingStage(OrderInterface::STAGE_FINISHED);
-            $order->setStatus(OrderInterface::STATUS_APPROVED);
+            $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
+            $payment->setStatus(PaymentInterface::STATUS_APPROVED);
         }
         // "filtered" status is interpreted as the "DECLINED"
         elseif($callbackResponse->isDeclined())
         {
-            $order->setProcessingStage(OrderInterface::STAGE_FINISHED);
-            $order->setStatus(OrderInterface::STATUS_DECLINED);
-            $order->addError($callbackResponse->getError());
+            $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
+            $payment->setStatus(PaymentInterface::STATUS_DECLINED);
+            $payment->addError($callbackResponse->getError());
         }
         // If it does not redirect, it's processing
         elseif($callbackResponse->isProcessing())
         {
-            $order->setProcessingStage(OrderInterface::STAGE_CREATED);
-            $order->setStatus(OrderInterface::STATUS_PROCESSING);
+            $payment->setProcessingStage(PaymentInterface::STAGE_CREATED);
+            $payment->setStatus(PaymentInterface::STATUS_PROCESSING);
         }
 
-        $order->setPaynetOrderId($callbackResponse->getPaynetOrderId());
+        $payment->setPaynetPaymentId($callbackResponse->getPaynetPaymentId());
     }
 
     /**
@@ -254,8 +254,8 @@ abstract class AbstractCallback implements CallbackInterface
         $expectedControl   = sha1
         (
             $callback->getStatus().
-            $callback->getPaynetOrderId().
-            $callback->getClientOrderId().
+            $callback->getPaynetPaymentId().
+            $callback->getClientPaymentId().
             $this->config['control']
         );
 

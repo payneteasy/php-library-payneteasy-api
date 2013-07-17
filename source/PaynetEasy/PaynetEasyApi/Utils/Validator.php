@@ -37,7 +37,7 @@ class Validator
     const PHONE = 'phone';
 
     /**
-     * Validate value as order amount
+     * Validate value as payment amount
      */
     const AMOUNT = 'amount';
 

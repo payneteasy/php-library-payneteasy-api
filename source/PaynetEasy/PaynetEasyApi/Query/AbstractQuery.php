@@ -5,7 +5,7 @@ use PaynetEasy\PaynetEasyApi\Utils\String;
 use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
 
-use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
 
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
@@ -37,10 +37,10 @@ implements      QueryInterface
     /**
      * Request fields definition in format
      * [
-     *     [<first field name>:string,  <first order property path>:string,   <is field required>:boolean, <validation rule>:string],
-     *     [<second field name>:string, <second order property path>:string,  <is field required>:boolean, <validation rule>:string],
+     *     [<first field name>:string,  <first payment property path>:string,   <is field required>:boolean, <validation rule>:string],
+     *     [<second field name>:string, <second payment property path>:string,  <is field required>:boolean, <validation rule>:string],
      *     ...
-     *     [<last field name>:string,   <last order property path>:string,    <is field required>:boolean, <validation rule>:string]
+     *     [<last field name>:string,   <last payment property path>:string,    <is field required>:boolean, <validation rule>:string]
      * ]
      *
      * @var array
@@ -82,22 +82,22 @@ implements      QueryInterface
     /**
      * {@inheritdoc}
      */
-    final public function createRequest(OrderInterface $order)
+    final public function createRequest(PaymentInterface $payment)
     {
         try
         {
-            $this->validateOrder($order);
+            $this->validatePayment($payment);
         }
         catch (Exception $e)
         {
-            $order->addError($e)
-                  ->setProcessingStage(OrderInterface::STAGE_FINISHED)
-                  ->setStatus(OrderInterface::STATUS_ERROR);
+            $payment->addError($e)
+                  ->setProcessingStage(PaymentInterface::STAGE_FINISHED)
+                  ->setStatus(PaymentInterface::STATUS_ERROR);
 
             throw $e;
         }
 
-        $request = new Request($this->orderToRequest($order));
+        $request = new Request($this->paymentToRequest($payment));
 
         $request->setApiMethod($this->apiMethod)
                 ->setEndPoint($this->config['end_point']);
@@ -108,34 +108,34 @@ implements      QueryInterface
     /**
      * {@inheritdoc}
      */
-    final public function processResponse(OrderInterface $order, Response $response)
+    final public function processResponse(PaymentInterface $payment, Response $response)
     {
         if(   !$response->isProcessing()
            && !$response->isApproved())
         {
             $validate = array($this, 'validateResponseOnError');
-            $update   = array($this, 'updateOrderOnError');
+            $update   = array($this, 'updatePaymentOnError');
         }
         else
         {
             $validate = array($this, 'validateResponseOnSuccess');
-            $update   = array($this, 'updateOrderOnSuccess');
+            $update   = array($this, 'updatePaymentOnSuccess');
         }
 
         try
         {
-            call_user_func($validate, $order, $response);
+            call_user_func($validate, $payment, $response);
         }
         catch (Exception $e)
         {
-            $order->addError($e)
-                  ->setProcessingStage(OrderInterface::STAGE_FINISHED)
-                  ->setStatus(OrderInterface::STATUS_ERROR);
+            $payment->addError($e)
+                  ->setProcessingStage(PaymentInterface::STAGE_FINISHED)
+                  ->setStatus(PaymentInterface::STATUS_ERROR);
 
             throw $e;
         }
 
-        call_user_func($update, $order, $response);
+        call_user_func($update, $payment, $response);
 
         if ($response->isError())
         {
@@ -146,11 +146,11 @@ implements      QueryInterface
     }
 
     /**
-     * Validates order before query constructing
+     * Validates payment before query constructing
      *
-     * @param       OrderInterface          $order          Order for validation
+     * @param       PaymentInterface        $payment        Payment for validation
      */
-    protected function validateOrder(OrderInterface $order)
+    protected function validatePayment(PaymentInterface $payment)
     {
         $errorMessage   = '';
         $missedFields   = array();
@@ -166,7 +166,7 @@ implements      QueryInterface
                 continue;
             }
 
-            $fieldValue = PropertyAccessor::getValue($order, $propertyPath, false);
+            $fieldValue = PropertyAccessor::getValue($payment, $propertyPath, false);
 
             if (!empty($fieldValue))
             {
@@ -187,13 +187,13 @@ implements      QueryInterface
 
         if (!empty($missedFields))
         {
-            $errorMessage .= "Some required fields missed or empty in Order: \n" .
+            $errorMessage .= "Some required fields missed or empty in Payment: \n" .
                              implode(', ', $missedFields) . ". \n";
         }
 
         if (!empty($invalidFields))
         {
-            $errorMessage .= "Some fields invalid in Order: \n" .
+            $errorMessage .= "Some fields invalid in Payment: \n" .
                              implode(", \n", $invalidFields) . ". \n";
         }
 
@@ -204,13 +204,13 @@ implements      QueryInterface
     }
 
     /**
-     * Creates request from Order
+     * Creates request from Payment
      *
-     * @param       OrderInterface          $order          Order for request
+     * @param       PaymentInterface        $payment        Payment for request
      *
      * @return      array                                   Request
      */
-    protected function orderToRequest(OrderInterface $order)
+    protected function paymentToRequest(PaymentInterface $payment)
     {
         $request = array();
 
@@ -221,7 +221,7 @@ implements      QueryInterface
             // generate control code
             if ($fieldName == 'control')
             {
-                $request[$fieldName] = $this->createControlCode($order);
+                $request[$fieldName] = $this->createControlCode($payment);
             }
             // get value from config
             elseif (empty($propertyPath))
@@ -235,10 +235,10 @@ implements      QueryInterface
                     throw new RuntimeException("Field '{$fieldName}' missed in config");
                 }
             }
-            // get value from order
+            // get value from payment
             else
             {
-                $fieldValue = PropertyAccessor::getValue($order, $propertyPath);
+                $fieldValue = PropertyAccessor::getValue($payment, $propertyPath);
 
                 if (!empty($fieldValue))
                 {
@@ -254,11 +254,11 @@ implements      QueryInterface
      * Generates the control code is used to ensure that it is a particular
      * Merchant (and not a fraudster) that initiates the transaction.
      *
-     * @param       OrderInterface          $order          Order to generate control code
+     * @param       PaymentInterface        $payment        Payment to generate control code
      *
      * @return      string                                  Generated control code
      */
-    protected function createControlCode(OrderInterface $order)
+    protected function createControlCode(PaymentInterface $payment)
     {
         $controlCode = '';
 
@@ -269,10 +269,10 @@ implements      QueryInterface
             {
                 $controlCode .= $this->config[$propertyPath];
             }
-            // get value from order
+            // get value from payment
             else
             {
-                $fieldValue = PropertyAccessor::getValue($order, $propertyPath);
+                $fieldValue = PropertyAccessor::getValue($payment, $propertyPath);
 
                 if (!empty($fieldValue))
                 {
@@ -285,12 +285,12 @@ implements      QueryInterface
     }
 
     /**
-     * Validates response before Order updating if Order is processing or approved
+     * Validates response before Payment updating if Payment is processing or approved
      *
-     * @param       OrderInterface          $order          Order
+     * @param       PaymentInterface        $payment        Payment
      * @param       Response                $response       Response for validating
      */
-    protected function validateResponseOnSuccess(OrderInterface $order, Response $response)
+    protected function validateResponseOnSuccess(PaymentInterface $payment, Response $response)
     {
         if ($response->getType() !== static::$successResponseType)
         {
@@ -314,21 +314,21 @@ implements      QueryInterface
                                           implode(', ', $missedFields) . ". \n");
         }
 
-        if (     strlen($response->getClientOrderId()) > 0
-            &&   $order->getClientOrderId() != $response->getClientOrderId())
+        if (     strlen($response->getClientPaymentId()) > 0
+            &&   $payment->getClientPaymentId() != $response->getClientPaymentId())
         {
-            throw new ValidationException("Response client_orderid '{$response->getClientOrderId()}' does " .
-                                          "not match Order client_orderid '{$order->getClientOrderId()}'");
+            throw new ValidationException("Response clientPaymentId '{$response->getClientPaymentId()}' does " .
+                                          "not match Payment clientPaymentId '{$payment->getClientPaymentId()}'");
         }
     }
 
     /**
-     * Validates response before Order updating if Order is not processing or approved
+     * Validates response before Payment updating if Payment is not processing or approved
      *
-     * @param       OrderInterface          $order          Order
+     * @param       PaymentInterface        $payment        Payment
      * @param       Response                $response       Response for validating
      */
-    protected function validateResponseOnError(OrderInterface $order, Response $response)
+    protected function validateResponseOnError(PaymentInterface $payment, Response $response)
     {
         $allowedTypes = array(static::$successResponseType, 'error', 'validation-error');
 
@@ -337,62 +337,62 @@ implements      QueryInterface
             throw new ValidationException("Unknow response type '{$response->getType()}'");
         }
 
-        if (     strlen($response->getClientOrderId()) > 0
-            &&   $order->getClientOrderId() !== $response->getClientOrderId())
+        if (     strlen($response->getClientPaymentId()) > 0
+            &&   $payment->getClientPaymentId() !== $response->getClientPaymentId())
         {
-            throw new ValidationException("Response client_orderid '{$response->getClientOrderId()}' does " .
-                                          "not match Order client_orderid '{$order->getClientOrderId()}'");
+            throw new ValidationException("Response clientPaymentId '{$response->getClientPaymentId()}' does " .
+                                          "not match Payment clientPaymentId '{$payment->getClientPaymentId()}'");
         }
     }
 
     /**
-     * Updates Order by Response data if Order is processing or approved
+     * Updates Payment by Response data if Payment is processing or approved
      *
-     * @param       OrderInterface         $order          Order for updating
-     * @param       Response               $response       Response for order updating
+     * @param       PaymentInterface       $payment        Payment for updating
+     * @param       Response               $response       Response for payment updating
      */
-    protected function updateOrderOnSuccess(OrderInterface $order, Response $response)
+    protected function updatePaymentOnSuccess(PaymentInterface $payment, Response $response)
     {
         if($response->isApproved())
         {
-            $order->setProcessingStage(OrderInterface::STAGE_FINISHED);
-            $order->setStatus(OrderInterface::STATUS_APPROVED);
+            $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
+            $payment->setStatus(PaymentInterface::STATUS_APPROVED);
         }
         elseif($response->hasHtml() || $response->hasRedirectUrl())
         {
-            $order->setProcessingStage(OrderInterface::STAGE_REDIRECTED);
-            $order->setStatus(OrderInterface::STATUS_PROCESSING);
+            $payment->setProcessingStage(PaymentInterface::STAGE_REDIRECTED);
+            $payment->setStatus(PaymentInterface::STATUS_PROCESSING);
         }
         elseif($response->isProcessing())
         {
-            $order->setProcessingStage(OrderInterface::STAGE_CREATED);
-            $order->setStatus(OrderInterface::STATUS_PROCESSING);
+            $payment->setProcessingStage(PaymentInterface::STAGE_CREATED);
+            $payment->setStatus(PaymentInterface::STATUS_PROCESSING);
         }
 
-        if(strlen($response->getPaynetOrderId()) > 0)
+        if(strlen($response->getPaynetPaymentId()) > 0)
         {
-            $order->setPaynetOrderId($response->getPaynetOrderId());
+            $payment->setPaynetPaymentId($response->getPaynetPaymentId());
         }
     }
 
     /**
-     * Updates Order by Response data if Order is not processing or approved
+     * Updates Payment by Response data if Payment is not processing or approved
      *
-     * @param       OrderInterface         $order          Order for updating
-     * @param       Response               $response       Response for order updating
+     * @param       PaymentInterface       $payment        Payment for updating
+     * @param       Response               $response       Response for payment updating
      */
-    protected function updateOrderOnError(OrderInterface $order, Response $response)
+    protected function updatePaymentOnError(PaymentInterface $payment, Response $response)
     {
-        $order->setProcessingStage(OrderInterface::STAGE_FINISHED);
-        $order->addError($response->getError());
+        $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
+        $payment->addError($response->getError());
 
         if ($response->isDeclined())
         {
-            $order->setStatus(OrderInterface::STATUS_DECLINED);
+            $payment->setStatus(PaymentInterface::STATUS_DECLINED);
         }
         else
         {
-            $order->setStatus(OrderInterface::STATUS_ERROR);
+            $payment->setStatus(PaymentInterface::STATUS_ERROR);
         }
     }
 

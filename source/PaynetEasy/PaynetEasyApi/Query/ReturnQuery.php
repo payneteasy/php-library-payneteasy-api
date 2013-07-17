@@ -14,8 +14,8 @@ class ReturnQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',     'clientOrderId',                    true,   Validator::ID),
-        array('orderid',            'paynetOrderId',                    true,   Validator::ID),
+        array('client_orderid',     'clientPaymentId',                  true,   Validator::ID),
+        array('orderid',            'paynetPaymentId',                  true,   Validator::ID),
         array('amount',             'amount',                           true,   Validator::AMOUNT),
         array('currency',           'currency',                         true,   Validator::CURRENCY),
         array('comment',            'comment',                          true,   Validator::MEDIUM_STRING),
@@ -31,8 +31,8 @@ class ReturnQuery extends AbstractQuery
     static protected $controlCodeDefinition = array
     (
         'login',
-        'clientOrderId',
-        'paynetOrderId',
+        'clientPaymentId',
+        'paynetPaymentId',
         'amountInCents',
         'currency',
         'control'

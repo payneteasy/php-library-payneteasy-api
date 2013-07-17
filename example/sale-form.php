@@ -1,8 +1,8 @@
 <?php
 
-use PaynetEasy\PaynetEasyApi\OrderData\Order;
-use PaynetEasy\PaynetEasyApi\OrderData\Customer;
-use PaynetEasy\PaynetEasyApi\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
+use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -10,19 +10,19 @@ require_once './common/functions.php';
 session_start();
 
 /**
- * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый
+ * Если платеж был сохранен - получим его сохраненную версию, иначе создадим новый
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
  */
-$order = $loadOrder() ?: new Order(array
+$payment = $loadPayment() ?: new Payment(array
 (
-    'client_orderid'            => 'CLIENT-112244',
-    'desc'                      => 'This is test order',
-    'amount'                    =>  9.99,
-    'currency'                  => 'USD',
-    'ipaddress'                 => '127.0.0.1'
+    'client_payment_id'     => 'CLIENT-112244',
+    'description'           => 'This is test payment',
+    'amount'                =>  9.99,
+    'currency'              => 'USD',
+    'ipaddress'             => '127.0.0.1'
 ));
 
 /**
@@ -30,16 +30,16 @@ $order = $loadOrder() ?: new Order(array
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\OrderData\Customer
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
  */
-$order->setCustomer(new Customer(array
+$payment->setCustomer(new Customer(array
 (
-    'address'       => '2704 Colonial Drive',
-    'city'          => 'Houston',
-    'zip_code'      => '1235',
-    'country'       => 'US',
-    'email'         => 'vass.pupkin@example.com',
-    'phone'         => '660-485-6353'
+    'address'               => '2704 Colonial Drive',
+    'city'                  => 'Houston',
+    'zip_code'              => '1235',
+    'country'               => 'US',
+    'email'                 => 'vass.pupkin@example.com',
+    'phone'                 => '660-485-6353'
 )));
 
 /**
@@ -47,21 +47,21 @@ $order->setCustomer(new Customer(array
  *
  * @see \PaynetEasy\PaynetEasyApi\Transport\GatewayClient::$gatewayUrl
  */
-$orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
+$paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
 
 /**
  * Назначим обработчики для разных событий, происходящих при обработке платежа
  *
  * @see ./common/functions.php
- * @see PaynetEasy\PaynetEasyApi\OrderProcessor::executeWorkflow()
- * @see PaynetEasy\PaynetEasyApi\OrderProcessor::callHandler()
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeWorkflow()
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::callHandler()
  */
-$orderProcessor->setHandlers(array
+$paymentProcessor->setHandlers(array
 (
-    OrderProcessor::HANDLER_SAVE_ORDER          => $saveOrder,
-    OrderProcessor::HANDLER_STATUS_UPDATE       => $displayWaitPage,
-    OrderProcessor::HANDLER_REDIRECT            => $redirectToResponseUrl,
-    OrderProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedOrder
+    PaymentProcessor::HANDLER_SAVE_PAYMENT        => $savePayment,
+    PaymentProcessor::HANDLER_STATUS_UPDATE       => $displayWaitPage,
+    PaymentProcessor::HANDLER_REDIRECT            => $redirectToResponseUrl,
+    PaymentProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedPayment
 ));
 
-$orderProcessor->executeWorkflow('sale-form', $getConfig(), $order, $_REQUEST);
+$paymentProcessor->executeWorkflow('sale-form', $getConfig(), $payment, $_REQUEST);

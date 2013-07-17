@@ -8,7 +8,7 @@ use RuntimeException;
 class Response extends ArrayObject
 {
     /**
-     * Need to update order status
+     * Need to update payment status
      */
     const NEEDED_STATUS_UPDATE  = 'status_update';
 
@@ -162,17 +162,17 @@ class Response extends ArrayObject
     }
 
     /**
-     * Get order client order id
+     * Get payment client payment id
      *
      * @return      string
      */
-    public function getClientOrderId()
+    public function getClientPaymentId()
     {
         return $this->getAnyKey(array('merchant-order-id', 'client_orderid', 'merchant_order'));
     }
 
     /**
-     * Get order client order id
+     * Get payment card reference id
      *
      * @return      string
      */
@@ -182,11 +182,11 @@ class Response extends ArrayObject
     }
 
     /**
-     * Get order paynet order id
+     * Get payment paynet payment id
      *
      * @return      string
      */
-    public function getPaynetOrderId()
+    public function getPaynetPaymentId()
     {
         return $this->getAnyKey(array('orderid', 'paynet-order-id'));
     }

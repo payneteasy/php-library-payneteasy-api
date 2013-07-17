@@ -4,7 +4,7 @@ namespace PaynetEasy\PaynetEasyApi\Workflow;
 
 use PaynetEasy\PaynetEasyApi\Utils\String;
 
-use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
 use PaynetEasy\PaynetEasyApi\Transport\GatewayClientInterface;
 use PaynetEasy\PaynetEasyApi\Query\QueryFactoryInterface;
 use PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface;
@@ -76,38 +76,38 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public function processOrder(OrderInterface $order, array $callbackData = array())
+    public function processPayment(PaymentInterface $payment, array $callbackData = array())
     {
-        switch($order->getProcessingStage())
+        switch($payment->getProcessingStage())
         {
             case null:
             {
-                $response = $this->initializeProcessing($order);
+                $response = $this->initializeProcessing($payment);
                 break;
             }
-            case OrderInterface::STAGE_CREATED:
+            case PaymentInterface::STAGE_CREATED:
             {
-                $response = $this->updateStatus($order);
+                $response = $this->updateStatus($payment);
                 break;
             }
-            case OrderInterface::STAGE_REDIRECTED:
+            case PaymentInterface::STAGE_REDIRECTED:
             {
                 if(empty($callbackData))
                 {
                     throw new RuntimeException("Data parameter can not be empty " .
-                                               "for transport stage '{$order->getProcessingStage()}'");
+                                               "for transport stage '{$payment->getProcessingStage()}'");
                 }
 
-                $response = $this->processCallback($order, $callbackData);
+                $response = $this->processCallback($payment, $callbackData);
                 break;
             }
-            case OrderInterface::STAGE_FINISHED:
+            case PaymentInterface::STAGE_FINISHED:
             {
                 throw new RuntimeException('Payment has been completed');
             }
             default:
             {
-                throw new RuntimeException("Undefined order transport stage: '{$order->getProcessingStage()}'");
+                throw new RuntimeException("Undefined payment transport stage: '{$payment->getProcessingStage()}'");
             }
         }
 
@@ -119,25 +119,25 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * Executes initial API method  query
      *
-     * @param       \PaynetEasy\PaynetEasyApi\OrderData\OrderInterface      $order          Order for processing
+     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface      $payment        Payment for processing
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                       Query response
+     * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                                Query response
      */
-    protected function initializeProcessing(OrderInterface $order)
+    protected function initializeProcessing(PaymentInterface $payment)
     {
-        return $this->executeQuery($this->initialApiMethod, $order);
+        return $this->executeQuery($this->initialApiMethod, $payment);
     }
 
     /**
      * Executes status query
      *
-     * @param       \PaynetEasy\PaynetEasyApi\OrderData\OrderInterface      $order          Order for processing
+     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface      $payment        Payment for processing
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                       Query response
+     * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                                Query response
      */
-    protected function updateStatus(OrderInterface $order)
+    protected function updateStatus(PaymentInterface $payment)
     {
-        return $this->executeQuery('status', $order);
+        return $this->executeQuery('status', $payment);
     }
 
     /**
@@ -145,7 +145,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      *
      * @see Response::setNeededAction()
      *
-     * @param       \PaynetEasy\PaynetEasyApi\Transport\Response       $response       Query response
+     * @param       \PaynetEasy\PaynetEasyApi\Transport\Response                $response       Query response
      */
     protected function setNeededAction(Response $response)
     {
@@ -166,16 +166,17 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * Handles the callback after the redirect to Paynet
      *
-     * @param       array $data
-     * @return      Response
+     * @param       array       $callbackData       Callback data
+     *
+     * @return      Response                        Callback object
      */
-    protected function processCallback(OrderInterface $order, array $data)
+    protected function processCallback(PaymentInterface $payment, array $callbackData)
     {
-        $callback = new CallbackResponse($data);
+        $callback = new CallbackResponse($callbackData);
 
         $this->callbackFactory
             ->getCallback($callback, $this->queryConfig)
-            ->processCallback($order, $callback);
+            ->processCallback($payment, $callback);
 
         return $callback;
     }
@@ -212,19 +213,19 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * Creates API Query object by their API method name
      * and executes API method request
      *
-     * @param       string                                      $queryName          API method name
-     * @param       \PaynetEasy\PaynetEasyApi\OrderData\OrderInterface      $order              Order
+     * @param       string                                                      $queryName          API method name
+     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface      $payment            Payment
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                           Gateway response
+     * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                                    Gateway response
      */
-    protected function executeQuery($queryName, OrderInterface $order)
+    protected function executeQuery($queryName, PaymentInterface $payment)
     {
         $query = $this->queryFactory->getQuery($queryName, $this->queryConfig);
 
-        $request    = $query->createRequest($order);
+        $request    = $query->createRequest($payment);
         $response   = $this->gatewayClient->makeRequest($request);
 
-        $query->processResponse($order, $response);
+        $query->processResponse($payment, $response);
 
         return $response;
     }

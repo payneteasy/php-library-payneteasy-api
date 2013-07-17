@@ -1,6 +1,6 @@
 <?php
 
-use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 /**
@@ -46,27 +46,27 @@ $getConfig = function()
 };
 
 /**
- * Функция загружает заказ из сессии
+ * Функция загружает платеж из сессии
  *
- * @return      OrderInterface                      Заказ
+ * @return      PaymentInterface        Платеж
  */
-$loadOrder = function()
+$loadPayment = function()
 {
-    if (!empty($_SESSION['order']))
+    if (!empty($_SESSION['payment']))
     {
-        return unserialize($_SESSION['order']);
+        return unserialize($_SESSION['payment']);
     }
 };
 
 /**
- * Функция сохраняет заказ в сессию
+ * Функция сохраняет платеж в сессию
  *
- * @param       OrderInterface      $order          Заказ
- * @param       Response            $response       Ответ от сервера Paynet
+ * @param       PaymentInterface        $payment        Платеж
+ * @param       Response                $response       Ответ от сервера Paynet
  */
-$saveOrder = function(OrderInterface $order, Response $response = null)
+$savePayment = function(PaymentInterface $payment, Response $response = null)
 {
-    $_SESSION['order'] = serialize($order);
+    $_SESSION['payment'] = serialize($payment);
 };
 
 /**
@@ -75,10 +75,10 @@ $saveOrder = function(OrderInterface $order, Response $response = null)
  *
  * @see ./common/waitPage.html
  *
- * @param       OrderInterface      $order          Заказ
- * @param       Response            $response       Ответ от сервера Paynet
+ * @param       PaymentInterface        $payment        Платеж
+ * @param       Response                $response       Ответ от сервера Paynet
  */
-$displayWaitPage = function(OrderInterface $order, Response $response)
+$displayWaitPage = function(PaymentInterface $payment, Response $response)
 {
     print file_get_contents(__DIR__ . '/common/waitPage.html');
 };
@@ -89,10 +89,10 @@ $displayWaitPage = function(OrderInterface $order, Response $response)
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#3D_Sale_transaction_diagram
  *
- * @param       OrderInterface      $order          Заказ
- * @param       Response            $response       Ответ от сервера Paynet
+ * @param       PaymentInterface        $payment        Платеж
+ * @param       Response                $response       Ответ от сервера Paynet
  */
-$displayResponseHtml = function(OrderInterface $order, Response $response)
+$displayResponseHtml = function(PaymentInterface $payment, Response $response)
 {
     // выводим полученную форму для редиректа на 3D-авторизацию
     print $response->getHtml();
@@ -104,10 +104,10 @@ $displayResponseHtml = function(OrderInterface $order, Response $response)
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#General_Payment_Form_Process_Flow
  *
- * @param       OrderInterface      $order          Заказ
- * @param       Response            $response       Ответ от сервера Paynet
+ * @param       PaymentInterface        $payment        Платеж
+ * @param       Response                $response       Ответ от сервера Paynet
  */
-$redirectToResponseUrl = function(OrderInterface $order, Response $response)
+$redirectToResponseUrl = function(PaymentInterface $payment, Response $response)
 {
     // Переадресуем пользователя на платежную форму
     header("Location: {$response->getRedirectUrl()}");
@@ -115,17 +115,17 @@ $redirectToResponseUrl = function(OrderInterface $order, Response $response)
 };
 
 /**
- * Функция выводит статус заказа после того, как его обработка завершена
+ * Функция выводит статус платежа после того, как его обработка завершена
  *
- * @param       OrderInterface      $order          Заказ
- * @param       Response            $response       Ответ от сервера Paynet
+ * @param       PaymentInterface        $payment        Платеж
+ * @param       Response                $response       Ответ от сервера Paynet
  */
-$displayEndedOrder = function(OrderInterface $order, Response $response = null)
+$displayEndedPayment = function(PaymentInterface $payment, Response $response = null)
 {
     // платеж завершен, выводим его статус
     print "<pre>";
-    print_r("Order state: {$order->getProcessingStage()}\n");
-    print_r("Order status: {$order->getStatus()}\n");
+    print_r("Payment state: {$payment->getProcessingStage()}\n");
+    print_r("Payment status: {$payment->getStatus()}\n");
     print "</pre>";
 
     session_destroy();

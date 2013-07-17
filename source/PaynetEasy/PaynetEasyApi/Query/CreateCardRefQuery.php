@@ -2,7 +2,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
-use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
@@ -17,8 +17,8 @@ class CreateCardRefQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',     'clientOrderId',                true,   Validator::ID),
-        array('orderid',            'paynetOrderId',                true,   Validator::ID),
+        array('client_orderid',     'clientPaymentId',              true,   Validator::ID),
+        array('orderid',            'paynetPaymentId',              true,   Validator::ID),
         // generated
         array('control',             null,                          true,    null),
         // from config
@@ -31,8 +31,8 @@ class CreateCardRefQuery extends AbstractQuery
     static protected $controlCodeDefinition = array
     (
         'login',
-        'clientOrderId',
-        'paynetOrderId',
+        'clientPaymentId',
+        'paynetPaymentId',
         'control'
     );
 
@@ -57,55 +57,55 @@ class CreateCardRefQuery extends AbstractQuery
      *
      * @var string
      */
-    static protected $recurrentCardClass  = '\PaynetEasy\PaynetEasyApi\OrderData\RecurrentCard';
+    static protected $recurrentCardClass  = '\PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard';
 
     /**
      * {@inheritdoc}
      */
-    protected function validateOrder(OrderInterface $order)
+    protected function validatePayment(PaymentInterface $payment)
     {
-        parent::validateOrder($order);
+        parent::validatePayment($payment);
 
-        $this->checkOrderProcessingStage($order);
+        $this->checkPaymentProcessingStage($payment);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function validateResponseOnSuccess(OrderInterface $order, Response $response)
+    protected function validateResponseOnSuccess(PaymentInterface $payment, Response $response)
     {
-        parent::validateResponseOnSuccess($order, $response);
+        parent::validateResponseOnSuccess($payment, $response);
 
-        $this->checkOrderProcessingStage($order);
+        $this->checkPaymentProcessingStage($payment);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function updateOrderOnSuccess(OrderInterface $order, Response $response)
+    protected function updatePaymentOnSuccess(PaymentInterface $payment, Response $response)
     {
-        parent::updateOrderOnSuccess($order, $response);
+        parent::updatePaymentOnSuccess($payment, $response);
 
         if($response->isApproved())
         {
             $recurrentCard = new static::$recurrentCardClass;
             $recurrentCard->setCardReferenceId($response->getCardReferenceId());
 
-            $order->setRecurrentCardFrom($recurrentCard);
+            $payment->setRecurrentCardFrom($recurrentCard);
         }
     }
 
     /**
-     * Check Order transport stage and bank status.
+     * Check Payment transport stage and bank status.
      * State must be STAGE_FINISHED and status must be STATUS_APPROVED.
      *
-     * @param       OrderInterface      $order      Order for checking
+     * @param       PaymentInterface        $payment        Payment for checking
      */
-    protected function checkOrderProcessingStage(OrderInterface $order)
+    protected function checkPaymentProcessingStage(PaymentInterface $payment)
     {
-        if (!$order->isFinished() || !$order->isApproved())
+        if (!$payment->isFinished() || !$payment->isApproved())
         {
-            throw new ValidationException('Only approved and ended Order can be used for create-card-ref-id');
+            throw new ValidationException('Only approved and ended Payment can be used for create-card-ref-id');
         }
     }
 

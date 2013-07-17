@@ -1,5 +1,6 @@
 <?php
-namespace PaynetEasy\PaynetEasyApi\OrderData;
+
+namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
 /**
  * Container for customer data

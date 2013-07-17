@@ -4,7 +4,7 @@
  * @author Artem Ponomarenko <imenem@inbox.ru>
  */
 
-namespace PaynetEasy\PaynetEasyApi\OrderData;
+namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
 interface CreditCardInterface
 {

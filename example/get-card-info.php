@@ -1,7 +1,7 @@
 <?php
 
-use PaynetEasy\PaynetEasyApi\OrderData\Order;
-use PaynetEasy\PaynetEasyApi\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -15,34 +15,34 @@ session_start();
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Registration
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Process_Initial_Payment
  *
- * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый.
+ * Если платеж был сохранен - получим его сохраненную версию, иначе создадим новый.
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Information_request_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
  */
-$order = $loadOrder() ?: new Order(array());
+$payment = $loadPayment() ?: new Payment(array());
 
 /**
  * Для этого запроса необходимо передать ID кредитной карты
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Information_request_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\OrderData\RecurrentCard
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
  */
-$order->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058)));
+$payment->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058)));
 
-$orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
+$paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
 
 /**
- * Вызов этого метода заполнит поля объекта RecurrentCard, размещенного в объекте Order
+ * Вызов этого метода заполнит поля объекта RecurrentCard, размещенного в объекте Payment
  *
- * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::updateOrderOnSuccess()
+ * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::updatePaymentOnSuccess()
  */
-$orderProcessor->executeQuery('get-card-info', $getConfig(), $order, $_REQUEST);
+$paymentProcessor->executeQuery('get-card-info', $getConfig(), $payment, $_REQUEST);
 
 /**
- * Сохраним заказ и выведем его на экран
+ * Сохраним платеж и выведем его на экран
  */
-$saveOrder($order);
-$displayEndedOrder($order);
+$savePayment($payment);
+$displayEndedPayment($payment);

@@ -16,7 +16,7 @@ class FormQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',     'clientOrderId',                true,   Validator::ID),
+        array('client_orderid',     'clientPaymentId',              true,   Validator::ID),
         array('order_desc',         'description',                  true,   Validator::LONG_STRING),
         array('amount',             'amount',                       true,   Validator::AMOUNT),
         array('currency',           'currency',                     true,   Validator::CURRENCY),
@@ -60,7 +60,7 @@ class FormQuery extends AbstractQuery
     static protected $controlCodeDefinition = array
     (
         'end_point',
-        'clientOrderId',
+        'clientPaymentId',
         'amountInCents',
         'customer.email',
         'control'

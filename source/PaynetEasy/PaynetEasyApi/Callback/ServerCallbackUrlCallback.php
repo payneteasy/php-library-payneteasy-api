@@ -1,7 +1,7 @@
 <?php
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
 use RuntimeException;
 
 class ServerCallbackUrlCallback extends AbstractCallback
@@ -23,11 +23,11 @@ class ServerCallbackUrlCallback extends AbstractCallback
      */
     static protected $allowedStatuses = array
     (
-        OrderInterface::STATUS_PROCESSING,
-        OrderInterface::STATUS_APPROVED,
-        OrderInterface::STATUS_DECLINED,
-        OrderInterface::STATUS_FILTERED,
-        OrderInterface::STATUS_ERROR
+        PaymentInterface::STATUS_PROCESSING,
+        PaymentInterface::STATUS_APPROVED,
+        PaymentInterface::STATUS_DECLINED,
+        PaymentInterface::STATUS_FILTERED,
+        PaymentInterface::STATUS_ERROR
     );
 
     /**
@@ -35,9 +35,9 @@ class ServerCallbackUrlCallback extends AbstractCallback
      */
     static protected $callbackFieldsDefinition = array
     (
-        array('orderid',        'paynetOrderId'),
-        array('merchant_order', 'clientOrderId'),
-        array('client_orderid', 'clientOrderId'),
+        array('orderid',        'paynetPaymentId'),
+        array('merchant_order', 'clientPaymentId'),
+        array('client_orderid', 'clientPaymentId'),
         array('amount',         'amount'),
         array('status',          null),
         array('type',            null),

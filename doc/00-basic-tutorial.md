@@ -1,51 +1,51 @@
 # Простой пример использования библиотеки
 
-Разберем выполнение запросов при [интеграции платежной формы](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration). Типовая обработка заказа, с точки зрения CMS мерчанта, происходит в два этапа.
+Разберем выполнение запросов при [интеграции платежной формы](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration). Типовая обработка платежа, с точки зрения CMS мерчанта, происходит в два этапа.
 
-1. Начало обработки заказа:
+1. Начало обработки платежа:
     * Конфигурирование библиотеки
-    * Инициализация заказа
-    * Отправка запроса к платежному шлюзу для начала обработки заказа
-    * Изменение статуса заказа
-    * Сохранение заказа в хранилище
+    * Инициализация платежа
+    * Отправка запроса к платежному шлюзу для начала обработки платежа
+    * Изменение статуса платежа
+    * Сохранение платежа в хранилище
     * Переадресация пользователя на платежную форму
 
-2. Окончание обработки заказа:
+2. Окончание обработки платежа:
     * Возврат пользователя с платежной формы
     * Конфигурирование библиотеки
-    * Загрузка заказа из хранилища
+    * Загрузка платежа из хранилища
     * Обработка данных, полученных при возвращении пользователя с платежной формы
-    * Изменение статуса заказа
-    * Сохранение заказа в хранилище
-    * Вывод состояния заказа на экран
+    * Изменение статуса платежа
+    * Сохранение платежа в хранилище
+    * Вывод состояния платежа на экран
 
-Рассмотрим примеры исходного кода для выполнения этих этапов. Обратите внимание, что для хранения заказа в примерах используется сессия.
+Рассмотрим примеры исходного кода для выполнения этих этапов. Обратите внимание, что для хранения платежа в примерах используется сессия.
 
-### Начало обработки заказа
+### Начало обработки платежа
 
 1. Подключите загрузчик классов, [предоставляемый composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading), и необходимые классы:
 
     ```php
     require_once 'project/root/dir/vendor/autoload.php';
 
-    use PaynetEasy\PaynetEasyApi\OrderData\Order;
-    use PaynetEasy\PaynetEasyApi\OrderData\Customer;
+    use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+    use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
     use PaynetEasy\PaynetEasyApi\Transport\Response;
-    use PaynetEasy\PaynetEasyApi\OrderProcessor;
+    use PaynetEasy\PaynetEasyApi\PaymentProcessor;
     ```
-2. Создайте новый заказ и покупателя:
+2. Создайте новый платеж и покупателя:
 
     ```php
-    $order = new Order(array
+    $payment = new Payment(array
     (
-        'client_orderid'            => 'CLIENT-112244',
-        'desc'                      => 'This is test order',
+        'client_payment_id'         => 'CLIENT-112244',
+        'description'               => 'This is test payment',
         'amount'                    =>  9.99,
         'currency'                  => 'USD',
         'ipaddress'                 => '127.0.0.1'
     ));
 
-    $order->setCustomer(new Customer(array
+    $payment->setCustomer(new Customer(array
     (
         'address'       => '2704 Colonial Drive',
         'city'          => 'Houston',
@@ -64,8 +64,8 @@
     * **[redirect_url](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect)** - URL на который пользователь будет перенаправлен после окончания запроса
 
     Обработчики:
-    * **OrderProcessor::HANDLER_SAVE_ORDER** - для сохранения заказа
-    * **OrderProcessor::HANDLER_REDIRECT** - для переадресации пользователя на URL платежной формы, полученный от PaynetEasy
+    * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
+    * **PaymentProcessor::HANDLER_REDIRECT** - для переадресации пользователя на URL платежной формы, полученный от PaynetEasy
 
     ```php
     $queryConfig = array
@@ -76,16 +76,16 @@
         'redirect_url'          => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}"
     );
 
-    $orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
+    $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
 
-    $orderProcessor->setHandlers(array
+    $paymentProcessor->setHandlers(array
     (
-        OrderProcessor::HANDLER_SAVE_ORDER          => function(Order $order)
+        PaymentProcessor::HANDLER_SAVE_PAYMENT          => function(Payment $payment)
         {
             start_session();
-            $_SESSION['order'] = serialize($order);
+            $_SESSION['payment'] = serialize($payment);
         },
-        OrderProcessor::HANDLER_REDIRECT            => function(Order $order, Response $response)
+        PaymentProcessor::HANDLER_REDIRECT            => function(Payment $payment, Response $response)
         {
             header("Location: {$response->getRedirectUrl()}");
             exit;
@@ -97,13 +97,13 @@
     * Библиотека проверит данные платежа и сформирует на его основе запрос к PaynetEasy
     * Запрос будет выполнен для старта обработки платежа и его первичной проверки, будет получен ответ от PaynetEasy
     * Библиотека изменит статус платежа **status** и этап обработки платежа **processingStage** на основе данных ответа
-    * Платеж будет сохранен в сессии обработчиком для `OrderProcessor::HANDLER_SAVE_ORDER`
-    * Пользователь будет перенаправлен на платежную форму обработчиком для `OrderProcessor::HANDLER_REDIRECT`
+    * Платеж будет сохранен в сессии обработчиком для `PaymentProcessor::HANDLER_SAVE_PAYMENT`
+    * Пользователь будет перенаправлен на платежную форму обработчиком для `PaymentProcessor::HANDLER_REDIRECT`
 
     ```php
-    $orderProcessor->executeWorkflow('sale-form', $queryConfig, $order);
+    $paymentProcessor->executeWorkflow('sale-form', $queryConfig, $payment);
     ```
-### Окончание обработки заказа
+### Окончание обработки платежа
 
 1. Подключите загрузчик классов, [предоставляемый composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading), и необходимые классы:
 
@@ -111,13 +111,13 @@
     require_once 'project/root/dir/vendor/autoload.php';
 
     use PaynetEasy\PaynetEasyApi\Transport\Response;
-    use PaynetEasy\PaynetEasyApi\OrderProcessor;
+    use PaynetEasy\PaynetEasyApi\PaymentProcessor;
     ```
-2. Загрузите сохраненный заказ:
+2. Загрузите сохраненный платеж:
 
     ```php
     session_start();
-    $order = unserialize($_SESSION['order']);
+    $payment = unserialize($_SESSION['payment']);
     ```
 3. Создайте конфигурацию для выполнения запроса и сервис для обработки платежей. Назначьте обработчики событий для сервиса:
 
@@ -125,8 +125,8 @@
     * **control** - ключ мерчанта для подписывания запросов, выдается при подключении
 
     Обработчики:
-    * **OrderProcessor::HANDLER_SAVE_ORDER** - для сохранения заказа
-    * **OrderProcessor::HANDLER_FINISH_PROCESSING** - для вывода информации о заказе после окончания обработки
+    * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
+    * **PaymentProcessor::HANDLER_FINISH_PROCESSING** - для вывода информации о платеже после окончания обработки
 
     ```php
     $queryConfig = array
@@ -134,19 +134,19 @@
         'control'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
     );
 
-    $orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
+    $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
 
-    $orderProcessor->setHandlers(array
+    $paymentProcessor->setHandlers(array
     (
-        OrderProcessor::HANDLER_SAVE_ORDER          => function(Order $order)
+        PaymentProcessor::HANDLER_SAVE_PAYMENT          => function(Payment $payment)
         {
-            $_SESSION['order'] = serialize($order);
+            $_SESSION['payment'] = serialize($payment);
         },
-        OrderProcessor::HANDLER_FINISH_PROCESSING   => function(Order $order)
+        PaymentProcessor::HANDLER_FINISH_PROCESSING   => function(Payment $payment)
         {
             print "<pre>";
-            print_r("Order state: {$order->getProcessingStage()}\n");
-            print_r("Order status: {$order->getStatus()}\n");
+            print_r("Payment state: {$payment->getProcessingStage()}\n");
+            print_r("Payment status: {$payment->getStatus()}\n");
             print "</pre>";
         }
     ));
@@ -154,9 +154,9 @@
 5. Запустите обработку данных, полученных при возвращении пользователя с платежной формы. Будут выполнены следующие шаги:
     * Библиотека проверит данные, полученные по возвращении пользователя с платежной формы PaynetEasy (суперглобальный массив $_REQUEST)
     * Библиотека изменит статус платежа **status** и этап обработки платежа **processingStage** на основе проверенных данных
-    * Платеж будет сохранен в сессии обработчиком для `OrderProcessor::HANDLER_SAVE_ORDER`
-    * Статус платежа **status** и этап обработки платежа **processingStage** будут выведены на экран обработчиком для OrderProcessor::HANDLER_FINISH_PROCESSING
+    * Платеж будет сохранен в сессии обработчиком для `PaymentProcessor::HANDLER_SAVE_PAYMENT`
+    * Статус платежа **status** и этап обработки платежа **processingStage** будут выведены на экран обработчиком для PaymentProcessor::HANDLER_FINISH_PROCESSING
 
     ```php
-    $orderProcessor->executeWorkflow('sale-form', $queryConfig, $order, $_REQUEST);
+    $paymentProcessor->executeWorkflow('sale-form', $queryConfig, $payment, $_REQUEST);
     ```

@@ -1,7 +1,7 @@
 <?php
 
-use PaynetEasy\PaynetEasyApi\OrderData\Order;
-use PaynetEasy\PaynetEasyApi\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -15,35 +15,35 @@ session_start();
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Registration
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Process_Initial_Payment
  *
- * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый.
+ * Если платеж был сохранен - получим его сохраненную версию, иначе создадим новый.
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_registration_request_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
  */
-$order = $loadOrder() ?: new Order(array
+$payment = $loadPayment() ?: new Payment(array
 (
-    'client_orderid'            => 'CLIENT-112244',
-    'paynet_order_id'           =>  1969595
+    'client_payment_id'     => 'CLIENT-112244',
+    'paynet_payment_id'     =>  1969595
 ));
 
 /**
  * Платеж обязательно должен быть успешно завершен
  */
-$order->setProcessingStage(Order::STAGE_FINISHED);
-$order->setStatus(Order::STATUS_APPROVED);
+$payment->setProcessingStage(Payment::STAGE_FINISHED);
+$payment->setStatus(Payment::STATUS_APPROVED);
 
-$orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
+$paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
 
 /**
- * Вызов этого метода создаст в объекте Order объект RecurrentCard
+ * Вызов этого метода создаст в объекте Payment объект RecurrentCard
  *
- * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::updateOrderOnSuccess()
+ * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::updatePaymentOnSuccess()
  */
-$orderProcessor->executeQuery('create-card-ref', $getConfig(), $order, $_REQUEST);
+$paymentProcessor->executeQuery('create-card-ref', $getConfig(), $payment, $_REQUEST);
 
 /**
- * Сохраним заказ и выведем его на экран
+ * Сохраним платеж и выведем его на экран
  */
-$saveOrder($order);
-$displayEndedOrder($order);
+$savePayment($payment);
+$displayEndedPayment($payment);

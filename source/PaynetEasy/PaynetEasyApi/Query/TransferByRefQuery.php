@@ -15,7 +15,7 @@ class TransferByRefQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',             'clientOrderId',                        true,    Validator::ID),
+        array('client_orderid',             'clientPaymentId',                      true,    Validator::ID),
         array('amount',                     'amount',                               true,    Validator::AMOUNT),
         array('currency',                   'currency',                             true,    Validator::CURRENCY),
         array('ipaddress',                  'ipAddress',                            true,    Validator::IP),
@@ -38,7 +38,7 @@ class TransferByRefQuery extends AbstractQuery
     static protected $controlCodeDefinition = array
     (
         'login',
-        'clientOrderId',
+        'clientPaymentId',
         'recurrentCardFrom.cardReferenceId',
         'recurrentCardTo.cardReferenceId',
         'amountInCents',

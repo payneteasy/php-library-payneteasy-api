@@ -2,17 +2,17 @@
 
 namespace PaynetEasy\PaynetEasyApi\Workflow;
 
-use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
 
 interface WorkflowInterface
 {
     /**
-     * Process Order with different transport stage
+     * Process Payment with different transport stage
      *
-     * @param       PaynetEasy\PaynetEasyApi\OrderData\OrderInterface   $order              Order for processing
-     * @param       array                                   $callbackData       Paynet callback data
+     * @param       PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface       $payment            Payment for processing
+     * @param       array                                                       $callbackData       Paynet callback data
      *
      * @return      \PaynetEasy\PaynetEasyApi\Transport\Response
      */
-    public function processOrder(OrderInterface $order, array $callbackData = array());
+    public function processPayment(PaymentInterface $payment, array $callbackData = array());
 }

@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\OrderData\Order;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
 /**
@@ -29,14 +29,14 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
      */
     public function testProcessCallbackProcessing(array $callback)
     {
-        $order = $this->getOrder();
+        $payment = $this->getPayment();
 
         $callback['control'] = $this->createControlCode($callback);
 
-        $this->object->processCallback($order, new CallbackResponse($callback));
+        $this->object->processCallback($payment, new CallbackResponse($callback));
 
-        $this->assertOrderStates($order, Order::STAGE_CREATED, Order::STATUS_PROCESSING);
-        $this->assertFalse($order->hasErrors());
+        $this->assertPaymentStates($payment, Payment::STAGE_CREATED, Payment::STATUS_PROCESSING);
+        $this->assertFalse($payment->hasErrors());
     }
 
     public function testProcessCallbackProcessingProvider()
@@ -46,9 +46,9 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
             'type'              => 'sale',
             'status'            => 'processing',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_ORDER_ID,
-            'merchant_order'    =>  self::CLIENT_ORDER_ID,
-            'client_orderid'    =>  self::CLIENT_ORDER_ID,
+            'orderid'           =>  self::PAYNET_PAYMENT_ID,
+            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
+            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
         )));
     }
 
@@ -59,9 +59,9 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
             'type'              => 'sale',
             'status'            => 'approved',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_ORDER_ID,
-            'merchant_order'    =>  self::CLIENT_ORDER_ID,
-            'client_orderid'    =>  self::CLIENT_ORDER_ID,
+            'orderid'           =>  self::PAYNET_PAYMENT_ID,
+            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
+            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
         )));
     }
 
@@ -73,18 +73,18 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
             'type'              => 'sale',
             'status'            => 'declined',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_ORDER_ID,
-            'merchant_order'    =>  self::CLIENT_ORDER_ID,
-            'client_orderid'    =>  self::CLIENT_ORDER_ID,
+            'orderid'           =>  self::PAYNET_PAYMENT_ID,
+            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
+            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
         )),
         array(array
         (
             'type'              => 'sale',
             'status'            => 'filtered',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_ORDER_ID,
-            'merchant_order'    =>  self::CLIENT_ORDER_ID,
-            'client_orderid'    =>  self::CLIENT_ORDER_ID,
+            'orderid'           =>  self::PAYNET_PAYMENT_ID,
+            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
+            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
         )));
     }
 
@@ -95,9 +95,9 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
             'type'              => 'sale',
             'status'            => 'error',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_ORDER_ID,
-            'merchant_order'    =>  self::CLIENT_ORDER_ID,
-            'client_orderid'    =>  self::CLIENT_ORDER_ID,
+            'orderid'           =>  self::PAYNET_PAYMENT_ID,
+            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
+            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
             'error_message'     => 'test type error message',
             'error_code'        =>  5
         )));

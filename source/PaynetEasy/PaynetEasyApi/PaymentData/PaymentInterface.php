@@ -4,14 +4,14 @@
  * @author Artem Ponomarenko <imenem@inbox.ru>
  */
 
-namespace PaynetEasy\PaynetEasyApi\OrderData;
+namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
 use Exception;
 
-interface OrderInterface
+interface PaymentInterface
 {
     /**
-     * Order created in bank
+     * Payment created in bank
      */
     const STAGE_CREATED     = 'created';
 
@@ -21,78 +21,78 @@ interface OrderInterface
     const STAGE_REDIRECTED  = 'redirected';
 
     /**
-     * Order processing is ended
+     * Payment processing is ended
      */
     const STAGE_FINISHED    = 'ended';
 
     /**
-     * Order is now processing
+     * Payment is now processing
      */
     const STATUS_PROCESSING = 'processing';
 
     /**
-     * Order approved
+     * Payment approved
      */
     const STATUS_APPROVED   = 'approved';
 
     /**
-     * Order declined by bank
+     * Payment declined by bank
      */
     const STATUS_DECLINED   = 'declined';
 
     /**
-     * Order declined by Paynet filters
+     * Payment declined by Paynet filters
      */
     const STATUS_FILTERED   = 'filtered';
 
     /**
-     * Order processed with error
+     * Payment processed with error
      */
     const STATUS_ERROR      = 'error';
 
     /**
-     * Set Merchant order identifier
+     * Set Merchant payment identifier
      *
-     * @param       string      $clientOrderId      Merchant order identifier
+     * @param       string      $clientPaymentId        Merchant payment identifier
      *
      * @return      self
      */
-    public function setClientOrderId($clientOrderId);
+    public function setClientPaymentId($clientPaymentId);
 
     /**
-     * Get merchant order identifier
+     * Get merchant payment identifier
      *
      * @return      string
      */
-    public function getClientOrderId();
+    public function getClientPaymentId();
 
     /**
      * Set unique identifier of transaction assigned by PaynetEasy
      *
-     * @param       string      $paynetOrderId      Unique identifier of transaction assigned by PaynetEasy
+     * @param       string      $paynetPaymentId        Unique identifier of transaction assigned by PaynetEasy
      *
      * @return      self
      */
-    public function setPaynetOrderId($paynetOrderId);
+    public function setPaynetPaymentId($paynetPaymentId);
 
     /**
      * Get unique identifier of transaction assigned by PaynetEasy
      *
      * @return       string
      */
-    public function getPaynetOrderId();
+    public function getPaynetPaymentId();
 
     /**
-     * Set brief order description
+     * Set brief payment description
      *
-     * @param       string      $description        Brief order description
+     * @param       string      $description        Brief payment description
      *
      * @return      self
      */
     public function setDescription($description);
 
     /**
-     * Get brief order description
+     * Get brief payment description
      *
      * @return      string
      */
@@ -184,25 +184,25 @@ interface OrderInterface
     public function getSiteUrl();
 
     /**
-     * Set order customer
+     * Set payment customer
      *
-     * @param       \PaynetEasy\PaynetEasyApi\OrderData\CustomerInterface        $customer       Order customer
+     * @param       CustomerInterface       $customer           Payment customer
      *
      * @return      self
      */
     public function setCustomer(CustomerInterface $customer);
 
     /**
-     * Get order customer
+     * Get payment customer
      *
-     * @return      \PaynetEasy\PaynetEasyApi\OrderData\CustomerInterface
+     * @return      CustomerInterface
      */
     public function getCustomer();
 
     /**
-     * Set order credit card
+     * Set payment credit card
      *
-     * @param       \PaynetEasy\PaynetEasyApi\OrderData\CreditCardInterface     $creditCard
+     * @param       CreditCardInterface     $creditCard         Payment credit card
      *
      * @return      self
      */
@@ -211,60 +211,60 @@ interface OrderInterface
     /**
      * Get credit card
      *
-     * @return      \PaynetEasy\PaynetEasyApi\OrderData\CreditCardInterface
+     * @return      CreditCardInterface
      */
     public function getCreditCard();
 
     /**
-     * Set order sorce recurrent card
+     * Set payment sorce recurrent card
      *
-     * @param       \PaynetEasy\PaynetEasyApi\OrderData\RecurrentCardInterface  $recurrentCard
+     * @param       RecurrentCardInterface      $recurrentCard      Source recurrent card
      *
      * @return      self
      */
     public function setRecurrentCardFrom(RecurrentCardInterface $recurrentCard);
 
     /**
-     * Get order source recurrent card
+     * Get payment source recurrent card
      *
-     * @return      \PaynetEasy\PaynetEasyApi\OrderData\RecurrentCardInterface
+     * @return      RecurrentCardInterface
      */
     public function getRecurrentCardFrom();
 
     /**
-     * Set order destination recurrent card
+     * Set payment destination recurrent card
      *
-     * @param       \PaynetEasy\PaynetEasyApi\OrderData\RecurrentCardInterface  $recurrentCard
+     * @param       RecurrentCardInterface      $recurrentCard      Destination recurrent card
      *
      * @return      self
      */
     public function setRecurrentCardTo(RecurrentCardInterface $recurrentCard);
 
     /**
-     * Get order destination recurrent card
+     * Get payment destination recurrent card
      *
-     * @return      \PaynetEasy\PaynetEasyApi\OrderData\RecurrentCardInterface
+     * @return      RecurrentCardInterface
      */
     public function getRecurrentCardTo();
 
     /**
-     * Set order processing stage
+     * Set payment processing stage
      *
-     * @param       string      $processingStage      Order transport stage
+     * @param       string      $processingStage      Payment transport stage
      *
      * @return      self
      */
     public function setProcessingStage($processingStage);
 
     /**
-     * Get order processing state
+     * Get payment processing state
      *
      * @return      string
      */
     public function getProcessingStage();
 
     /**
-     * True, if order created in bank
+     * True, if payment created in bank
      *
      * @return      boolean
      */
@@ -285,51 +285,51 @@ interface OrderInterface
     public function isFinished();
 
     /**
-     * Set order bank status
+     * Set payment bank status
      *
-     * @param       string      $status             Order bank status
+     * @param       string      $status     Payment bank status
      *
      * @return      self
      */
     public function setStatus($status);
 
     /**
-     * Get order bank status
+     * Get payment bank status
      *
      * @return      string
      */
     public function getStatus();
 
     /**
-     * True, if order is now processing
+     * True, if payment is now processing
      *
      * @return      boolean
      */
     public function isProcessing();
 
     /**
-     * True, if order approved
+     * True, if payment approved
      *
      * @return      boolean
      */
     public function isApproved();
 
     /**
-     * True, if order declined
+     * True, if payment declined
      *
      * @return      boolean
      */
     public function isDeclined();
 
     /**
-     * True, if error occured when processing order
+     * True, if error occured when processing payment
      *
      * @return      boolean
      */
     public function isError();
 
     /**
-     * Set order short comment
+     * Set payment short comment
      *
      * @param       string      $comment    A short comment
      *
@@ -338,37 +338,37 @@ interface OrderInterface
     public function setComment($comment);
 
     /**
-     * Get order cancellation reason (up to 50 chars)
+     * Get payment cancellation reason (up to 50 chars)
      *
-     * @return      string                  Cancellation reason
+     * @return      string      Cancellation reason
      */
     public function getComment();
 
     /**
-     * Adds new order error
+     * Adds new payment error
      *
-     * @param       Exception   $error      Order error
+     * @param       Exception       $error      Payment error
      *
      * @return      self
      */
     public function addError(Exception $error);
 
     /**
-     * True if order has errors
+     * True if payment has errors
      *
      * @return      boolean
      */
     public function hasErrors();
 
     /**
-     * Get all order errors
+     * Get all payment errors
      *
-     * @return      array                   Order errors
+     * @return      array       Payment errors
      */
     public function getErrors();
 
     /**
-     * Get order last error
+     * Get payment last error
      *
      * @return      Exception
      */

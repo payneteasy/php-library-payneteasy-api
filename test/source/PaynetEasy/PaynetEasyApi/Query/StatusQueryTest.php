@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
-use PaynetEasy\PaynetEasyApi\OrderData\Order;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 /**
@@ -31,8 +31,8 @@ class StatusQueryTest extends QueryTestPrototype
             sha1
             (
                 self::LOGIN .
-                self::CLIENT_ORDER_ID .
-                self::PAYNET_ORDER_ID .
+                self::CLIENT_PAYMENT_ID .
+                self::PAYNET_PAYMENT_ID .
                 self::SIGN_KEY
             )
         ));
@@ -43,12 +43,12 @@ class StatusQueryTest extends QueryTestPrototype
      */
     public function testProcessRedirect(array $response)
     {
-        $order = $this->getOrder();
+        $payment = $this->getPayment();
 
-        $this->object->processResponse($order, new Response($response));
+        $this->object->processResponse($payment, new Response($response));
 
-        $this->assertOrderStates($order, Order::STAGE_REDIRECTED, Order::STATUS_PROCESSING);
-        $this->assertFalse($order->hasErrors());
+        $this->assertPaymentStates($payment, Payment::STAGE_REDIRECTED, Payment::STATUS_PROCESSING);
+        $this->assertFalse($payment->hasErrors());
     }
 
     public function testProcessRedirectProvider()
@@ -60,8 +60,8 @@ class StatusQueryTest extends QueryTestPrototype
             'type'              => 'status-response',
             'status'            => 'processing',
             'html'              => '<HTML>',
-            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
-            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
+            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
+            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
             'serial-number'     =>  md5(time())
         )),
         // URL redirect
@@ -70,8 +70,8 @@ class StatusQueryTest extends QueryTestPrototype
             'type'              => 'status-response',
             'status'            => 'processing',
             'redirect-url'      => 'http://testdomain.com/',
-            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
-            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
+            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
+            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -81,12 +81,12 @@ class StatusQueryTest extends QueryTestPrototype
      */
     public function testProcessResponseApproved(array $response)
     {
-        $order = $this->getOrder();
+        $payment = $this->getPayment();
 
-        $this->object->processResponse($order, new Response($response));
+        $this->object->processResponse($payment, new Response($response));
 
-        $this->assertOrderStates($order, Order::STAGE_FINISHED, Order::STATUS_APPROVED);
-        $this->assertFalse($order->hasErrors());
+        $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_APPROVED);
+        $this->assertFalse($payment->hasErrors());
     }
 
     public function testProcessResponseApprovedProvider()
@@ -95,8 +95,8 @@ class StatusQueryTest extends QueryTestPrototype
         (
             'type'              => 'status-response',
             'status'            => 'approved',
-            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
-            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
+            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
+            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -108,8 +108,8 @@ class StatusQueryTest extends QueryTestPrototype
         (
             'type'              => 'status-response',
             'status'            => 'filtered',
-            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
-            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
+            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
+            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test filtered message',
             'error-code'        =>  8876
@@ -118,8 +118,8 @@ class StatusQueryTest extends QueryTestPrototype
         (
             'type'              => 'status-response',
             'status'            => 'declined',
-            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
-            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
+            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
+            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test error message',
             'error-code'        =>  578
@@ -132,8 +132,8 @@ class StatusQueryTest extends QueryTestPrototype
         (
             'type'              => 'status-response',
             'status'            => 'processing',
-            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
-            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
+            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
+            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -146,8 +146,8 @@ class StatusQueryTest extends QueryTestPrototype
         (
             'type'              => 'status-response',
             'status'            => 'error',
-            'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
-            'merchant-order-id' =>  self::CLIENT_ORDER_ID,
+            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
+            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'status error message',
             'error-code'        =>  2
@@ -171,12 +171,12 @@ class StatusQueryTest extends QueryTestPrototype
     /**
      * {@inheritdoc}
      */
-    protected function getOrder()
+    protected function getPayment()
     {
-        return new Order(array
+        return new Payment(array
         (
-            'client_orderid'        => self::CLIENT_ORDER_ID,
-            'paynet_order_id'       => self::PAYNET_ORDER_ID
+            'client_payment_id'     => self::CLIENT_PAYMENT_ID,
+            'paynet_payment_id'     => self::PAYNET_PAYMENT_ID
         ));
     }
 }

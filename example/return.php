@@ -1,7 +1,7 @@
 <?php
 
-use PaynetEasy\PaynetEasyApi\OrderData\Order;
-use PaynetEasy\PaynetEasyApi\OrderProcessor;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -9,19 +9,19 @@ require_once './common/functions.php';
 session_start();
 
 /**
- * Если заказ был сохранен - получим его сохраненную версию, иначе создадим новый
+ * Если платеж был сохранен - получим его сохраненную версию, иначе создадим новый
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Return_Transactions#Return_Request_Parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\OrderData\Order
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
  */
-$order = $loadOrder() ?: new Order(array
+$payment = $loadPayment() ?: new Payment(array
 (
-    'client_orderid'            => 'CLIENT-112244',
-    'paynet_order_id'           =>  1969589,
+    'client_payment_id'         => 'CLIENT-112244',
+    'paynet_payment_id'         =>  1969589,
     'amount'                    =>  9.99,
     'currency'                  => 'USD',
-    'comment'                   => 'cancel order'
+    'comment'                   => 'cancel payment'
 ));
 
 /**
@@ -29,29 +29,29 @@ $order = $loadOrder() ?: new Order(array
  *
  * @see \PaynetEasy\PaynetEasyApi\Transport\GatewayClient::$gatewayUrl
  */
-$orderProcessor = new OrderProcessor('https://payment.domain.com/paynet/api/v2/');
+$paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
 
 /**
  * Назначим обработчики для разных событий, происходящих при обработке платежа
  *
  * @see ./common/functions.php
- * @see PaynetEasy\PaynetEasyApi\OrderProcessor::executeWorkflow()
- * @see PaynetEasy\PaynetEasyApi\OrderProcessor::callHandler()
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeWorkflow()
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::callHandler()
  */
-$orderProcessor->setHandlers(array
+$paymentProcessor->setHandlers(array
 (
-    OrderProcessor::HANDLER_SAVE_ORDER          => $saveOrder,
-    OrderProcessor::HANDLER_STATUS_UPDATE       => $displayWaitPage,
-    OrderProcessor::HANDLER_SHOW_HTML           => $displayResponseHtml,
-    OrderProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedOrder
+    PaymentProcessor::HANDLER_SAVE_PAYMENT        => $savePayment,
+    PaymentProcessor::HANDLER_STATUS_UPDATE       => $displayWaitPage,
+    PaymentProcessor::HANDLER_SHOW_HTML           => $displayResponseHtml,
+    PaymentProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedPayment
 ));
 
 /**
  * Каждый вызов этого метода выполняет определенный запрос к API Paynet,
- * выбор запроса зависит от этапа обработки заказа
+ * выбор запроса зависит от этапа обработки платежа
  *
- * @see \PaynetEasy\PaynetEasyApi\OrderData\Order::$processingStage
- * @see \PaynetEasy\PaynetEasyApi\OrderProcessor::executeWorkflow()
- * @see \PaynetEasy\PaynetEasyApi\Workflow\AbstractWorkflow::processOrder()
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment::$processingStage
+ * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeWorkflow()
+ * @see \PaynetEasy\PaynetEasyApi\Workflow\AbstractWorkflow::processPayment()
  */
-$orderProcessor->executeWorkflow('return', $getConfig(), $order, $_REQUEST);
+$paymentProcessor->executeWorkflow('return', $getConfig(), $payment, $_REQUEST);

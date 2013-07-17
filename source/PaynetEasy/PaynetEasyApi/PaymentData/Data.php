@@ -1,5 +1,6 @@
 <?php
-namespace PaynetEasy\PaynetEasyApi\OrderData;
+
+namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
 use Serializable;
 use PaynetEasy\PaynetEasyApi\Utils\String;

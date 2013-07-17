@@ -7,7 +7,7 @@ use PaynetEasy\PaynetEasyApi\Query\QueryFactoryInterface;
 use PaynetEasy\PaynetEasyApi\Workflow\WorkflowFactoryInterface;
 use PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface;
 
-use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
@@ -20,15 +20,15 @@ use PaynetEasy\PaynetEasyApi\Callback\CallbackFactory;
 use RuntimeException;
 use Exception;
 
-class OrderProcessor
+class PaymentProcessor
 {
     /**
-     * Order changed and should be saved
+     * Payment changed and should be saved
      */
-    const HANDLER_SAVE_ORDER        = 'save_order';
+    const HANDLER_SAVE_PAYMENT      = 'save_payment';
 
     /**
-     * Order status not changed and should be updated
+     * Payment status not changed and should be updated
      */
     const HANDLER_STATUS_UPDATE     = 'status_update';
 
@@ -43,9 +43,9 @@ class OrderProcessor
     const HANDLER_REDIRECT          = 'redirect';
 
     /**
-     * Order processing ended
+     * Payment processing ended
      */
-    const HANDLER_FINISH_PROCESSING  = 'finish_processing';
+    const HANDLER_FINISH_PROCESSING = 'finish_processing';
 
     /**
      * Allowed handlers list
@@ -54,7 +54,7 @@ class OrderProcessor
      */
     static protected $allowedHandlers = array
     (
-        self::HANDLER_SAVE_ORDER,
+        self::HANDLER_SAVE_PAYMENT,
         self::HANDLER_STATUS_UPDATE,
         self::HANDLER_SHOW_HTML,
         self::HANDLER_REDIRECT,
@@ -116,52 +116,52 @@ class OrderProcessor
      *
      * @param       string              $workflowName           Payment workflow name
      * @param       array               $workflowConfig         Payment workflow config
-     * @param       OrderInterface      $order                  Order for processing
+     * @param       PaymentInterface    $payment                Payment for processing
      * @param       array               $callbackData           Paynet callback data (optional)
      */
     public function executeWorkflow(                $workflowName,
                                     array           $workflowConfig,
-                                    OrderInterface  $order,
+                                    PaymentInterface  $payment,
                                     array           $callbackData       = array())
     {
-        // prevent double processing for finished order
-        if ($order->isFinished())
+        // prevent double processing for finished payment
+        if ($payment->isFinished())
         {
-            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $order);
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment);
             return;
         }
 
         try
         {
             $response = $this->getWorkflow($workflowName, $workflowConfig)
-                            ->processOrder($order, $callbackData);
+                            ->processPayment($payment, $callbackData);
         }
         catch (Exception $e)
         {
-            $order->addError($e);
-            $this->callHandler(self::HANDLER_SAVE_ORDER, $order);
+            $payment->addError($e);
+            $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment);
             throw $e;
         }
 
-        $this->callHandler(self::HANDLER_SAVE_ORDER, $order, $response);
+        $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
 
-        // no action needed if order is finished
-        if ($order->isFinished())
+        // no action needed if payment is finished
+        if ($payment->isFinished())
         {
-            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $order, $response);
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment, $response);
             return;
         }
 
         switch ($response->getNeededAction())
         {
             case Response::NEEDED_STATUS_UPDATE:
-                $this->callHandler(self::HANDLER_STATUS_UPDATE,    $order, $response);
+                $this->callHandler(self::HANDLER_STATUS_UPDATE,    $payment, $response);
             break;
             case Response::NEEDED_SHOW_HTML:
-                $this->callHandler(self::HANDLER_SHOW_HTML,         $order, $response);
+                $this->callHandler(self::HANDLER_SHOW_HTML,         $payment, $response);
             break;
             case Response::NEEDED_REDIRECT:
-                $this->callHandler(self::HANDLER_REDIRECT,     $order, $response);
+                $this->callHandler(self::HANDLER_REDIRECT,     $payment, $response);
             break;
         }
     }
@@ -171,14 +171,14 @@ class OrderProcessor
      *
      * @param       string              $queryName              Payment API query name
      * @param       array               $queryConfig            Payment API query config
-     * @param       OrderInterface      $order                  Order for processing
+     * @param       PaymentInterface    $payment                Payment for processing
      *
      * @return      Response                                    Current workflow query response
      */
-    public function executeQuery($queryName, array $queryConfig, OrderInterface $order)
+    public function executeQuery($queryName, array $queryConfig, PaymentInterface $payment)
     {
         $query      = $this->getQuery($queryName, $queryConfig);
-        $request    = $query->createRequest($order);
+        $request    = $query->createRequest($payment);
 
         try
         {
@@ -186,17 +186,17 @@ class OrderProcessor
         }
         catch (Exception $e)
         {
-            $order->addError($e);
+            $payment->addError($e);
             throw $e;
         }
 
         try
         {
-            $query->processResponse($order, $response);
+            $query->processResponse($payment, $response);
         }
         catch (Exception $e)
         {
-            $order->addError($e);
+            $payment->addError($e);
             throw $e;
         }
 
@@ -208,22 +208,22 @@ class OrderProcessor
      *
      * @param       array               $callbackData           Callback data from payment gateway
      * @param       array               $callbackConfig         Callback processor config
-     * @param       OrderInterface      $order                  Order for processing
+     * @param       PaymentInterface    $payment                Payment for processing
      *
      * @return      CallbackResponse                            Validated payment gateway callback
      */
-    public function executeCallback(array $callbackData, array $callbackConfig, OrderInterface $order)
+    public function executeCallback(array $callbackData, array $callbackConfig, PaymentInterface $payment)
     {
         $callbackResponse   = new CallbackResponse($callbackData);
 
         try
         {
             $this->getCallback($callbackResponse, $callbackConfig)
-                 ->processCallback($order, $callbackResponse);
+                 ->processCallback($payment, $callbackResponse);
         }
         catch (Exception $e)
         {
-            $order->addError($e);
+            $payment->addError($e);
             throw $e;
         }
 
@@ -237,7 +237,7 @@ class OrderProcessor
      * @param       string      $workflowName                               Workflow name
      * @param       array       $workflowConfig                             Workflow configuration
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Workflow\WorkflowInterface           Workflow for payment processing
+     * @return      \PaynetEasy\PaynetEasyApi\Workflow\WorkflowInterface    Workflow for payment processing
      */
     public function getWorkflow($workflowName, $workflowConfig)
     {
@@ -251,7 +251,7 @@ class OrderProcessor
      * @param       string              $apiQueryName                       API query method
      * @param       array               $apiQueryConfig                     API query config
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Query\QueryInterface                 API query object
+     * @return      \PaynetEasy\PaynetEasyApi\Query\QueryInterface          API query object
      */
     public function getQuery($apiQueryName, $apiQueryConfig)
     {
@@ -262,10 +262,10 @@ class OrderProcessor
     /**
      * Create API callback processor by callback response
      *
-     * @param       \PaynetEasy\PaynetEasyApi\Transport\CallbackResponse       $callbackResponse       Callback response
-     * @param       array                                               $callbackConfig         Config for callback processor
+     * @param       \PaynetEasy\PaynetEasyApi\Transport\CallbackResponse        $callbackResponse       Callback response
+     * @param       array                                                       $callbackConfig         Config for callback processor
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Callback\CallbackInterface                               Callback processor
+     * @return      \PaynetEasy\PaynetEasyApi\Callback\CallbackInterface                                Callback processor
      */
     public function getCallback(CallbackResponse $callbackResponse, array $callbackConfig)
     {
@@ -288,9 +288,9 @@ class OrderProcessor
 
     /**
      * Set handler callback for processing action.
-     * Handler receives two parameters: OrderInterface and Response.
+     * Handler receives two parameters: PaymentInterface and Response.
      *
-     * @see OrderProcessor::callHandler()
+     * @see PaymentProcessor::callHandler()
      *
      * @param       string          $handlerName            Handler name
      * @param       callable        $handlerCallback        Handler callbac
@@ -315,7 +315,7 @@ class OrderProcessor
      * Set handlers. Handlers array must follow new format:
      * [<handlerName>:string => <handlerCallback>:callable]
      *
-     * @see OrderProcessor::setHandler()
+     * @see PaymentProcessor::setHandler()
      *
      * @param       array       $handlers         Handlers callbacks
      *
@@ -479,21 +479,21 @@ class OrderProcessor
 
     /**
      * Executes handler callback.
-     * Handler callback receives two parameters: OrderInterface and Response (optional)
+     * Handler callback receives two parameters: PaymentInterface and Response (optional)
      *
-     * @param       string                                          $handlerName        Handler name
-     * @param       \PaynetEasy\PaynetEasyApi\OrderData\OrderInterface     $order              Order
-     * @param       \PaynetEasy\PaynetEasyApi\Transport\Response           $response           Gateway response
+     * @param       string                                                      $handlerName        Handler name
+     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface      $payment            Payment
+     * @param       \PaynetEasy\PaynetEasyApi\Transport\Response                $response           Gateway response
      *
      * @return      self
      */
-    protected function callHandler($handlerName, OrderInterface $order, Response $response = null)
+    protected function callHandler($handlerName, PaymentInterface $payment, Response $response = null)
     {
         $this->checkHandlerName($handlerName);
 
         if ($this->hasHandler($handlerName))
         {
-            call_user_func($this->handlers[$handlerName], $order, $response);
+            call_user_func($this->handlers[$handlerName], $payment, $response);
         }
 
         return $this;

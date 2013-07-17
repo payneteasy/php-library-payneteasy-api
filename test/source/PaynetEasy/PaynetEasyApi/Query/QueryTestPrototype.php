@@ -3,16 +3,16 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Transport\Response;
-use PaynetEasy\PaynetEasyApi\OrderData\Order;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Exception\PaynetException;
 
 abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 {
-    const LOGIN             = 'test-login';
-    const END_POINT         =  789;
-    const SIGN_KEY          = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
-    const CLIENT_ORDER_ID   = 'CLIENT-112233';
-    const PAYNET_ORDER_ID   = 'PAYNET-112233';
+    const LOGIN                     = 'test-login';
+    const END_POINT                 =  789;
+    const SIGN_KEY                  = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
+    const CLIENT_PAYMENT_ID         = 'CLIENT-112233';
+    const PAYNET_PAYMENT_ID         = 'PAYNET-112233';
 
     const RECURRENT_CARD_FROM_ID    = '5588943';
     const RECURRENT_CARD_TO_ID      = '5588978';
@@ -22,9 +22,9 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testCreateRequest($controlCode)
     {
-        $order  = $this->getOrder();
+        $payment  = $this->getPayment();
 
-        $request        = $this->object->createRequest($order);
+        $request        = $this->object->createRequest($payment);
         $requestFields  = $request->getRequestFields();
 
 
@@ -33,7 +33,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($request->getEndPoint());
         $this->assertNotNull($requestFields['control']);
         $this->assertEquals($controlCode, $requestFields['control']);
-        $this->assertFalse($order->hasErrors());
+        $this->assertFalse($payment->hasErrors());
     }
 
     abstract public function testCreateRequestProvider();
@@ -43,12 +43,12 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessResponseDeclined(array $response)
     {
-        $order = $this->getOrder();
+        $payment = $this->getPayment();
 
-        $this->object->processResponse($order, new Response($response));
+        $this->object->processResponse($payment, new Response($response));
 
-        $this->assertOrderStates($order, Order::STAGE_FINISHED, Order::STATUS_DECLINED);
-        $this->assertTrue($order->hasErrors());
+        $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_DECLINED);
+        $this->assertTrue($payment->hasErrors());
     }
 
     abstract public function testProcessResponseDeclinedProvider();
@@ -58,12 +58,12 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessResponseProcessing(array $response)
     {
-        $order = $this->getOrder();
+        $payment = $this->getPayment();
 
-        $this->object->processResponse($order, new Response($response));
+        $this->object->processResponse($payment, new Response($response));
 
-        $this->assertOrderStates($order, Order::STAGE_CREATED, Order::STATUS_PROCESSING);
-        $this->assertFalse($order->hasErrors());
+        $this->assertPaymentStates($payment, Payment::STAGE_CREATED, Payment::STATUS_PROCESSING);
+        $this->assertFalse($payment->hasErrors());
     }
 
     abstract public function testProcessResponseProcessingProvider();
@@ -73,17 +73,17 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessResponseError(array $response)
     {
-        $order = $this->getOrder();
+        $payment = $this->getPayment();
 
         try
         {
             // Payment error after check
-            $this->object->processResponse($order, new Response($response));
+            $this->object->processResponse($payment, new Response($response));
         }
         catch (PaynetException $error)
         {
-            $this->assertOrderStates($order, Order::STAGE_FINISHED, Order::STATUS_ERROR);
-            $this->assertOrderError($order, $response['error-message'], $response['error-code']);
+            $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_ERROR);
+            $this->assertPaymentError($payment, $response['error-message'], $response['error-code']);
             $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
 
             return;
@@ -95,28 +95,28 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     abstract public function testProcessResponseErrorProvider();
 
     /**
-     * Validates order transport stage and bank status
+     * Validates payment transport stage and bank status
      *
-     * @param       string      $processingStage     Order transport stage
-     * @param       string      $status             Order bank status
+     * @param       string      $processingStage     Payment transport stage
+     * @param       string      $status             Payment bank status
      */
-    protected function assertOrderStates(Order $order, $processingStage, $status)
+    protected function assertPaymentStates(Payment $payment, $processingStage, $status)
     {
-        $this->assertEquals($processingStage, $order->getProcessingStage());
-        $this->assertEquals($status, $order->getStatus());
+        $this->assertEquals($processingStage, $payment->getProcessingStage());
+        $this->assertEquals($status, $payment->getStatus());
     }
 
     /**
-     * Validates last order error
+     * Validates last payment error
      *
      * @param       string      $errorMessage       Error message
      * @param       int         $errorCode          Error code
      */
-    protected function assertOrderError($order, $errorMessage, $errorCode)
+    protected function assertPaymentError($payment, $errorMessage, $errorCode)
     {
-        $this->assertTrue($order->hasErrors());
+        $this->assertTrue($payment->hasErrors());
 
-        $error = $order->getLastError();
+        $error = $payment->getLastError();
 
         $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
         $this->assertEquals($errorMessage, $error->getMessage());
@@ -124,11 +124,15 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return      \PaynetEasy\PaynetEasyApi\OrderData\Order
+     * Get payment for test
+     *
+     * @return      \PaynetEasy\PaynetEasyApi\PaymentData\Payment       Payment for test
      */
-    abstract protected function getOrder();
+    abstract protected function getPayment();
 
     /**
+     * Get query config
+     * 
      * @return      array
      */
     protected function getConfig()

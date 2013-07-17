@@ -2,7 +2,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
-use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
@@ -56,11 +56,11 @@ class GetCardInfoQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function updateOrderOnSuccess(OrderInterface $order, Response $response)
+    protected function updatePaymentOnSuccess(PaymentInterface $payment, Response $response)
     {
-        parent::updateOrderOnSuccess($order, $response);
+        parent::updatePaymentOnSuccess($payment, $response);
 
-        $order->getRecurrentCardFrom()
+        $payment->getRecurrentCardFrom()
             ->setCardPrintedName($response['card-printed-name'])
             ->setExpireYear($response['expire-year'])
             ->setExpireMonth($response['expire-month'])
@@ -68,13 +68,13 @@ class GetCardInfoQuery extends AbstractQuery
             ->setLastFourDigits($response['last-four-digits']);
     }
 
-    protected function validateResponseOnSuccess(OrderInterface $order, Response $response)
+    protected function validateResponseOnSuccess(PaymentInterface $payment, Response $response)
     {
-        parent::validateResponseOnSuccess($order, $response);
+        parent::validateResponseOnSuccess($payment, $response);
 
-        if(!$order->getRecurrentCardFrom())
+        if(!$payment->getRecurrentCardFrom())
         {
-            throw new ValidationException('Recurrent card must be defined in Order');
+            throw new ValidationException('Recurrent card must be defined in Payment');
         }
     }
 }

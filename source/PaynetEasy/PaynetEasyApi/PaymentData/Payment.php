@@ -1,20 +1,20 @@
 <?php
 
-namespace PaynetEasy\PaynetEasyApi\OrderData;
+namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
 use RuntimeException;
 use Exception;
 
 /**
- * Container for order data
+ * Container for payment data
  *
  */
-class       Order
+class       Payment
 extends     Data
-implements  OrderInterface
+implements  PaymentInterface
 {
     /**
-     * All allowed order processing stages
+     * All allowed payment processing stages
      *
      * @var array
      */
@@ -26,7 +26,7 @@ implements  OrderInterface
     );
 
     /**
-     * All allowed order statuses in bank
+     * All allowed payment statuses in bank
      *
      * @var array
      */
@@ -39,21 +39,21 @@ implements  OrderInterface
     );
 
     /**
-     * Merchant order identifier
+     * Merchant payment identifier
      *
      * @var string
      */
-    protected $clientOrderId;
+    protected $clientPaymentId;
 
     /**
      * Unique identifier of transaction assigned by PaynetEasy
      *
      * @var string
      */
-    protected $paynetOrderId;
+    protected $paynetPaymentId;
 
     /**
-     * Brief order description
+     * Brief payment description
      *
      * @var string
      */
@@ -102,49 +102,49 @@ implements  OrderInterface
     protected $comment;
 
     /**
-     * Order processing stage
+     * Payment processing stage
      *
      * @var string
      */
     protected $processingStage;
 
     /**
-     * Order status in bank
+     * Payment status in bank
      *
      * @var string
      */
     protected $status;
 
     /**
-     * Order customer
+     * Payment customer
      *
-     * @var \PaynetEasy\PaynetEasyApi\OrderData\CustomerInterface
+     * @var \PaynetEasy\PaynetEasyApi\PaymentData\CustomerInterface
      */
     protected $customer;
 
     /**
-     * Order credit card
+     * Payment credit card
      *
-     * @var \PaynetEasy\PaynetEasyApi\OrderData\CreditCardInterface
+     * @var \PaynetEasy\PaynetEasyApi\PaymentData\CreditCardInterface
      */
     protected $creditCard;
 
     /**
-     * Order source recurrent card
+     * Payment source recurrent card
      *
-     * @var \PaynetEasy\PaynetEasyApi\OrderData\RecurrentCardInterface
+     * @var \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCardInterface
      */
     protected $recurrentCardFrom;
 
     /**
-     * Order destination recurrent card
+     * Payment destination recurrent card
      *
-     * @var \PaynetEasy\PaynetEasyApi\OrderData\RecurrentCardInterface
+     * @var \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCardInterface
      */
     protected $recurrentCardTo;
 
     /**
-     * Order processing errors
+     * Payment processing errors
      *
      * @var array
      */
@@ -153,9 +153,9 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function setClientOrderId($clientOrderId)
+    public function setClientPaymentId($clientPaymentId)
     {
-        $this->clientOrderId = $clientOrderId;
+        $this->clientPaymentId = $clientPaymentId;
 
         return $this;
     }
@@ -163,17 +163,17 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function getClientOrderId()
+    public function getClientPaymentId()
     {
-        return $this->clientOrderId;
+        return $this->clientPaymentId;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setPaynetOrderId($paynetOrderId)
+    public function setPaynetPaymentId($paynetPaymentId)
     {
-        $this->paynetOrderId = $paynetOrderId;
+        $this->paynetPaymentId = $paynetPaymentId;
 
         return $this;
     }
@@ -181,9 +181,9 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function getPaynetOrderId()
+    public function getPaynetPaymentId()
     {
-        return $this->paynetOrderId;
+        return $this->paynetPaymentId;
     }
 
     /**
@@ -546,19 +546,25 @@ implements  OrderInterface
             case 'client-orderid':
             case 'client_order_id':
             case 'client-order-id':
+            case 'client_payment_id':
+            case 'client-payment-id':
             {
-                return 'setClientOrderId';
+                return 'setClientPaymentId';
             }
             case 'paynet_order_id':
             case 'paynet-order-id':
+            case 'paynet_payment_id':
+            case 'paynet-payment-id':
             case 'orderid':
             case 'order_id':
             case 'order-id':
             {
-                return 'setPaynetOrderId';
+                return 'setPaynetPaymentId';
             }
             case 'order_desc':
             case 'order-desc':
+            case 'payment_desc':
+            case 'payment-desc':
             case 'desc':
             case 'description':
             {

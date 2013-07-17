@@ -14,8 +14,8 @@ class CaptureQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',     'clientOrderId',                true,   Validator::ID),
-        array('orderid',            'paynetOrderId',                true,   Validator::ID),
+        array('client_orderid',     'clientPaymentId',              true,   Validator::ID),
+        array('orderid',            'paynetPaymentId',              true,   Validator::ID),
         // generated
         array('control',             null,                          true,    null),
         // from config
@@ -28,8 +28,8 @@ class CaptureQuery extends AbstractQuery
     static protected $controlCodeDefinition = array
     (
         'login',
-        'clientOrderId',
-        'paynetOrderId',
+        'clientPaymentId',
+        'paynetPaymentId',
         'amountInCents',
         'currency',
         'control'

@@ -12,7 +12,7 @@ use PaynetEasy\PaynetEasyApi\Transport\Response;
 class CallbackResponse extends Response
 {
     /**
-     * Get order amount
+     * Get payment amount
      *
      * @return      float
      */
@@ -22,7 +22,7 @@ class CallbackResponse extends Response
     }
 
     /**
-     * Get order comment
+     * Get payment comment
      *
      * @return      string
      */

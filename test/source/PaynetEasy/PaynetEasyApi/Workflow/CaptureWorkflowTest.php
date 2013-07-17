@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Workflow;
 
-use PaynetEasy\PaynetEasyApi\OrderData\Order;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\FakeGatewayClient;
 use PaynetEasy\PaynetEasyApi\Query\QueryFactory;
@@ -13,11 +13,11 @@ use PaynetEasy\PaynetEasyApi\Callback\CallbackFactory;
  */
 class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
 {
-    const LOGIN             = 'test-login';
-    const END_POINT         =  789;
-    const SIGN_KEY          = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
-    const CLIENT_ORDER_ID   = 'CLIENT-112233';
-    const PAYNET_ORDER_ID   = 'PAYNET-112233';
+    const LOGIN                 = 'test-login';
+    const END_POINT             =  789;
+    const SIGN_KEY              = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
+    const CLIENT_PAYMENT_ID     = 'CLIENT-112233';
+    const PAYNET_PAYMENT_ID     = 'PAYNET-112233';
 
     /**
      * @var CaptureWorkflow
@@ -37,22 +37,22 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider testProcessOrderProvider
+     * @dataProvider testProcessPaymentProvider
      */
-    public function testProcessOrder($responseData, $stageBefore, $stageAfter, $expectedMethod = null)
+    public function testProcessPayment($responseData, $stageBefore, $stageAfter, $expectedMethod = null)
     {
         FakeGatewayClient::$response = new Response($responseData);
 
-        $order = $this->getOrder();
+        $payment = $this->getPayment();
 
         if ($stageBefore)
         {
-            $order->setProcessingStage($stageBefore);
+            $payment->setProcessingStage($stageBefore);
         }
 
-        $this->object->processOrder($order, $responseData);
+        $this->object->processPayment($payment, $responseData);
 
-        $this->assertEquals($stageAfter, $order->getProcessingStage());
+        $this->assertEquals($stageAfter, $payment->getProcessingStage());
 
         if ($expectedMethod)
         {
@@ -60,7 +60,7 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testProcessOrderProvider()
+    public function testProcessPaymentProvider()
     {
         return array(
         array
@@ -69,12 +69,12 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
             (
                 'type'              => 'async-response',
                 'status'            => 'processing',
-                'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
-                'merchant-order-id' =>  self::CLIENT_ORDER_ID,
+                'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
+                'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
                 'serial-number'     =>  md5(time())
             ),
             null,
-            Order::STAGE_CREATED,
+            Payment::STAGE_CREATED,
             'capture'
         ),
         array
@@ -83,12 +83,12 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
             (
                 'type'              => 'status-response',
                 'status'            => 'processing',
-                'paynet-order-id'   =>  self::PAYNET_ORDER_ID,
-                'merchant-order-id' =>  self::CLIENT_ORDER_ID,
+                'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
+                'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
                 'serial-number'     =>  md5(time())
             ),
-            Order::STAGE_CREATED,
-            Order::STAGE_CREATED,
+            Payment::STAGE_CREATED,
+            Payment::STAGE_CREATED,
             'status'
         ),
         array
@@ -97,29 +97,29 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
             (
                 'status'            => 'approved',
                 'amount'            =>  99.1,
-                'orderid'           =>  self::PAYNET_ORDER_ID,
-                'merchant_order'    =>  self::CLIENT_ORDER_ID,
-                'client_orderid'    =>  self::CLIENT_ORDER_ID,
+                'orderid'           =>  self::PAYNET_PAYMENT_ID,
+                'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
+                'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
                 'control'           => sha1
                 (
                     'approved' .
-                    self::PAYNET_ORDER_ID .
-                    self::CLIENT_ORDER_ID .
+                    self::PAYNET_PAYMENT_ID .
+                    self::CLIENT_PAYMENT_ID .
                     self::SIGN_KEY
                 )
             ),
-            Order::STAGE_REDIRECTED,
-            Order::STAGE_FINISHED,
+            Payment::STAGE_REDIRECTED,
+            Payment::STAGE_FINISHED,
             null
         ));
     }
 
-    protected function getOrder()
+    protected function getPayment()
     {
-        return new Order(array
+        return new Payment(array
         (
-            'client_orderid'        => self::CLIENT_ORDER_ID,
-            'paynet_order_id'       => self::PAYNET_ORDER_ID,
+            'client_payment_id'     => self::CLIENT_PAYMENT_ID,
+            'paynet_payment_id'     => self::PAYNET_PAYMENT_ID,
             'amount'                => 99.1,
             'currency'              => 'EUR'
         ));

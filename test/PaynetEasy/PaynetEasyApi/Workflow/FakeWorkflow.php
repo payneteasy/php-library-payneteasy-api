@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Workflow;
 
-use PaynetEasy\PaynetEasyApi\OrderData\OrderInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 class FakeWorkflow extends AbstractWorkflow
@@ -15,7 +15,7 @@ class FakeWorkflow extends AbstractWorkflow
     {
     }
 
-    public function processOrder(OrderInterface $order, array $callbackData = array())
+    public function processPayment(PaymentInterface $payment, array $callbackData = array())
     {
         return static::$response;
     }
