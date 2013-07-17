@@ -278,11 +278,11 @@ interface OrderInterface
     public function isRedirected();
 
     /**
-     * True, if transport stage is ended
+     * True, if transport stage is finished
      *
      * @return      boolean
      */
-    public function isEnded();
+    public function isFinished();
 
     /**
      * Set order bank status

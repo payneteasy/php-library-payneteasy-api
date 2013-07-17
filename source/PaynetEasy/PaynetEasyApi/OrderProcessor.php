@@ -124,8 +124,8 @@ class OrderProcessor
                                     OrderInterface  $order,
                                     array           $callbackData       = array())
     {
-        // prevent double processing for ended order
-        if ($order->getProcessingStage() == OrderInterface::STAGE_FINISHED)
+        // prevent double processing for finished order
+        if ($order->isFinished())
         {
             $this->callHandler(self::HANDLER_FINISH_PROCESSING, $order);
             return;
@@ -145,8 +145,8 @@ class OrderProcessor
 
         $this->callHandler(self::HANDLER_SAVE_ORDER, $order, $response);
 
-        // no action needed if order is ended
-        if ($order->getProcessingStage() == OrderInterface::STAGE_FINISHED)
+        // no action needed if order is finished
+        if ($order->isFinished())
         {
             $this->callHandler(self::HANDLER_FINISH_PROCESSING, $order, $response);
             return;

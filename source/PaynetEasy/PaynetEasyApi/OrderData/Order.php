@@ -416,7 +416,7 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function isEnded()
+    public function isFinished()
     {
         return $this->getProcessingStage() == self::STAGE_FINISHED;
     }
