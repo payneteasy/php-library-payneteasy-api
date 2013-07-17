@@ -96,7 +96,7 @@
 4. Запустите обработку платежа. Будут выполнены следующие шаги:
     * Библиотека проверит данные платежа и сформирует на его основе запрос к PaynetEasy
     * Запрос будет выполнен для старта обработки платежа и его первичной проверки, будет получен ответ от PaynetEasy
-    * Библиотека изменит статус платежа **status** и этап обработки платежа **transportStage** на основе данных ответа
+    * Библиотека изменит статус платежа **status** и этап обработки платежа **processingStage** на основе данных ответа
     * Платеж будет сохранен в сессии обработчиком для `OrderProcessor::HANDLER_SAVE_ORDER`
     * Пользователь будет перенаправлен на платежную форму обработчиком для `OrderProcessor::HANDLER_REDIRECT`
 
@@ -145,7 +145,7 @@
         OrderProcessor::HANDLER_FINISH_PROCESSING   => function(Order $order)
         {
             print "<pre>";
-            print_r("Order state: {$order->getTransportStage()}\n");
+            print_r("Order state: {$order->getProcessingStage()}\n");
             print_r("Order status: {$order->getStatus()}\n");
             print "</pre>";
         }
@@ -153,9 +153,9 @@
     ```
 5. Запустите обработку данных, полученных при возвращении пользователя с платежной формы. Будут выполнены следующие шаги:
     * Библиотека проверит данные, полученные по возвращении пользователя с платежной формы PaynetEasy (суперглобальный массив $_REQUEST)
-    * Библиотека изменит статус платежа **status** и этап обработки платежа **transportStage** на основе проверенных данных
+    * Библиотека изменит статус платежа **status** и этап обработки платежа **processingStage** на основе проверенных данных
     * Платеж будет сохранен в сессии обработчиком для `OrderProcessor::HANDLER_SAVE_ORDER`
-    * Статус платежа **status** и этап обработки платежа **transportStage** будут выведены на экран обработчиком для OrderProcessor::HANDLER_FINISH_PROCESSING
+    * Статус платежа **status** и этап обработки платежа **processingStage** будут выведены на экран обработчиком для OrderProcessor::HANDLER_FINISH_PROCESSING
 
     ```php
     $orderProcessor->executeWorkflow('sale-form', $queryConfig, $order, $_REQUEST);

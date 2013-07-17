@@ -14,11 +14,11 @@ extends     Data
 implements  OrderInterface
 {
     /**
-     * All allowed order transport stages
+     * All allowed order processing stages
      *
      * @var array
      */
-    static protected $allowedTransportStages = array
+    static protected $allowedProcessingStages = array
     (
         self::STAGE_CREATED,
         self::STAGE_REDIRECTED,
@@ -102,11 +102,11 @@ implements  OrderInterface
     protected $comment;
 
     /**
-     * Order processing stage on transport level
+     * Order processing stage
      *
      * @var string
      */
-    protected $transportStage;
+    protected $processingStage;
 
     /**
      * Order status in bank
@@ -377,14 +377,14 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function setTransportStage($transportStage)
+    public function setProcessingStage($processingStage)
     {
-        if (!in_array($transportStage, static::$allowedTransportStages))
+        if (!in_array($processingStage, static::$allowedProcessingStages))
         {
-            throw new RuntimeException("Unknown transport stage given: '{$transportStage}'");
+            throw new RuntimeException("Unknown transport stage given: '{$processingStage}'");
         }
 
-        $this->transportStage = $transportStage;
+        $this->processingStage = $processingStage;
 
         return $this;
     }
@@ -392,9 +392,9 @@ implements  OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function getTransportStage()
+    public function getProcessingStage()
     {
-        return $this->transportStage;
+        return $this->processingStage;
     }
 
     /**
@@ -402,7 +402,7 @@ implements  OrderInterface
      */
     public function isCreated()
     {
-        return $this->getTransportStage() == self::STAGE_CREATED;
+        return $this->getProcessingStage() == self::STAGE_CREATED;
     }
 
     /**
@@ -410,7 +410,7 @@ implements  OrderInterface
      */
     public function isRedirected()
     {
-        return $this->getTransportStage() == self::STAGE_REDIRECTED;
+        return $this->getProcessingStage() == self::STAGE_REDIRECTED;
     }
 
     /**
@@ -418,7 +418,7 @@ implements  OrderInterface
      */
     public function isEnded()
     {
-        return $this->getTransportStage() == self::STAGE_FINISHED;
+        return $this->getProcessingStage() == self::STAGE_FINISHED;
     }
 
     /**

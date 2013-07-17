@@ -134,7 +134,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
     protected function getOrder()
     {
         return parent::getOrder()
-            ->setTransportStage(Order::STAGE_FINISHED)
+            ->setProcessingStage(Order::STAGE_FINISHED)
             ->setStatus(Order::STATUS_APPROVED);
     }
 }

@@ -50,7 +50,7 @@ $orderProcessor->setHandlers(array
  * Каждый вызов этого метода выполняет определенный запрос к API Paynet,
  * выбор запроса зависит от этапа обработки заказа
  *
- * @see \PaynetEasy\PaynetEasyApi\OrderData\Order::$transportStage
+ * @see \PaynetEasy\PaynetEasyApi\OrderData\Order::$processingStage
  * @see \PaynetEasy\PaynetEasyApi\OrderProcessor::executeWorkflow()
  * @see \PaynetEasy\PaynetEasyApi\Workflow\AbstractWorkflow::processOrder()
  */

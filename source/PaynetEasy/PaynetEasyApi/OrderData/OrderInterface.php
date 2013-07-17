@@ -248,20 +248,20 @@ interface OrderInterface
     public function getRecurrentCardTo();
 
     /**
-     * Set order transport stage
+     * Set order processing stage
      *
-     * @param       string      $transportStage      Order transport stage
+     * @param       string      $processingStage      Order transport stage
      *
      * @return      self
      */
-    public function setTransportStage($transportStage);
+    public function setProcessingStage($processingStage);
 
     /**
-     * Get order transport state
+     * Get order processing state
      *
      * @return      string
      */
-    public function getTransportStage();
+    public function getProcessingStage();
 
     /**
      * True, if order created in bank

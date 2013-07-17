@@ -73,7 +73,7 @@ abstract class AbstractCallback implements CallbackInterface
         catch (Exception $e)
         {
             $order->addError($e)
-                  ->setTransportStage(OrderInterface::STAGE_FINISHED)
+                  ->setProcessingStage(OrderInterface::STAGE_FINISHED)
                   ->setStatus(OrderInterface::STATUS_ERROR);
 
             throw $e;
@@ -214,26 +214,26 @@ abstract class AbstractCallback implements CallbackInterface
     {
         if($callbackResponse->isError())
         {
-            $order->setTransportStage(OrderInterface::STAGE_FINISHED);
+            $order->setProcessingStage(OrderInterface::STAGE_FINISHED);
             $order->setStatus(OrderInterface::STATUS_ERROR);
             $order->addError($callbackResponse->getError());
         }
         elseif($callbackResponse->isApproved())
         {
-            $order->setTransportStage(OrderInterface::STAGE_FINISHED);
+            $order->setProcessingStage(OrderInterface::STAGE_FINISHED);
             $order->setStatus(OrderInterface::STATUS_APPROVED);
         }
         // "filtered" status is interpreted as the "DECLINED"
         elseif($callbackResponse->isDeclined())
         {
-            $order->setTransportStage(OrderInterface::STAGE_FINISHED);
+            $order->setProcessingStage(OrderInterface::STAGE_FINISHED);
             $order->setStatus(OrderInterface::STATUS_DECLINED);
             $order->addError($callbackResponse->getError());
         }
         // If it does not redirect, it's processing
         elseif($callbackResponse->isProcessing())
         {
-            $order->setTransportStage(OrderInterface::STAGE_CREATED);
+            $order->setProcessingStage(OrderInterface::STAGE_CREATED);
             $order->setStatus(OrderInterface::STATUS_PROCESSING);
         }
 

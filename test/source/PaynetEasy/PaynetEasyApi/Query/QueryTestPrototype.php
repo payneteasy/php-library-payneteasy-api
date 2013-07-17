@@ -97,12 +97,12 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     /**
      * Validates order transport stage and bank status
      *
-     * @param       string      $transportStage     Order transport stage
+     * @param       string      $processingStage     Order transport stage
      * @param       string      $status             Order bank status
      */
-    protected function assertOrderStates(Order $order, $transportStage, $status)
+    protected function assertOrderStates(Order $order, $processingStage, $status)
     {
-        $this->assertEquals($transportStage, $order->getTransportStage());
+        $this->assertEquals($processingStage, $order->getProcessingStage());
         $this->assertEquals($status, $order->getStatus());
     }
 

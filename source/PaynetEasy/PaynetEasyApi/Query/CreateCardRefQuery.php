@@ -66,7 +66,7 @@ class CreateCardRefQuery extends AbstractQuery
     {
         parent::validateOrder($order);
 
-        $this->checkOrderTransportStage($order);
+        $this->checkOrderProcessingStage($order);
     }
 
     /**
@@ -76,7 +76,7 @@ class CreateCardRefQuery extends AbstractQuery
     {
         parent::validateResponseOnSuccess($order, $response);
 
-        $this->checkOrderTransportStage($order);
+        $this->checkOrderProcessingStage($order);
     }
 
     /**
@@ -101,9 +101,9 @@ class CreateCardRefQuery extends AbstractQuery
      *
      * @param       OrderInterface      $order      Order for checking
      */
-    protected function checkOrderTransportStage(OrderInterface $order)
+    protected function checkOrderProcessingStage(OrderInterface $order)
     {
-        if (    $order->getTransportStage() !== OrderInterface::STAGE_FINISHED
+        if (    $order->getProcessingStage() !== OrderInterface::STAGE_FINISHED
             ||  $order->getStatus()         !== OrderInterface::STATUS_APPROVED)
         {
             throw new ValidationException('Only approved and ended Order can be used for create-card-ref-id');

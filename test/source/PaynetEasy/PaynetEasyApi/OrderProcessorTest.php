@@ -34,7 +34,7 @@ class OrderProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteWorkflowWithEndedOrder()
     {
         $order = new Order;
-        $order->setTransportStage(OrderInterface::STAGE_FINISHED);
+        $order->setProcessingStage(OrderInterface::STAGE_FINISHED);
 
         $handlerCalled = false;
         $handler  = function() use (&$handlerCalled)

@@ -78,7 +78,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      */
     public function processOrder(OrderInterface $order, array $callbackData = array())
     {
-        switch($order->getTransportStage())
+        switch($order->getProcessingStage())
         {
             case null:
             {
@@ -95,7 +95,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
                 if(empty($callbackData))
                 {
                     throw new RuntimeException("Data parameter can not be empty " .
-                                               "for transport stage '{$order->getTransportStage()}'");
+                                               "for transport stage '{$order->getProcessingStage()}'");
                 }
 
                 $response = $this->processCallback($order, $callbackData);
@@ -107,7 +107,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
             }
             default:
             {
-                throw new RuntimeException("Undefined order transport stage: '{$order->getTransportStage()}'");
+                throw new RuntimeException("Undefined order transport stage: '{$order->getProcessingStage()}'");
             }
         }
 

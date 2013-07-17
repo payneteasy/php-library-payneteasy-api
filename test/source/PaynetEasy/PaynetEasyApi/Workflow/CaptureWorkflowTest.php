@@ -47,12 +47,12 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
 
         if ($stageBefore)
         {
-            $order->setTransportStage($stageBefore);
+            $order->setProcessingStage($stageBefore);
         }
 
         $this->object->processOrder($order, $responseData);
 
-        $this->assertEquals($stageAfter, $order->getTransportStage());
+        $this->assertEquals($stageAfter, $order->getProcessingStage());
 
         if ($expectedMethod)
         {

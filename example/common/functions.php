@@ -124,7 +124,7 @@ $displayEndedOrder = function(OrderInterface $order, Response $response = null)
 {
     // платеж завершен, выводим его статус
     print "<pre>";
-    print_r("Order state: {$order->getTransportStage()}\n");
+    print_r("Order state: {$order->getProcessingStage()}\n");
     print_r("Order status: {$order->getStatus()}\n");
     print "</pre>";
 
