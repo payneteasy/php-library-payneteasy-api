@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 class FakeQuery extends AbstractQuery
@@ -20,33 +20,33 @@ class FakeQuery extends AbstractQuery
         parent::setApiMethod($class);
     }
 
-    protected function createControlCode(PaymentInterface $payment)
+    protected function createControlCode(Payment $payment)
     {
         return 'control';
     }
 
-    protected function paymentToRequest(PaymentInterface $payment)
+    protected function paymentToRequest(Payment $payment)
     {
         return array('_');
     }
 
-    protected function validatePayment(PaymentInterface $payment)
+    protected function validatePayment(Payment $payment)
     {
     }
 
-    protected function validateResponseOnSuccess(PaymentInterface $payment, Response $response)
+    protected function validateResponseOnSuccess(Payment $payment, Response $response)
     {
     }
 
-    protected function validateResponseOnError(PaymentInterface $payment, Response $response)
+    protected function validateResponseOnError(Payment $payment, Response $response)
     {
     }
 
-    protected function updatePaymentOnSuccess(PaymentInterface $payment, Response $response)
+    protected function updatePaymentOnSuccess(Payment $payment, Response $response)
     {
     }
 
-    protected function updatePaymentOnError(PaymentInterface $payment, Response $response)
+    protected function updatePaymentOnError(Payment $payment, Response $response)
     {
     }
 }

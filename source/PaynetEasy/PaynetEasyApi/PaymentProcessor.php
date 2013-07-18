@@ -7,7 +7,7 @@ use PaynetEasy\PaynetEasyApi\Query\QueryFactoryInterface;
 use PaynetEasy\PaynetEasyApi\Workflow\WorkflowFactoryInterface;
 use PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
@@ -116,12 +116,12 @@ class PaymentProcessor
      *
      * @param       string              $workflowName           Payment workflow name
      * @param       array               $workflowConfig         Payment workflow config
-     * @param       PaymentInterface    $payment                Payment for processing
+     * @param       Payment    $payment                Payment for processing
      * @param       array               $callbackData           Paynet callback data (optional)
      */
     public function executeWorkflow(                $workflowName,
                                     array           $workflowConfig,
-                                    PaymentInterface  $payment,
+                                    Payment  $payment,
                                     array           $callbackData       = array())
     {
         // prevent double processing for finished payment
@@ -171,11 +171,11 @@ class PaymentProcessor
      *
      * @param       string              $queryName              Payment API query name
      * @param       array               $queryConfig            Payment API query config
-     * @param       PaymentInterface    $payment                Payment for processing
+     * @param       Payment    $payment                Payment for processing
      *
      * @return      Response                                    Current workflow query response
      */
-    public function executeQuery($queryName, array $queryConfig, PaymentInterface $payment)
+    public function executeQuery($queryName, array $queryConfig, Payment $payment)
     {
         $query      = $this->getQuery($queryName, $queryConfig);
         $request    = $query->createRequest($payment);
@@ -208,11 +208,11 @@ class PaymentProcessor
      *
      * @param       array               $callbackData           Callback data from payment gateway
      * @param       array               $callbackConfig         Callback processor config
-     * @param       PaymentInterface    $payment                Payment for processing
+     * @param       Payment    $payment                Payment for processing
      *
      * @return      CallbackResponse                            Validated payment gateway callback
      */
-    public function executeCallback(array $callbackData, array $callbackConfig, PaymentInterface $payment)
+    public function executeCallback(array $callbackData, array $callbackConfig, Payment $payment)
     {
         $callbackResponse   = new CallbackResponse($callbackData);
 
@@ -288,7 +288,7 @@ class PaymentProcessor
 
     /**
      * Set handler callback for processing action.
-     * Handler receives two parameters: PaymentInterface and Response.
+     * Handler receives two parameters: Payment and Response.
      *
      * @see PaymentProcessor::callHandler()
      *
@@ -479,15 +479,15 @@ class PaymentProcessor
 
     /**
      * Executes handler callback.
-     * Handler callback receives two parameters: PaymentInterface and Response (optional)
+     * Handler callback receives two parameters: Payment and Response (optional)
      *
      * @param       string                                                      $handlerName        Handler name
-     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface      $payment            Payment
+     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\Payment      $payment            Payment
      * @param       \PaynetEasy\PaynetEasyApi\Transport\Response                $response           Gateway response
      *
      * @return      self
      */
-    protected function callHandler($handlerName, PaymentInterface $payment, Response $response = null)
+    protected function callHandler($handlerName, Payment $payment, Response $response = null)
     {
         $this->checkHandlerName($handlerName);
 

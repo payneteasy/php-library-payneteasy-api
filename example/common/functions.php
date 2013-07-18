@@ -1,6 +1,6 @@
 <?php
 
-use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 /**
@@ -48,7 +48,7 @@ $getConfig = function()
 /**
  * Функция загружает платеж из сессии
  *
- * @return      PaymentInterface        Платеж
+ * @return      Payment        Платеж
  */
 $loadPayment = function()
 {
@@ -61,10 +61,10 @@ $loadPayment = function()
 /**
  * Функция сохраняет платеж в сессию
  *
- * @param       PaymentInterface        $payment        Платеж
+ * @param       Payment        $payment        Платеж
  * @param       Response                $response       Ответ от сервера Paynet
  */
-$savePayment = function(PaymentInterface $payment, Response $response = null)
+$savePayment = function(Payment $payment, Response $response = null)
 {
     $_SESSION['payment'] = serialize($payment);
 };
@@ -75,10 +75,10 @@ $savePayment = function(PaymentInterface $payment, Response $response = null)
  *
  * @see ./common/waitPage.html
  *
- * @param       PaymentInterface        $payment        Платеж
+ * @param       Payment        $payment        Платеж
  * @param       Response                $response       Ответ от сервера Paynet
  */
-$displayWaitPage = function(PaymentInterface $payment, Response $response)
+$displayWaitPage = function(Payment $payment, Response $response)
 {
     print file_get_contents(__DIR__ . '/common/waitPage.html');
 };
@@ -89,10 +89,10 @@ $displayWaitPage = function(PaymentInterface $payment, Response $response)
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#3D_Sale_transaction_diagram
  *
- * @param       PaymentInterface        $payment        Платеж
+ * @param       Payment        $payment        Платеж
  * @param       Response                $response       Ответ от сервера Paynet
  */
-$displayResponseHtml = function(PaymentInterface $payment, Response $response)
+$displayResponseHtml = function(Payment $payment, Response $response)
 {
     // выводим полученную форму для редиректа на 3D-авторизацию
     print $response->getHtml();
@@ -104,10 +104,10 @@ $displayResponseHtml = function(PaymentInterface $payment, Response $response)
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#General_Payment_Form_Process_Flow
  *
- * @param       PaymentInterface        $payment        Платеж
+ * @param       Payment        $payment        Платеж
  * @param       Response                $response       Ответ от сервера Paynet
  */
-$redirectToResponseUrl = function(PaymentInterface $payment, Response $response)
+$redirectToResponseUrl = function(Payment $payment, Response $response)
 {
     // Переадресуем пользователя на платежную форму
     header("Location: {$response->getRedirectUrl()}");
@@ -117,10 +117,10 @@ $redirectToResponseUrl = function(PaymentInterface $payment, Response $response)
 /**
  * Функция выводит статус платежа после того, как его обработка завершена
  *
- * @param       PaymentInterface        $payment        Платеж
+ * @param       Payment        $payment        Платеж
  * @param       Response                $response       Ответ от сервера Paynet
  */
-$displayEndedPayment = function(PaymentInterface $payment, Response $response = null)
+$displayEndedPayment = function(Payment $payment, Response $response = null)
 {
     // платеж завершен, выводим его статус
     print "<pre>";

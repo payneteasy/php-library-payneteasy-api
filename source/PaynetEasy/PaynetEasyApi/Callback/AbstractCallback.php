@@ -5,7 +5,7 @@ namespace PaynetEasy\PaynetEasyApi\Callback;
 use PaynetEasy\PaynetEasyApi\Utils\String;
 use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
@@ -64,7 +64,7 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * {@inheritdoc}
      */
-    final public function processCallback(PaymentInterface $payment, CallbackResponse $callbackResponse)
+    final public function processCallback(Payment $payment, CallbackResponse $callbackResponse)
     {
         try
         {
@@ -73,8 +73,8 @@ abstract class AbstractCallback implements CallbackInterface
         catch (Exception $e)
         {
             $payment->addError($e)
-                  ->setProcessingStage(PaymentInterface::STAGE_FINISHED)
-                  ->setStatus(PaymentInterface::STATUS_ERROR);
+                  ->setProcessingStage(Payment::STAGE_FINISHED)
+                  ->setStatus(Payment::STATUS_ERROR);
 
             throw $e;
         }
@@ -147,12 +147,12 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Validates callback
      *
-     * @param       PaymentInterface               $payment                Payment
+     * @param       Payment               $payment                Payment
      * @param       CallbackResponse               $callbackResponse       Callback from paynet
      *
      * @throws      ValidationException                                    Validation error
      */
-    protected function validateCallback(PaymentInterface $payment, CallbackResponse $callbackResponse)
+    protected function validateCallback(Payment $payment, CallbackResponse $callbackResponse)
     {
         $errorMessage   = '';
         $missedFields   = array();
@@ -207,34 +207,34 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Updates Payment by Callback data
      *
-     * @param       PaymentInterface        $payment        Payment for updating
+     * @param       Payment        $payment        Payment for updating
      * @param       CallbackResponse        $response       Callback for payment updating
      */
-    protected function updatePayment(PaymentInterface $payment, CallbackResponse $callbackResponse)
+    protected function updatePayment(Payment $payment, CallbackResponse $callbackResponse)
     {
         if($callbackResponse->isError())
         {
-            $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
-            $payment->setStatus(PaymentInterface::STATUS_ERROR);
+            $payment->setProcessingStage(Payment::STAGE_FINISHED);
+            $payment->setStatus(Payment::STATUS_ERROR);
             $payment->addError($callbackResponse->getError());
         }
         elseif($callbackResponse->isApproved())
         {
-            $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
-            $payment->setStatus(PaymentInterface::STATUS_APPROVED);
+            $payment->setProcessingStage(Payment::STAGE_FINISHED);
+            $payment->setStatus(Payment::STATUS_APPROVED);
         }
         // "filtered" status is interpreted as the "DECLINED"
         elseif($callbackResponse->isDeclined())
         {
-            $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
-            $payment->setStatus(PaymentInterface::STATUS_DECLINED);
+            $payment->setProcessingStage(Payment::STAGE_FINISHED);
+            $payment->setStatus(Payment::STATUS_DECLINED);
             $payment->addError($callbackResponse->getError());
         }
         // If it does not redirect, it's processing
         elseif($callbackResponse->isProcessing())
         {
-            $payment->setProcessingStage(PaymentInterface::STAGE_CREATED);
-            $payment->setStatus(PaymentInterface::STATUS_PROCESSING);
+            $payment->setProcessingStage(Payment::STAGE_CREATED);
+            $payment->setStatus(Payment::STATUS_PROCESSING);
         }
 
         $payment->setPaynetPaymentId($callbackResponse->getPaynetPaymentId());

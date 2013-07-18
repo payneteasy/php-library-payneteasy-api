@@ -2,7 +2,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
-use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
@@ -62,7 +62,7 @@ class CreateCardRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function validatePayment(PaymentInterface $payment)
+    protected function validatePayment(Payment $payment)
     {
         parent::validatePayment($payment);
 
@@ -72,7 +72,7 @@ class CreateCardRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function validateResponseOnSuccess(PaymentInterface $payment, Response $response)
+    protected function validateResponseOnSuccess(Payment $payment, Response $response)
     {
         parent::validateResponseOnSuccess($payment, $response);
 
@@ -82,7 +82,7 @@ class CreateCardRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function updatePaymentOnSuccess(PaymentInterface $payment, Response $response)
+    protected function updatePaymentOnSuccess(Payment $payment, Response $response)
     {
         parent::updatePaymentOnSuccess($payment, $response);
 
@@ -99,9 +99,9 @@ class CreateCardRefQuery extends AbstractQuery
      * Check Payment transport stage and bank status.
      * State must be STAGE_FINISHED and status must be STATUS_APPROVED.
      *
-     * @param       PaymentInterface        $payment        Payment for checking
+     * @param       Payment        $payment        Payment for checking
      */
-    protected function checkPaymentProcessingStage(PaymentInterface $payment)
+    protected function checkPaymentProcessingStage(Payment $payment)
     {
         if (!$payment->isFinished() || !$payment->isApproved())
         {

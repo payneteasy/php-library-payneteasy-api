@@ -6,9 +6,7 @@ namespace PaynetEasy\PaynetEasyApi\PaymentData;
  * Container for credit card data
  *
  */
-class       CreditCard
-extends     Data
-implements  CreditCardInterface
+class CreditCard extends Data
 {
     /**
      * RecurrentCard CVV2
@@ -46,7 +44,9 @@ implements  CreditCardInterface
     protected $expireMonth;
 
     /**
-     * {@inheritdoc}
+     * Set RecurrentCard CVV2
+     *
+     * @param       integer     $cvv2                   RecurrentCard CVV2
      */
     public function setCvv2($cvv2)
     {
@@ -56,7 +56,9 @@ implements  CreditCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get card CVV2 code
+     *
+     * @return  integer
      */
     public function getCvv2()
     {
@@ -64,7 +66,11 @@ implements  CreditCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set card holder name
+     *
+     * @param       string      $cardPrintedName        Card holder name
+     *
+     * @return      self
      */
     public function setCardPrintedName($cardPrintedName)
     {
@@ -74,7 +80,9 @@ implements  CreditCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get card holder name
+     *
+     * @return      string
      */
     public function getCardPrintedName()
     {
@@ -82,7 +90,11 @@ implements  CreditCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set credit card number
+     *
+     * @param       integer     $creditCardNumber           Credit card number
+     *
+     * @return      self
      */
     public function setCreditCardNumber($creditCardNumber)
     {
@@ -92,7 +104,9 @@ implements  CreditCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get credit card number
+     *
+     * @return      integer
      */
     public function getCreditCardNumber()
     {
@@ -100,7 +114,11 @@ implements  CreditCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set card expiration year
+     *
+     * @param       integer     $expireYear             Card expiration year
+     *
+     * @return      self
      */
     public function setExpireYear($expireYear)
     {
@@ -110,7 +128,9 @@ implements  CreditCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get card expiration year
+     *
+     * @return      integer
      */
     public function getExpireYear()
     {
@@ -118,7 +138,11 @@ implements  CreditCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set card expiration month
+     *
+     * @param       integer     $expireMonth            Card expiration month
+     *
+     * @return      self
      */
     public function setExpireMonth($expireMonth)
     {
@@ -128,7 +152,9 @@ implements  CreditCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get card expiration month
+     *
+     * @return      self
      */
     public function getExpireMonth()
     {

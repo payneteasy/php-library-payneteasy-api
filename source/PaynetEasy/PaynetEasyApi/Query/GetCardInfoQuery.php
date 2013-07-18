@@ -2,7 +2,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
-use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
@@ -56,7 +56,7 @@ class GetCardInfoQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function updatePaymentOnSuccess(PaymentInterface $payment, Response $response)
+    protected function updatePaymentOnSuccess(Payment $payment, Response $response)
     {
         parent::updatePaymentOnSuccess($payment, $response);
 
@@ -68,7 +68,7 @@ class GetCardInfoQuery extends AbstractQuery
             ->setLastFourDigits($response['last-four-digits']);
     }
 
-    protected function validateResponseOnSuccess(PaymentInterface $payment, Response $response)
+    protected function validateResponseOnSuccess(Payment $payment, Response $response)
     {
         parent::validateResponseOnSuccess($payment, $response);
 

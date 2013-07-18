@@ -5,7 +5,7 @@ use PaynetEasy\PaynetEasyApi\Utils\String;
 use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
@@ -82,7 +82,7 @@ implements      QueryInterface
     /**
      * {@inheritdoc}
      */
-    final public function createRequest(PaymentInterface $payment)
+    final public function createRequest(Payment $payment)
     {
         try
         {
@@ -91,8 +91,8 @@ implements      QueryInterface
         catch (Exception $e)
         {
             $payment->addError($e)
-                  ->setProcessingStage(PaymentInterface::STAGE_FINISHED)
-                  ->setStatus(PaymentInterface::STATUS_ERROR);
+                  ->setProcessingStage(Payment::STAGE_FINISHED)
+                  ->setStatus(Payment::STATUS_ERROR);
 
             throw $e;
         }
@@ -108,7 +108,7 @@ implements      QueryInterface
     /**
      * {@inheritdoc}
      */
-    final public function processResponse(PaymentInterface $payment, Response $response)
+    final public function processResponse(Payment $payment, Response $response)
     {
         if(   !$response->isProcessing()
            && !$response->isApproved())
@@ -129,8 +129,8 @@ implements      QueryInterface
         catch (Exception $e)
         {
             $payment->addError($e)
-                  ->setProcessingStage(PaymentInterface::STAGE_FINISHED)
-                  ->setStatus(PaymentInterface::STATUS_ERROR);
+                  ->setProcessingStage(Payment::STAGE_FINISHED)
+                  ->setStatus(Payment::STATUS_ERROR);
 
             throw $e;
         }
@@ -148,9 +148,9 @@ implements      QueryInterface
     /**
      * Validates payment before query constructing
      *
-     * @param       PaymentInterface        $payment        Payment for validation
+     * @param       Payment        $payment        Payment for validation
      */
-    protected function validatePayment(PaymentInterface $payment)
+    protected function validatePayment(Payment $payment)
     {
         $errorMessage   = '';
         $missedFields   = array();
@@ -206,11 +206,11 @@ implements      QueryInterface
     /**
      * Creates request from Payment
      *
-     * @param       PaymentInterface        $payment        Payment for request
+     * @param       Payment        $payment        Payment for request
      *
      * @return      array                                   Request
      */
-    protected function paymentToRequest(PaymentInterface $payment)
+    protected function paymentToRequest(Payment $payment)
     {
         $request = array();
 
@@ -254,11 +254,11 @@ implements      QueryInterface
      * Generates the control code is used to ensure that it is a particular
      * Merchant (and not a fraudster) that initiates the transaction.
      *
-     * @param       PaymentInterface        $payment        Payment to generate control code
+     * @param       Payment        $payment        Payment to generate control code
      *
      * @return      string                                  Generated control code
      */
-    protected function createControlCode(PaymentInterface $payment)
+    protected function createControlCode(Payment $payment)
     {
         $controlCode = '';
 
@@ -287,10 +287,10 @@ implements      QueryInterface
     /**
      * Validates response before Payment updating if Payment is processing or approved
      *
-     * @param       PaymentInterface        $payment        Payment
+     * @param       Payment        $payment        Payment
      * @param       Response                $response       Response for validating
      */
-    protected function validateResponseOnSuccess(PaymentInterface $payment, Response $response)
+    protected function validateResponseOnSuccess(Payment $payment, Response $response)
     {
         if ($response->getType() !== static::$successResponseType)
         {
@@ -325,10 +325,10 @@ implements      QueryInterface
     /**
      * Validates response before Payment updating if Payment is not processing or approved
      *
-     * @param       PaymentInterface        $payment        Payment
+     * @param       Payment        $payment        Payment
      * @param       Response                $response       Response for validating
      */
-    protected function validateResponseOnError(PaymentInterface $payment, Response $response)
+    protected function validateResponseOnError(Payment $payment, Response $response)
     {
         $allowedTypes = array(static::$successResponseType, 'error', 'validation-error');
 
@@ -348,25 +348,25 @@ implements      QueryInterface
     /**
      * Updates Payment by Response data if Payment is processing or approved
      *
-     * @param       PaymentInterface       $payment        Payment for updating
+     * @param       Payment       $payment        Payment for updating
      * @param       Response               $response       Response for payment updating
      */
-    protected function updatePaymentOnSuccess(PaymentInterface $payment, Response $response)
+    protected function updatePaymentOnSuccess(Payment $payment, Response $response)
     {
         if($response->isApproved())
         {
-            $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
-            $payment->setStatus(PaymentInterface::STATUS_APPROVED);
+            $payment->setProcessingStage(Payment::STAGE_FINISHED);
+            $payment->setStatus(Payment::STATUS_APPROVED);
         }
         elseif($response->hasHtml() || $response->hasRedirectUrl())
         {
-            $payment->setProcessingStage(PaymentInterface::STAGE_REDIRECTED);
-            $payment->setStatus(PaymentInterface::STATUS_PROCESSING);
+            $payment->setProcessingStage(Payment::STAGE_REDIRECTED);
+            $payment->setStatus(Payment::STATUS_PROCESSING);
         }
         elseif($response->isProcessing())
         {
-            $payment->setProcessingStage(PaymentInterface::STAGE_CREATED);
-            $payment->setStatus(PaymentInterface::STATUS_PROCESSING);
+            $payment->setProcessingStage(Payment::STAGE_CREATED);
+            $payment->setStatus(Payment::STATUS_PROCESSING);
         }
 
         if(strlen($response->getPaynetPaymentId()) > 0)
@@ -378,21 +378,21 @@ implements      QueryInterface
     /**
      * Updates Payment by Response data if Payment is not processing or approved
      *
-     * @param       PaymentInterface       $payment        Payment for updating
+     * @param       Payment       $payment        Payment for updating
      * @param       Response               $response       Response for payment updating
      */
-    protected function updatePaymentOnError(PaymentInterface $payment, Response $response)
+    protected function updatePaymentOnError(Payment $payment, Response $response)
     {
-        $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
+        $payment->setProcessingStage(Payment::STAGE_FINISHED);
         $payment->addError($response->getError());
 
         if ($response->isDeclined())
         {
-            $payment->setStatus(PaymentInterface::STATUS_DECLINED);
+            $payment->setStatus(Payment::STATUS_DECLINED);
         }
         else
         {
-            $payment->setStatus(PaymentInterface::STATUS_ERROR);
+            $payment->setStatus(Payment::STATUS_ERROR);
         }
     }
 

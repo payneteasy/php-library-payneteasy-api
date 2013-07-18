@@ -2,8 +2,6 @@
 
 namespace PaynetEasy\PaynetEasyApi;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
-
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
@@ -34,7 +32,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteWorkflowWithEndedPayment()
     {
         $payment = new Payment;
-        $payment->setProcessingStage(PaymentInterface::STAGE_FINISHED);
+        $payment->setProcessingStage(Payment::STAGE_FINISHED);
 
         $handlerCalled = false;
         $handler  = function() use (&$handlerCalled)
@@ -171,7 +169,7 @@ class PublicPaymentProcessor extends PaymentProcessor
 {
     public $handlers = array();
 
-    public function callHandler($handlerName, PaymentInterface $payment, Response $response = null)
+    public function callHandler($handlerName, Payment $payment, Response $response = null)
     {
         parent::callHandler($handlerName, $payment, $response);
     }

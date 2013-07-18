@@ -7,12 +7,49 @@ use Exception;
 
 /**
  * Container for payment data
- *
  */
-class       Payment
-extends     Data
-implements  PaymentInterface
+class Payment extends Data
 {
+    /**
+     * Payment created in bank
+     */
+    const STAGE_CREATED     = 'created';
+
+    /**
+     * Customer is redirected to Paynet to perform additional steps
+     */
+    const STAGE_REDIRECTED  = 'redirected';
+
+    /**
+     * Payment processing is ended
+     */
+    const STAGE_FINISHED    = 'ended';
+
+    /**
+     * Payment is now processing
+     */
+    const STATUS_PROCESSING = 'processing';
+
+    /**
+     * Payment approved
+     */
+    const STATUS_APPROVED   = 'approved';
+
+    /**
+     * Payment declined by bank
+     */
+    const STATUS_DECLINED   = 'declined';
+
+    /**
+     * Payment declined by Paynet filters
+     */
+    const STATUS_FILTERED   = 'filtered';
+
+    /**
+     * Payment processed with error
+     */
+    const STATUS_ERROR      = 'error';
+
     /**
      * All allowed payment processing stages
      *
@@ -118,28 +155,28 @@ implements  PaymentInterface
     /**
      * Payment customer
      *
-     * @var \PaynetEasy\PaynetEasyApi\PaymentData\CustomerInterface
+     * @var \PaynetEasy\PaynetEasyApi\PaymentData\Customer
      */
     protected $customer;
 
     /**
      * Payment credit card
      *
-     * @var \PaynetEasy\PaynetEasyApi\PaymentData\CreditCardInterface
+     * @var \PaynetEasy\PaynetEasyApi\PaymentData\CreditCard
      */
     protected $creditCard;
 
     /**
      * Payment source recurrent card
      *
-     * @var \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCardInterface
+     * @var \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
      */
     protected $recurrentCardFrom;
 
     /**
      * Payment destination recurrent card
      *
-     * @var \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCardInterface
+     * @var \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
      */
     protected $recurrentCardTo;
 
@@ -151,7 +188,11 @@ implements  PaymentInterface
     protected $errors = array();
 
     /**
-     * {@inheritdoc}
+     * Set merchant payment identifier
+     *
+     * @param       string      $clientPaymentId        Merchant payment identifier
+     *
+     * @return      self
      */
     public function setClientPaymentId($clientPaymentId)
     {
@@ -161,7 +202,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get merchant payment identifier
+     *
+     * @return      string
      */
     public function getClientPaymentId()
     {
@@ -169,7 +212,11 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set unique identifier of transaction assigned by PaynetEasy
+     *
+     * @param       string      $paynetPaymentId        Unique identifier of transaction assigned by PaynetEasy
+     *
+     * @return      self
      */
     public function setPaynetPaymentId($paynetPaymentId)
     {
@@ -179,7 +226,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get unique identifier of transaction assigned by PaynetEasy
+     *
+     * @return       string
      */
     public function getPaynetPaymentId()
     {
@@ -187,7 +236,11 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set brief payment description
+     *
+     * @param       string      $description        Brief payment description
+     *
+     * @return      self
      */
     public function setDescription($description)
     {
@@ -197,7 +250,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get brief payment description
+     *
+     * @return      string
      */
     public function getDescription()
     {
@@ -205,7 +260,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set destination to where the payment goes
+     *
+     * @param       string      $destination        Destination to where the payment goes
      */
     public function setDestination($destination)
     {
@@ -215,7 +272,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get destination to where the payment goes
+     *
+     * @return      string
      */
     public function getDestination()
     {
@@ -223,7 +282,11 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get amount to be charged
+     *
+     * @param       float       $amount             Amount to be charged
+     *
+     * @return      self
      */
     public function setAmount($amount)
     {
@@ -233,7 +296,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get amount to be charged
+     *
+     * @return      float
      */
     public function getAmount()
     {
@@ -241,7 +306,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get amount in cents (for control code generation)
+     *
+     * @return      integer
      */
     public function getAmountInCents()
     {
@@ -249,7 +316,11 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set currency the transaction is charged in (three-letter currency code)
+     *
+     * @param       string      $currency           Currency the transaction is charged in
+     *
+     * @return      self
      */
     public function setCurrency($currency)
     {
@@ -259,7 +330,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get currency the transaction is charged in (three-letter currency code)
+     *
+     * @return      string
      */
     public function getCurrency()
     {
@@ -267,7 +340,11 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set customer’s IP address
+     *
+     * @param       string      $ipAddress          Customer’s IP address
+     *
+     * @return      self
      */
     public function setIpAddress($ipAddress)
     {
@@ -277,7 +354,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get customer’s IP address
+     *
+     * @return      string
      */
     public function getIpAddress()
     {
@@ -285,7 +364,11 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set URL the original payment is made from
+     *
+     * @param       string      $siteUrl            URL the original payment is made from
+     *
+     * @return      self
      */
     public function setSiteUrl($siteUrl)
     {
@@ -295,7 +378,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get URL the original payment is made from
+     *
+     * @return      string
      */
     public function getSiteUrl()
     {
@@ -303,9 +388,13 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set payment customer
+     *
+     * @param       Customer       $customer           Payment customer
+     *
+     * @return      self
      */
-    public function setCustomer(CustomerInterface $customer)
+    public function setCustomer(Customer $customer)
     {
         $this->customer = $customer;
 
@@ -313,7 +402,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get payment customer
+     *
+     * @return      Customer
      */
     public function getCustomer()
     {
@@ -321,9 +412,13 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set payment credit card
+     *
+     * @param       CreditCard     $creditCard         Payment credit card
+     *
+     * @return      self
      */
-    public function setCreditCard(CreditCardInterface $creditCard)
+    public function setCreditCard(CreditCard $creditCard)
     {
         $this->creditCard = $creditCard;
 
@@ -331,7 +426,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get credit card
+     *
+     * @return      CreditCard
      */
     public function getCreditCard()
     {
@@ -339,9 +436,13 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set payment sorce recurrent card
+     *
+     * @param       RecurrentCard      $recurrentCard      Source recurrent card
+     *
+     * @return      self
      */
-    public function setRecurrentCardFrom(RecurrentCardInterface $recurrentCard)
+    public function setRecurrentCardFrom(RecurrentCard $recurrentCard)
     {
         $this->recurrentCardFrom = $recurrentCard;
 
@@ -349,7 +450,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get payment source recurrent card
+     *
+     * @return      RecurrentCard
      */
     public function getRecurrentCardFrom()
     {
@@ -357,9 +460,13 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set payment destination recurrent card
+     *
+     * @param       RecurrentCard      $recurrentCard      Destination recurrent card
+     *
+     * @return      self
      */
-    public function setRecurrentCardTo(RecurrentCardInterface $recurrentCard)
+    public function setRecurrentCardTo(RecurrentCard $recurrentCard)
     {
         $this->recurrentCardTo = $recurrentCard;
 
@@ -367,7 +474,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get payment destination recurrent card
+     *
+     * @return      RecurrentCard
      */
     public function getRecurrentCardTo()
     {
@@ -375,7 +484,11 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set payment processing stage
+     *
+     * @param       string      $processingStage      Payment transport stage
+     *
+     * @return      self
      */
     public function setProcessingStage($processingStage)
     {
@@ -390,7 +503,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get payment processing state
+     *
+     * @return      string
      */
     public function getProcessingStage()
     {
@@ -398,7 +513,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * True, if payment created in bank
+     *
+     * @return      boolean
      */
     public function isCreated()
     {
@@ -406,7 +523,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * True, if customer is redirected to Paynet to perform additional steps
+     *
+     * @return      boolean
      */
     public function isRedirected()
     {
@@ -414,7 +533,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * True, if transport stage is finished
+     *
+     * @return      boolean
      */
     public function isFinished()
     {
@@ -422,7 +543,11 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set payment bank status
+     *
+     * @param       string      $status     Payment bank status
+     *
+     * @return      self
      */
     public function setStatus($status)
     {
@@ -437,7 +562,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get payment bank status
+     *
+     * @return      string
      */
     public function getStatus()
     {
@@ -445,7 +572,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * True, if payment is now processing
+     *
+     * @return      boolean
      */
     public function isProcessing()
     {
@@ -453,7 +582,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * True, if payment approved
+     *
+     * @return      boolean
      */
     public function isApproved()
     {
@@ -461,7 +592,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * True, if payment declined
+     *
+     * @return      boolean
      */
     public function isDeclined()
     {
@@ -469,7 +602,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * True, if error occured when processing payment
+     *
+     * @return      boolean
      */
     public function isError()
     {
@@ -477,7 +612,11 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set payment short comment
+     *
+     * @param       string      $comment    A short comment
+     *
+     * @return      self
      */
     public function setComment($comment)
     {
@@ -487,7 +626,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get payment short comment
+     *
+     * @return      string      A short comment
      */
     public function getComment()
     {
@@ -495,7 +636,11 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds new payment error
+     *
+     * @param       Exception       $error      Payment error
+     *
+     * @return      self
      */
     public function addError(Exception $error)
     {
@@ -508,7 +653,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * True if payment has errors
+     *
+     * @return      boolean
      */
     public function hasErrors()
     {
@@ -516,7 +663,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get all payment errors
+     *
+     * @return      array       Payment errors
      */
     public function getErrors()
     {
@@ -524,7 +673,9 @@ implements  PaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get payment last error
+     *
+     * @return      Exception
      */
     public function getLastError()
     {

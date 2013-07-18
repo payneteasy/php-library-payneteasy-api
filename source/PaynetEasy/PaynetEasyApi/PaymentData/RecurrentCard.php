@@ -6,9 +6,7 @@ namespace PaynetEasy\PaynetEasyApi\PaymentData;
  * Container for Reccurent Credit Card data
  *
  */
-class       RecurrentCard
-extends     Data
-implements  RecurrentCardInterface
+class RecurrentCard extends Data
 {
     /**
      * RecurrentCard referense ID
@@ -60,7 +58,11 @@ implements  RecurrentCardInterface
     protected $lastFourDigits;
 
     /**
-     * {@inheritdoc}
+     * Set RecurrentCard referense ID
+     *
+     * @param       integer     $cardReferenceId        RecurrentCard referense ID
+     *
+     * @return      self
      */
     public function setCardReferenceId($cardReferenceId)
     {
@@ -70,7 +72,9 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get RecurrentCard referense ID
+     *
+     * @return  integer
      */
     public function getCardReferenceId()
     {
@@ -78,7 +82,9 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set RecurrentCard CVV2
+     *
+     * @param       integer     $cvv2                   RecurrentCard CVV2
      */
     public function setCvv2($cvv2)
     {
@@ -86,7 +92,9 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get card CVV2 code
+     *
+     * @return  integer
      */
     public function getCvv2()
     {
@@ -94,7 +102,11 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set card holder name
+     *
+     * @param       string      $cardPrintedName        Card holder name
+     *
+     * @return      self
      */
     public function setCardPrintedName($cardPrintedName)
     {
@@ -104,7 +116,9 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get card holder name
+     *
+     * @return      string
      */
     public function getCardPrintedName()
     {
@@ -112,7 +126,11 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set card expiration year
+     *
+     * @param       integer     $expireYear             Card expiration year
+     *
+     * @return      self
      */
     public function setExpireYear($expireYear)
     {
@@ -122,7 +140,9 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get card expiration year
+     *
+     * @return      integer
      */
     public function getExpireYear()
     {
@@ -130,7 +150,11 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set card expiration month
+     *
+     * @param       integer     $expireMonth            Card expiration month
+     *
+     * @return      self
      */
     public function setExpireMonth($expireMonth)
     {
@@ -140,7 +164,9 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get card expiration month
+     *
+     * @return      self
      */
     public function getExpireMonth()
     {
@@ -148,7 +174,11 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set Bank Identification Number
+     *
+     * @param       integer     $bin                    Bank Identification Number
+     *
+     * @return      self
      */
     public function setBin($bin)
     {
@@ -158,7 +188,9 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get Bank Identification Number
+     *
+     * @return      integer
      */
     public function getBin()
     {
@@ -166,7 +198,11 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set last four digits of PAN (card number)
+     *
+     * @param       integer     $lastFourDigits         The last four digits of PAN (card number)
+     *
+     * @return      self
      */
     public function setLastFourDigits($lastFourDigits)
     {
@@ -176,7 +212,9 @@ implements  RecurrentCardInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get last four digits of PAN (card number)
+     *
+     * @return      integer
      */
     public function getLastFourDigits()
     {

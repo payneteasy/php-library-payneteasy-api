@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
 class RedirectUrlCallback extends AbstractCallback
 {
@@ -11,10 +11,10 @@ class RedirectUrlCallback extends AbstractCallback
      */
     static protected $allowedStatuses = array
     (
-        PaymentInterface::STATUS_APPROVED,
-        PaymentInterface::STATUS_DECLINED,
-        PaymentInterface::STATUS_FILTERED,
-        PaymentInterface::STATUS_ERROR
+        Payment::STATUS_APPROVED,
+        Payment::STATUS_DECLINED,
+        Payment::STATUS_FILTERED,
+        Payment::STATUS_ERROR
     );
 
     /**

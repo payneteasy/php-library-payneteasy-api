@@ -4,7 +4,7 @@ namespace PaynetEasy\PaynetEasyApi\Workflow;
 
 use PaynetEasy\PaynetEasyApi\Utils\String;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\GatewayClientInterface;
 use PaynetEasy\PaynetEasyApi\Query\QueryFactoryInterface;
 use PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface;
@@ -76,7 +76,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public function processPayment(PaymentInterface $payment, array $callbackData = array())
+    public function processPayment(Payment $payment, array $callbackData = array())
     {
         switch($payment->getProcessingStage())
         {
@@ -85,12 +85,12 @@ abstract class AbstractWorkflow implements WorkflowInterface
                 $response = $this->initializeProcessing($payment);
                 break;
             }
-            case PaymentInterface::STAGE_CREATED:
+            case Payment::STAGE_CREATED:
             {
                 $response = $this->updateStatus($payment);
                 break;
             }
-            case PaymentInterface::STAGE_REDIRECTED:
+            case Payment::STAGE_REDIRECTED:
             {
                 if(empty($callbackData))
                 {
@@ -101,7 +101,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
                 $response = $this->processCallback($payment, $callbackData);
                 break;
             }
-            case PaymentInterface::STAGE_FINISHED:
+            case Payment::STAGE_FINISHED:
             {
                 throw new RuntimeException('Payment has been completed');
             }
@@ -119,11 +119,11 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * Executes initial API method  query
      *
-     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface      $payment        Payment for processing
+     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\Payment      $payment        Payment for processing
      *
      * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                                Query response
      */
-    protected function initializeProcessing(PaymentInterface $payment)
+    protected function initializeProcessing(Payment $payment)
     {
         return $this->executeQuery($this->initialApiMethod, $payment);
     }
@@ -131,11 +131,11 @@ abstract class AbstractWorkflow implements WorkflowInterface
     /**
      * Executes status query
      *
-     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface      $payment        Payment for processing
+     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\Payment      $payment        Payment for processing
      *
      * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                                Query response
      */
-    protected function updateStatus(PaymentInterface $payment)
+    protected function updateStatus(Payment $payment)
     {
         return $this->executeQuery('status', $payment);
     }
@@ -170,7 +170,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
      *
      * @return      Response                        Callback object
      */
-    protected function processCallback(PaymentInterface $payment, array $callbackData)
+    protected function processCallback(Payment $payment, array $callbackData)
     {
         $callback = new CallbackResponse($callbackData);
 
@@ -214,11 +214,11 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * and executes API method request
      *
      * @param       string                                                      $queryName          API method name
-     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\PaymentInterface      $payment            Payment
+     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\Payment      $payment            Payment
      *
      * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                                    Gateway response
      */
-    protected function executeQuery($queryName, PaymentInterface $payment)
+    protected function executeQuery($queryName, Payment $payment)
     {
         $query = $this->queryFactory->getQuery($queryName, $this->queryConfig);
 
