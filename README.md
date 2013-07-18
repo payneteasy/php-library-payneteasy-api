@@ -44,3 +44,4 @@
 * [Интеграция различных платежных сценариев](doc/02-payment-scenarios.md)
     * [Sale transactions](doc/payment-scenarios/00-sale-transactions.md)
     * [Preauth/Capture Transactions](doc/payment-scenarios/01-preauth-capture-transactions.md)
+    * [Transfer Transactions](doc/payment-scenarios/02-transfer-transactions.md)
