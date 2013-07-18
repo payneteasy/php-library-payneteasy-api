@@ -64,13 +64,11 @@ recurrentCardTo     |[RecurrentCard](#RecurrentCard)|               |Payment des
 ### <a name="Customer"></a> Customer
 
 Объект класса **[PaynetEasy\PaynetEasyApi\PaymentData\Customer](../../source/PaynetEasy/PaynetEasyApi/PaymentData/Customer.php)**. Используется при выполнении следующих запросов:
-* sale
-* preauth
-* sale-form
-* preauth-form
-* transfer-form
-* make-rebill
-* transfer-by-ref
+* [sale](../payment-scenarios/00-sale-transactions.md#sale)
+* [preauth](../payment-scenarios/01-preauth-capture-transactions.md#preauth)
+* [sale-form, preauth-form, transfer-form](../payment-scenarios/05-payment-form-integration.md#form)
+* [make-rebill](../payment-scenarios/04-recurrent-transactions.md#make-rebill)
+* [transfer-by-ref](../payment-scenarios/02-transfer-transactions.md#transfer-by-ref)
 
 Объект хранит следующие данные:
 
@@ -86,11 +84,9 @@ ssn                 |string |ssn            |Last four digits of the customer’
 ### <a name="BillingAddress"></a> BillingAddress
 
 Объект класса **[PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress](../../source/PaynetEasy/PaynetEasyApi/PaymentData/BillingAddress.php)**. Используется при выполнении следующих запросов:
-* sale
-* preauth
-* sale-form
-* preauth-form
-* transfer-form
+* [sale](../payment-scenarios/00-sale-transactions.md#sale)
+* [preauth](../payment-scenarios/01-preauth-capture-transactions.md#preauth)
+* [sale-form, preauth-form, transfer-form](../payment-scenarios/05-payment-form-integration.md#form)
 
 Объект хранит следующие данные:
 
@@ -107,8 +103,8 @@ cellPhone           |string |cell_phone     |Customer’s full international cel
 ### <a name="CreditCard"></a> CreditCard
 
 Объект класса **[PaynetEasy\PaynetEasyApi\PaymentData\CreditCard](../../source/PaynetEasy/PaynetEasyApi/PaymentData/CreditCard.php)**. Используется при выполнении следующих запросов:
-* sale
-* preauth
+* [sale](../payment-scenarios/00-sale-transactions.md#sale)
+* [preauth](../payment-scenarios/01-preauth-capture-transactions.md#preauth)
 
 Объект хранит следующие данные:
 
@@ -123,10 +119,10 @@ expireMonth         |integer|expire_month       |Card expiration month
 ### <a name="RecurrentCard"></a> RecurrentCard
 
 Объект класса **[PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard](../../source/PaynetEasy/PaynetEasyApi/PaymentData/RecurrentCard.php)**. Используется при выполнении следующих запросов:
-* create-card-ref
-* get-card-info
-* make-rebill
-* transfer-by-ref
+* [create-card-ref](../payment-scenarios/04-recurrent-transactions.md#create-card-ref)
+* [get-card-info](../payment-scenarios/04-recurrent-transactions.md#get-card-info)
+* [make-rebill](../payment-scenarios/04-recurrent-transactions.md#make-rebill)
+* [transfer-by-ref](../payment-scenarios/02-transfer-transactions.md#transfer-by-ref)
 
 Объект хранит следующие данные:
 
