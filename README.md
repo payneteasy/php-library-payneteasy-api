@@ -41,3 +41,5 @@
     * [Семейство классов для хранения и обмена данными, PaynetEasy\PaynetEasyApi\PaymentData](doc/library-internals/00-payment-data.md)
     * [Фронтенд библиотеки, PaynetEasy\PaynetEasyApi\PaymentProcessor](doc/library-internals/01-payment-processor.md)
     * [Валидатор данных, PaynetEasy\PaynetEasyApi\Utils\Validator](doc/library-internals/02-validator.md)
+* [Интеграция различных платежных сценариев](doc/02-payment-scenarios.md)
+    * [Sale transactions](doc/payment-scenarios/00-sale-transactions.md)
