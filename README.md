@@ -37,4 +37,7 @@
 ## Использование
 
 * [Простой пример использования библиотеки](doc/00-basic-tutorial.md)
-* [Использование API библиотеки разных уровней](doc/01-library-internals.md)
+* [Внутренняя структура библиотеки](doc/01-library-internals.md)
+    * [Семейство классов для хранения и обмена данными, PaynetEasy\PaynetEasyApi\PaymentData](doc/library-internals/00-payment-data.md)
+    * [Фронтенд библиотеки, PaynetEasy\PaynetEasyApi\PaymentProcessor](doc/library-internals/01-payment-processor.md)
+    * [Валидатор данных, PaynetEasy\PaynetEasyApi\Utils\Validator](doc/library-internals/02-validator.md)
