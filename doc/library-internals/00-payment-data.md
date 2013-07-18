@@ -1,6 +1,6 @@
 # Классы для хранения и передачи данных
 
-Семейство классов для хранения данных и обмена данными между библиотекой и CMS мерчанта. Расположены в пространстве имен **[PaynetEasy/PaynetEasyApi/PaymentData](../../source/PaynetEasy/PaynetEasyApi/PaymentData)**. Представлены следующими классами объектов:
+Семейство классов для хранения данных и обмена данными между библиотекой и CMS мерчанта. Расположены в пространстве имен **[PaynetEasy\PaynetEasyApi\PaymentData](../../source/PaynetEasy/PaynetEasyApi/PaymentData)**. Представлены следующими классами объектов:
 * [Payment](#Payment)
 * [Customer](#Customer)
 * [BillingAddress](#BillingAddress)
@@ -41,7 +41,7 @@ $payment = (new Payment)
 
 ### <a name="Payment"></a> Payment
 
-Центральным объектом для хранения и передачи данных является объект класса **[Payment](../../source/PaynetEasy/PaynetEasyApi/PaymentData/Payment.php)**. Именно он передается из CMS в библиотеку при выполнении любого запроса. Хранит следующие данные:
+Центральным объектом для хранения и передачи данных является объект класса **[PaynetEasy\PaynetEasyApi\PaymentData\Payment](../../source/PaynetEasy/PaynetEasyApi/PaymentData/Payment.php)**. Именно он передается из CMS в библиотеку при выполнении любого запроса. Хранит следующие данные:
 
 Свойство класса     |Тип                            |Поле запроса   |Назначение
 --------------------|-------------------------------|---------------|-------------------------------------------------------
@@ -63,7 +63,7 @@ recurrentCardTo     |[RecurrentCard](#RecurrentCard)|               |Payment des
 
 ### <a name="Customer"></a> Customer
 
-Объект класса **[Customer](../../source/PaynetEasy/PaynetEasyApi/PaymentData/Customer.php)**. Используется при выполнении следующих запросов:
+Объект класса **[PaynetEasy\PaynetEasyApi\PaymentData\Customer](../../source/PaynetEasy/PaynetEasyApi/PaymentData/Customer.php)**. Используется при выполнении следующих запросов:
 * sale
 * preauth
 * sale-form
@@ -85,7 +85,7 @@ ssn                 |string |ssn            |Last four digits of the customer’
 
 ### <a name="BillingAddress"></a> BillingAddress
 
-Объект класса **[BillingAddress](../../source/PaynetEasy/PaynetEasyApi/PaymentData/BillingAddress.php)**. Используется при выполнении следующих запросов:
+Объект класса **[PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress](../../source/PaynetEasy/PaynetEasyApi/PaymentData/BillingAddress.php)**. Используется при выполнении следующих запросов:
 * sale
 * preauth
 * sale-form
@@ -106,7 +106,7 @@ cellPhone           |string |cell_phone     |Customer’s full international cel
 
 ### <a name="CreditCard"></a> CreditCard
 
-Объект класса **[CreditCard](../../source/PaynetEasy/PaynetEasyApi/PaymentData/CreditCard.php)**. Используется при выполнении следующих запросов:
+Объект класса **[PaynetEasy\PaynetEasyApi\PaymentData\CreditCard](../../source/PaynetEasy/PaynetEasyApi/PaymentData/CreditCard.php)**. Используется при выполнении следующих запросов:
 * sale
 * preauth
 
@@ -122,7 +122,7 @@ expireMonth         |integer|expire_month       |Card expiration month
 
 ### <a name="RecurrentCard"></a> RecurrentCard
 
-Объект класса **[RecurrentCard](../../source/PaynetEasy/PaynetEasyApi/PaymentData/RecurrentCard.php)**. Используется при выполнении следующих запросов:
+Объект класса **[PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard](../../source/PaynetEasy/PaynetEasyApi/PaymentData/RecurrentCard.php)**. Используется при выполнении следующих запросов:
 * create-card-ref
 * get-card-info
 * make-rebill
