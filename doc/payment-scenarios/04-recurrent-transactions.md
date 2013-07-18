@@ -1,5 +1,11 @@
 # Recurrent transactions
 
+Список запросов сценария:
+* [Запрос "create-card-ref"](#create-card-ref)
+* [Запрос "get-card-info"](#get-card-info)
+* [Запрос "make-rebill"](#make-rebill)
+* [Запрос "status"](#status)
+
 ## Общие положения
 
 * В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Recurrent transactions расположена в [статье в wiki PaynetEasy](http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions).
@@ -22,7 +28,8 @@ orderid             |paynetPaymentId                |Validator::ID
 
 [Пример выполнения запроса create-card-ref](../../example/create-card-ref.php)
 
-После выполнения данного запроса будет получен id сохраненной кредитной карты и создан объект **[RecurrentCard](../library-intenals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова `$payment->getRecurrentCardFrom()`, а к ее id с помощью вызова `$payment->getRecurrentCardFrom()->getCardReferenceId()`
+После выполнения данного запроса будет получен id сохраненной кредитной карты и создан объект **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова
+`$payment->getRecurrentCardFrom()`, а к ее id с помощью вызова `$payment->getRecurrentCardFrom()->getCardReferenceId()`
 
 ## <a name="get-card-info"></a> Запрос "get-card-info"
 
@@ -36,14 +43,14 @@ cardrefid           |recurrentCardFrom.cardReferenceId  |Validator::ID
 
 [Пример выполнения запроса get-card-info](../../example/get-card-info.php)
 
-После выполнения данного запроса будут получены данные сохраненной кредитной карты и создан объект **[RecurrentCard](../library-intenals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова `$payment->getRecurrentCardFrom()`. В объекте будут заполнены следующие данные:
+После выполнения данного запроса будут получены данные сохраненной кредитной карты и создан объект **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова `$payment->getRecurrentCardFrom()`. В объекте будут заполнены следующие данные:
 * **cardPrintedName** - данные доступны с помощью вызова `$payment->getRecurrentCardFrom()->getСardPrintedName()`
 * **expireYear** - данные доступны с помощью вызова `$payment->getRecurrentCardFrom()->getExpireYear()`
 * **expireMonth** - данные доступны с помощью вызова `$payment->getRecurrentCardFrom()->getExpireMonth()`
 * **bin** - данные доступны с помощью вызова `$payment->getRecurrentCardFrom()->getBin()`
 * **lastFourDigits** - данные доступны с помощью вызова `$payment->getRecurrentCardFrom()->getLastFourDigits()`
 
-## Запрос "make-rebill"
+## <a name="make-rebill"></a> Запрос "make-rebill"
 
 Перед выполнением данного запроса необходимо выполнить запрос [create-card-ref](#create-card-ref).
 
@@ -67,7 +74,7 @@ cvv2                |recurrentCardFrom.cvv2             |Validator::CVV2
 
 [Пример выполнения запроса make-rebill](../../example/make-rebill.php)
 
-## Запрос "status"
+## <a name="status"></a> Запрос "status"
 
 ##### Обязательные параметры запроса
 

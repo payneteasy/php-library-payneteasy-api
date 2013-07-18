@@ -1,12 +1,16 @@
 # Sale transactions
 
+Список запросов сценария:
+* [Запрос "sale"](#sale)
+* [Запрос "status"](#status)
+
 ## Общие положения
 
 * В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Sale transactions расположена в [статье в wiki PaynetEasy](http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions).
 * Описание правил валидации можно найти в описании метода **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)**.
 * Колонка "Свойство платежа" описывает цепочку свойств методов, которые содержат необходимые данные. Например, для получения данных из свойства **description** будет выполнен код `$payment->getDescription()`, а для свойства **creditCard.cardPrintedName** - `$payment->getCreditCard()->getCardPrintedName()`
 
-## Запрос "sale"
+## <a name="sale"></a> Запрос "sale"
 
 ##### Обязательные параметры запроса
 
@@ -44,7 +48,7 @@ destination         |destination                    |Validator::LONG_STRING
 
 [Пример выполнения запроса sale](../../example/sale.php)
 
-## Запрос "status"
+## <a name="status"></a> Запрос "status"
 
 ##### Обязательные параметры запроса
 

@@ -1,12 +1,17 @@
 # Preauth/Capture transactions
 
+Список запросов сценария:
+* [Запрос "preauth"](#preauth)
+* [Запрос "capture"](#capture)
+* [Запрос "status"](#status)
+
 ## Общие положения
 
 * В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Preauth/Capture transactions расположена в [статье в wiki PaynetEasy](http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions).
 * Описание правил валидации можно найти в описании метода **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)**.
 * Колонка "Свойство платежа" описывает цепочку свойств методов, которые содержат необходимые данные. Например, для получения данных из свойства **description** будет выполнен код `$payment->getDescription()`, а для свойства **creditCard.cardPrintedName** - `$payment->getCreditCard()->getCardPrintedName()`
 
-## Запрос "preauth"
+## <a name="preauth"></a> Запрос "preauth"
 
 ##### Обязательные параметры запроса
 
@@ -44,7 +49,7 @@ destination         |destination                    |Validator::LONG_STRING
 
 [Пример выполнения запроса preauth](../../example/preauth.php)
 
-## Запрос "capture"
+## <a name="capture"></a> Запрос "capture"
 
 ##### Обязательные параметры запроса
 
@@ -55,7 +60,7 @@ orderid             |paynetPaymentId                |Validator::ID
 
 [Пример выполнения запроса capture](../../example/capture.php)
 
-## Запрос "status"
+## <a name="status"></a> Запрос "status"
 
 ##### Обязательные параметры запроса
 
