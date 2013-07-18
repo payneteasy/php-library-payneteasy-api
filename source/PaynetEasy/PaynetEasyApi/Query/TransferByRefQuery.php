@@ -18,7 +18,7 @@ class TransferByRefQuery extends AbstractQuery
         array('client_orderid',             'clientPaymentId',                      true,    Validator::ID),
         array('amount',                     'amount',                               true,    Validator::AMOUNT),
         array('currency',                   'currency',                             true,    Validator::CURRENCY),
-        array('ipaddress',                  'ipAddress',                            true,    Validator::IP),
+        array('ipaddress',                  'customer.ipAddress',                   true,    Validator::IP),
         array('destination-card-ref-id',    'recurrentCardTo.cardReferenceId',      true,    Validator::ID),
         // optional
         array('order_desc',                 'description',                          false,   Validator::LONG_STRING),

@@ -1,6 +1,7 @@
 <?php
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
 use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 require_once './common/autoload.php';
@@ -20,8 +21,20 @@ $payment = $loadPayment() ?: new Payment(array
     'client_payment_id'     => 'CLIENT-112244',
     'amount'                =>  9.99,
     'currency'              => 'USD',
-    'ipaddress'             => '127.0.0.1',
+    'ip_address'            => '127.0.0.1',
 ));
+
+/**
+ * Для этого запроса необходимо передать данные клиента
+ *
+ * @see http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions#Money_transfer_request_parameters
+ * @see \PaynetEasy\PaynetEasyApi\Query\TransferByRefQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
+ */
+$payment->setCustomer(new Customer(array
+(
+    'ip_address'            => '127.0.0.1'
+)));
 
 /**
  * Для этого запроса необходимо передать данные кредитных карт,

@@ -19,7 +19,7 @@ class MakeRebillQuery extends AbstractQuery
         array('order_desc',         'description',                          true,    Validator::LONG_STRING),
         array('amount',             'amount',                               true,    Validator::AMOUNT),
         array('currency',           'currency',                             true,    Validator::CURRENCY),
-        array('ipaddress',          'ipAddress',                            true,    Validator::IP),
+        array('ipaddress',          'customer.ipAddress',                   true,    Validator::IP),
         array('cardrefid',          'recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
         // optional
         array('comment',            'comment',                              false,   Validator::MEDIUM_STRING),

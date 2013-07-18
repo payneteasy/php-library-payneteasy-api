@@ -1,6 +1,7 @@
 <?php
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
 use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 require_once './common/autoload.php';
@@ -28,8 +29,20 @@ $payment = $loadPayment() ?: new Payment(array
     'description'           => 'This is test payment',
     'amount'                =>  0.99,
     'currency'              => 'USD',
-    'ipaddress'             => '127.0.0.1'
+    'ip_address'            => '127.0.0.1'
 ));
+
+/**
+ * Для этого запроса необходимо передать данные клиента
+ *
+ * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Recurrent_Payment_request_parameters
+ * @see \PaynetEasy\PaynetEasyApi\Query\MakeRebillQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
+ */
+$payment->setCustomer(new Customer(array
+(
+    'ip_address'            => '127.0.0.1'
+)));
 
 /**
  * Для этого запроса необходимо передать ID кредитной карты

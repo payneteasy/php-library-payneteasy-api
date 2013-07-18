@@ -3,6 +3,7 @@
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
 use PaynetEasy\PaynetEasyApi\PaymentData\CreditCard;
+use PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress;
 use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 require_once './common/autoload.php';
@@ -19,11 +20,10 @@ session_start();
  */
 $payment = $loadPayment() ?: new Payment(array
 (
-    'client_payment_id'         => 'CLIENT-112244',
-    'description'               => 'This is test payment',
-    'amount'                    =>  0.99,
-    'currency'                  => 'USD',
-    'ipaddress'                 => '127.0.0.1'
+    'client_payment_id'     => 'CLIENT-112244',
+    'description'           => 'This is test payment',
+    'amount'                =>  0.99,
+    'currency'              => 'USD'
 ));
 
 /**
@@ -35,12 +35,24 @@ $payment = $loadPayment() ?: new Payment(array
  */
 $payment->setCustomer(new Customer(array
 (
-    'address'       => '2704 Colonial Drive',
-    'city'          => 'Houston',
-    'zip_code'      => '1235',
-    'country'       => 'US',
-    'email'         => 'vass.pupkin@example.com',
-    'phone'         => '660-485-6353'
+    'email'                 => 'vass.pupkin@example.com',
+    'ip_address'            => '127.0.0.1'
+)));
+
+/**
+ * Для этого запроса необходимо передать данные адреса
+ *
+ * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Preauth_Request_Parameters
+ * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress
+ */
+$payment->setBillingAddress(new BillingAddress(array
+(
+    'country'               => 'US',
+    'city'                  => 'Houston',
+    'first_line'            => '2704 Colonial Drive',
+    'zip_code'              => '1235',
+    'phone'                 => '660-485-6353'
 )));
 
 /**
@@ -52,11 +64,11 @@ $payment->setCustomer(new Customer(array
  */
 $payment->setCreditCard(new CreditCard(array
 (
-    'card_printed_name'         => 'Vasya Pupkin',
-    'credit_card_number'        => '4444 5555 6666 1111',
-    'expire_month'              => '12',
-    'expire_year'               => '14',
-    'cvv2'                      => '123'
+    'card_printed_name'     => 'Vasya Pupkin',
+    'credit_card_number'    => '4444 5555 6666 1111',
+    'expire_month'          => '12',
+    'expire_year'           => '14',
+    'cvv2'                  => '123'
 )));
 
 /**

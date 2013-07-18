@@ -2,8 +2,8 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
-use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
 use PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard;
 
 /**
@@ -123,28 +123,26 @@ class TransferByRefQueryTest extends QueryTestPrototype
 
     public function getPayment()
     {
-        $payment = new Payment(array
+        return new Payment(array
         (
-            'client_payment_id'         =>  self::CLIENT_PAYMENT_ID,
-            'description'               => 'This is test payment',
-            'amount'                    =>  99.1,
-            'currency'                  => 'EUR',
-            'ipaddress'                 => '127.0.0.1',
-            'site_url'                  => 'http://example.com'
+            'client_payment_id'     =>  self::CLIENT_PAYMENT_ID,
+            'description'           => 'This is test payment',
+            'amount'                =>  99.1,
+            'currency'              => 'EUR',
+            'site_url'              => 'http://example.com',
+            'customer'              => new Customer(array
+            (
+                'ip_address'            => '127.0.0.1'
+            )),
+            'recurrent_card_from'   => new RecurrentCard(array
+            (
+                'cardrefid'             => self::RECURRENT_CARD_FROM_ID,
+                'cvv2'                  => 123
+            )),
+            'recurrent_card_to'     => new RecurrentCard(array
+            (
+                'cardrefid'             => self::RECURRENT_CARD_TO_ID,
+            ))
         ));
-
-        $sourceCard = new RecurrentCard(array
-        (
-            'cardrefid' => self::RECURRENT_CARD_FROM_ID,
-            'cvv2' => 123
-        ));
-
-        $destCard = new RecurrentCard(array
-        (
-            'cardrefid' => self::RECURRENT_CARD_TO_ID,
-        ));
-
-        return $payment->setRecurrentCardFrom($sourceCard)
-                     ->setRecurrentCardTo($destCard);
     }
 }

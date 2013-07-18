@@ -4,7 +4,7 @@
 
 1. Инициация оплаты:
     1. [Подключение загрузчика классов и необходимых классов](#stage_1_step_1)
-    2. [Создание нового платежа и покупателя](#stage_1_step_2)
+    2. [Создание нового платежа, покупателя и адреса](#stage_1_step_2)
     3. [Создание конфигурации для выполнения запроса](#stage_1_step_3)
     4. [Создание сервиса для обработки платежей](#stage_1_step_4)
     5. [Установка обработчиков событий для сервиса](#stage_1_step_5)
@@ -49,40 +49,48 @@
     use PaynetEasy\PaynetEasyApi\Transport\Response;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
     ```
-2. <a name="stage_1_step_2"></a>Создание нового платежа и покупателя:
+2. <a name="stage_1_step_2"></a>Создание нового платежа, покупателя и адреса:
     ##### С использованием массивов, переданных в конструктор:
 
     ```php
     $customer = new Customer(array
     (
-        'address'           => '2704 Colonial Drive',
-        'city'              => 'Houston',
-        'zip_code'          => '1235',
-        'country'           => 'US',
         'email'             => 'vass.pupkin@example.com',
+        'ip_address'        => '127.0.0.1'
+    ));
+
+    $billingAddress = new BillingAddress(array
+    (
+        'country'           => 'US',
+        'city'              => 'Houston',
+        'first_line'        => '2704 Colonial Drive',
+        'zip_code'          => '1235',
         'phone'             => '660-485-6353'
     ));
 
     $payment = new Payment(array
     (
         'client_payment_id' => 'CLIENT-112244',
-        'desc'              => 'This is test payment',
+        'description'       => 'This is test payment',
         'amount'            =>  9.99,
         'currency'          => 'USD',
-        'ipaddress'         => '127.0.0.1'
+        'customer'          => $customer,
+        'billing_address'   => $billingAddress
     ));
-
-    $payment->setCustomer($customer);
     ```
     ##### С использованием сеттеров:
 
     ```php
     $customer = (new Customer)
-        ->setAddress('2704 Colonial Drive')
-        ->setCity('Houston')
-        ->setZipCode('1235')
-        ->setCountry('US')
         ->setEmail('vass.pupkin@example.com')
+        ->setIpAddress('127.0.0.1')
+    ;
+
+    $billingAddress = (new BillingAddress)
+        ->setCountry('US')
+        ->setCity('Houston')
+        ->setFirstLine('2704 Colonial Drive')
+        ->setZipCode('1235')
         ->setPhone('660-485-6353')
     ;
 
@@ -91,8 +99,8 @@
         ->setDescription('This is test payment')
         ->setAmount(9.99)
         ->setCurrency('USD')
-        ->setIpAddress('127.0.0.1')
         ->setCustomer($customer)
+        ->setBillingAddress($billingAddress)
     ;
     ```
 
@@ -231,7 +239,7 @@
     use PaynetEasy\PaynetEasyApi\Transport\Response;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
     ```
-2. Создание нового платежа и покупателя или загрузка сохраненного платежа:
+2. Создание нового платежа, покупателя и адреса или загрузка сохраненного платежа:
     ##### С использованием массивов, переданных в конструктор:
 
     ```php
@@ -245,11 +253,16 @@
     {
         $customer = new Customer(array
         (
-            'address'           => '2704 Colonial Drive',
-            'city'              => 'Houston',
-            'zip_code'          => '1235',
-            'country'           => 'US',
             'email'             => 'vass.pupkin@example.com',
+            'ip_address'        => '127.0.0.1'
+        ));
+
+        $billingAddress = new BillingAddress(array
+        (
+            'country'           => 'US',
+            'city'              => 'Houston',
+            'first_line'        => '2704 Colonial Drive',
+            'zip_code'          => '1235',
             'phone'             => '660-485-6353'
         ));
 
@@ -259,10 +272,9 @@
             'description'       => 'This is test payment',
             'amount'            =>  9.99,
             'currency'          => 'USD',
-            'ipaddress'         => '127.0.0.1'
+            'customer'          => $customer,
+            'billing_address'   => $billingAddress
         ));
-
-        $payment->setCustomer($customer);
     }
     ```
     ##### С использованием сеттеров:
@@ -277,11 +289,15 @@
     else
     {
         $customer = (new Customer)
-            ->setAddress('2704 Colonial Drive')
-            ->setCity('Houston')
-            ->setZipCode('1235')
-            ->setCountry('US')
             ->setEmail('vass.pupkin@example.com')
+            ->setIpAddress('127.0.0.1')
+        ;
+
+        $billingAddress = (new BillingAddress)
+            ->setCountry('US')
+            ->setCity('Houston')
+            ->setFirstLine('2704 Colonial Drive')
+            ->setZipCode('1235')
             ->setPhone('660-485-6353')
         ;
 
@@ -290,8 +306,8 @@
             ->setDescription('This is test payment')
             ->setAmount(9.99)
             ->setCurrency('USD')
-            ->setIpAddress('127.0.0.1')
             ->setCustomer($customer)
+            ->setBillingAddress($billingAddress)
         ;
     }
     ```

@@ -2,6 +2,7 @@
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
+use PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress;
 use PaynetEasy\PaynetEasyApi\PaymentData\CreditCard;
 use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
@@ -14,7 +15,7 @@ session_start();
  * Если платеж был сохранен - получим его сохраненную версию, иначе создадим новый
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Sale_Request_Parameters
- * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\Query\SaleQuery::$requestFieldsDefinition
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
  */
 $payment = $loadPayment() ?: new Payment(array
@@ -22,24 +23,35 @@ $payment = $loadPayment() ?: new Payment(array
     'client_payment_id'     => 'CLIENT-112244',
     'description'           => 'This is test payment',
     'amount'                =>  0.99,
-    'currency'              => 'USD',
-    'ipaddress'             => '127.0.0.1'
+    'currency'              => 'USD'
 ));
 
 /**
  * Для этого запроса необходимо передать данные клиента
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Sale_Request_Parameters
- * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\Query\SaleQuery::$requestFieldsDefinition
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
  */
 $payment->setCustomer(new Customer(array
 (
-    'address'               => '2704 Colonial Drive',
-    'city'                  => 'Houston',
-    'zip_code'              => '1235',
-    'country'               => 'US',
     'email'                 => 'vass.pupkin@example.com',
+    'ip_address'            => '127.0.0.1'
+)));
+
+/**
+ * Для этого запроса необходимо передать данные адреса
+ *
+ * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Sale_Request_Parameters
+ * @see \PaynetEasy\PaynetEasyApi\Query\SaleQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress
+ */
+$payment->setBillingAddress(new BillingAddress(array
+(
+    'country'               => 'US',
+    'city'                  => 'Houston',
+    'first_line'            => '2704 Colonial Drive',
+    'zip_code'              => '1235',
     'phone'                 => '660-485-6353'
 )));
 
@@ -47,7 +59,7 @@ $payment->setCustomer(new Customer(array
  * Для этого запроса необходимо передать данные кредитной карты
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Sale_Request_Parameters
- * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\Query\SaleQuery::$requestFieldsDefinition
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\CreditCard
  */
 $payment->setCreditCard(new CreditCard(array

@@ -3,6 +3,7 @@
 Семейство классов для хранения данных и обмена данными между библиотекой и CMS мерчанта. Расположены в пространстве имен **[PaynetEasy/PaynetEasyApi/PaymentData](../../source/PaynetEasy/PaynetEasyApi/PaymentData)**. Представлены следующими классами объектов:
 * [Payment](#Payment)
 * [Customer](#Customer)
+* [BillingAddress](#BillingAddress)
 * [CreditCard](#CreditCard)
 * [RecurrentCard](#RecurrentCard)
 
@@ -50,7 +51,6 @@ description         |string                         |order_desc     |Brief payme
 destination         |string                         |destination    |Destination to where the payment goes
 amount              |float                          |amount         |Amount to be charged
 currency            |string                         |currency       |Three-letter currency code
-ipAddress           |string                         |ipaddress      |Customer’s IP address
 siteUrl             |string                         |site_url       |URL the original payment is made from
 comment             |string                         |comment        |A short comment for payment
 processingStage     |string                         |               |Payment processing stage
@@ -68,7 +68,9 @@ recurrentCardTo     |[RecurrentCard](#RecurrentCard)|               |Payment des
 * preauth
 * sale-form
 * preauth-form
-* transfer-from
+* transfer-form
+* make-rebill
+* transfer-by-ref
 
 Объект хранит следующие данные:
 
@@ -76,16 +78,31 @@ recurrentCardTo     |[RecurrentCard](#RecurrentCard)|               |Payment des
 --------------------|-------|---------------|-------------------------------------------------------
 firstName           |string |first_name     |Customer’s first name
 lastName            |string |last_name      |Customer’s last name
-address             |string |address1       |Customer’s address line 1
-city                |string |city           |Customer’s city
-state               |string |state          |Customer’s two-letter state code
-zipCode             |string |zip_code       |Customer’s ZIP code
-country             |string |country        |Customer’s two-letter country code
-phone               |string |phone          |Customer’s full international phone number, including country code
-cellPhone           |string |cell_phone     |Customer’s full international cell phone number, including country code
 email               |string |email          |Customer’s email address
+ipAddress           |string |ipaddress      |Customer’s IP address
 birthday            |string |birthday       |Customer’s date of birth, in the format MMDDYY
 ssn                 |string |ssn            |Last four digits of the customer’s social security number
+
+### <a name="BillingAddress"></a> BillingAddress
+
+Объект класса **[BillingAddress](../../source/PaynetEasy/PaynetEasyApi/PaymentData/BillingAddress.php)**. Используется при выполнении следующих запросов:
+* sale
+* preauth
+* sale-form
+* preauth-form
+* transfer-form
+
+Объект хранит следующие данные:
+
+Свойство класса     |Тип    |Поле запроса   |Назначение
+--------------------|-------|---------------|-------------------------------------------------------
+country             |string |country        |Customer’s two-letter country code
+state               |string |state          |Customer’s two-letter state code
+city                |string |city           |Customer’s city
+firstLine           |string |address1       |Customer’s address line 1
+zipCode             |string |zip_code       |Customer’s ZIP code
+phone               |string |phone          |Customer’s full international phone number, including country code
+cellPhone           |string |cell_phone     |Customer’s full international cell phone number, including country code
 
 ### <a name="CreditCard"></a> CreditCard
 

@@ -3,6 +3,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress;
 use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
 use PaynetEasy\PaynetEasyApi\PaymentData\CreditCard;
 
@@ -101,41 +102,40 @@ class SaleQueryTest extends QueryTestPrototype
 
     protected function getPayment()
     {
-        $payment = new Payment(array
+        return new Payment(array
         (
-            'paynet_payment_id'         =>  self::PAYNET_PAYMENT_ID,
-            'client_payment_id'         =>  self::CLIENT_PAYMENT_ID,
-            'description'               => 'This is test payment',
-            'amount'                    =>  0.99,
-            'currency'                  => 'USD',
-            'ipaddress'                 => '127.0.0.1',
-            'site_url'                  => 'http://example.com'
+            'paynet_payment_id'     =>  self::PAYNET_PAYMENT_ID,
+            'client_payment_id'     =>  self::CLIENT_PAYMENT_ID,
+            'description'           => 'This is test payment',
+            'amount'                =>  0.99,
+            'currency'              => 'USD',
+            'site_url'              => 'http://example.com',
+            'customer'              => new Customer(array
+            (
+                'first_name'            => 'Vasya',
+                'last_name'             => 'Pupkin',
+                'email'                 => 'vass.pupkin@example.com',
+                'ip_address'            => '127.0.0.1',
+                'birthday'              => '112681',
+            )),
+            'billing_address'       => new BillingAddress(array
+            (
+                'country'               => 'US',
+                'state'                 => 'TX',
+                'city'                  => 'Houston',
+                'first_line'            => '2704 Colonial Drive',
+                'zip_code'              => '1235',
+                'phone'                 => '660-485-6353',
+                'cell_phone'            => '660-485-6353'
+            )),
+            'credit_card'           => new CreditCard(array
+            (
+                'card_printed_name'     => 'Vasya Pupkin',
+                'credit_card_number'    => '4485 9408 2237 9130',
+                'expire_month'          => '12',
+                'expire_year'           => '14',
+                'cvv2'                  => '084'
+            ))
         ));
-
-        $payment->setCustomer(new Customer(array
-        (
-            'first_name'    => 'Vasya',
-            'last_name'     => 'Pupkin',
-            'email'         => 'vass.pupkin@example.com',
-            'address'       => '2704 Colonial Drive',
-            'birthday'      => '112681',
-            'city'          => 'Houston',
-            'state'         => 'TX',
-            'zip_code'      => '1235',
-            'country'       => 'US',
-            'phone'         => '660-485-6353',
-            'cell_phone'    => '660-485-6353'
-        )));
-
-        $payment->setCreditCard(new CreditCard(array
-        (
-            'card_printed_name'         => 'Vasya Pupkin',
-            'credit_card_number'        => '4485 9408 2237 9130',
-            'expire_month'              => '12',
-            'expire_year'               => '14',
-            'cvv2'                      => '084'
-        )));
-
-        return $payment;
     }
 }

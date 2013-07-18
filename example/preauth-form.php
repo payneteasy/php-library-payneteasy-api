@@ -2,6 +2,7 @@
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
+use PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress;
 use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 require_once './common/autoload.php';
@@ -21,8 +22,7 @@ $payment = $loadPayment() ?: new Payment(array
     'client_payment_id'     => 'CLIENT-112244',
     'description'           => 'This is test payment',
     'amount'                =>  9.99,
-    'currency'              => 'USD',
-    'ipaddress'             => '127.0.0.1'
+    'currency'              => 'USD'
 ));
 
 /**
@@ -34,11 +34,23 @@ $payment = $loadPayment() ?: new Payment(array
  */
 $payment->setCustomer(new Customer(array
 (
-    'address'               => '2704 Colonial Drive',
-    'city'                  => 'Houston',
-    'zip_code'              => '1235',
-    'country'               => 'US',
     'email'                 => 'vass.pupkin@example.com',
+    'ip_address'            => '127.0.0.1'
+)));
+
+/**
+ * Для этого запроса необходимо передать данные адреса
+ *
+ * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
+ * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress
+ */
+$payment->setBillingAddress(new BillingAddress(array
+(
+    'country'               => 'US',
+    'city'                  => 'Houston',
+    'first_line'            => '2704 Colonial Drive',
+    'zip_code'              => '1235',
     'phone'                 => '660-485-6353'
 )));
 

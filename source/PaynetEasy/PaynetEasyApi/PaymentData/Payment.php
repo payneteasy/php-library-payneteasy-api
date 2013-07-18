@@ -118,13 +118,6 @@ class Payment extends Data
     protected $currency;
 
     /**
-     * Customer’s IP address
-     *
-     * @var string
-     */
-    protected $ipAddress;
-
-    /**
      * URL the original payment is made from
      *
      * @var string
@@ -158,6 +151,13 @@ class Payment extends Data
      * @var \PaynetEasy\PaynetEasyApi\PaymentData\Customer
      */
     protected $customer;
+
+    /**
+     * Payment billing address
+     *
+     * @var \PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress
+     */
+    protected $billingAddress;
 
     /**
      * Payment credit card
@@ -340,30 +340,6 @@ class Payment extends Data
     }
 
     /**
-     * Set customer’s IP address
-     *
-     * @param       string      $ipAddress          Customer’s IP address
-     *
-     * @return      self
-     */
-    public function setIpAddress($ipAddress)
-    {
-        $this->ipAddress = $ipAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get customer’s IP address
-     *
-     * @return      string
-     */
-    public function getIpAddress()
-    {
-        return $this->ipAddress;
-    }
-
-    /**
      * Set URL the original payment is made from
      *
      * @param       string      $siteUrl            URL the original payment is made from
@@ -409,6 +385,30 @@ class Payment extends Data
     public function getCustomer()
     {
         return $this->customer;
+    }
+
+    /**
+     * Set payment billing address
+     *
+     * @param       BillingAddress      $billingAddress     Billing address
+     *
+     * @return      self
+     */
+    public function setBillingAddress(BillingAddress $billingAddress)
+    {
+        $this->billingAddress = $billingAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get payment billing address
+     *
+     * @return      BillingAddress
+     */
+    public function getBillingAddress()
+    {
+        return $this->billingAddress;
     }
 
     /**
