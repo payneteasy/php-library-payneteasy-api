@@ -1,12 +1,12 @@
-# Sale transactions
+# Preauth/Capture transactions
 
 ## Общие положения
 
-* В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Sale transactions расположена в [статье в wiki PaynetEasy](http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions).
+* В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Preauth/Capture transactions расположена в [статье в wiki PaynetEasy](http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions).
 * Описание правил валидации можно найти в описании метода **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)**.
 * Колонка "Свойство платежа" описывает цепочку свойств методов, которые содержат необходимые данные. Например, для получения данных из свойства **description** будет выполнен код `$payment->getDescription()`, а для свойства **creditCard.cardPrintedName** - `$payment->getCreditCard()->getCardPrintedName()`
 
-## Запрос "sale"
+## Запрос "preauth"
 
 ##### Обязательные параметры запроса
 
@@ -42,7 +42,18 @@ cell_phone          |billingAddress.cellPhone       |Validator::PHONE
 site_url            |siteUrl                        |Validator::URL
 destination         |destination                    |Validator::LONG_STRING
 
-[Пример выполнения запроса sale](../../example/sale.php)
+[Пример выполнения запроса preauth](../../example/preauth.php)
+
+## Запрос "capture"
+
+##### Обязательные параметры запроса
+
+Поле запроса        |Свойство платежа               |Правило валидации
+--------------------|-------------------------------|-----------------
+client_orderid      |clientPaymentId                |Validator::ID
+orderid             |paynetPaymentId                |Validator::ID
+
+[Пример выполнения запроса capture](../../example/capture.php)
 
 ## Запрос "status"
 

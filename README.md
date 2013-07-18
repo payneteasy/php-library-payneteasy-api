@@ -43,3 +43,4 @@
     * [Валидатор данных, PaynetEasy\PaynetEasyApi\Utils\Validator](doc/library-internals/02-validator.md)
 * [Интеграция различных платежных сценариев](doc/02-payment-scenarios.md)
     * [Sale transactions](doc/payment-scenarios/00-sale-transactions.md)
+    * [Preauth/Capture Transactions](doc/payment-scenarios/01-preauth-capture-transactions.md)
