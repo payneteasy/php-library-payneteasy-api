@@ -168,7 +168,7 @@ class Validator
         }
     }
 
-    static public function validateByRegExp($value, $regExp, $failOnError = true)
+    static protected function validateByRegExp($value, $regExp, $failOnError = true)
     {
         $valid = filter_var($value, FILTER_VALIDATE_REGEXP,
                             array('options' => array('regexp' => $regExp)));

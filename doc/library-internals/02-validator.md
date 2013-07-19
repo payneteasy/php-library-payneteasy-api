@@ -2,7 +2,6 @@
 
 Статический класс **[PaynetEasy\PaynetEasyApi\Utils\Validator](../../source/PaynetEasy/PaynetEasyApi/Utils/Validator.php)** предоставляет следующие методы для валидации данных:
 * **[validateByRule()](#validateByRule)**: валидация с помощью предопределенного правила или регулярного выражения
-* **[validateByRegExp()](#validateByRegExp)**: валидация с помощью регулярного выражения
 
 ### <a name="validateByRule"></a>validateByRule(): валидация с помощью предопределнного правила
 
@@ -47,35 +46,6 @@ var_dump(Validator::validateByRule('some string', '#\d#', false));              
 try
 {
     Validator::validateByRule('test[at]mail.com', Validator::EMAIL));
-    print 'valid';
-}
-catch (ValidationException $e)
-{
-    print 'invalid';
-}
-```
-
-### <a name="validateByRegExp"></a>validateByRegExp(): валидация с помощью регулярного выражения
-
-Метод принимает три параметра:
-* Значение для валидации
-* Регулярное выражение для валидации
-* Флаг, определяющий поведение метода в том случае, если значение не прошло валидацию
-    * **true** - будет брошено исключение
-    * **false** - будет возвращен булевый результат проверки
-Пример использования метода:
-
-```php
-use PaynetEasy\PaynetEasyApi\Utils\Validator;
-use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
-
-var_dump(Validator::validateByRule('test@mail.com', '#\w+@mail\.com#', false));  // true
-var_dump(Validator::validateByRule('some string', '#\d#', false));              // false
-
-// prints 'invalid'
-try
-{
-    Validator::validateByRule('test@test.com', '#\w+@mail\.com#'));
     print 'valid';
 }
 catch (ValidationException $e)
