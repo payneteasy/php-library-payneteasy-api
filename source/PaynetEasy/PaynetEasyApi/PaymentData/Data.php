@@ -2,8 +2,10 @@
 
 namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
-use Serializable;
 use PaynetEasy\PaynetEasyApi\Utils\String;
+use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
+
+use Serializable;
 use RuntimeException;
 
 class Data implements Serializable
@@ -28,16 +30,8 @@ class Data implements Serializable
     {
         foreach ($array as $fieldName => $fieldValue)
         {
-            $setter = array($this, $this->getSetterByField($fieldName));
-
-            if (is_callable($setter))
-            {
-                call_user_func($setter, $fieldValue);
-            }
-            elseif ($failOnUnknownField === true)
-            {
-                throw new RuntimeException("Can not find setter for field '{$fieldName}'");
-            }
+            $propertyName = $this->getPropertyByField($fieldName);
+            PropertyAccessor::setValue($this, $propertyName, $fieldValue, $failOnUnknownField);
         }
     }
 
@@ -48,9 +42,9 @@ class Data implements Serializable
      *
      * @return      string                          Property setter name
      */
-    protected function getSetterByField($fieldName)
+    protected function getPropertyByField($fieldName)
     {
-        return 'set' . String::camelize($fieldName);
+        return String::camelize($fieldName);
     }
 
     /**

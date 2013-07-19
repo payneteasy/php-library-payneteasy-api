@@ -43,15 +43,54 @@ class PropertyAccessorTest extends \PHPUnit_Framework_TestCase
             false
         ));
     }
+
+    /**
+     * @dataProvider testSetValueProvider
+     */
+    public function testSetValue($propertyPath, $expectedValue, $failOnError = true)
+    {
+        $testObject = new TestObject;
+
+        PropertyAccessor::setValue($testObject, $propertyPath, $expectedValue, $failOnError);
+
+        $this->assertEquals($expectedValue, PropertyAccessor::getValue($testObject, $propertyPath, $failOnError));
+    }
+
+    public function testSetValueProvider()
+    {
+        return array(
+        array
+        (
+            'testProperty',
+            'test'
+        ),
+        array
+        (
+            'testObject.testProperty',
+            'test'
+        ),
+        array
+        (
+            'testProperty.testProperty',
+            null,
+            false
+        ),
+        array
+        (
+            'unknownProperty',
+            null,
+            false
+        ));
+    }
 }
 
 class TestObject
 {
-    protected $testProperty = 'test';
+    public $testProperty = 'test';
 
-    protected $testObject;
+    public $testObject;
 
-    protected $emptyProperty;
+    public $emptyProperty;
 
     public function getTestProperty()
     {
@@ -71,5 +110,19 @@ class TestObject
     public function getEmptyProperty()
     {
         return $this->emptyProperty;
+    }
+
+    public function setTestProperty($value)
+    {
+        $this->testProperty = $value;
+
+        return $this;
+    }
+
+    public function setTestObject($value)
+    {
+        $this->testObject = $value;
+
+        return $this;
     }
 }

@@ -229,18 +229,18 @@ class BillingAddress extends Data
     /**
      * {@inheritdoc}
      */
-    protected function getSetterByField($fieldName)
+    protected function getPropertyByField($fieldName)
     {
         switch ($fieldName)
         {
             case 'address1':
             case 'address':
             {
-                return 'setFirstLine';
+                return 'FirstLine';
             }
             default:
             {
-                return parent::getSetterByField($fieldName);
+                return parent::getPropertyByField($fieldName);
             }
         }
     }

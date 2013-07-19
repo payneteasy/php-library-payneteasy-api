@@ -224,7 +224,7 @@ class RecurrentCard extends Data
     /**
      * {@inheritdoc}
      */
-    protected function getSetterByField($fieldName)
+    protected function getPropertyByField($fieldName)
     {
         switch ($fieldName)
         {
@@ -235,11 +235,11 @@ class RecurrentCard extends Data
             case 'source-card-ref-id':
             case 'destination-card-ref-id':
             {
-                return 'setCardReferenceId';
+                return 'CardReferenceId';
             }
             default:
             {
-                return parent::getSetterByField($fieldName);
+                return parent::getPropertyByField($fieldName);
             }
         }
     }

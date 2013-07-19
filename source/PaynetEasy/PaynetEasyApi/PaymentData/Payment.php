@@ -504,7 +504,7 @@ class Payment extends Data
         {
             $this->recurrentCardTo = new RecurrentCard;
         }
-        
+
         return $this->recurrentCardTo;
     }
 
@@ -714,7 +714,7 @@ class Payment extends Data
     /**
      * {@inheritdoc}
      */
-    protected function getSetterByField($fieldName)
+    protected function getPropertyByField($fieldName)
     {
         switch ($fieldName)
         {
@@ -725,7 +725,7 @@ class Payment extends Data
             case 'client_payment_id':
             case 'client-payment-id':
             {
-                return 'setClientPaymentId';
+                return 'ClientPaymentId';
             }
             case 'paynet_order_id':
             case 'paynet-order-id':
@@ -735,7 +735,7 @@ class Payment extends Data
             case 'order_id':
             case 'order-id':
             {
-                return 'setPaynetPaymentId';
+                return 'PaynetPaymentId';
             }
             case 'order_desc':
             case 'order-desc':
@@ -744,17 +744,17 @@ class Payment extends Data
             case 'desc':
             case 'description':
             {
-                return 'setDescription';
+                return 'Description';
             }
             case 'ipaddress':
             case 'ip_address':
             case 'ip-address':
             {
-                return 'setIpAddress';
+                return 'IpAddress';
             }
             default:
             {
-                return parent::getSetterByField($fieldName);
+                return parent::getPropertyByField($fieldName);
             }
         }
     }
