@@ -53,13 +53,6 @@ class CreateCardRefQuery extends AbstractQuery
     static protected $successResponseType = 'create-card-ref-response';
 
     /**
-     * Recurrent card class
-     *
-     * @var string
-     */
-    static protected $recurrentCardClass  = '\PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard';
-
-    /**
      * {@inheritdoc}
      */
     protected function validatePayment(Payment $payment)
@@ -88,10 +81,10 @@ class CreateCardRefQuery extends AbstractQuery
 
         if($response->isApproved())
         {
-            $recurrentCard = new static::$recurrentCardClass;
-            $recurrentCard->setCardReferenceId($response->getCardReferenceId());
-
-            $payment->setRecurrentCardFrom($recurrentCard);
+            $payment
+                ->getRecurrentCardFrom()
+                ->setCardReferenceId($response->getCardReferenceId())
+            ;
         }
     }
 
@@ -106,19 +99,6 @@ class CreateCardRefQuery extends AbstractQuery
         if (!$payment->isFinished() || !$payment->isApproved())
         {
             throw new ValidationException('Only approved and ended Payment can be used for create-card-ref-id');
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setConfig(array $config)
-    {
-        parent::setConfig($config);
-
-        if (!empty($config['recurrent_card_class']))
-        {
-            static::$recurrentCardClass = $config['recurrent_card_class'];
         }
     }
 }

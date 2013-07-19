@@ -384,6 +384,11 @@ class Payment extends Data
      */
     public function getCustomer()
     {
+        if (empty($this->customer))
+        {
+            $this->customer = new Customer;
+        }
+
         return $this->customer;
     }
 
@@ -408,6 +413,11 @@ class Payment extends Data
      */
     public function getBillingAddress()
     {
+        if (empty($this->billingAddress))
+        {
+            $this->billingAddress = new BillingAddress;
+        }
+
         return $this->billingAddress;
     }
 
@@ -432,6 +442,11 @@ class Payment extends Data
      */
     public function getCreditCard()
     {
+        if (empty($this->creditCard))
+        {
+            $this->creditCard = new CreditCard;
+        }
+
         return $this->creditCard;
     }
 
@@ -456,6 +471,11 @@ class Payment extends Data
      */
     public function getRecurrentCardFrom()
     {
+        if (empty($this->recurrentCardFrom))
+        {
+            $this->recurrentCardFrom = new RecurrentCard;
+        }
+
         return $this->recurrentCardFrom;
     }
 
@@ -480,6 +500,11 @@ class Payment extends Data
      */
     public function getRecurrentCardTo()
     {
+        if (empty($this->recurrentCardTo))
+        {
+            $this->recurrentCardTo = new RecurrentCard;
+        }
+        
         return $this->recurrentCardTo;
     }
 
