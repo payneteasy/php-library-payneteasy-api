@@ -10,7 +10,7 @@
 
 * В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Recurrent transactions расположена в [статье в wiki PaynetEasy](http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions).
 * Описание правил валидации можно найти в описании метода **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)**.
-* Колонка "Свойство платежа" описывает цепочку свойств методов, которые содержат необходимые данные. Например, для получения данных из свойства **description** будет выполнен код `$payment->getDescription()`, а для свойства **creditCard.cardPrintedName** - `$payment->getCreditCard()->getCardPrintedName()`
+* Описание работы с цепочками свойств можно найти в описании класса **[PropertyAccessor](../library-internals/03-property-accessor.md)**
 
 ## <a name="create-card-ref"></a> Запрос "create-card-ref"
 
@@ -21,7 +21,7 @@
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Свойство платежа               |Правило валидации
+Поле запроса        |Цепочка свойств платежа        |Правило валидации
 --------------------|-------------------------------|-----------------
 client_orderid      |clientPaymentId                |Validator::ID
 orderid             |paynetPaymentId                |Validator::ID
@@ -37,7 +37,7 @@ orderid             |paynetPaymentId                |Validator::ID
 
 Перед выполнением данного запроса необходимо выполнить запрос [create-card-ref](#create-card-ref).
 
-Поле запроса        |Свойство платежа                   |Правило валидации
+Поле запроса        |Цепочка свойств платежа            |Правило валидации
 --------------------|-----------------------------------|-----------------
 cardrefid           |recurrentCardFrom.cardReferenceId  |Validator::ID
 
@@ -56,7 +56,7 @@ cardrefid           |recurrentCardFrom.cardReferenceId  |Validator::ID
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Свойство платежа                   |Правило валидации
+Поле запроса        |Цепочка свойств платежа            |Правило валидации
 --------------------|-----------------------------------|-----------------
 client_orderid      |clientPaymentId                    |Validator::ID
 order_desc          |description                        |Validator::LONG_STRING
@@ -67,7 +67,7 @@ cardrefid           |recurrentCardFrom.cardReferenceId  |Validator::ID
 
 ##### Необязательные параметры запроса
 
-Поле запроса        |Свойство платежа                   |Правило валидации
+Поле запроса        |Цепочка свойств платежа            |Правило валидации
 --------------------|-----------------------------------|-----------------
 comment             |comment                            |Validator::MEDIUM_STRING
 cvv2                |recurrentCardFrom.cvv2             |Validator::CVV2
@@ -78,7 +78,7 @@ cvv2                |recurrentCardFrom.cvv2             |Validator::CVV2
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Свойство платежа               |Правило валидации
+Поле запроса        |Цепочка свойств платежа        |Правило валидации
 --------------------|-------------------------------|-----------------
 client_orderid      |clientPaymentId                |Validator::ID
 orderid             |paynetPaymentId                |Validator::ID

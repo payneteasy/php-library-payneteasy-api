@@ -9,13 +9,13 @@
 
 * В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Preauth/Capture transactions расположена в [статье в wiki PaynetEasy](http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions).
 * Описание правил валидации можно найти в описании метода **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)**.
-* Колонка "Свойство платежа" описывает цепочку свойств методов, которые содержат необходимые данные. Например, для получения данных из свойства **description** будет выполнен код `$payment->getDescription()`, а для свойства **creditCard.cardPrintedName** - `$payment->getCreditCard()->getCardPrintedName()`
+* Описание работы с цепочками свойств можно найти в описании класса **[PropertyAccessor](../library-internals/03-property-accessor.md)**
 
 ## <a name="preauth"></a> Запрос "preauth"
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Свойство платежа               |Правило валидации
+Поле запроса        |Цепочка свойств платежа        |Правило валидации
 --------------------|-------------------------------|-----------------
 client_orderid      |clientPaymentId                |Validator::ID
 order_desc          |description                    |Validator::LONG_STRING
@@ -36,7 +36,7 @@ cvv2                |creditCard.cvv2                |Validator::CVV2
 
 ##### Необязательные параметры запроса
 
-Поле запроса        |Свойство платежа               |Правило валидации
+Поле запроса        |Цепочка свойств платежа        |Правило валидации
 --------------------|-------------------------------|-----------------
 first_name          |customer.firstName             |Validator::MEDIUM_STRING
 last_name           |customer.lastName              |Validator::MEDIUM_STRING
@@ -53,7 +53,7 @@ destination         |destination                    |Validator::LONG_STRING
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Свойство платежа               |Правило валидации
+Поле запроса        |Цепочка свойств платежа        |Правило валидации
 --------------------|-------------------------------|-----------------
 client_orderid      |clientPaymentId                |Validator::ID
 orderid             |paynetPaymentId                |Validator::ID
@@ -64,7 +64,7 @@ orderid             |paynetPaymentId                |Validator::ID
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Свойство платежа               |Правило валидации
+Поле запроса        |Цепочка свойств платежа        |Правило валидации
 --------------------|-------------------------------|-----------------
 client_orderid      |clientPaymentId                |Validator::ID
 orderid             |paynetPaymentId                |Validator::ID
