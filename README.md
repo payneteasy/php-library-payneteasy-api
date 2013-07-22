@@ -47,4 +47,5 @@
     * [Preauth/Capture Transactions](doc/payment-scenarios/01-preauth-capture-transactions.md)
     * [Transfer Transactions](doc/payment-scenarios/02-transfer-transactions.md)
     * [Return Transactions](doc/payment-scenarios/03-return-transactions.md)
+    * [Recurrent Transactions](doc/payment-scenarios/04-recurrent-transactions.md)
     * [Payment Form Integration](doc/payment-scenarios/05-payment-form-integration.md)
