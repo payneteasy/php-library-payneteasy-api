@@ -23,8 +23,7 @@ class FormQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new FormQuery;
-        $this->object->setApiMethod('sale-form');
+        $this->object = new FormQuery('_');
     }
 
     public function testCreateRequestProvider()

@@ -21,7 +21,7 @@ class StatusQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new StatusQuery;
+        $this->object = new StatusQuery('_');
     }
 
     public function testCreateRequestProvider()

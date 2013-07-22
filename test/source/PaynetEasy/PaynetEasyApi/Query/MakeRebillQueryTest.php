@@ -15,7 +15,7 @@ class MakeRebillQueryTest extends SaleQueryTest
      */
     protected function setUp()
     {
-        $this->object = new MakeRebillQuery;
+        $this->object = new MakeRebillQuery('_');
     }
 
     public function testCreateRequestProvider()

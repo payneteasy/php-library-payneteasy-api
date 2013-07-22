@@ -58,7 +58,8 @@ class WorkflowFactory implements WorkflowFactoryInterface
 
         if (class_exists($workflowClass, true))
         {
-            return new $workflowClass($this->gatewayClient,
+            return new $workflowClass($workflowName,
+                                      $this->gatewayClient,
                                       $this->queryFactory,
                                       $this->callbackFactory);
         }
@@ -69,13 +70,10 @@ class WorkflowFactory implements WorkflowFactoryInterface
         // therefore they have only one class - FormWorkflow
         if (preg_match('#.*-form$#i', $workflowName))
         {
-            $workflow = new FormWorkflow($this->gatewayClient,
-                                         $this->queryFactory,
-                                         $this->callbackFactory);
-
-            $workflow->setInitialApiMethod($workflowName);
-
-            return $workflow;
+            return new FormWorkflow($workflowName,
+                                    $this->gatewayClient,
+                                    $this->queryFactory,
+                                    $this->callbackFactory);
         }
 
         throw new RuntimeException("Unknown workflow class '{$workflowClass}' for workflow with name '{$workflowName}'");

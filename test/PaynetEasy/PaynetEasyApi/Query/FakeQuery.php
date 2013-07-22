@@ -15,11 +15,6 @@ class FakeQuery extends AbstractQuery
     {
     }
 
-    public function setApiMethod($class)
-    {
-        parent::setApiMethod($class);
-    }
-
     protected function createSignature(Payment $payment)
     {
         return 'control';

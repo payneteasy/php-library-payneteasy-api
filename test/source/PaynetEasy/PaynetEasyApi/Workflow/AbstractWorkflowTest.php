@@ -54,18 +54,4 @@ class AbstractWorkflowTest extends \PHPUnit_Framework_TestCase
             Response::NEEDED_SHOW_HTML
         ));
     }
-
-    public function testSetApiMethod()
-    {
-        $this->object->setInitialApiMethod('\PaynetEasy\PaynetEasyApi\Workflow\SaleWorkflow');
-        $this->assertEquals('sale', $this->object->initialApiMethod);
-
-        $this->object->setInitialApiMethod('\PaynetEasy\PaynetEasyApi\Workflow\MakeRebillWorkflow');
-        $this->assertEquals('sale', $this->object->initialApiMethod);
-
-        $this->object->initialApiMethod = null;
-
-        $this->object->setInitialApiMethod('\PaynetEasy\PaynetEasyApi\Workflow\MakeRebillWorkflow');
-        $this->assertEquals('make-rebill', $this->object->initialApiMethod);
-    }
 }

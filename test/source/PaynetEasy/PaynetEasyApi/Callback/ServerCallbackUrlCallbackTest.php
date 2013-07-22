@@ -21,7 +21,7 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new ServerCallbackUrlCallback;
+        $this->object = new ServerCallbackUrlCallback('_');
     }
 
     /**

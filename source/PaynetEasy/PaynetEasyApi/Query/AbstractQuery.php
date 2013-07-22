@@ -63,9 +63,12 @@ implements      QueryInterface
      */
     static protected $successResponseType;
 
-    public function __construct()
+    /**
+     * @param       string      $apiMethod      API gateway method
+     */
+    public function __construct($apiMethod)
     {
-        $this->setApiMethod(get_called_class());
+        $this->apiMethod = $apiMethod;
         $this->validateQueryDefinition();
     }
 
@@ -396,33 +399,5 @@ implements      QueryInterface
         {
             throw new RuntimeException("Property 'signingKey' does not defined in Payment property 'queryConfig'");
         }
-    }
-
-    /**
-     * Set API query method. Query class name must follow next convention:
-     *
-     * (API query)                  (query class name)
-     * create-card-ref      =>      CreateCardRefQuery
-     * return               =>      ReturnQuery
-     *
-     * @param       string      $class          API query object class
-     */
-    protected function setApiMethod($class)
-    {
-        if (!empty($this->apiMethod))
-        {
-            return;
-        }
-
-        $result = array();
-
-        preg_match('#(?<=\\\\)\w+(?=Query$)#i', $class, $result);
-
-        if (empty($result))
-        {
-            throw new RuntimeException('API method name not found in class name');
-        }
-
-        $this->apiMethod = String::uncamelize($result[0], '-');
     }
 }

@@ -48,19 +48,20 @@ abstract class AbstractWorkflow implements WorkflowInterface
     protected $callbackFactory;
 
     /**
+     * @param       string                          $initialApiMethod       Initial API method
      * @param       GatewayClientInterface          $gatewayClient          Client for API gateway
      * @param       QueryFactoryInterface           $queryFactory           Factory for API qieries
      * @param       CallbackFactoryInterface        $callbackFactory        Factory for API callbacks
      */
-    public function __construct(GatewayClientInterface      $gatewayClient,
+    public function __construct(                            $initialApiMethod,
+                                GatewayClientInterface      $gatewayClient,
                                 QueryFactoryInterface       $queryFactory,
                                 CallbackFactoryInterface    $callbackFactory)
     {
+        $this->initialApiMethod = $initialApiMethod;
         $this->gatewayClient    = $gatewayClient;
         $this->queryFactory     = $queryFactory;
         $this->callbackFactory  = $callbackFactory;
-
-        $this->setInitialApiMethod(get_called_class());
     }
 
     /**
@@ -169,34 +170,6 @@ abstract class AbstractWorkflow implements WorkflowInterface
             ->processCallback($payment, $callback);
 
         return $callback;
-    }
-
-    /**
-     * Set initial API query method. Workflow class name must follow next convention:
-     *
-     * (initial API query)              (workflow class name)
-     * make-rebill              =>      MakeRebillWorkflow
-     * sale                     =>      SaleWorkflow
-     *
-     * @param       string      $class          API query object class
-     */
-    protected function setInitialApiMethod($class)
-    {
-        if (!empty($this->initialApiMethod))
-        {
-            return;
-        }
-
-        $result = array();
-
-        preg_match('#(?<=\\\\)\w+(?=Workflow)#i', $class, $result);
-
-        if (empty($result))
-        {
-            throw new RuntimeException('Initial API method name not found in class name');
-        }
-
-        $this->initialApiMethod    = String::uncamelize($result[0], '-');
     }
 
     /**

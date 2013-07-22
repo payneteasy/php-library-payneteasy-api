@@ -45,9 +45,12 @@ abstract class AbstractCallback implements CallbackInterface
      */
     static protected $callbackFieldsDefinition = array();
 
-    public function __construct()
+    /**
+     * @param       string      $callbackType       Callback type
+     */
+    public function __construct($callbackType)
     {
-        $this->setCallbackType(get_called_class());
+        $this->callbackType = $callbackType;
         $this->validateCallbackDefinition();
     }
 
@@ -114,34 +117,6 @@ abstract class AbstractCallback implements CallbackInterface
         {
             throw new RuntimeException("Property 'signingKey' does not defined in Payment property 'queryConfig'");
         }
-    }
-
-    /**
-     * Set callback type. Callback class name must follow next convention:
-     *
-     * (callback type)              (callback class name)
-     * redirect_url         =>      RedirectUrlCallback
-     * server_callback_url  =>      ServerCallbackUrlCallback
-     *
-     * @param       string      $class          Callback object class
-     */
-    protected function setCallbackType($class)
-    {
-        if (!empty($this->callbackType))
-        {
-            return;
-        }
-
-        $result = array();
-
-        preg_match('#(?<=\\\\)\w+(?=Callback)#i', $class, $result);
-
-        if (empty($result))
-        {
-            throw new RuntimeException('Callback type not found in class name');
-        }
-
-        $this->callbackType = String::uncamelize($result[0]);
     }
 
     /**

@@ -21,7 +21,7 @@ class ReturnQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new ReturnQuery;
+        $this->object = new ReturnQuery('_');
     }
 
     public function testCreateRequestProvider()

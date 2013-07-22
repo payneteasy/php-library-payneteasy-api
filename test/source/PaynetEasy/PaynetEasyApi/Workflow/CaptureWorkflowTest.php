@@ -33,7 +33,8 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new CaptureWorkflow(new FakeGatewayClient('_'),
+        $this->object = new CaptureWorkflow('capture',
+                                            new FakeGatewayClient,
                                             new QueryFactory,
                                             new CallbackFactory);
     }

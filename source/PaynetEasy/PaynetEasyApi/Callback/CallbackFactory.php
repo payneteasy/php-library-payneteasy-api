@@ -28,22 +28,19 @@ class CallbackFactory implements CallbackFactoryInterface
 
         if (empty($callbackType))
         {
-            return new RedirectUrlCallback;
+            return new RedirectUrlCallback('redirect_url');
         }
 
         $callbackClass  = __NAMESPACE__ . '\\' . ucfirst($callbackType) . 'Callback';
 
         if (class_exists($callbackClass, true))
         {
-            return new $callbackClass;
+            return new $callbackClass($callbackType);
         }
 
         if (in_array($callbackType, static::$allowedServerCallbackUrlTypes))
         {
-            $callbackProcessor = new ServerCallbackUrlCallback;
-            $callbackProcessor->setCallbackType($callbackType);
-
-            return $callbackProcessor;
+            return new ServerCallbackUrlCallback($callbackType);
         }
 
         throw new RuntimeException("Unknown callback class '{$callbackClass}' for callback with type '{$callbackType}'");

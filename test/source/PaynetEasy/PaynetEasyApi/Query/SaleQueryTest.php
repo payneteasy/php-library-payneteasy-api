@@ -28,7 +28,7 @@ class SaleQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new SaleQuery;
+        $this->object = new SaleQuery('_');
     }
 
     public function testCreateRequestProvider()

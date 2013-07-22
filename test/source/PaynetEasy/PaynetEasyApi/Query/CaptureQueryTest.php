@@ -20,7 +20,7 @@ class CaptureQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new CaptureQuery;
+        $this->object = new CaptureQuery('_');
     }
 
     public function testCreateRequestProvider()

@@ -16,7 +16,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
      */
     protected function setUp()
     {
-        $this->object = new CreateCardRefQuery;
+        $this->object = new CreateCardRefQuery('_');
     }
 
     public function testCreateRequestProvider()

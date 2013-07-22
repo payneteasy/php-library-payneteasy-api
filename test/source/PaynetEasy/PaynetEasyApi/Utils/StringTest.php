@@ -11,9 +11,4 @@ class StringTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('CamalCaseString', String::camelize('camal-case-string'));
     }
-
-    public function testUncamelize()
-    {
-        $this->assertEquals('camal-case-string', String::uncamelize('CamalCaseString', '-'));
-    }
 }

@@ -17,7 +17,7 @@ implements  QueryFactoryInterface
 
         if (class_exists($queryClass, true))
         {
-            return new $queryClass;
+            return new $queryClass($apiQueryName);
         }
 
         // :NOTICE:         Imenem          18.06.13
@@ -26,10 +26,7 @@ implements  QueryFactoryInterface
         // therefore they have only one class - FormQuery
         if (preg_match('#.*-form$#i', $apiQueryName))
         {
-            $query = new FormQuery;
-            $query->setApiMethod($apiQueryName);
-
-            return $query;
+            return new FormQuery($apiQueryName);
         }
 
         throw new RuntimeException("Unknown query class '{$queryClass}' for query with name '{$apiQueryName}'");

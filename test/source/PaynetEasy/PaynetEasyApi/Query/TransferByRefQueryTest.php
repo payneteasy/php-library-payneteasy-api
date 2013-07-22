@@ -22,7 +22,7 @@ class TransferByRefQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new TransferByRefQuery($this->getConfig());
+        $this->object = new TransferByRefQuery('_');
     }
 
     public function testCreateRequestProvider()

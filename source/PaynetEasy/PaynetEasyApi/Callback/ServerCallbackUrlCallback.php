@@ -43,27 +43,4 @@ class ServerCallbackUrlCallback extends AbstractCallback
         array('type',            null),
         array('control',         null)
     );
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct()
-    {
-        $this->validateCallbackDefinition();
-    }
-
-    /**
-     * Indirectly sets gateway API query method
-     *
-     * @param       string      $apiMethod      Gateway API method
-     */
-    public function setCallbackType($callbackType)
-    {
-        if (!in_array($callbackType, static::$allowedCallbackTypes))
-        {
-            throw new RuntimeException("Unknown callback type: '{$callbackType}'");
-        }
-
-        $this->callbackType = $callbackType;
-    }
 }

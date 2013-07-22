@@ -80,27 +80,4 @@ class FormQuery extends AbstractQuery
      * {@inheritdoc}
      */
     static protected $successResponseType = 'async-form-response';
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct()
-    {
-        $this->validateQueryDefinition();
-    }
-
-    /**
-     * Indirectly sets gateway API query method
-     *
-     * @param       string      $apiMethod      Gateway API method
-     */
-    public function setApiMethod($apiMethod)
-    {
-        if (!in_array($apiMethod, static::$allowedApiMethods))
-        {
-            throw new RuntimeException("Unknown api method: '{$apiMethod}'");
-        }
-
-        $this->apiMethod = $apiMethod;
-    }
 }
