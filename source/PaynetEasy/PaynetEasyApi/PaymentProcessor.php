@@ -119,10 +119,10 @@ class PaymentProcessor
      * @param       Payment    $payment                Payment for processing
      * @param       array               $callbackData           Paynet callback data (optional)
      */
-    public function executeWorkflow(                $workflowName,
-                                    array           $workflowConfig,
-                                    Payment  $payment,
-                                    array           $callbackData       = array())
+    public function executeWorkflow(        $workflowName,
+                                    array   $workflowConfig,
+                                    Payment $payment,
+                                    array   $callbackData   = array())
     {
         // prevent double processing for finished payment
         if ($payment->isFinished())
