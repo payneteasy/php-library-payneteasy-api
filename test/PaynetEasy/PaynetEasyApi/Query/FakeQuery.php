@@ -20,7 +20,7 @@ class FakeQuery extends AbstractQuery
         parent::setApiMethod($class);
     }
 
-    protected function createControlCode(Payment $payment)
+    protected function createSignature(Payment $payment)
     {
         return 'control';
     }

@@ -33,6 +33,15 @@ $payment = $loadPayment() ?: new Payment(array
 ));
 
 /**
+ * Установим конфигурацию для выполнения запроса
+ *
+ * @see \PaynetEasy\PaynetEasyApi\Query\MakeRebillQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+ * @see functions.php, $getConfig()
+ */
+$payment->setQueryConfig($getConfig());
+
+/**
  * Для этого запроса необходимо передать данные клиента
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Recurrent_Payment_request_parameters
@@ -78,4 +87,4 @@ $paymentProcessor->setHandlers(array
  * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeWorkflow()
  * @see \PaynetEasy\PaynetEasyApi\Workflow\AbstractWorkflow::processPayment()
  */
-$paymentProcessor->executeWorkflow('make-rebill', $getConfig(), $payment, $_REQUEST);
+$paymentProcessor->executeWorkflow('make-rebill', $payment, $_REQUEST);

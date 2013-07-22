@@ -16,7 +16,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
      */
     protected function setUp()
     {
-        $this->object = new CreateCardRefQuery($this->getConfig());
+        $this->object = new CreateCardRefQuery;
     }
 
     public function testCreateRequestProvider()
@@ -28,7 +28,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
                 self::LOGIN .
                 self::CLIENT_PAYMENT_ID .
                 self::PAYNET_PAYMENT_ID .
-                self::SIGN_KEY
+                self::SIGNING_KEY
             ),
             'recurrent'
         ));

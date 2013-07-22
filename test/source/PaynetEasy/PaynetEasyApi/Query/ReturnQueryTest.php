@@ -21,7 +21,7 @@ class ReturnQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new ReturnQuery($this->getConfig());
+        $this->object = new ReturnQuery;
     }
 
     public function testCreateRequestProvider()
@@ -35,7 +35,7 @@ class ReturnQueryTest extends QueryTestPrototype
                 self::PAYNET_PAYMENT_ID .
                  9910 .
                 'EUR' .
-                self::SIGN_KEY
+                self::SIGNING_KEY
             )
         ));
     }
@@ -137,16 +137,14 @@ class ReturnQueryTest extends QueryTestPrototype
      */
     protected function getPayment()
     {
-        $payment = new Payment(array
+        return new Payment(array
         (
             'client_payment_id'     => self::CLIENT_PAYMENT_ID,
             'paynet_payment_id'     => self::PAYNET_PAYMENT_ID,
             'amount'                => 99.1,
-            'currency'              => 'EUR'
+            'currency'              => 'EUR',
+            'query_config'          => $this->getConfig(),
+            'comment'               => 'cancel payment'
         ));
-
-        $payment->setComment('cancel payment');
-
-        return $payment;
     }
 }

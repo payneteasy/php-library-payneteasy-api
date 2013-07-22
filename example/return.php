@@ -25,6 +25,15 @@ $payment = $loadPayment() ?: new Payment(array
 ));
 
 /**
+ * Установим конфигурацию для выполнения запроса
+ *
+ * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+ * @see functions.php, $getConfig()
+ */
+$payment->setQueryConfig($getConfig());
+
+/**
  * Создадим обработчик платежей и передадим ему URL для доступа к платежному шлюзу
  *
  * @see \PaynetEasy\PaynetEasyApi\Transport\GatewayClient::$gatewayUrl
@@ -54,4 +63,4 @@ $paymentProcessor->setHandlers(array
  * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeWorkflow()
  * @see \PaynetEasy\PaynetEasyApi\Workflow\AbstractWorkflow::processPayment()
  */
-$paymentProcessor->executeWorkflow('return', $getConfig(), $payment, $_REQUEST);
+$paymentProcessor->executeWorkflow('return', $payment, $_REQUEST);

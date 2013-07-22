@@ -101,4 +101,18 @@ class Request
     {
         return $this->endPoint;
     }
+
+    /**
+     * Set request signature
+     *
+     * @param       string      $sugnature        Control code
+     *
+     * @return      self
+     */
+    public function setSignature($sugnature)
+    {
+        $this->requestFields['control'] = $sugnature;
+
+        return $this;
+    }
 }

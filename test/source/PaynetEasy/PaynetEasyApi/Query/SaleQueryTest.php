@@ -28,7 +28,7 @@ class SaleQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new SaleQuery($this->getConfig());
+        $this->object = new SaleQuery;
     }
 
     public function testCreateRequestProvider()
@@ -41,7 +41,7 @@ class SaleQueryTest extends QueryTestPrototype
                 self::CLIENT_PAYMENT_ID .
                 '99' .                          // amount
                 'vass.pupkin@example.com' .     // customer email
-                self::SIGN_KEY
+                self::SIGNING_KEY
             )
         ));
     }
@@ -109,7 +109,6 @@ class SaleQueryTest extends QueryTestPrototype
             'description'           => 'This is test payment',
             'amount'                =>  0.99,
             'currency'              => 'USD',
-            'site_url'              => 'http://example.com',
             'customer'              => new Customer(array
             (
                 'first_name'            => 'Vasya',
@@ -135,7 +134,8 @@ class SaleQueryTest extends QueryTestPrototype
                 'expire_month'          => '12',
                 'expire_year'           => '14',
                 'cvv2'                  => '084'
-            ))
+            )),
+            'query_config'          => $this->getConfig()
         ));
     }
 }

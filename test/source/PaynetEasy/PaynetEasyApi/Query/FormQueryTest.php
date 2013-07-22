@@ -23,7 +23,7 @@ class FormQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new FormQuery($this->getConfig());
+        $this->object = new FormQuery;
         $this->object->setApiMethod('sale-form');
     }
 
@@ -37,7 +37,7 @@ class FormQueryTest extends QueryTestPrototype
                 self::CLIENT_PAYMENT_ID .
                 9910 .
                'vass.pupkin@example.com' .
-                self::SIGN_KEY
+                self::SIGNING_KEY
             )
         ));
     }
@@ -118,7 +118,6 @@ class FormQueryTest extends QueryTestPrototype
             'description'           => 'This is test payment',
             'amount'                =>  99.1,
             'currency'              => 'USD',
-            'site_url'              => 'http://example.com',
             'customer'              => new Customer(array
             (
                 'first_name'            => 'Vasya',
@@ -136,7 +135,8 @@ class FormQueryTest extends QueryTestPrototype
                 'zip_code'              => '1235',
                 'phone'                 => '660-485-6353',
                 'cell_phone'            => '660-485-6353'
-            ))
+            )),
+            'query_config'          => $this->getConfig()
         ));
     }
 }

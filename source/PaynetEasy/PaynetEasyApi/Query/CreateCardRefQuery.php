@@ -19,21 +19,18 @@ class CreateCardRefQuery extends AbstractQuery
         // mandatory
         array('client_orderid',     'clientPaymentId',              true,   Validator::ID),
         array('orderid',            'paynetPaymentId',              true,   Validator::ID),
-        // generated
-        array('control',             null,                          true,    null),
-        // from config
-        array('login',               null,                          true,    null)
+        array('login',              'queryConfig.login',            true,   Validator::MEDIUM_STRING)
     );
 
     /**
      * {@inheritdoc}
      */
-    static protected $controlCodeDefinition = array
+    static protected $signatureDefinition = array
     (
-        'login',
+        'queryConfig.login',
         'clientPaymentId',
         'paynetPaymentId',
-        'control'
+        'queryConfig.signingKey'
     );
 
     /**

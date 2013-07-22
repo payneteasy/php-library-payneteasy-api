@@ -2,15 +2,17 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
-use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
+
+use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Exception\PaynetException;
 
 abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 {
     const LOGIN                     = 'test-login';
     const END_POINT                 =  789;
-    const SIGN_KEY                  = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
+    const SIGNING_KEY               = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
     const CLIENT_PAYMENT_ID         = 'CLIENT-112233';
     const PAYNET_PAYMENT_ID         = 'PAYNET-112233';
 
@@ -132,18 +134,19 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 
     /**
      * Get query config
-     * 
+     *
      * @return      array
      */
     protected function getConfig()
     {
-        return array
+        return new QueryConfig(array
         (
-            'login'                 =>  self::LOGIN,
-            'end_point'             =>  self::END_POINT,
-            'control'               =>  self::SIGN_KEY,
-            'redirect_url'          => 'https://example.com/redirect_url',
-            'server_callback_url'   => 'https://example.com/callback_url'
-        );
+            'login'             =>  self::LOGIN,
+            'end_point'         =>  self::END_POINT,
+            'signing_key'       =>  self::SIGNING_KEY,
+            'site_url'          => 'http://example.com',
+            'redirect_url'      => 'https://example.com/redirect_url',
+            'callback_url'      => 'https://example.com/callback_url'
+        ));
     }
 }

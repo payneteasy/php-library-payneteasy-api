@@ -47,9 +47,9 @@ class ServerCallbackUrlCallback extends AbstractCallback
     /**
      * {@inheritdoc}
      */
-    public function __construct(array $config = array())
+    public function __construct()
     {
-        $this->setConfig($config);
+        $this->validateCallbackDefinition();
     }
 
     /**

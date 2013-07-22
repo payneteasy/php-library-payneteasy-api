@@ -2,49 +2,31 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title>Processing ...</title>
-
         <script type="text/javascript">
-            var c = 5;
-            function fc() {
-                if (c > 0) {
-                    document.getElementById("seconds-remaining").innerHTML = c;
-                    c--;
-                    setTimeout(fc, 1000);
-                } else {
-                    document.getElementById("button-check").value = "Checking result...";
-                    document.checkform.submit();
+            function countdown()
+            {
+                if (document.getElementById("seconds-remaining").innerHTML > 0)
+                {
+                    --document.getElementById("seconds-remaining").innerHTML;
+                    setTimeout(countdown, 1000);
+                }
+                else
+                {
+                    document.update_status.submit();
                 }
             }
         </script>
-
     </head>
+    <body onload="countdown()">
+        <div>
+            <h2>Please wait, your payment is being processed...</h2>
 
-    <body onload="fc()">
-        <div class="container">
-            <div class="main">
-                <div class="box">
-                    <div class="box-left"></div>
-                    <div class="box-main">
-                        <h2 class="box-title as-title">Please wait, your payment is being processed...</h2>
+            <p>This page refreshes automatically each 5 sec...</p>
+            <p>Next time it will refresh in <span id="seconds-remaining">5</span> sec.</p>
 
-                        <ul class="box-main-messages">
-                            <li class="box-main-message">
-                                This page refreshes automatically each 5 seconds...
-                            </li>
-                            <li class="box-main-message">
-                                Next time it will refresh in <strong><span id="seconds-remaining">10 seconds</span></strong>.
-                            </li>
-
-                            <li class="form-li-buttons">
-                                <form name="checkform" method="post">
-                                    <!--suppress HtmlFormInputWithoutLabel -->
-                                    <input type="submit" class="form-button form-button-ok" id="button-check" value="Check result" />
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            <form name="update_status" method="post">
+                <input type="submit" value="Check result" />
+            </form>
         </div>
     </body>
 </html>

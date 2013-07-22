@@ -18,20 +18,17 @@ class GetCardInfoQuery extends AbstractQuery
     (
         // mandatory
         array('cardrefid',          'recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
-        // generated
-        array('control',             null,                                  true,    null),
-        // from config
-        array('login',               null,                                  true,    null)
+        array('login',              'queryConfig.login',                    true,    Validator::MEDIUM_STRING)
     );
 
     /**
      * {@inheritdoc}
      */
-    static protected $controlCodeDefinition = array
+    static protected $signatureDefinition = array
     (
-        'login',
+        'queryConfig.login',
         'recurrentCardFrom.cardReferenceId',
-        'control'
+        'queryConfig.signingKey'
     );
 
     /**

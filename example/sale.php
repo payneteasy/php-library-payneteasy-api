@@ -27,6 +27,15 @@ $payment = $loadPayment() ?: new Payment(array
 ));
 
 /**
+ * Установим конфигурацию для выполнения запроса
+ *
+ * @see \PaynetEasy\PaynetEasyApi\Query\SaleQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+ * @see functions.php, $getConfig()
+ */
+$payment->setQueryConfig($getConfig());
+
+/**
  * Для этого запроса необходимо передать данные клиента
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Sale_Request_Parameters
@@ -101,4 +110,4 @@ $paymentProcessor->setHandlers(array
  * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeWorkflow()
  * @see \PaynetEasy\PaynetEasyApi\Workflow\AbstractWorkflow::processPayment()
  */
-$paymentProcessor->executeWorkflow('sale', $getConfig(), $payment, $_REQUEST);
+$paymentProcessor->executeWorkflow('sale', $payment, $_REQUEST);

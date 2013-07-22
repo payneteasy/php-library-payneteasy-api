@@ -114,15 +114,11 @@ class PaymentProcessor
     /**
      * Executes payment workflow
      *
-     * @param       string              $workflowName           Payment workflow name
-     * @param       array               $workflowConfig         Payment workflow config
-     * @param       Payment    $payment                Payment for processing
-     * @param       array               $callbackData           Paynet callback data (optional)
+     * @param       string      $workflowName       Payment workflow name
+     * @param       Payment     $payment            Payment for processing
+     * @param       array       $callbackData       Paynet callback data (optional)
      */
-    public function executeWorkflow(        $workflowName,
-                                    array   $workflowConfig,
-                                    Payment $payment,
-                                    array   $callbackData   = array())
+    public function executeWorkflow($workflowName, Payment $payment, array $callbackData = array())
     {
         // prevent double processing for finished payment
         if ($payment->isFinished())
@@ -133,7 +129,7 @@ class PaymentProcessor
 
         try
         {
-            $response = $this->getWorkflow($workflowName, $workflowConfig)
+            $response = $this->getWorkflow($workflowName)
                             ->processPayment($payment, $callbackData);
         }
         catch (Exception $e)
@@ -169,15 +165,14 @@ class PaymentProcessor
     /**
      * Executes payment API query
      *
-     * @param       string              $queryName              Payment API query name
-     * @param       array               $queryConfig            Payment API query config
-     * @param       Payment    $payment                Payment for processing
+     * @param       string      $queryName      Payment API query name
+     * @param       Payment     $payment        Payment for processing
      *
-     * @return      Response                                    Current workflow query response
+     * @return      Response                    Current workflow query response
      */
-    public function executeQuery($queryName, array $queryConfig, Payment $payment)
+    public function executeQuery($queryName, Payment $payment)
     {
-        $query      = $this->getQuery($queryName, $queryConfig);
+        $query      = $this->getQuery($queryName);
         $request    = $query->createRequest($payment);
 
         try
@@ -206,19 +201,18 @@ class PaymentProcessor
     /**
      * Executes payment gateway callback processor
      *
-     * @param       array               $callbackData           Callback data from payment gateway
-     * @param       array               $callbackConfig         Callback processor config
-     * @param       Payment    $payment                Payment for processing
+     * @param       array       $callbackData       Callback data from payment gateway
+     * @param       Payment     $payment            Payment for processing
      *
-     * @return      CallbackResponse                            Validated payment gateway callback
+     * @return      CallbackResponse                Validated payment gateway callback
      */
-    public function executeCallback(array $callbackData, array $callbackConfig, Payment $payment)
+    public function executeCallback(array $callbackData, Payment $payment)
     {
         $callbackResponse   = new CallbackResponse($callbackData);
 
         try
         {
-            $this->getCallback($callbackResponse, $callbackConfig)
+            $this->getCallback($callbackResponse)
                  ->processCallback($payment, $callbackResponse);
         }
         catch (Exception $e)
@@ -235,42 +229,39 @@ class PaymentProcessor
      * Usually it is name of first workflow API method query.
      *
      * @param       string      $workflowName                               Workflow name
-     * @param       array       $workflowConfig                             Workflow configuration
      *
      * @return      \PaynetEasy\PaynetEasyApi\Workflow\WorkflowInterface    Workflow for payment processing
      */
-    public function getWorkflow($workflowName, $workflowConfig)
+    public function getWorkflow($workflowName)
     {
         return $this->getWorkflowFactory()
-                    ->getWorkflow($workflowName, $workflowConfig);
+                    ->getWorkflow($workflowName);
     }
 
     /**
      * Create API query object by API query method
      *
      * @param       string              $apiQueryName                       API query method
-     * @param       array               $apiQueryConfig                     API query config
      *
      * @return      \PaynetEasy\PaynetEasyApi\Query\QueryInterface          API query object
      */
-    public function getQuery($apiQueryName, $apiQueryConfig)
+    public function getQuery($apiQueryName)
     {
         return $this->getQueryFactory()
-                    ->getQuery($apiQueryName, $apiQueryConfig);
+                    ->getQuery($apiQueryName);
     }
 
     /**
      * Create API callback processor by callback response
      *
      * @param       \PaynetEasy\PaynetEasyApi\Transport\CallbackResponse        $callbackResponse       Callback response
-     * @param       array                                                       $callbackConfig         Config for callback processor
      *
      * @return      \PaynetEasy\PaynetEasyApi\Callback\CallbackInterface                                Callback processor
      */
-    public function getCallback(CallbackResponse $callbackResponse, array $callbackConfig)
+    public function getCallback(CallbackResponse $callbackResponse)
     {
         return $this->getCallbackFactory()
-                    ->getCallback($callbackResponse, $callbackConfig);
+                    ->getCallback($callbackResponse);
     }
 
     /**

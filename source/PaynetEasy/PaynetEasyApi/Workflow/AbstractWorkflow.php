@@ -48,26 +48,16 @@ abstract class AbstractWorkflow implements WorkflowInterface
     protected $callbackFactory;
 
     /**
-     * Config for API queries
-     *
-     * @var array
-     */
-    protected $queryConfig;
-
-    /**
      * @param       GatewayClientInterface          $gatewayClient          Client for API gateway
      * @param       QueryFactoryInterface           $queryFactory           Factory for API qieries
      * @param       CallbackFactoryInterface        $callbackFactory        Factory for API callbacks
-     * @param       array                           $queryConfig            Config for queries
      */
     public function __construct(GatewayClientInterface      $gatewayClient,
                                 QueryFactoryInterface       $queryFactory,
-                                CallbackFactoryInterface    $callbackFactory,
-                                array                       $queryConfig        = array())
+                                CallbackFactoryInterface    $callbackFactory)
     {
         $this->gatewayClient    = $gatewayClient;
         $this->queryFactory     = $queryFactory;
-        $this->queryConfig      = $queryConfig;
         $this->callbackFactory  = $callbackFactory;
 
         $this->setInitialApiMethod(get_called_class());
@@ -175,7 +165,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
         $callback = new CallbackResponse($callbackData);
 
         $this->callbackFactory
-            ->getCallback($callback, $this->queryConfig)
+            ->getCallback($callback)
             ->processCallback($payment, $callback);
 
         return $callback;
@@ -213,14 +203,14 @@ abstract class AbstractWorkflow implements WorkflowInterface
      * Creates API Query object by their API method name
      * and executes API method request
      *
-     * @param       string                                                      $queryName          API method name
+     * @param       string                                             $queryName          API method name
      * @param       \PaynetEasy\PaynetEasyApi\PaymentData\Payment      $payment            Payment
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                                    Gateway response
+     * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                           Gateway response
      */
     protected function executeQuery($queryName, Payment $payment)
     {
-        $query = $this->queryFactory->getQuery($queryName, $this->queryConfig);
+        $query = $this->queryFactory->getQuery($queryName);
 
         $request    = $query->createRequest($payment);
         $response   = $this->gatewayClient->makeRequest($request);

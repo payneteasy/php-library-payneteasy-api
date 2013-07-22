@@ -21,7 +21,7 @@ class StatusQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new StatusQuery($this->getConfig());
+        $this->object = new StatusQuery;
     }
 
     public function testCreateRequestProvider()
@@ -33,7 +33,7 @@ class StatusQueryTest extends QueryTestPrototype
                 self::LOGIN .
                 self::CLIENT_PAYMENT_ID .
                 self::PAYNET_PAYMENT_ID .
-                self::SIGN_KEY
+                self::SIGNING_KEY
             )
         ));
     }
@@ -176,7 +176,8 @@ class StatusQueryTest extends QueryTestPrototype
         return new Payment(array
         (
             'client_payment_id'     => self::CLIENT_PAYMENT_ID,
-            'paynet_payment_id'     => self::PAYNET_PAYMENT_ID
+            'paynet_payment_id'     => self::PAYNET_PAYMENT_ID,
+            'query_config'          => $this->getConfig()
         ));
     }
 }

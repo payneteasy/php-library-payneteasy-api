@@ -118,13 +118,6 @@ class Payment extends Data
     protected $currency;
 
     /**
-     * URL the original payment is made from
-     *
-     * @var string
-     */
-    protected $siteUrl;
-
-    /**
      * A short comment for payment
      *
      * @var string
@@ -144,6 +137,13 @@ class Payment extends Data
      * @var string
      */
     protected $status;
+
+    /**
+     * Payment query config
+     *
+     * @var \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+     */
+    protected $queryConfig;
 
     /**
      * Payment customer
@@ -340,27 +340,32 @@ class Payment extends Data
     }
 
     /**
-     * Set URL the original payment is made from
+     * Set payment query config
      *
-     * @param       string      $siteUrl            URL the original payment is made from
+     * @param       QueryConfig         $queryConfig        Payment query config
      *
      * @return      self
      */
-    public function setSiteUrl($siteUrl)
+    public function setQueryConfig(QueryConfig $queryConfig)
     {
-        $this->siteUrl = $siteUrl;
+        $this->queryConfig = $queryConfig;
 
         return $this;
     }
 
     /**
-     * Get URL the original payment is made from
+     * Get payment query config
      *
-     * @return      string
+     * @return      QueryConfig
      */
-    public function getSiteUrl()
+    public function getQueryConfig()
     {
-        return $this->siteUrl;
+        if (empty($this->queryConfig))
+        {
+            $this->queryConfig = new QueryConfig;
+        }
+
+        return $this->queryConfig;
     }
 
     /**
@@ -720,35 +725,21 @@ class Payment extends Data
         {
             case 'client_orderid':
             case 'client-orderid':
-            case 'client_order_id':
-            case 'client-order-id':
-            case 'client_payment_id':
-            case 'client-payment-id':
             {
                 return 'ClientPaymentId';
             }
             case 'paynet_order_id':
             case 'paynet-order-id':
-            case 'paynet_payment_id':
-            case 'paynet-payment-id':
             case 'orderid':
-            case 'order_id':
-            case 'order-id':
             {
                 return 'PaynetPaymentId';
             }
             case 'order_desc':
             case 'order-desc':
-            case 'payment_desc':
-            case 'payment-desc':
-            case 'desc':
-            case 'description':
             {
                 return 'Description';
             }
             case 'ipaddress':
-            case 'ip_address':
-            case 'ip-address':
             {
                 return 'IpAddress';
             }

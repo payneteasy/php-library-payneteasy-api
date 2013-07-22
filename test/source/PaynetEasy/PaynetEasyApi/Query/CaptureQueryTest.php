@@ -20,7 +20,7 @@ class CaptureQueryTest extends QueryTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new CaptureQuery($this->getConfig());
+        $this->object = new CaptureQuery;
     }
 
     public function testCreateRequestProvider()
@@ -34,7 +34,7 @@ class CaptureQueryTest extends QueryTestPrototype
                 self::PAYNET_PAYMENT_ID .
                  9910 .
                 'EUR' .
-                self::SIGN_KEY
+                self::SIGNING_KEY
             )
         ));
     }
@@ -102,7 +102,8 @@ class CaptureQueryTest extends QueryTestPrototype
             'client_payment_id'     => self::CLIENT_PAYMENT_ID,
             'paynet_payment_id'     => self::PAYNET_PAYMENT_ID,
             'amount'                => 99.1,
-            'currency'              => 'EUR'
+            'currency'              => 'EUR',
+            'query_config'          => $this->getConfig()
         ));
     }
 }

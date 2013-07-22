@@ -11,13 +11,13 @@ implements  QueryFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getQuery($apiQueryName, array $apiQueryConfig)
+    public function getQuery($apiQueryName)
     {
         $queryClass = __NAMESPACE__ . '\\' . String::camelize($apiQueryName) . 'Query';
 
         if (class_exists($queryClass, true))
         {
-            return new $queryClass($apiQueryConfig);
+            return new $queryClass;
         }
 
         // :NOTICE:         Imenem          18.06.13
@@ -26,7 +26,7 @@ implements  QueryFactoryInterface
         // therefore they have only one class - FormQuery
         if (preg_match('#.*-form$#i', $apiQueryName))
         {
-            $query = new FormQuery($apiQueryConfig);
+            $query = new FormQuery;
             $query->setApiMethod($apiQueryName);
 
             return $query;

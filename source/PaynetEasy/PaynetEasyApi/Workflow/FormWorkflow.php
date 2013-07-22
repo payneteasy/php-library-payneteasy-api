@@ -30,12 +30,10 @@ class FormWorkflow extends AbstractWorkflow
      */
     public function __construct(GatewayClientInterface      $gatewayClient,
                                 QueryFactoryInterface       $queryFactory,
-                                CallbackFactoryInterface    $callbackFactory,
-                                array                       $queryConfig        = array())
+                                CallbackFactoryInterface    $callbackFactory)
     {
         $this->gatewayClient    = $gatewayClient;
         $this->queryFactory     = $queryFactory;
-        $this->queryConfig      = $queryConfig;
         $this->callbackFactory  = $callbackFactory;
     }
 

@@ -18,7 +18,7 @@ class AbstractCallbackTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new ConcreteCallback();
+        $this->object = new ConcreteCallback;
     }
 
     public function testSetCallbackType()

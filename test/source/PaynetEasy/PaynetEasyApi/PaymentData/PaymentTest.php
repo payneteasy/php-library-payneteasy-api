@@ -9,6 +9,8 @@ use Exception;
  */
 class PaymentTest extends \PHPUnit_Framework_TestCase
 {
+    static protected $serializedPayment = 'C:44:"PaynetEasy\PaynetEasyApi\PaymentData\Payment":213:{a:2:{s:6:"status";s:8:"approved";s:8:"customer";C:45:"PaynetEasy\PaynetEasyApi\PaymentData\Customer":105:{a:3:{s:9:"firstName";s:5:"Vasya";s:8:"lastName";s:6:"Pupkin";s:5:"email";s:23:"vass.pupkin@example.com";}}}}';
+
     /**
      * @var Payment
      */
@@ -37,15 +39,16 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setStatus(Payment::STATUS_APPROVED);
 
-        $serialized = serialize($this->object);
+        $serializedPayment = serialize($this->object);
 
-        $this->assertEquals('C:44:"PaynetEasy\PaynetEasyApi\PaymentData\Payment":34:{a:1:{s:6:"status";s:8:"approved";}}', $serialized);
+        $this->assertEquals(static::$serializedPayment, $serializedPayment);
     }
 
     public function testUnserialize()
     {
-        $payment = unserialize('C:44:"PaynetEasy\PaynetEasyApi\PaymentData\Payment":34:{a:1:{s:6:"status";s:8:"approved";}}');
+        $payment = unserialize(static::$serializedPayment);
 
         $this->assertEquals(Payment::STATUS_APPROVED, $payment->getStatus());
+        $this->assertEquals('vass.pupkin@example.com', $payment->getCustomer()->getEmail());
     }
 }

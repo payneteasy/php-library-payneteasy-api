@@ -41,7 +41,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         };
 
         $this->object->setHandler(PaymentProcessor::HANDLER_FINISH_PROCESSING, $handler);
-        $this->object->executeWorkflow('fake', array(), $payment);
+        $this->object->executeWorkflow('fake', $payment);
 
         $this->assertTrue($handlerCalled);
     }
@@ -63,7 +63,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         };
 
         $this->object->setHandler($handlerName, $handler);
-        $this->object->executeWorkflow('fake', array(), new Payment(array()));
+        $this->object->executeWorkflow('fake', new Payment(array()));
 
         $this->assertTrue($handlerCalled);
     }
@@ -95,7 +95,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setGatewayClient(new FakeGatewayClient);
 
-        $response = $this->object->executeQuery('fake', array(), new Payment(array()));
+        $response = $this->object->executeQuery('fake', new Payment);
 
         $this->assertNotNull($response);
         $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Transport\Response', $response);
@@ -103,7 +103,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testExecuteCallback()
     {
-        $response = $this->object->executeCallback(array('type' => 'fake'), array(), new Payment(array()));
+        $response = $this->object->executeCallback(array('type' => 'fake'), new Payment);
 
         $this->assertNotNull($response);
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Transport\CallbackResponse', $response);
@@ -141,7 +141,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         };
 
         $this->object->setHandler(PaymentProcessor::HANDLER_SAVE_PAYMENT, $handler);
-        $this->object->callHandler(PaymentProcessor::HANDLER_SAVE_PAYMENT, new Payment(array()), new Response);
+        $this->object->callHandler(PaymentProcessor::HANDLER_SAVE_PAYMENT, new Payment, new Response);
 
         $this->assertTrue($handlerCalled);
     }

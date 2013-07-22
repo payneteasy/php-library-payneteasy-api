@@ -28,6 +28,15 @@ $payment = $loadPayment() ?: new Payment(array
 ));
 
 /**
+ * Установим конфигурацию для выполнения запроса
+ *
+ * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+ * @see functions.php, $getConfig()
+ */
+$payment->setQueryConfig($getConfig());
+
+/**
  * Платеж обязательно должен быть успешно завершен
  */
 $payment->setProcessingStage(Payment::STAGE_FINISHED);
@@ -40,7 +49,7 @@ $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::updatePaymentOnSuccess()
  */
-$paymentProcessor->executeQuery('create-card-ref', $getConfig(), $payment, $_REQUEST);
+$paymentProcessor->executeQuery('create-card-ref', $payment, $_REQUEST);
 
 /**
  * Сохраним платеж и выведем его на экран

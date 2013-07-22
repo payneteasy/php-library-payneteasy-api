@@ -21,13 +21,6 @@ abstract class  AbstractQuery
 implements      QueryInterface
 {
     /**
-     * Config for API query object
-     *
-     * @var array
-     */
-    protected $config;
-
-    /**
      * API gateway method
      *
      * @var string
@@ -53,7 +46,7 @@ implements      QueryInterface
      *
      * @var array
      */
-    static protected $controlCodeDefinition = array();
+    static protected $signatureDefinition = array();
 
     /**
      * Response fields definition in format:
@@ -70,13 +63,10 @@ implements      QueryInterface
      */
     static protected $successResponseType;
 
-    /**
-     * @param       array       $config         API query object config
-     */
-    public function __construct(array $config = array())
+    public function __construct()
     {
         $this->setApiMethod(get_called_class());
-        $this->setConfig($config);
+        $this->validateQueryDefinition();
     }
 
     /**
@@ -100,7 +90,8 @@ implements      QueryInterface
         $request = new Request($this->paymentToRequest($payment));
 
         $request->setApiMethod($this->apiMethod)
-                ->setEndPoint($this->config['end_point']);
+                ->setEndPoint($payment->getQueryConfig()->getEndPoint())
+                ->setSignature($this->createSignature($payment));
 
         return $request;
     }
@@ -152,6 +143,8 @@ implements      QueryInterface
      */
     protected function validatePayment(Payment $payment)
     {
+        $this->validateQueryConfig($payment);
+
         $errorMessage   = '';
         $missedFields   = array();
         $invalidFields  = array();
@@ -159,12 +152,6 @@ implements      QueryInterface
         foreach (static::$requestFieldsDefinition as $fieldDescription)
         {
             list($fieldName, $propertyPath, $isFieldRequired, $validationRule) = $fieldDescription;
-
-            // generated field or field from config
-            if (empty($propertyPath))
-            {
-                continue;
-            }
 
             $fieldValue = PropertyAccessor::getValue($payment, $propertyPath, false);
 
@@ -216,34 +203,13 @@ implements      QueryInterface
 
         foreach (static::$requestFieldsDefinition as $fieldDescription)
         {
-            list($fieldName, $propertyPath, $isFieldRequired) = $fieldDescription;
+            list($fieldName, $propertyPath) = $fieldDescription;
 
-            // generate control code
-            if ($fieldName == 'control')
-            {
-                $request[$fieldName] = $this->createControlCode($payment);
-            }
-            // get value from config
-            elseif (empty($propertyPath))
-            {
-                if (!empty($this->config[$fieldName]))
-                {
-                    $request[$fieldName] = $this->config[$fieldName];
-                }
-                elseif ($isFieldRequired === true)
-                {
-                    throw new RuntimeException("Field '{$fieldName}' missed in config");
-                }
-            }
-            // get value from payment
-            else
-            {
-                $fieldValue = PropertyAccessor::getValue($payment, $propertyPath);
+            $fieldValue = PropertyAccessor::getValue($payment, $propertyPath);
 
-                if (!empty($fieldValue))
-                {
-                    $request[$fieldName] = $fieldValue;
-                }
+            if (!empty($fieldValue))
+            {
+                $request[$fieldName] = $fieldValue;
             }
         }
 
@@ -258,27 +224,13 @@ implements      QueryInterface
      *
      * @return      string                                  Generated control code
      */
-    protected function createControlCode(Payment $payment)
+    protected function createSignature(Payment $payment)
     {
         $controlCode = '';
 
-        foreach (static::$controlCodeDefinition as $propertyPath)
+        foreach (static::$signatureDefinition as $propertyPath)
         {
-            // get value from config
-            if (!empty($this->config[$propertyPath]))
-            {
-                $controlCode .= $this->config[$propertyPath];
-            }
-            // get value from payment
-            else
-            {
-                $fieldValue = PropertyAccessor::getValue($payment, $propertyPath);
-
-                if (!empty($fieldValue))
-                {
-                    $controlCode .= $fieldValue;
-                }
-            }
+            $controlCode .= PropertyAccessor::getValue($payment, $propertyPath);
         }
 
         return sha1($controlCode);
@@ -397,22 +349,20 @@ implements      QueryInterface
     }
 
     /**
-     * Set query object config
-     *
-     * @param       array       $config         API query object config
+     * Validates query object definition
      *
      * @throws      RuntimeException
      */
-    protected function setConfig(array $config)
+    protected function validateQueryDefinition()
     {
         if (empty(static::$requestFieldsDefinition))
         {
             throw new RuntimeException('You must configure requestFieldsDefinition property');
         }
 
-        if (empty(static::$controlCodeDefinition))
+        if (empty(static::$signatureDefinition))
         {
-            throw new RuntimeException('You must configure controlCodeDefinition property');
+            throw new RuntimeException('You must configure signatureDefinition property');
         }
 
         if (empty(static::$responseFieldsDefinition))
@@ -424,23 +374,28 @@ implements      QueryInterface
         {
             throw new RuntimeException('You must configure allowedResponseTypes property');
         }
+    }
 
-        if(empty($config['end_point']))
+    /**
+     * Validates payment query config
+     *
+     * @param       Payment         $payment        Payment
+     *
+     * @throws      RuntimeException                Some query config property is empty
+     */
+    public function validateQueryConfig(Payment $payment)
+    {
+        $queryConfig = $payment->getQueryConfig();
+
+        if(strlen($queryConfig->getEndPoint()) === 0)
         {
-            throw new RuntimeException('Node end_point does not defined in config');
+            throw new RuntimeException("Property 'endPoint' does not defined in Payment property 'queryConfig'");
         }
 
-        if(empty($config['control']))
+        if(strlen($queryConfig->getSigningKey()) === 0)
         {
-            throw new RuntimeException('Node control does not defined in config');
+            throw new RuntimeException("Property 'signingKey' does not defined in Payment property 'queryConfig'");
         }
-
-        if(empty($config['login']))
-        {
-            throw new RuntimeException('Node login does not defined in config');
-        }
-
-        $this->config = $config;
     }
 
     /**

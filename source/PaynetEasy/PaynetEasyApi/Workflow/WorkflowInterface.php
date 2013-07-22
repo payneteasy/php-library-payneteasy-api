@@ -9,10 +9,9 @@ interface WorkflowInterface
     /**
      * Process Payment with different transport stage
      *
-     * @param       PaynetEasy\PaynetEasyApi\PaymentData\Payment       $payment            Payment for processing
-     * @param       array                                                       $callbackData       Paynet callback data
+     * @param       PaynetEasy\PaynetEasyApi\PaymentData\Payment       $payment     Payment for processing
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Transport\Response
+     * @return      \PaynetEasy\PaynetEasyApi\Transport\Response                    Response object
      */
-    public function processPayment(Payment $payment, array $callbackData = array());
+    public function processPayment(Payment $payment);
 }

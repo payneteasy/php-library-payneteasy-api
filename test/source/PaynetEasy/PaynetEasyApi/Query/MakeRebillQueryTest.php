@@ -15,7 +15,7 @@ class MakeRebillQueryTest extends SaleQueryTest
      */
     protected function setUp()
     {
-        $this->object = new MakeRebillQuery($this->getConfig());
+        $this->object = new MakeRebillQuery;
     }
 
     public function testCreateRequestProvider()
@@ -28,7 +28,7 @@ class MakeRebillQueryTest extends SaleQueryTest
                 self::CLIENT_PAYMENT_ID .
                 '99' .                          // amount
                 self::RECURRENT_CARD_FROM_ID .
-                self::SIGN_KEY
+                self::SIGNING_KEY
             )
         ));
     }

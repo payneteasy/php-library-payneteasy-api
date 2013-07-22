@@ -25,6 +25,15 @@ $payment = $loadPayment() ?: new Payment(array
 ));
 
 /**
+ * Установим конфигурацию для выполнения запроса
+ *
+ * @see \PaynetEasy\PaynetEasyApi\Query\TransferByRefQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+ * @see functions.php, $getConfig()
+ */
+$payment->setQueryConfig($getConfig());
+
+/**
  * Для этого запроса необходимо передать данные клиента
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions#Money_transfer_request_parameters
@@ -77,4 +86,4 @@ $paymentProcessor->setHandlers(array
  * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeWorkflow()
  * @see \PaynetEasy\PaynetEasyApi\Workflow\AbstractWorkflow::processPayment()
  */
-$paymentProcessor->executeWorkflow('transfer-by-ref', $getConfig(), $payment, $_REQUEST);
+$paymentProcessor->executeWorkflow('transfer-by-ref', $payment, $_REQUEST);

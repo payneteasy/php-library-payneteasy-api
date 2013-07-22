@@ -22,25 +22,25 @@ class CallbackFactory implements CallbackFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getCallback(CallbackResponse $callback, array $callbackConfig = array())
+    public function getCallback(CallbackResponse $callback)
     {
         $callbackType   = $callback->getType();
 
         if (empty($callbackType))
         {
-            return new RedirectUrlCallback($callbackConfig);
+            return new RedirectUrlCallback;
         }
 
         $callbackClass  = __NAMESPACE__ . '\\' . ucfirst($callbackType) . 'Callback';
 
         if (class_exists($callbackClass, true))
         {
-            return new $callbackClass($callbackConfig);
+            return new $callbackClass;
         }
 
         if (in_array($callbackType, static::$allowedServerCallbackUrlTypes))
         {
-            $callbackProcessor = new ServerCallbackUrlCallback($callbackConfig);
+            $callbackProcessor = new ServerCallbackUrlCallback;
             $callbackProcessor->setCallbackType($callbackType);
 
             return $callbackProcessor;

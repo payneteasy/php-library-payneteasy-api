@@ -31,6 +31,15 @@ $payment = $loadPayment() ?: new Payment(array
     'paynet_payment_id'     =>  1969595
 ));
 
+/**
+ * Установим конфигурацию для выполнения запроса
+ *
+ * @see \PaynetEasy\PaynetEasyApi\Query\StatusQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+ * @see functions.php, $getConfig()
+ */
+$payment->setQueryConfig($getConfig());
+
 $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
 
 /**
@@ -38,7 +47,7 @@ $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\Status::updatePaymentOnSuccess()
  */
-$paymentProcessor->executeQuery('status', $getConfig(), $payment, $_REQUEST);
+$paymentProcessor->executeQuery('status', $payment, $_REQUEST);
 
 /**
  * Сохраним платеж и выведем его на экран

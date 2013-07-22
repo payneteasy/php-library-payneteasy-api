@@ -18,7 +18,7 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new RedirectUrlCallback($this->getConfig());
+        $this->object = new RedirectUrlCallback;
     }
 
     public function testProcessCallbackApprovedProvider()

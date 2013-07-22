@@ -23,20 +23,13 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetQuery()
     {
-        $config = array
-        (
-            'login'     => '_',
-            'end_point' => '_',
-            'control'   => '_'
-        );
-
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery',
-                                $this->object->getQuery('create-card-ref', $config));
+                                $this->object->getQuery('create-card-ref'));
 
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Query\ReturnQuery',
-                                $this->object->getQuery('return', $config));
+                                $this->object->getQuery('return'));
 
-        $formQuery = $this->object->getQuery('sale-form', $config);
+        $formQuery = $this->object->getQuery('sale-form');
 
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Query\FormQuery', $formQuery);
         $this->assertEquals('sale-form', $this->readAttribute($formQuery, 'apiMethod'));

@@ -3,8 +3,11 @@
 namespace PaynetEasy\PaynetEasyApi\Workflow;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
+
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\FakeGatewayClient;
+
 use PaynetEasy\PaynetEasyApi\Query\QueryFactory;
 use PaynetEasy\PaynetEasyApi\Callback\CallbackFactory;
 
@@ -15,7 +18,7 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
 {
     const LOGIN                 = 'test-login';
     const END_POINT             =  789;
-    const SIGN_KEY              = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
+    const SIGNING_KEY           = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
     const CLIENT_PAYMENT_ID     = 'CLIENT-112233';
     const PAYNET_PAYMENT_ID     = 'PAYNET-112233';
 
@@ -32,8 +35,7 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
     {
         $this->object = new CaptureWorkflow(new FakeGatewayClient('_'),
                                             new QueryFactory,
-                                            new CallbackFactory,
-                                            $this->getConfig());
+                                            new CallbackFactory);
     }
 
     /**
@@ -105,7 +107,7 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
                     'approved' .
                     self::PAYNET_PAYMENT_ID .
                     self::CLIENT_PAYMENT_ID .
-                    self::SIGN_KEY
+                    self::SIGNING_KEY
                 )
             ),
             Payment::STAGE_REDIRECTED,
@@ -121,22 +123,15 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
             'client_payment_id'     => self::CLIENT_PAYMENT_ID,
             'paynet_payment_id'     => self::PAYNET_PAYMENT_ID,
             'amount'                => 99.1,
-            'currency'              => 'EUR'
+            'currency'              => 'EUR',
+            'query_config'          => new QueryConfig(array
+            (
+                'login'                 =>  self::LOGIN,
+                'end_point'             =>  self::END_POINT,
+                'control'               =>  self::SIGNING_KEY,
+                'redirect_url'          => 'https://example.com/redirect_url',
+                'server_callback_url'   => 'https://example.com/callback_url'
+            ))
         ));
-    }
-
-    /**
-     * @return      array
-     */
-    protected function getConfig()
-    {
-        return array
-        (
-            'login'                 =>  self::LOGIN,
-            'end_point'             =>  self::END_POINT,
-            'control'               =>  self::SIGN_KEY,
-            'redirect_url'          => 'https://example.com/redirect_url',
-            'server_callback_url'   => 'https://example.com/callback_url'
-        );
     }
 }

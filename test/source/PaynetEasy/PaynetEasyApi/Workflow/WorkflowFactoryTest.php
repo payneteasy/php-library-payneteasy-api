@@ -30,12 +30,12 @@ class WorkflowFactoryTest extends \PHPUnit_Framework_TestCase
     public function testGetWorkflow()
     {
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Workflow\MakeRebillWorkflow',
-                                $this->object->getWorkflow('make-rebill', array()));
+                                $this->object->getWorkflow('make-rebill'));
 
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Workflow\SaleWorkflow',
-                                $this->object->getWorkflow('sale', array()));
+                                $this->object->getWorkflow('sale'));
 
-        $formWorflow = $this->object->getWorkflow('sale-form', array());
+        $formWorflow = $this->object->getWorkflow('sale-form');
 
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Workflow\FormWorkflow', $formWorflow);
         $this->assertEquals('sale-form', $this->readAttribute($formWorflow, 'initialApiMethod'));
@@ -47,6 +47,6 @@ class WorkflowFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetWorkflowWithException()
     {
-        $this->object->getWorkflow('unknown', array());
+        $this->object->getWorkflow('unknown');
     }
 }

@@ -4,11 +4,10 @@
 
 1. Инициация оплаты:
     1. [Подключение загрузчика классов и необходимых классов](#stage_1_step_1)
-    2. [Создание нового платежа, покупателя и адреса](#stage_1_step_2)
-    3. [Создание конфигурации для выполнения запроса](#stage_1_step_3)
-    4. [Создание сервиса для обработки платежей](#stage_1_step_4)
-    5. [Установка обработчиков событий для сервиса](#stage_1_step_5)
-    6. [Запуск обработки платежа](#stage_1_step_6)
+    2. [Создание нового платежа](#stage_1_step_2)
+    3. [Создание сервиса для обработки платежей](#stage_1_step_4)
+    4. [Установка обработчиков событий для сервиса](#stage_1_step_5)
+    5. [Запуск обработки платежа](#stage_1_step_6)
         1. Проверка данных платежа и формирование на его основе запроса к PaynetEasy
         2. Выполнение запроса для старта обработки платежа и его первичной проверки
         3. Получение ответа от PaynetEasy
@@ -24,10 +23,9 @@
 3. Обработка результатов:
     1. [Подключение загрузчика классов и необходимых классов](#stage_2_step_1)
     2. [Загрузка сохраненного платежа](#stage_2_step_2)
-    3. [Создание конфигурации для обработки результата процессинга платежной формы](#stage_2_step_3)
-    4. [Создание сервиса для обработки платежей](#stage_2_step_4)
-    5. [Установка обработчиков событий для сервиса](#stage_2_step_5)
-    6. [Запуск обработки данных, полученных при возвращении пользователя с платежной формы](#stage_2_step_6)
+    3. [Создание сервиса для обработки платежей](#stage_2_step_4)
+    4. [Установка обработчиков событий для сервиса](#stage_2_step_5)
+    5. [Запуск обработки данных, полученных при возвращении пользователя с платежной формы](#stage_2_step_6)
         1. Проверка данных, полученные по возвращении клиента с платежной формы PaynetEasy
         2. Изменение статуса платежа **status** и этапа обработки платежа **processingStage** на основе проверенных данных
         3. Сохранение платежа обработчиком
@@ -45,11 +43,12 @@
     require_once 'project/root/dir/vendor/autoload.php';
 
     use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+    use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
     use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
     use PaynetEasy\PaynetEasyApi\Transport\Response;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
     ```
-2. <a name="stage_1_step_2"></a>Создание нового платежа, покупателя и адреса:
+2. <a name="stage_1_step_2"></a>Создание нового платежа:
     ##### С использованием массивов, переданных в конструктор:
 
     ```php
@@ -68,6 +67,14 @@
         'phone'             => '660-485-6353'
     ));
 
+    $queryConfig = new QueryConfig(array
+    (
+        'end_point'         =>  253,
+        'login'             => 'rp-merchant1',
+        'signing_key'       => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
+        'redirect_url'      => "http://{$_SERVER['HTTP_HOST']}/second_stage.php"
+    ));
+
     $payment = new Payment(array
     (
         'client_payment_id' => 'CLIENT-112244',
@@ -75,7 +82,8 @@
         'amount'            =>  9.99,
         'currency'          => 'USD',
         'customer'          => $customer,
-        'billing_address'   => $billingAddress
+        'billing_address'   => $billingAddress,
+        'query_config'      => $queryConfig
     ));
     ```
     ##### С использованием сеттеров:
@@ -94,6 +102,13 @@
         ->setPhone('660-485-6353')
     ;
 
+    $queryConfig = (new QueryConfig)
+        ->setEndPoint(253)
+        ->setLogin('rp-merchant1')
+        ->setSigningKey('3FD4E71A-D84E-411D-A613-40A0FB9DED3A')
+        ->setRedirectUrl("http://{$_SERVER['HTTP_HOST']}/second_stage.php")
+    ;
+
     $payment = (new Payment)
         ->setClientPaymentId('CLIENT-112244')
         ->setDescription('This is test payment')
@@ -101,31 +116,21 @@
         ->setCurrency('USD')
         ->setCustomer($customer)
         ->setBillingAddress($billingAddress)
+        ->setQueryConfig($queryConfig)
     ;
     ```
 
-3. <a name="stage_1_step_3"></a>Создание конфигурации для выполнения запроса:
-
-    ```php
-    $queryConfig = array
-    (
-        'end_point'             =>  253,
-        'login'                 => 'rp-merchant1',
-        'control'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
-        'redirect_url'          => "http://{$_SERVER['HTTP_HOST']}/second_stage.php"
-    );
-    ```
-    Поля конфигурации:
+    Поля конфигурации запроса **QueryConfig**:
     * **[end_point](http://wiki.payneteasy.com/index.php/PnE:Introduction#Endpoint)** - точка входа для аккаунта мерчанта, выдается при подключении
     * **[login](http://wiki.payneteasy.com/index.php/PnE:Introduction#PaynetEasy_Users)** - логин мерчанта для доступа к панели PaynetEasy, выдается при подключении
     * **control** - ключ мерчанта для подписывания запросов, выдается при подключении
     * **[redirect_url](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect)** - URL, на который пользователь будет перенаправлен после окончания запроса
 
-4. <a name="stage_1_step_4"></a>Создание сервиса для обработки платежей:
+3. <a name="stage_1_step_4"></a>Создание сервиса для обработки платежей:
     ```php
     $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
     ```
-5. <a name="stage_1_step_5"></a>Установка обработчиков событий для сервиса:
+4. <a name="stage_1_step_5"></a>Установка обработчиков событий для сервиса:
 
     ```php
     $paymentProcessor->setHandlers(array
@@ -146,10 +151,10 @@
     * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
     * **PaymentProcessor::HANDLER_REDIRECT** - для переадресации пользователя на URL платежной формы, полученный от PaynetEasy
 
-6. <a name="stage_1_step_6"></a>Запуск обработки платежа:
+5. <a name="stage_1_step_6"></a>Запуск обработки платежа:
 
     ```php
-    $paymentProcessor->executeQuery('sale-form', $queryConfig, $payment);
+    $paymentProcessor->executeQuery('sale-form', $payment);
     ```
     Будут выполнены следующие шаги:
     1. Проверка данных платежа и формирование на его основе запроса к PaynetEasy
@@ -175,24 +180,14 @@
     session_start();
     $payment = unserialize($_SESSION['payment']);
     ```
-3. <a name="stage_2_step_3"></a>Создание конфигурации для обработки результата процессинга платежной формы:
 
-    ```php
-    $callbackConfig = array
-    (
-        'control'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
-    );
-    ```
-    Поля конфигурации:
-    * **control** - ключ мерчанта для подписывания запросов, выдается при подключении
-
-4. <a name="stage_2_step_4"></a>Создание сервиса для обработки платежей:
+3. <a name="stage_2_step_4"></a>Создание сервиса для обработки платежей:
 
     ```php
     $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
     ```
 
-5. <a name="stage_2_step_5"></a>Установка обработчиков событий для сервиса:
+4. <a name="stage_2_step_5"></a>Установка обработчиков событий для сервиса:
 
     ```php
     $paymentProcessor->setHandlers(array
@@ -214,10 +209,10 @@
     * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
     * **PaymentProcessor::HANDLER_FINISH_PROCESSING** - для вывода информации о платеже после окончания обработки
 
-6. <a name="stage_2_step_6"></a>Запуск обработки данных, полученных при возвращении пользователя с платежной формы:
+5. <a name="stage_2_step_6"></a>Запуск обработки данных, полученных при возвращении пользователя с платежной формы:
 
     ```php
-    $paymentProcessor->executeCallback($_REQUEST, $callbackConfig, $payment);
+    $paymentProcessor->executeCallback($_REQUEST, $payment);
     ```
     Будут выполнены следующие шаги:
     1. Проверка данных, полученные по возвращении клиента с платежной формы PaynetEasy (суперглобальный массив $_REQUEST)
@@ -239,7 +234,7 @@
     use PaynetEasy\PaynetEasyApi\Transport\Response;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
     ```
-2. Создание нового платежа, покупателя и адреса или загрузка сохраненного платежа:
+2. Создание нового платежа:
     ##### С использованием массивов, переданных в конструктор:
 
     ```php
@@ -266,6 +261,14 @@
             'phone'             => '660-485-6353'
         ));
 
+        $queryConfig = new QueryConfig(array
+        (
+            'end_point'         =>  253,
+            'login'             => 'rp-merchant1',
+            'signing_key'       => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
+            'redirect_url'      => "http://{$_SERVER['HTTP_HOST']}/second_stage.php"
+        ));
+
         $payment = new Payment(array
         (
             'client_payment_id' => 'CLIENT-112244',
@@ -273,7 +276,8 @@
             'amount'            =>  9.99,
             'currency'          => 'USD',
             'customer'          => $customer,
-            'billing_address'   => $billingAddress
+            'billing_address'   => $billingAddress,
+            'query_config'      => $queryConfig
         ));
     }
     ```
@@ -301,6 +305,13 @@
             ->setPhone('660-485-6353')
         ;
 
+        $queryConfig = (new QueryConfig)
+            ->setEndPoint(253)
+            ->setLogin('rp-merchant1')
+            ->setSigningKey('3FD4E71A-D84E-411D-A613-40A0FB9DED3A')
+            ->setRedirectUrl("http://{$_SERVER['HTTP_HOST']}/second_stage.php")
+        ;
+
         $payment = (new Payment)
             ->setClientPaymentId('CLIENT-112244')
             ->setDescription('This is test payment')
@@ -308,31 +319,22 @@
             ->setCurrency('USD')
             ->setCustomer($customer)
             ->setBillingAddress($billingAddress)
+            ->setQueryConfig($queryConfig)
         ;
     }
     ```
-3. Создание конфигурации для выполнения запроса:
 
-    ```php
-    $queryConfig = array
-    (
-        'end_point'             =>  253,
-        'login'                 => 'rp-merchant1',
-        'control'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
-        'redirect_url'          => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}"
-    );
-    ```
     Поля конфигурации:
     * **[end_point](http://wiki.payneteasy.com/index.php/PnE:Introduction#Endpoint)** - точка входа для аккаунта мерчанта, выдается при подключении
     * **[login](http://wiki.payneteasy.com/index.php/PnE:Introduction#PaynetEasy_Users)** - логин мерчанта для доступа к панели PaynetEasy, выдается при подключении
     * **control** - ключ мерчанта для подписывания запросов, выдается при подключении
     * **[redirect_url](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect)** - URL, на который пользователь будет перенаправлен после окончания запроса
 
-4. Создание сервиса для обработки платежей:
+3. Создание сервиса для обработки платежей:
     ```php
     $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
     ```
-5. Установка обработчиков событий для сервиса:
+4. Установка обработчиков событий для сервиса:
 
     ```php
     $paymentProcessor->setHandlers(array
@@ -361,10 +363,10 @@
     * **PaymentProcessor::HANDLER_REDIRECT** - для переадресации пользователя на URL платежной формы, полученный от PaynetEasy
     * **PaymentProcessor::HANDLER_FINISH_PROCESSING** - для вывода информации о платеже после окончания обработки
 
-6. Запуск обработки платежа:
+5. Запуск обработки платежа:
 
     ```php
-    $paymentProcessor->executeWorkflow('sale-form', $queryConfig, $payment);
+    $paymentProcessor->executeWorkflow('sale-form', $payment);
     ```
     ##### Шаги, выполняемые для первого этапа:
     1. Проверка данных платежа и формирование на его основе запроса к PaynetEasy

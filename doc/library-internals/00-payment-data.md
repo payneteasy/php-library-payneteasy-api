@@ -2,6 +2,7 @@
 
 Семейство классов для хранения данных и обмена данными между библиотекой и CMS мерчанта. Расположены в пространстве имен **[PaynetEasy\PaynetEasyApi\PaymentData](../../source/PaynetEasy/PaynetEasyApi/PaymentData)**. Представлены следующими классами объектов:
 * [Payment](#Payment)
+* [QueryConfig](#QueryConfig)
 * [Customer](#Customer)
 * [BillingAddress](#BillingAddress)
 * [CreditCard](#CreditCard)
@@ -51,15 +52,30 @@ description         |string                         |order_desc     |Brief payme
 destination         |string                         |destination    |Destination to where the payment goes
 amount              |float                          |amount         |Amount to be charged
 currency            |string                         |currency       |Three-letter currency code
-siteUrl             |string                         |site_url       |URL the original payment is made from
 comment             |string                         |comment        |A short comment for payment
 processingStage     |string                         |               |Payment processing stage
 status              |string                         |               |Payment status in bank
 errors              |array                          |               |Payment processing errors
+queryConfig         |[QueryConfig](#QueryConfig)    |               |Payment query config
 customer            |[Customer](#Customer)          |               |Payment customer
 creditCard          |[CreditCard](#CreditCard)      |               |Payment credit card
 recurrentCardFrom   |[RecurrentCard](#RecurrentCard)|               |Payment source recurrent card
 recurrentCardTo     |[RecurrentCard](#RecurrentCard)|               |Payment destination recurrent card
+
+### <a name="QueryConfig"></a> QueryConfig
+
+Объект класса **[PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig](../../source/PaynetEasy/PaynetEasyApi/PaymentData/QueryConfig.php)**. Используется при выполнении всех запросов. Хранит следующие данные:
+
+Свойство класса |Тип    |Поле запроса       |Назначение
+----------------|-------|-------------------|-------------------------------------------------------
+endPoint        |integer|                   |Merchant end point
+signingKey      |string |                   |Merchant key for payment signing
+login           |string |login              |Merchant login
+siteUrl         |string |site_url           |URL the original payment is made from
+redirectUrl     |string |redirect_url       |URL the customer will be redirected to upon completion of the transaction
+callbackUrl     |string |server_callback_url|URL the transaction result will be sent to
+
+Значение свойства endPoint участвует в формировании URL для вызова платежного метода шлюза PaynetEasy, а свойства signingKey - в формировании подписи для данных платежа.
 
 ### <a name="Customer"></a> Customer
 

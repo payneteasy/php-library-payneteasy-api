@@ -24,6 +24,15 @@ session_start();
 $payment = $loadPayment() ?: new Payment(array());
 
 /**
+ * Установим конфигурацию для выполнения запроса
+ *
+ * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+ * @see functions.php, $getConfig()
+ */
+$payment->setQueryConfig($getConfig());
+
+/**
  * Для этого запроса необходимо передать ID кредитной карты
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Information_request_parameters
@@ -39,7 +48,7 @@ $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::updatePaymentOnSuccess()
  */
-$paymentProcessor->executeQuery('get-card-info', $getConfig(), $payment, $_REQUEST);
+$paymentProcessor->executeQuery('get-card-info', $payment, $_REQUEST);
 
 /**
  * Сохраним платеж и выведем его на экран

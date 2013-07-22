@@ -1,6 +1,8 @@
 <?php
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
+
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 /**
@@ -10,7 +12,7 @@ use PaynetEasy\PaynetEasyApi\Transport\Response;
  */
 $getConfig = function()
 {
-    return array
+    return new QueryConfig(array
     (
         /**
          * Точка входа для аккаунта мерчанта, выдается при подключении
@@ -42,7 +44,7 @@ $getConfig = function()
          * @see http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks
          */
         'server_callback_url'   => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}"
-    );
+    ));
 };
 
 /**

@@ -15,13 +15,6 @@ use Exception;
 abstract class AbstractCallback implements CallbackInterface
 {
     /**
-     * Config for Paynet callback
-     *
-     * @var array
-     */
-    protected $config;
-
-    /**
      * Callback type
      *
      * @var string
@@ -52,13 +45,10 @@ abstract class AbstractCallback implements CallbackInterface
      */
     static protected $callbackFieldsDefinition = array();
 
-    /**
-     * @param       array       $config         Paynet callback object config
-     */
-    public function __construct(array $config = array())
+    public function __construct()
     {
         $this->setCallbackType(get_called_class());
-        $this->setConfig($config);
+        $this->validateCallbackDefinition();
     }
 
     /**
@@ -90,13 +80,13 @@ abstract class AbstractCallback implements CallbackInterface
     }
 
     /**
-     * Set query object config
+     * Validates callback object definition
      *
      * @param       array       $config         API query object config
      *
      * @throws      RuntimeException
      */
-    protected function setConfig(array $config)
+    protected function validateCallbackDefinition()
     {
         if (empty(static::$allowedStatuses))
         {
@@ -107,13 +97,23 @@ abstract class AbstractCallback implements CallbackInterface
         {
             throw new RuntimeException('You must configure callbackFieldsDefinition property');
         }
+    }
 
-        if(empty($config['control']))
+    /**
+     * Validates payment query config
+     *
+     * @param       Payment         $payment        Payment
+     *
+     * @throws      RuntimeException                Some query config property is empty
+     */
+    public function validateQueryConfig(Payment $payment)
+    {
+        $queryConfig = $payment->getQueryConfig();
+
+        if(strlen($queryConfig->getSigningKey()) === 0)
         {
-            throw new RuntimeException("You must set 'control' field in config");
+            throw new RuntimeException("Property 'signingKey' does not defined in Payment property 'queryConfig'");
         }
-
-        $this->config = $config;
     }
 
     /**
@@ -147,13 +147,16 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Validates callback
      *
-     * @param       Payment               $payment                Payment
-     * @param       CallbackResponse               $callbackResponse       Callback from paynet
+     * @param       Payment                 $payment                Payment
+     * @param       CallbackResponse        $callbackResponse       Callback from paynet
      *
-     * @throws      ValidationException                                    Validation error
+     * @throws      ValidationException                             Validation error
      */
     protected function validateCallback(Payment $payment, CallbackResponse $callbackResponse)
     {
+        $this->validateQueryConfig($payment);
+        $this->validateSignature($payment, $callbackResponse);
+
         $errorMessage   = '';
         $missedFields   = array();
         $unequalValues  = array();
@@ -195,8 +198,6 @@ abstract class AbstractCallback implements CallbackInterface
         {
             throw new ValidationException($errorMessage);
         }
-
-        $this->validateControlCode($callbackResponse);
 
         if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
         {
@@ -247,16 +248,16 @@ abstract class AbstractCallback implements CallbackInterface
      *
      * @throws      ValidationException                     Invalid control code
      */
-    protected function validateControlCode(CallbackResponse $callback)
+    protected function validateSignature(Payment $payment, CallbackResponse $callback)
     {
         // This is SHA-1 checksum of the concatenation
         // status + orderid + client_orderid + merchant-control.
         $expectedControl   = sha1
         (
-            $callback->getStatus().
-            $callback->getPaynetPaymentId().
-            $callback->getClientPaymentId().
-            $this->config['control']
+            $callback->getStatus() .
+            $callback->getPaynetPaymentId() .
+            $callback->getClientPaymentId() .
+            $payment->getQueryConfig()->getSigningKey()
         );
 
         if($expectedControl !== $callback->getControlCode())

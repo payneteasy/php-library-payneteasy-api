@@ -21,7 +21,7 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
      */
     protected function setUp()
     {
-        $this->object = new ServerCallbackUrlCallback($this->getConfig());
+        $this->object = new ServerCallbackUrlCallback;
     }
 
     /**
@@ -31,7 +31,7 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
     {
         $payment = $this->getPayment();
 
-        $callback['control'] = $this->createControlCode($callback);
+        $callback['control'] = $this->createSignature($callback);
 
         $this->object->processCallback($payment, new CallbackResponse($callback));
 

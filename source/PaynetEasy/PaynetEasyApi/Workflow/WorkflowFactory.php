@@ -52,7 +52,7 @@ class WorkflowFactory implements WorkflowFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getWorkflow($workflowName, array $workflowConfig)
+    public function getWorkflow($workflowName)
     {
         $workflowClass  = __NAMESPACE__ . '\\' . String::camelize($workflowName) . 'Workflow';
 
@@ -60,8 +60,7 @@ class WorkflowFactory implements WorkflowFactoryInterface
         {
             return new $workflowClass($this->gatewayClient,
                                       $this->queryFactory,
-                                      $this->callbackFactory,
-                                      $workflowConfig);
+                                      $this->callbackFactory);
         }
 
         // :NOTICE:         Imenem          18.06.13
@@ -72,8 +71,7 @@ class WorkflowFactory implements WorkflowFactoryInterface
         {
             $workflow = new FormWorkflow($this->gatewayClient,
                                          $this->queryFactory,
-                                         $this->callbackFactory,
-                                         $workflowConfig);
+                                         $this->callbackFactory);
 
             $workflow->setInitialApiMethod($workflowName);
 

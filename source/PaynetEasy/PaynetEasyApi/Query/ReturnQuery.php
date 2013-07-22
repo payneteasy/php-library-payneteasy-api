@@ -19,23 +19,20 @@ class ReturnQuery extends AbstractQuery
         array('amount',             'amount',                           true,   Validator::AMOUNT),
         array('currency',           'currency',                         true,   Validator::CURRENCY),
         array('comment',            'comment',                          true,   Validator::MEDIUM_STRING),
-        // generated
-        array('control',             null,                              true,    null),
-        // from config
-        array('login',               null,                              true,    null)
+        array('login',              'queryConfig.login',                true,   Validator::MEDIUM_STRING)
     );
 
     /**
      * {@inheritdoc}
      */
-    static protected $controlCodeDefinition = array
+    static protected $signatureDefinition = array
     (
-        'login',
+        'queryConfig.login',
         'clientPaymentId',
         'paynetPaymentId',
         'amountInCents',
         'currency',
-        'control'
+        'queryConfig.signingKey'
     );
 
     /**

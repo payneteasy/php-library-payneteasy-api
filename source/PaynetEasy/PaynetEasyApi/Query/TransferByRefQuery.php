@@ -20,30 +20,27 @@ class TransferByRefQuery extends AbstractQuery
         array('currency',                   'currency',                             true,    Validator::CURRENCY),
         array('ipaddress',                  'customer.ipAddress',                   true,    Validator::IP),
         array('destination-card-ref-id',    'recurrentCardTo.cardReferenceId',      true,    Validator::ID),
+        array('login',                      'queryConfig.login',                    true,    Validator::MEDIUM_STRING),
         // optional
         array('order_desc',                 'description',                          false,   Validator::LONG_STRING),
         array('source-card-ref-id',         'recurrentCardFrom.cardReferenceId',    false,   Validator::ID),
         array('cvv2',                       'recurrentCardFrom.cvv2',               false,   Validator::CVV2),
-        // generated
-        array('control',                    null,                                   true,    null),
-        // from config
-        array('login',                      null,                                   true,    null),
-        array('redirect_url',               null,                                   false,   null),
-        array('server_callback_url',        null,                                   false,   null)
+        array('redirect_url',               'queryConfig.redirectUrl',              false,   Validator::URL),
+        array('server_callback_url',        'queryConfig.callbackUrl',              false,   Validator::URL)
     );
 
     /**
      * {@inheritdoc}
      */
-    static protected $controlCodeDefinition = array
+    static protected $signatureDefinition = array
     (
-        'login',
+        'queryConfig.login',
         'clientPaymentId',
         'recurrentCardFrom.cardReferenceId',
         'recurrentCardTo.cardReferenceId',
         'amountInCents',
         'currency',
-        'control'
+        'queryConfig.signingKey'
     );
 
     /**

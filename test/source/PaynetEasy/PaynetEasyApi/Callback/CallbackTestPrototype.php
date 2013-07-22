@@ -2,13 +2,15 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
+
+use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 use PaynetEasy\PaynetEasyApi\Exception\PaynetException;
 
 abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 {
-    const SIGN_KEY              = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
+    const SIGNING_KEY           = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
     const CLIENT_PAYMENT_ID     = 'CLIENT-112233';
     const PAYNET_PAYMENT_ID     = 'PAYNET-112233';
 
@@ -19,7 +21,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     {
         $payment = $this->getPayment();
 
-        $callback['control'] = $this->createControlCode($callback);
+        $callback['control'] = $this->createSignature($callback);
 
         $this->object->processCallback($payment, new CallbackResponse($callback));
 
@@ -36,7 +38,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     {
         $payment = $this->getPayment();
 
-        $callback['control'] = $this->createControlCode($callback);
+        $callback['control'] = $this->createSignature($callback);
 
         $this->object->processCallback($payment, new CallbackResponse($callback));
 
@@ -53,7 +55,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     {
         $payment = $this->getPayment();
 
-        $callback['control'] = $this->createControlCode($callback);
+        $callback['control'] = $this->createSignature($callback);
 
         try
         {
@@ -115,18 +117,12 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
             'client_payment_id'         =>  self::CLIENT_PAYMENT_ID,
             'paynet_payment_id'         =>  self::PAYNET_PAYMENT_ID,
             'amount'                    =>  0.99,
-            'currency'                  => 'USD'
+            'currency'                  => 'USD',
+            'queryConfig'               =>  new QueryConfig(array
+            (
+                'signing_key'               =>  self::SIGNING_KEY
+            ))
         ));
-    }
-
-    /**
-     * Get callback config
-     *
-     * @return      array
-     */
-    protected function getConfig()
-    {
-        return array('control' =>  self::SIGN_KEY);
     }
 
     /**
@@ -136,14 +132,14 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      *
      * @return      string                      Callback control code
      */
-    protected function createControlCode(array $callback)
+    protected function createSignature(array $callback)
     {
         return sha1
         (
             $callback['status'] .
             $callback['orderid'] .
             $callback['client_orderid'] .
-            self::SIGN_KEY
+            self::SIGNING_KEY
         );
     }
 }

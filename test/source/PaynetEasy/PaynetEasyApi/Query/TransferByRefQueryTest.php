@@ -37,7 +37,7 @@ class TransferByRefQueryTest extends QueryTestPrototype
                 self::RECURRENT_CARD_TO_ID .
                  9910 .
                 'EUR' .
-                self::SIGN_KEY
+                self::SIGNING_KEY
             )
         ));
     }
@@ -129,7 +129,6 @@ class TransferByRefQueryTest extends QueryTestPrototype
             'description'           => 'This is test payment',
             'amount'                =>  99.1,
             'currency'              => 'EUR',
-            'site_url'              => 'http://example.com',
             'customer'              => new Customer(array
             (
                 'ip_address'            => '127.0.0.1'
@@ -142,7 +141,8 @@ class TransferByRefQueryTest extends QueryTestPrototype
             'recurrent_card_to'     => new RecurrentCard(array
             (
                 'cardrefid'             => self::RECURRENT_CARD_TO_ID,
-            ))
+            )),
+            'query_config'          => $this->getConfig()
         ));
     }
 }

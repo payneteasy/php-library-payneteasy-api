@@ -26,6 +26,15 @@ $payment = $loadPayment() ?: new Payment(array
 ));
 
 /**
+ * Установим конфигурацию для выполнения запроса
+ *
+ * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+ * @see functions.php, $getConfig()
+ */
+$payment->setQueryConfig($getConfig());
+
+/**
  * Для этого запроса необходимо передать данные клиента
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
@@ -76,4 +85,4 @@ $paymentProcessor->setHandlers(array
     PaymentProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedPayment
 ));
 
-$paymentProcessor->executeWorkflow('preauth-form', $getConfig(), $payment, $_REQUEST);
+$paymentProcessor->executeWorkflow('preauth-form', $payment, $_REQUEST);
