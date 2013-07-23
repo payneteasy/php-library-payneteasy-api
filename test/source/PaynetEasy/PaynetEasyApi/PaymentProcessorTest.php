@@ -27,7 +27,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new PublicPaymentProcessor('_');
+        $this->object = new PublicPaymentProcessor;
     }
 
     public function testExecuteWorkflowWithEndedPayment()

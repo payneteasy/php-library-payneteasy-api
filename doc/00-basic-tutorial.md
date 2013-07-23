@@ -6,8 +6,7 @@
     1. [Подключение загрузчика классов и необходимых классов](#stage_1_step_1)
     2. [Создание нового платежа](#stage_1_step_2)
     3. [Создание сервиса для обработки платежей](#stage_1_step_4)
-    4. [Установка обработчиков событий для сервиса](#stage_1_step_5)
-    5. [Запуск обработки платежа](#stage_1_step_6)
+    4. [Запуск обработки платежа](#stage_1_step_6)
         1. Проверка данных платежа и формирование на его основе запроса к PaynetEasy
         2. Выполнение запроса для старта обработки платежа и его первичной проверки
         3. Получение ответа от PaynetEasy
@@ -24,8 +23,7 @@
     1. [Подключение загрузчика классов и необходимых классов](#stage_2_step_1)
     2. [Загрузка сохраненного платежа](#stage_2_step_2)
     3. [Создание сервиса для обработки платежей](#stage_2_step_4)
-    4. [Установка обработчиков событий для сервиса](#stage_2_step_5)
-    5. [Запуск обработки данных, полученных при возвращении пользователя с платежной формы](#stage_2_step_6)
+    4. [Запуск обработки данных, полученных при возвращении пользователя с платежной формы](#stage_2_step_6)
         1. Проверка данных, полученные по возвращении клиента с платежной формы PaynetEasy
         2. Изменение статуса платежа **status** и этапа обработки платежа **processingStage** на основе проверенных данных
         3. Сохранение платежа обработчиком
@@ -44,6 +42,7 @@
 
     use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
     use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
+    use PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress;
     use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
     use PaynetEasy\PaynetEasyApi\Transport\Response;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
@@ -137,30 +136,26 @@
 
 3. <a name="stage_1_step_4"></a>Создание сервиса для обработки платежей:
     ```php
-    $paymentProcessor = new PaymentProcessor;
-    ```
-4. <a name="stage_1_step_5"></a>Установка обработчиков событий для сервиса:
-
-    ```php
-    $paymentProcessor->setHandlers(array
+    $paymentProcessor = new PaymentProcessor(array
     (
-        PaymentProcessor::HANDLER_SAVE_PAYMENT          => function(Payment $payment)
+        PaymentProcessor::HANDLER_SAVE_PAYMENT  => function(Payment $payment)
         {
             start_session();
             $_SESSION['payment'] = serialize($payment);
         },
-        PaymentProcessor::HANDLER_REDIRECT              => function(Payment $payment, Response $response)
+        PaymentProcessor::HANDLER_REDIRECT      => function(Payment $payment, Response $response)
         {
             header("Location: {$response->getRedirectUrl()}");
             exit;
         }
     ));
     ```
-    Обработчики:
+
+    Обработчики событий для сервиса:
     * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
     * **PaymentProcessor::HANDLER_REDIRECT** - для переадресации пользователя на URL платежной формы, полученный от PaynetEasy
 
-5. <a name="stage_1_step_6"></a>Запуск обработки платежа:
+4. <a name="stage_1_step_6"></a>Запуск обработки платежа:
 
     ```php
     $paymentProcessor->executeQuery('sale-form', $payment);
@@ -194,19 +189,13 @@
 3. <a name="stage_2_step_4"></a>Создание сервиса для обработки платежей:
 
     ```php
-    $paymentProcessor = new PaymentProcessor;
-    ```
-
-4. <a name="stage_2_step_5"></a>Установка обработчиков событий для сервиса:
-
-    ```php
-    $paymentProcessor->setHandlers(array
+    $paymentProcessor = new PaymentProcessor(array
     (
-        PaymentProcessor::HANDLER_SAVE_PAYMENT        => function(Payment $payment)
+        PaymentProcessor::HANDLER_SAVE_PAYMENT      => function(Payment $payment)
         {
             $_SESSION['payment'] = serialize($payment);
         },
-        PaymentProcessor::HANDLER_FINISH_PROCESSING   => function(Payment $payment)
+        PaymentProcessor::HANDLER_FINISH_PROCESSING => function(Payment $payment)
         {
             print "<pre>";
             print_r("Payment state: {$payment->getProcessingStage()}\n");
@@ -215,11 +204,12 @@
         }
     ));
     ```
-    Обработчики:
+
+    Обработчики событий для сервиса:
     * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
     * **PaymentProcessor::HANDLER_FINISH_PROCESSING** - для вывода информации о платеже после окончания обработки
 
-5. <a name="stage_2_step_6"></a>Запуск обработки данных, полученных при возвращении пользователя с платежной формы:
+4. <a name="stage_2_step_6"></a>Запуск обработки данных, полученных при возвращении пользователя с платежной формы:
 
     ```php
     $paymentProcessor->executeCallback(new CallbackResponse($_REQUEST), $payment);
@@ -240,6 +230,8 @@
     require_once 'project/root/dir/vendor/autoload.php';
 
     use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+    use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
+    use PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress;
     use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
     use PaynetEasy\PaynetEasyApi\Transport\Response;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
@@ -351,24 +343,19 @@
 
 3. Создание сервиса для обработки платежей:
     ```php
-    $paymentProcessor = new PaymentProcessor;
-    ```
-4. Установка обработчиков событий для сервиса:
-
-    ```php
-    $paymentProcessor->setHandlers(array
+    $paymentProcessor = new PaymentProcessor(array
     (
-        PaymentProcessor::HANDLER_SAVE_PAYMENT        => function(Payment $payment)
+        PaymentProcessor::HANDLER_SAVE_PAYMENT      => function(Payment $payment)
         {
             start_session();
             $_SESSION['payment'] = serialize($payment);
         },
-        PaymentProcessor::HANDLER_REDIRECT            => function(Payment $payment, Response $response)
+        PaymentProcessor::HANDLER_REDIRECT          => function(Payment $payment, Response $response)
         {
             header("Location: {$response->getRedirectUrl()}");
             exit;
         },
-        PaymentProcessor::HANDLER_FINISH_PROCESSING   => function(Payment $payment)
+        PaymentProcessor::HANDLER_FINISH_PROCESSING => function(Payment $payment)
         {
             print "<pre>";
             print_r("Payment state: {$payment->getProcessingStage()}\n");
@@ -377,7 +364,8 @@
         }
     ));
     ```
-    Обработчики:
+
+    Обработчики событий для сервиса:
     * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
     * **PaymentProcessor::HANDLER_REDIRECT** - для переадресации пользователя на URL платежной формы, полученный от PaynetEasy
     * **PaymentProcessor::HANDLER_FINISH_PROCESSING** - для вывода информации о платеже после окончания обработки

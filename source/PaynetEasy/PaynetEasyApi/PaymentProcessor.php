@@ -97,6 +97,16 @@ class PaymentProcessor
     protected $handlers = array();
 
     /**
+     * @see PaymentProcessor::setHandlers()
+     *
+     * @param       array       $handlers         Handlers callbacks
+     */
+    public function __construct(array $handlers = array())
+    {
+        $this->setHandlers($handlers);
+    }
+
+    /**
      * Executes payment workflow
      *
      * @param       string      $workflowName       Payment workflow name
