@@ -22,7 +22,7 @@ class WorkflowFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new WorkflowFactory(new GatewayClient('_'),
+        $this->object = new WorkflowFactory(new GatewayClient,
                                             new QueryFactory,
                                             new CallbackFactory);
     }

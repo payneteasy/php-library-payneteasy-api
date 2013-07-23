@@ -42,7 +42,10 @@ $payment->setQueryConfig($getConfig());
 $payment->setProcessingStage(Payment::STAGE_FINISHED);
 $payment->setStatus(Payment::STATUS_APPROVED);
 
-$paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
+/**
+ * Создадим обработчик платежей
+ */
+$paymentProcessor = new PaymentProcessor;
 
 /**
  * Вызов этого метода создаст в объекте Payment объект RecurrentCard

@@ -2,8 +2,31 @@
 
 namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
+use RuntimeException;
+
 class QueryConfig extends Data
 {
+    /**
+     * Execute query to PaynetEasy sandbox gateway
+     */
+    const GATEWAY_MODE_SANDBOX      = 'sandbox';
+
+    /**
+     * Execute query to PaynetEasy production gateway
+     */
+    const GATEWAY_MODE_PRODUCTION   = 'production';
+
+    /**
+     * Allowed gateway modes
+     *
+     * @var     array
+     */
+    static protected $allowedGatewayModes = array
+    (
+        self::GATEWAY_MODE_SANDBOX,
+        self::GATEWAY_MODE_PRODUCTION
+    );
+
     /**
      * Merchant end point
      *
@@ -42,9 +65,30 @@ class QueryConfig extends Data
     /**
      * URL the transaction result will be sent to
      *
-     * @var type
+     * @var     string
      */
     protected $callbackUrl;
+
+    /**
+     * PaynetEasy gateway mode: sandbox or production
+     *
+     * @var     string
+     */
+    protected $gatewayMode = self::GATEWAY_MODE_SANDBOX;
+
+    /**
+     * PaynetEasy sanbox gateway URL
+     *
+     * @var     string
+     */
+    protected $gatewayUrlSandbox;
+
+    /**
+     * PaynetEasy production gateway URL
+     *
+     * @var     string
+     */
+    protected $gatewayUrlProduction;
 
     /**
      * Set merchant end point
@@ -188,6 +232,142 @@ class QueryConfig extends Data
     public function getCallbackUrl()
     {
         return $this->callbackUrl;
+    }
+
+    /**
+     * Set gateway mode
+     *
+     * @param       string      $gatewayMode        Gateway mode: sndbox, production
+     *
+     * @return      self
+     */
+    public function setGatewayMode($gatewayMode)
+    {
+
+        $this->gatewayMode = $gatewayMode;
+
+        return $this;
+    }
+
+    /**
+     * Get gateway mode
+     *
+     * @return      string
+     */
+    public function getGatewayMode()
+    {
+        return $this->gatewayMode;
+    }
+
+    /**
+     * Set sandbox gateway URL
+     *
+     * @param       string      $gatewayUrl     Sandbox gateway url
+     *
+     * @return      self
+     */
+    public function setGatewayUrlSandbox($gatewayUrl)
+    {
+        $this->gatewayUrlSandbox = $gatewayUrl;
+
+        return $this;
+    }
+
+    /**
+     * Get sandbox gateway URL
+     *
+     * @return      string
+     */
+    public function getGatewayUrlSandbox()
+    {
+        return $this->gatewayUrlSandbox;
+    }
+
+    /**
+     * Set production gateway URL
+     *
+     * @param       string      $gatewayUrl     Production gateway url
+     *
+     * @return      self
+     */
+    public function setGatewayUrlProduction($gatewayUrl)
+    {
+        $this->gatewayUrlProduction = $gatewayUrl;
+    }
+
+    /**
+     * Get production gateway URL
+     *
+     * @return      string
+     */
+    public function getGatewayUrlProduction()
+    {
+        return $this->gatewayUrlProduction;
+    }
+
+    /**
+     * Set gateway url for different gateway modes
+     *
+     * @param       string      $gatewayUrl         Gateway url
+     * @param       string      $gatewayMode        Mode for gateway url: sandbox, production
+     *
+     * @return      self
+     */
+    public function setGatewayUrl($gatewayUrl, $gatewayMode)
+    {
+        $this->checkGatewayMode($gatewayMode);
+
+        switch ($gatewayMode)
+        {
+            case self::GATEWAY_MODE_SANDBOX:
+            {
+                $this->setGatewayUrlSandbox($gatewayUrl);
+                break;
+            }
+            case self::GATEWAY_MODE_PRODUCTION:
+            {
+                $this->setGatewayUrlProduction($gatewayUrl);
+                break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get gateway url for current gateway mode
+     *
+     * @return      string      Sandbox gateway url if gateway mode is sandbox,
+     *                          production gateway url if gateway mode is production
+     */
+    public function getGatewayUrl()
+    {
+        switch ($this->getGatewayMode())
+        {
+            case self::GATEWAY_MODE_SANDBOX:
+            {
+                return $this->getGatewayUrlSandbox();
+            }
+            case self::GATEWAY_MODE_PRODUCTION:
+            {
+                return $this->getGatewayUrlProduction();
+            }
+        }
+    }
+
+    /**
+     * Checks, is gateway mode allowed or not
+     *
+     * @param       string      $gatewayMode        Gateway mode
+     *
+     * @throws      RuntimeException                Gateway mode not allowed
+     */
+    protected function checkGatewayMode($gatewayMode)
+    {
+        if (!in_array($gatewayMode, static::$allowedGatewayModes))
+        {
+            throw new RuntimeException("Unknown gateway mode given: '{$gatewayMode}'");
+        }
     }
 
     /**

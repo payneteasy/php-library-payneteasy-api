@@ -90,26 +90,11 @@ class PaymentProcessor
     protected $callbackFactory;
 
     /**
-     * Full url to Paynet API gateway
-     *
-     * @var string
-     */
-    protected $gatewayUrl;
-
-    /**
      * Handlers for processing actions
      *
      * @var array
      */
     protected $handlers = array();
-
-    /**
-     * @param       string      $gatewayUrl     Full url to Paynet API gateway
-     */
-    public function __construct($gatewayUrl)
-    {
-        $this->gatewayUrl = $gatewayUrl;
-    }
 
     /**
      * Executes payment workflow
@@ -413,7 +398,7 @@ class PaymentProcessor
     {
         if (!is_object($this->gatewayClient))
         {
-            $this->gatewayClient = new GatewayClient($this->gatewayUrl);
+            $this->gatewayClient = new GatewayClient;
         }
 
         return $this->gatewayClient;

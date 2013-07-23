@@ -1,6 +1,8 @@
 <?php
 namespace PaynetEasy\PaynetEasyApi\Transport;
 
+use PaynetEasy\PaynetEasyApi\Utils\Validator;
+
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 use PaynetEasy\PaynetEasyApi\Exception\RequestException;
@@ -8,13 +10,6 @@ use PaynetEasy\PaynetEasyApi\Exception\ResponseException;
 
 class GatewayClient implements GatewayClientInterface
 {
-    /**
-     * Full url to Paynet gateway
-     *
-     * @var string
-     */
-    protected $gatewayUrl;
-
     /**
      * Curl options
      *
@@ -29,16 +24,6 @@ class GatewayClient implements GatewayClientInterface
         CURLOPT_POST           => 1,
         CURLOPT_RETURNTRANSFER => 1
     );
-
-    /**
-     * Paynet gateway client
-     *
-     * @param       string      $gatewayUrl         Full url to Paynet API gateway
-     */
-    public function __construct($gatewayUrl)
-    {
-        $this->gatewayUrl = rtrim($gatewayUrl, '/');
-    }
 
     /**
      * Set curl options
@@ -107,7 +92,7 @@ class GatewayClient implements GatewayClientInterface
      */
     protected function sendRequest(Request $request)
     {
-        $url  = "{$this->gatewayUrl}/{$request->getApiMethod()}/{$request->getEndPoint()}";
+        $url  = "{$request->getGatewayUrl()}/{$request->getApiMethod()}/{$request->getEndPoint()}";
         $curl = curl_init($url);
 
         curl_setopt_array($curl, $this->curlOptions);
@@ -190,6 +175,11 @@ class GatewayClient implements GatewayClientInterface
         if (count($request->getRequestFields()) === 0)
         {
             throw new ValidationException('Request data is empty');
+        }
+
+        if (!Validator::validateByRule($request->getGatewayUrl(), Validator::URL, false))
+        {
+            throw new ValidationException("Gateway url does not valid in Request");
         }
     }
 }

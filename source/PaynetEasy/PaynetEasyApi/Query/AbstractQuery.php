@@ -1,7 +1,6 @@
 <?php
 namespace PaynetEasy\PaynetEasyApi\Query;
 
-use PaynetEasy\PaynetEasyApi\Utils\String;
 use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
 
@@ -94,6 +93,7 @@ implements      QueryInterface
 
         $request->setApiMethod($this->apiMethod)
                 ->setEndPoint($payment->getQueryConfig()->getEndPoint())
+                ->setGatewayUrl($payment->getQueryConfig()->getGatewayUrl())
                 ->setSignature($this->createSignature($payment));
 
         return $request;
@@ -388,16 +388,9 @@ implements      QueryInterface
      */
     public function validateQueryConfig(Payment $payment)
     {
-        $queryConfig = $payment->getQueryConfig();
-
-        if(strlen($queryConfig->getEndPoint()) === 0)
+        if(strlen($payment->getQueryConfig()->getSigningKey()) === 0)
         {
-            throw new RuntimeException("Property 'endPoint' does not defined in Payment property 'queryConfig'");
-        }
-
-        if(strlen($queryConfig->getSigningKey()) === 0)
-        {
-            throw new RuntimeException("Property 'signingKey' does not defined in Payment property 'queryConfig'");
+            throw new ValidationException("Property 'signingKey' does not defined in Payment property 'queryConfig'");
         }
     }
 }

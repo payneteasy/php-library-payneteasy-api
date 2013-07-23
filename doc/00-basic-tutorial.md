@@ -54,36 +54,39 @@
     ```php
     $customer = new Customer(array
     (
-        'email'             => 'vass.pupkin@example.com',
-        'ip_address'        => '127.0.0.1'
+        'email'                     => 'vass.pupkin@example.com',
+        'ip_address'                => '127.0.0.1'
     ));
 
     $billingAddress = new BillingAddress(array
     (
-        'country'           => 'US',
-        'city'              => 'Houston',
-        'first_line'        => '2704 Colonial Drive',
-        'zip_code'          => '1235',
-        'phone'             => '660-485-6353'
+        'country'                   => 'US',
+        'city'                      => 'Houston',
+        'first_line'                => '2704 Colonial Drive',
+        'zip_code'                  => '1235',
+        'phone'                     => '660-485-6353'
     ));
 
     $queryConfig = new QueryConfig(array
     (
-        'end_point'         =>  253,
-        'login'             => 'rp-merchant1',
-        'signing_key'       => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
-        'redirect_url'      => "http://{$_SERVER['HTTP_HOST']}/second_stage.php"
+        'end_point'                 =>  253,
+        'login'                     => 'rp-merchant1',
+        'signing_key'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
+        'redirect_url'              => "http://{$_SERVER['HTTP_HOST']}/second_stage.php",
+        'gateway_mode'              =>  QueryConfig::GATEWAY_MODE_SANDBOX,
+        'gateway_url_sandbox'       => 'https://sandbox.domain.com/paynet/api/v2/',
+        'gateway_url_production'    => 'https://payment.domain.com/paynet/api/v2/'
     ));
 
     $payment = new Payment(array
     (
-        'client_payment_id' => 'CLIENT-112244',
-        'description'       => 'This is test payment',
-        'amount'            =>  9.99,
-        'currency'          => 'USD',
-        'customer'          => $customer,
-        'billing_address'   => $billingAddress,
-        'query_config'      => $queryConfig
+        'client_payment_id'         => 'CLIENT-112244',
+        'description'               => 'This is test payment',
+        'amount'                    =>  9.99,
+        'currency'                  => 'USD',
+        'customer'                  => $customer,
+        'billing_address'           => $billingAddress,
+        'query_config'              => $queryConfig
     ));
     ```
     ##### С использованием сеттеров:
@@ -107,6 +110,9 @@
         ->setLogin('rp-merchant1')
         ->setSigningKey('3FD4E71A-D84E-411D-A613-40A0FB9DED3A')
         ->setRedirectUrl("http://{$_SERVER['HTTP_HOST']}/second_stage.php")
+        ->setGatewayMode(QueryConfig::GATEWAY_MODE_SANDBOX)
+        ->setGatewayUrlSandbox('https://sandbox.domain.com/paynet/api/v2/')
+        ->setGatewayUrlProduction('https://payment.domain.com/paynet/api/v2/')
     ;
 
     $payment = (new Payment)
@@ -123,12 +129,15 @@
     Поля конфигурации запроса **QueryConfig**:
     * **[end_point](http://wiki.payneteasy.com/index.php/PnE:Introduction#Endpoint)** - точка входа для аккаунта мерчанта, выдается при подключении
     * **[login](http://wiki.payneteasy.com/index.php/PnE:Introduction#PaynetEasy_Users)** - логин мерчанта для доступа к панели PaynetEasy, выдается при подключении
-    * **control** - ключ мерчанта для подписывания запросов, выдается при подключении
+    * **signing_key** - ключ мерчанта для подписывания запросов, выдается при подключении
     * **[redirect_url](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect)** - URL, на который пользователь будет перенаправлен после окончания запроса
+    * **gateway_mode** - режим работы библиотеки: sandbox, production
+    * **gateway_url_sandbox** - ссылка на шлюз PaynetEasy для режима работы sandbox
+    * **gateway_url_production** - ссылка на шлюз PaynetEasy для режима работы production
 
 3. <a name="stage_1_step_4"></a>Создание сервиса для обработки платежей:
     ```php
-    $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
+    $paymentProcessor = new PaymentProcessor;
     ```
 4. <a name="stage_1_step_5"></a>Установка обработчиков событий для сервиса:
 
@@ -140,7 +149,7 @@
             start_session();
             $_SESSION['payment'] = serialize($payment);
         },
-        PaymentProcessor::HANDLER_REDIRECT            => function(Payment $payment, Response $response)
+        PaymentProcessor::HANDLER_REDIRECT              => function(Payment $payment, Response $response)
         {
             header("Location: {$response->getRedirectUrl()}");
             exit;
@@ -185,7 +194,7 @@
 3. <a name="stage_2_step_4"></a>Создание сервиса для обработки платежей:
 
     ```php
-    $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
+    $paymentProcessor = new PaymentProcessor;
     ```
 
 4. <a name="stage_2_step_5"></a>Установка обработчиков событий для сервиса:
@@ -249,36 +258,39 @@
     {
         $customer = new Customer(array
         (
-            'email'             => 'vass.pupkin@example.com',
-            'ip_address'        => '127.0.0.1'
+            'email'                     => 'vass.pupkin@example.com',
+            'ip_address'                => '127.0.0.1'
         ));
 
         $billingAddress = new BillingAddress(array
         (
-            'country'           => 'US',
-            'city'              => 'Houston',
-            'first_line'        => '2704 Colonial Drive',
-            'zip_code'          => '1235',
-            'phone'             => '660-485-6353'
+            'country'                   => 'US',
+            'city'                      => 'Houston',
+            'first_line'                => '2704 Colonial Drive',
+            'zip_code'                  => '1235',
+            'phone'                     => '660-485-6353'
         ));
 
         $queryConfig = new QueryConfig(array
         (
-            'end_point'         =>  253,
-            'login'             => 'rp-merchant1',
-            'signing_key'       => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
-            'redirect_url'      => "http://{$_SERVER['HTTP_HOST']}/second_stage.php"
+            'end_point'                 =>  253,
+            'login'                     => 'rp-merchant1',
+            'signing_key'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
+            'redirect_url'              => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}",
+            'gateway_mode'              =>  QueryConfig::GATEWAY_MODE_SANDBOX,
+            'gateway_url_sandbox'       => 'https://sandbox.domain.com/paynet/api/v2/',
+            'gateway_url_production'    => 'https://payment.domain.com/paynet/api/v2/'
         ));
 
         $payment = new Payment(array
         (
-            'client_payment_id' => 'CLIENT-112244',
-            'description'       => 'This is test payment',
-            'amount'            =>  9.99,
-            'currency'          => 'USD',
-            'customer'          => $customer,
-            'billing_address'   => $billingAddress,
-            'query_config'      => $queryConfig
+            'client_payment_id'         => 'CLIENT-112244',
+            'description'               => 'This is test payment',
+            'amount'                    =>  9.99,
+            'currency'                  => 'USD',
+            'customer'                  => $customer,
+            'billing_address'           => $billingAddress,
+            'query_config'              => $queryConfig
         ));
     }
     ```
@@ -310,7 +322,10 @@
             ->setEndPoint(253)
             ->setLogin('rp-merchant1')
             ->setSigningKey('3FD4E71A-D84E-411D-A613-40A0FB9DED3A')
-            ->setRedirectUrl("http://{$_SERVER['HTTP_HOST']}/second_stage.php")
+            ->setRedirectUrl("http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}")
+            ->setGatewayMode(QueryConfig::GATEWAY_MODE_SANDBOX)
+            ->setGatewayUrlSandbox('https://sandbox.domain.com/paynet/api/v2/')
+            ->setGatewayUrlProduction('https://payment.domain.com/paynet/api/v2/')
         ;
 
         $payment = (new Payment)
@@ -328,12 +343,15 @@
     Поля конфигурации:
     * **[end_point](http://wiki.payneteasy.com/index.php/PnE:Introduction#Endpoint)** - точка входа для аккаунта мерчанта, выдается при подключении
     * **[login](http://wiki.payneteasy.com/index.php/PnE:Introduction#PaynetEasy_Users)** - логин мерчанта для доступа к панели PaynetEasy, выдается при подключении
-    * **control** - ключ мерчанта для подписывания запросов, выдается при подключении
+    * **signing_key** - ключ мерчанта для подписывания запросов, выдается при подключении
     * **[redirect_url](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect)** - URL, на который пользователь будет перенаправлен после окончания запроса
+    * **gateway_mode** - режим работы библиотеки: sandbox, production
+    * **gateway_url_sandbox** - ссылка на шлюз PaynetEasy для режима работы sandbox
+    * **gateway_url_production** - ссылка на шлюз PaynetEasy для режима работы production
 
 3. Создание сервиса для обработки платежей:
     ```php
-    $paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
+    $paymentProcessor = new PaymentProcessor;
     ```
 4. Установка обработчиков событий для сервиса:
 

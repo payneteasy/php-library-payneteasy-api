@@ -40,7 +40,10 @@ $payment = $loadPayment() ?: new Payment(array
  */
 $payment->setQueryConfig($getConfig());
 
-$paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
+/**
+ * Создадим обработчик платежей
+ */
+$paymentProcessor = new PaymentProcessor;
 
 /**
  * Вызов этого метода обновит статус обработки платежа

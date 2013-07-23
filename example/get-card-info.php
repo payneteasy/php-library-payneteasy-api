@@ -41,7 +41,10 @@ $payment->setQueryConfig($getConfig());
  */
 $payment->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058)));
 
-$paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
+/**
+ * Создадим обработчик платежей
+ */
+$paymentProcessor = new PaymentProcessor;
 
 /**
  * Вызов этого метода заполнит поля объекта RecurrentCard, размещенного в объекте Payment

@@ -13,21 +13,28 @@ class Request
     /**
      * Paynet payment API method
      *
-     * @var string
+     * @var     string
      */
     protected $apiMethod;
 
     /**
      * Paynet gateway endpoint
      *
-     * @var integet
+     * @var     integer
      */
     protected $endPoint;
 
     /**
+     * Paynet gateway URL
+     *
+     * @var     string
+     */
+    protected $gatewayUrl;
+
+    /**
      * Request data fields
      *
-     * @var array
+     * @var     array
      */
     protected $requestFields;
 
@@ -100,6 +107,30 @@ class Request
     public function getEndPoint()
     {
         return $this->endPoint;
+    }
+
+    /**
+     * Set gateway url
+     *
+     * @param       string      $gatewayUrl         Gateway url
+     *
+     * @return      self
+     */
+    public function setGatewayUrl($gatewayUrl)
+    {
+        $this->gatewayUrl = rtrim($gatewayUrl, '/');
+
+        return $this;
+    }
+
+    /**
+     * Get gateway url
+     *
+     * @return      string      Gateway URL
+     */
+    public function getGatewayUrl()
+    {
+        return $this->gatewayUrl;
     }
 
     /**

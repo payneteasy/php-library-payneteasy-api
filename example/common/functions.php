@@ -20,30 +20,51 @@ $getConfig = function()
          * @see http://wiki.payneteasy.com/index.php/PnE:Introduction#PaynetEasy_Objects
          * @see http://wiki.payneteasy.com/index.php/PnE:Introduction#Endpoint
          */
-        'end_point'             =>  253,
+        'end_point'                 =>  253,
         /**
          * Логин мерчанта, выдается при подключении
          *
          * @see http://wiki.payneteasy.com/index.php/PnE:Introduction#PaynetEasy_Users
          */
-        'login'                 => 'rp-merchant1',
+        'login'                     => 'rp-merchant1',
         /**
          * Ключ мерчанта для подписывания запросов, выдается при подключении
          */
-        'control'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
+        'control'                   => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
         /**
          * URL на который пользователь будет перенаправлен после окончания запроса
          *
          * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#3D_redirect
          * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect
          */
-        'redirect_url'          => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}",
+        'redirect_url'              => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}",
         /**
          * URL на который пользователь будет перенаправлен после окончания запроса
          *
          * @see http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks
          */
-        'server_callback_url'   => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}"
+        'server_callback_url'       => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}",
+        /**
+         * Режим работы библиотеки: sandbox, production
+         *
+         * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig::$gatewayMode
+         * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig::$allowedGatewayModes
+         * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig::setGatewayUrl()
+         * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig::getGatewayUrl()
+         */
+        'gateway_mode'              => QueryConfig::GATEWAY_MODE_SANDBOX,
+        /**
+         * Ссылка на шлюз PaynetEasy для режима работы sandbox
+         *
+         * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig::getGatewayUrl()
+         */
+        'gateway_url_sandbox'       => 'https://sandbox.domain.com/paynet/api/v2/',
+        /**
+         * Ссылка на шлюз PaynetEasy для режима работы production
+         *
+         * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig::getGatewayUrl()
+         */
+        'gateway_url_production'    => 'https://payment.domain.com/paynet/api/v2/'
     ));
 };
 

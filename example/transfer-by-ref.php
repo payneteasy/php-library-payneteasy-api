@@ -57,11 +57,9 @@ $payment->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058, 'cvv
 $payment->setRecurrentCardTo(new RecurrentCard(array('cardrefid' => 8059)));
 
 /**
- * Создадим обработчик платежей и передадим ему URL для доступа к платежному шлюзу
- *
- * @see \PaynetEasy\PaynetEasyApi\Transport\GatewayClient::$gatewayUrl
+ * Создадим обработчик платежей
  */
-$paymentProcessor = new PaymentProcessor('https://payment.domain.com/paynet/api/v2/');
+$paymentProcessor = new PaymentProcessor;
 
 /**
  * Назначим обработчики для разных событий, происходящих при обработке платежа

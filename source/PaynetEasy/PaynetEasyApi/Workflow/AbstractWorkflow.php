@@ -2,8 +2,6 @@
 
 namespace PaynetEasy\PaynetEasyApi\Workflow;
 
-use PaynetEasy\PaynetEasyApi\Utils\String;
-
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\GatewayClientInterface;
 use PaynetEasy\PaynetEasyApi\Query\QueryFactoryInterface;
