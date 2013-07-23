@@ -201,15 +201,13 @@ class PaymentProcessor
     /**
      * Executes payment gateway callback processor
      *
-     * @param       array       $callbackData       Callback data from payment gateway
-     * @param       Payment     $payment            Payment for processing
+     * @param       CallbackResponse        $callbackResponse       Callback object with data from payment gateway
+     * @param       Payment                 $payment                Payment for processing
      *
-     * @return      CallbackResponse                Validated payment gateway callback
+     * @return      CallbackResponse                                Validated payment gateway callback
      */
-    public function executeCallback(array $callbackData, Payment $payment)
+    public function executeCallback(CallbackResponse $callbackResponse, Payment $payment)
     {
-        $callbackResponse   = new CallbackResponse($callbackData);
-
         try
         {
             $this->getCallback($callbackResponse)

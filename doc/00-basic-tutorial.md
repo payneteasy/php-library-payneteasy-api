@@ -171,7 +171,8 @@
     ```php
     require_once 'project/root/dir/vendor/autoload.php';
 
-    use PaynetEasy\PaynetEasyApi\Transport\Response;
+    use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+    use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
     ```
 2. <a name="stage_2_step_2"></a>Загрузка сохраненного платежа:
@@ -212,7 +213,7 @@
 5. <a name="stage_2_step_6"></a>Запуск обработки данных, полученных при возвращении пользователя с платежной формы:
 
     ```php
-    $paymentProcessor->executeCallback($_REQUEST, $payment);
+    $paymentProcessor->executeCallback(new CallbackResponse($_REQUEST), $payment);
     ```
     Будут выполнены следующие шаги:
     1. Проверка данных, полученные по возвращении клиента с платежной формы PaynetEasy (суперглобальный массив $_REQUEST)

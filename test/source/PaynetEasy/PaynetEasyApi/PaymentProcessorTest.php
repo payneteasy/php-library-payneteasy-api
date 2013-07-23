@@ -5,6 +5,7 @@ namespace PaynetEasy\PaynetEasyApi;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
+use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
 use PaynetEasy\PaynetEasyApi\Workflow\FakeWorkflow;
 use PaynetEasy\PaynetEasyApi\Query\FakeQuery;
@@ -103,7 +104,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testExecuteCallback()
     {
-        $response = $this->object->executeCallback(array('type' => 'fake'), new Payment);
+        $response = $this->object->executeCallback(new CallbackResponse(array('type' => 'fake')), new Payment);
 
         $this->assertNotNull($response);
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Transport\CallbackResponse', $response);
