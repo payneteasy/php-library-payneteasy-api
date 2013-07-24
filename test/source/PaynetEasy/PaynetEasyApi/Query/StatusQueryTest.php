@@ -15,6 +15,8 @@ class StatusQueryTest extends QueryTestPrototype
      */
     protected $object;
 
+    protected $successType = 'status-response';
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -57,7 +59,7 @@ class StatusQueryTest extends QueryTestPrototype
         // 3D redirect
         array(array
         (
-            'type'              => 'status-response',
+            'type'              =>  $this->successType,
             'status'            => 'processing',
             'html'              => '<HTML>',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
@@ -67,7 +69,7 @@ class StatusQueryTest extends QueryTestPrototype
         // URL redirect
         array(array
         (
-            'type'              => 'status-response',
+            'type'              =>  $this->successType,
             'status'            => 'processing',
             'redirect-url'      => 'http://testdomain.com/',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
@@ -93,7 +95,7 @@ class StatusQueryTest extends QueryTestPrototype
     {
         return array(array(array
         (
-            'type'              => 'status-response',
+            'type'              =>  $this->successType,
             'status'            => 'approved',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
@@ -106,7 +108,7 @@ class StatusQueryTest extends QueryTestPrototype
         return array(
         array(array
         (
-            'type'              => 'status-response',
+            'type'              =>  $this->successType,
             'status'            => 'filtered',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
@@ -116,7 +118,7 @@ class StatusQueryTest extends QueryTestPrototype
         )),
         array(array
         (
-            'type'              => 'status-response',
+            'type'              =>  $this->successType,
             'status'            => 'declined',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
@@ -130,7 +132,7 @@ class StatusQueryTest extends QueryTestPrototype
     {
         return array(array(array
         (
-            'type'              => 'status-response',
+            'type'              =>  $this->successType,
             'status'            => 'processing',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
@@ -144,7 +146,7 @@ class StatusQueryTest extends QueryTestPrototype
         // Payment error after check
         array(array
         (
-            'type'              => 'status-response',
+            'type'              =>  $this->successType,
             'status'            => 'error',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,

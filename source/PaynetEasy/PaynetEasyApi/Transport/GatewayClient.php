@@ -5,6 +5,7 @@ use PaynetEasy\PaynetEasyApi\Utils\Validator;
 
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
+use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 use PaynetEasy\PaynetEasyApi\Exception\RequestException;
 use PaynetEasy\PaynetEasyApi\Exception\ResponseException;
 
@@ -100,9 +101,6 @@ class GatewayClient implements GatewayClientInterface
 
         $response = curl_exec($curl);
 
-        $error_message  = '';
-        $error_code     = 0;
-
         if(curl_errno($curl))
         {
             $error_message  = 'Error occured: ' . curl_error($curl);
@@ -110,7 +108,8 @@ class GatewayClient implements GatewayClientInterface
         }
         elseif(curl_getinfo($curl, CURLINFO_HTTP_CODE) != 200)
         {
-            $error_message  = 'Error occured. HTTP code: ' . curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $error_code     = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $error_message  = "Error occured. HTTP code: {$error_code}";
         }
 
         curl_close($curl);
@@ -138,7 +137,7 @@ class GatewayClient implements GatewayClientInterface
     {
         if(empty($response))
         {
-            throw new ResponseException('Paynet response is empty');
+            throw new ResponseException('PaynetEasy response is empty');
         }
 
         $responseFields = array();
@@ -147,7 +146,7 @@ class GatewayClient implements GatewayClientInterface
 
         if(empty($responseFields))
         {
-            throw new ResponseException('Can not parse response: ' . $response);
+            throw new ResponseException("Can not parse response: '{$response}'");
         }
 
         return new Response($responseFields);
@@ -162,24 +161,32 @@ class GatewayClient implements GatewayClientInterface
      */
     protected function validateRequest(Request $request)
     {
+        $validationErrors = array();
+
         if (strlen($request->getApiMethod()) == 0)
         {
-            throw new ValidationException('Request api method is empty');
+            $validationErrors[] = 'Request api method is empty';
         }
 
         if (strlen($request->getEndPoint()) == 0)
         {
-            throw new ValidationException('Request endpoint is empty');
+            $validationErrors[] = 'Request endpoint is empty';
         }
 
         if (count($request->getRequestFields()) === 0)
         {
-            throw new ValidationException('Request data is empty');
+            $validationErrors[] = 'Request data is empty';
         }
 
         if (!Validator::validateByRule($request->getGatewayUrl(), Validator::URL, false))
         {
-            throw new ValidationException("Gateway url does not valid in Request");
+            $validationErrors[] = 'Gateway url does not valid in Request';
+        }
+
+        if (!empty($validationErrors))
+        {
+            throw new ValidationException("Some Request fields are invalid:\n" .
+                                          implode(";\n", $validationErrors));
         }
     }
 }

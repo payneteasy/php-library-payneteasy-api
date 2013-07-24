@@ -6,8 +6,6 @@
 
 namespace PaynetEasy\PaynetEasyApi\Transport;
 
-use RuntimeException;
-
 class Request
 {
     /**
@@ -41,13 +39,8 @@ class Request
     /**
      * @param       array       $requestFields      Request fields array
      */
-    public function __construct(array $requestFields)
+    public function __construct(array $requestFields = array())
     {
-        if (empty($requestFields))
-        {
-            throw new RuntimeException('Request fields can not be empty');
-        }
-
         $this->requestFields = $requestFields;
     }
 

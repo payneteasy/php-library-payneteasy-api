@@ -77,6 +77,54 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     abstract public function testProcessCallbackErrorProvider();
 
     /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Actual control code '' does not equal expected
+     */
+    public function testProcessCallbackWithEmptyControl()
+    {
+        $payment = $this->getPayment();
+
+        $this->object->processCallback($payment, new CallbackResponse);
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Some required fields missed or empty in CallbackResponse
+     */
+    public function testProcessCallbackWithEmptyFields()
+    {
+        $callback = array
+        (
+            'status'            => 'approved',
+            'orderid'           => '_',
+            'client_orderid'    => '_'
+        );
+
+        $callback['control'] = $this->createSignature($callback);
+
+        $this->object->processCallback($this->getPayment(), new CallbackResponse($callback));
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Some fields from CallbackResponse unequal properties from Payment
+     */
+    public function testProcessCallbackWithUnequalFields()
+    {
+        $callback = array
+        (
+            'status'            => 'approved',
+            'orderid'           => 'unequal',
+            'merchant_order'    => 'unequal',
+            'client_orderid'    => 'unequal'
+        );
+
+        $callback['control'] = $this->createSignature($callback);
+
+        $this->object->processCallback($this->getPayment(), new CallbackResponse($callback));
+    }
+
+    /**
      * Validates payment transport stage and bank status
      *
      * @param       string      $processingStage        Payment transport stage

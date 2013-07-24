@@ -5,43 +5,18 @@ namespace PaynetEasy\PaynetEasyApi\Query;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
-class FakeQuery extends AbstractQuery
+class FakeQuery implements QueryInterface
 {
     static public $request;
 
-    public $apiMethod;
-
-    public function __construct()
+    public function createRequest(Payment $payment)
     {
+        return static::$request;
     }
 
-    protected function createSignature(Payment $payment)
+    public function processResponse(Payment $payment, Response $response)
     {
-        return 'control';
-    }
-
-    protected function paymentToRequest(Payment $payment)
-    {
-        return array('_');
-    }
-
-    protected function validatePayment(Payment $payment)
-    {
-    }
-
-    protected function validateResponseOnSuccess(Payment $payment, Response $response)
-    {
-    }
-
-    protected function validateResponseOnError(Payment $payment, Response $response)
-    {
-    }
-
-    protected function updatePaymentOnSuccess(Payment $payment, Response $response)
-    {
-    }
-
-    protected function updatePaymentOnError(Payment $payment, Response $response)
-    {
+        $payment->setProcessingStage(Payment::STAGE_FINISHED);
+        return $response;
     }
 }

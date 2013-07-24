@@ -10,6 +10,13 @@ use PaynetEasy\PaynetEasyApi\Exception\PaynetException;
 
 abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var QueryInterface
+     */
+    protected $object;
+
+    protected $successType;
+
     const LOGIN                     = 'test-login';
     const END_POINT                 =  789;
     const SIGNING_KEY               = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
@@ -39,6 +46,36 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     }
 
     abstract public function testCreateRequestProvider();
+
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Some required fields missed or empty in Payment
+     */
+    public function testCreateRequestWithEmptyFields()
+    {
+        $payment = new Payment(array
+        (
+            'query_config'  => new QueryConfig(array
+            (
+                'signing_key'   => self::SIGNING_KEY
+            ))
+        ));
+
+        $this->object->createRequest($payment);
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Some fields invalid in Payment
+     */
+    public function testCreateRequestWithInvalidFields()
+    {
+        $payment = $this->getPayment();
+        $payment->setClientPaymentId('123456789012345678901234567890');
+
+        $this->object->createRequest($payment);
+    }
 
     /**
      * @dataProvider testProcessResponseDeclinedProvider
@@ -95,6 +132,71 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     }
 
     abstract public function testProcessResponseErrorProvider();
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Response type 'invalid' does not match success response type
+     */
+    public function testProcessSuccessResponseWithInvalidType()
+    {
+        $response = new Response(array('type' => 'invalid'));
+        $this->object->processResponse($this->getPayment(), $response);
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Some required fields missed or empty in Response
+     */
+    public function testProcessSuccessResponseWithEmptyFields()
+    {
+        $response = new Response(array('type' => $this->successType));
+        $this->object->processResponse($this->getPayment(), $response);
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Response clientPaymentId '_' does not match Payment clientPaymentId
+     */
+    public function testProcessSuccessResponseWithInvalidId()
+    {
+        $response = new Response(array
+        (
+            'type'              => $this->successType,
+            'paynet-order-id'   => '_',
+            'merchant-order-id' => '_',
+            'serial-number'     => '_',
+            'card-ref-id'       => '_',
+            'redirect-url'      => '_',
+            'client_orderid'    => 'invalid'
+        ));
+
+        $this->object->processResponse($this->getPayment(), $response);
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Unknown response type
+     */
+    public function testProcessErrorResponseWithoutType()
+    {
+        $response = new Response(array('status'    => 'error'));
+        $this->object->processResponse($this->getPayment(), $response);
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Response clientPaymentId 'invalid' does not match Payment clientPaymentId
+     */
+    public function testProcessErrorResponseWithInvalidId()
+    {
+        $response = new Response(array
+        (
+            'type'              => 'error',
+            'client_orderid'    => 'invalid'
+        ));
+
+        $this->object->processResponse($this->getPayment(), $response);
+    }
 
     /**
      * Validates payment transport stage and bank status

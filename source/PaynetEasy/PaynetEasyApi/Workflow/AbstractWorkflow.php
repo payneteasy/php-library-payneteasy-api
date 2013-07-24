@@ -96,7 +96,7 @@ abstract class AbstractWorkflow implements WorkflowInterface
             }
             default:
             {
-                throw new RuntimeException("Undefined payment transport stage: '{$payment->getProcessingStage()}'");
+                throw new RuntimeException("Unknown payment transport stage: '{$payment->getProcessingStage()}'");
             }
         }
 

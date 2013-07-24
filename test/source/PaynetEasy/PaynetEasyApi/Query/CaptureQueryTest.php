@@ -14,6 +14,8 @@ class CaptureQueryTest extends QueryTestPrototype
      */
     protected $object;
 
+    protected $successType = 'async-response';
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -43,7 +45,7 @@ class CaptureQueryTest extends QueryTestPrototype
     {
         return array(array(array
         (
-            'type'              => 'async-response',
+            'type'              =>  $this->successType,
             'status'            => 'filtered',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
@@ -57,7 +59,7 @@ class CaptureQueryTest extends QueryTestPrototype
     {
         return array(array(array
         (
-            'type'              => 'async-response',
+            'type'              =>  $this->successType,
             'status'            => 'processing',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
@@ -71,7 +73,7 @@ class CaptureQueryTest extends QueryTestPrototype
         // Payment error after check
         array(array
         (
-            'type'              => 'async-response',
+            'type'              =>  $this->successType,
             'status'            => 'error',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,

@@ -10,6 +10,8 @@ use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
  */
 class CreateCardRefQueryTest extends SaleQueryTest
 {
+    protected $successType = 'create-card-ref-response';
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -17,6 +19,15 @@ class CreateCardRefQueryTest extends SaleQueryTest
     protected function setUp()
     {
         $this->object = new CreateCardRefQuery('_');
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Only approved and finished Payment can be used for create-card-ref-id
+     */
+    public function testCreateWithNotEndedPayment()
+    {
+        $this->object->createRequest(parent::getPayment());
     }
 
     public function testCreateRequestProvider()
@@ -44,11 +55,11 @@ class CreateCardRefQueryTest extends SaleQueryTest
 
         $this->object->processResponse($payment, new Response(array
         (
-            'type'              => 'create-card-ref-response',
+            'type'              =>  $this->successType,
             'status'            => 'processing',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
-            'serial-number'     => md5(time())
+            'serial-number'     =>  md5(time())
         )));
     }
 
@@ -70,7 +81,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
     {
         return array(array(array
         (
-            'type'              => 'create-card-ref-response',
+            'type'              =>  $this->successType,
             'status'            => 'approved',
             'card-ref-id'       =>  self::RECURRENT_CARD_FROM_ID,
             'serial-number'     =>  md5(time())
@@ -81,7 +92,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
     {
         return array(array(array
         (
-            'type'              => 'create-card-ref-response',
+            'type'              =>  $this->successType,
             'status'            => 'filtered',
             'card-ref-id'       =>  self::RECURRENT_CARD_FROM_ID,
             'serial-number'     =>  md5(time()),
@@ -94,10 +105,10 @@ class CreateCardRefQueryTest extends SaleQueryTest
     {
         return array(array(array
         (
-            'type'              => 'create-card-ref-response',
+            'type'              =>  $this->successType,
             'status'            => 'processing',
             'card-ref-id'       =>  self::RECURRENT_CARD_FROM_ID,
-            'serial-number'     => md5(time())
+            'serial-number'     =>  md5(time())
         )));
     }
 
@@ -106,7 +117,7 @@ class CreateCardRefQueryTest extends SaleQueryTest
         return array(
         array(array
         (
-            'type'              => 'create-card-ref-response',
+            'type'              =>  $this->successType,
             'status'            => 'error',
             'card-ref-id'       =>  self::RECURRENT_CARD_FROM_ID,
             'serial-number'     =>  md5(time()),

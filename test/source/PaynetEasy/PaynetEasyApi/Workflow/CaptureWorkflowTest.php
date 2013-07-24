@@ -135,4 +135,28 @@ class CaptureWorkflowTest extends \PHPUnit_Framework_TestCase
             ))
         ));
     }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Data parameter can not be empty for transport stage 'redirected'
+     */
+    public function testProcessPaymentWIthoutCallbackData()
+    {
+        $payment = $this->getPayment();
+        $payment->setProcessingStage(Payment::STAGE_REDIRECTED);
+
+        $this->object->processPayment($payment);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Payment has been completed
+     */
+    public function testProcessPaymentWIthFinishedPayment()
+    {
+        $payment = $this->getPayment();
+        $payment->setProcessingStage(Payment::STAGE_FINISHED);
+
+        $this->object->processPayment($payment);
+    }
 }

@@ -9,6 +9,7 @@ class FakeCallback implements CallbackInterface
 {
     public function processCallback(Payment $payment, CallbackResponse $callback)
     {
+        $payment->setProcessingStage(Payment::STAGE_FINISHED);
         return $callback;
     }
 }

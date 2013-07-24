@@ -24,9 +24,4 @@ class FakeWorkflow extends AbstractWorkflow
     {
         return parent::setNeededAction($response);
     }
-
-    public function setInitialApiMethod($class)
-    {
-        parent::setInitialApiMethod($class);
-    }
 }

@@ -131,6 +131,11 @@ abstract class AbstractCallback implements CallbackInterface
         $this->validateQueryConfig($payment);
         $this->validateSignature($payment, $callbackResponse);
 
+        if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
+        {
+            throw new ValidationException("Invalid callback status: '{$callbackResponse->getStatus()}'");
+        }
+
         $errorMessage   = '';
         $missedFields   = array();
         $unequalValues  = array();
@@ -171,11 +176,6 @@ abstract class AbstractCallback implements CallbackInterface
         if (!empty($errorMessage))
         {
             throw new ValidationException($errorMessage);
-        }
-
-        if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
-        {
-            throw new ValidationException("Invalid callback status: '{$callbackResponse->getStatus()}'. \n");
         }
     }
 

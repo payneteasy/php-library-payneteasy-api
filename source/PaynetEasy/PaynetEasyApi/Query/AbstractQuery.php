@@ -198,7 +198,7 @@ implements      QueryInterface
      *
      * @param       Payment        $payment        Payment for request
      *
-     * @return      array                                   Request
+     * @return      array                          Request
      */
     protected function paymentToRequest(Payment $payment)
     {
@@ -225,7 +225,7 @@ implements      QueryInterface
      *
      * @param       Payment        $payment        Payment to generate control code
      *
-     * @return      string                                  Generated control code
+     * @return      string                         Generated control code
      */
     protected function createSignature(Payment $payment)
     {
@@ -243,7 +243,7 @@ implements      QueryInterface
      * Validates response before Payment updating if Payment is processing or approved
      *
      * @param       Payment        $payment        Payment
-     * @param       Response                $response       Response for validating
+     * @param       Response       $response       Response for validating
      */
     protected function validateResponseOnSuccess(Payment $payment, Response $response)
     {
@@ -281,7 +281,7 @@ implements      QueryInterface
      * Validates response before Payment updating if Payment is not processing or approved
      *
      * @param       Payment        $payment        Payment
-     * @param       Response                $response       Response for validating
+     * @param       Response       $response       Response for validating
      */
     protected function validateResponseOnError(Payment $payment, Response $response)
     {
@@ -289,7 +289,7 @@ implements      QueryInterface
 
         if (!in_array($response->getType(), $allowedTypes))
         {
-            throw new ValidationException("Unknow response type '{$response->getType()}'");
+            throw new ValidationException("Unknown response type '{$response->getType()}'");
         }
 
         if (     strlen($response->getClientPaymentId()) > 0
@@ -304,7 +304,7 @@ implements      QueryInterface
      * Updates Payment by Response data if Payment is processing or approved
      *
      * @param       Payment       $payment        Payment for updating
-     * @param       Response               $response       Response for payment updating
+     * @param       Response      $response       Response for payment updating
      */
     protected function updatePaymentOnSuccess(Payment $payment, Response $response)
     {
@@ -334,7 +334,7 @@ implements      QueryInterface
      * Updates Payment by Response data if Payment is not processing or approved
      *
      * @param       Payment       $payment        Payment for updating
-     * @param       Response               $response       Response for payment updating
+     * @param       Response      $response       Response for payment updating
      */
     protected function updatePaymentOnError(Payment $payment, Response $response)
     {

@@ -17,6 +17,8 @@ class FormQueryTest extends QueryTestPrototype
      */
     protected $object;
 
+    protected $successType = 'async-form-response';
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -45,7 +47,7 @@ class FormQueryTest extends QueryTestPrototype
     {
         return array(array(array
         (
-            'type'              => 'async-form-response',
+            'type'              =>  $this->successType,
             'status'            => 'filtered',
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
             'serial-number'     =>  md5(time()),
@@ -71,7 +73,7 @@ class FormQueryTest extends QueryTestPrototype
     {
         return array(array(array
         (
-            'type'              => 'async-form-response',
+            'type'              =>  $this->successType,
             'status'            => 'processing',
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
@@ -86,7 +88,7 @@ class FormQueryTest extends QueryTestPrototype
         // Payment error after check
         array(array
         (
-            'type'              => 'async-form-response',
+            'type'              =>  $this->successType,
             'status'            => 'error',
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
             'serial-number'     =>  md5(time()),

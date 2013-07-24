@@ -17,6 +17,8 @@ class SaleQueryTest extends QueryTestPrototype
      */
     protected $object;
 
+    protected $successType = 'async-response';
+
     /**
      * @var \PaynetEasy\PaynetEasyApi\PaymentData\Payment
      */
@@ -50,7 +52,7 @@ class SaleQueryTest extends QueryTestPrototype
     {
         return array(array(array
         (
-            'type'              => 'async-response',
+            'type'              =>  $this->successType,
             'status'            => 'filtered',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
@@ -64,7 +66,7 @@ class SaleQueryTest extends QueryTestPrototype
     {
         return array(array(array
         (
-            'type'              => 'async-response',
+            'type'              =>  $this->successType,
             'status'            => 'processing',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
@@ -77,7 +79,7 @@ class SaleQueryTest extends QueryTestPrototype
         return array(
         array(array
         (
-            'type'              => 'async-response',
+            'type'              =>  $this->successType,
             'status'            => 'error',
             'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
             'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,

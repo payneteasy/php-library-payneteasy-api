@@ -95,7 +95,7 @@ class CreateCardRefQuery extends AbstractQuery
     {
         if (!$payment->isFinished() || !$payment->isApproved())
         {
-            throw new ValidationException('Only approved and ended Payment can be used for create-card-ref-id');
+            throw new ValidationException('Only approved and finished Payment can be used for create-card-ref-id');
         }
     }
 }
