@@ -140,20 +140,21 @@ class PaymentProcessor
         if ($payment->isFinished())
         {
             $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment, $response);
-            return;
         }
-
-        switch ($response->getNeededAction())
+        else
         {
-            case Response::NEEDED_STATUS_UPDATE:
-                $this->callHandler(self::HANDLER_STATUS_UPDATE,    $payment, $response);
-            break;
-            case Response::NEEDED_SHOW_HTML:
-                $this->callHandler(self::HANDLER_SHOW_HTML,         $payment, $response);
-            break;
-            case Response::NEEDED_REDIRECT:
-                $this->callHandler(self::HANDLER_REDIRECT,     $payment, $response);
-            break;
+            switch ($response->getNeededAction())
+            {
+                case Response::NEEDED_STATUS_UPDATE:
+                    $this->callHandler(self::HANDLER_STATUS_UPDATE,    $payment, $response);
+                break;
+                case Response::NEEDED_SHOW_HTML:
+                    $this->callHandler(self::HANDLER_SHOW_HTML,         $payment, $response);
+                break;
+                case Response::NEEDED_REDIRECT:
+                    $this->callHandler(self::HANDLER_REDIRECT,     $payment, $response);
+                break;
+            }
         }
     }
 
@@ -177,6 +178,7 @@ class PaymentProcessor
         catch (Exception $e)
         {
             $payment->addError($e);
+            $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment);
             throw $e;
         }
 
@@ -187,7 +189,31 @@ class PaymentProcessor
         catch (Exception $e)
         {
             $payment->addError($e);
+            $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
             throw $e;
+        }
+
+        $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
+
+        // no action needed if payment is finished
+        if ($payment->isFinished())
+        {
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment, $response);
+        }
+        else
+        {
+            switch ($response->getNeededAction())
+            {
+                case Response::NEEDED_STATUS_UPDATE:
+                    $this->callHandler(self::HANDLER_STATUS_UPDATE,    $payment, $response);
+                break;
+                case Response::NEEDED_SHOW_HTML:
+                    $this->callHandler(self::HANDLER_SHOW_HTML,         $payment, $response);
+                break;
+                case Response::NEEDED_REDIRECT:
+                    $this->callHandler(self::HANDLER_REDIRECT,     $payment, $response);
+                break;
+            }
         }
 
         return $response;
@@ -203,6 +229,14 @@ class PaymentProcessor
      */
     public function executeCallback(CallbackResponse $callbackResponse, Payment $payment)
     {
+        // prevent double processing for finished payment
+        if ($payment->isFinished())
+        {
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment);
+
+            return $callbackResponse;
+        }
+
         try
         {
             $this->getCallback($callbackResponse)
@@ -211,7 +245,15 @@ class PaymentProcessor
         catch (Exception $e)
         {
             $payment->addError($e);
+            $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $callbackResponse);
             throw $e;
+        }
+
+        $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $callbackResponse);
+
+        if ($payment->isFinished())
+        {
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment, $callbackResponse);
         }
 
         return $callbackResponse;
