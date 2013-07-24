@@ -48,6 +48,11 @@ class PaymentProcessor
     const HANDLER_FINISH_PROCESSING = 'finish_processing';
 
     /**
+     * Exception handle needed
+     */
+    const HANDLER_CATCH_EXCEPTION   = 'catch_exception';
+
+    /**
      * Allowed handlers list
      *
      * @var array
@@ -58,7 +63,8 @@ class PaymentProcessor
         self::HANDLER_STATUS_UPDATE,
         self::HANDLER_SHOW_HTML,
         self::HANDLER_REDIRECT,
-        self::HANDLER_FINISH_PROCESSING
+        self::HANDLER_FINISH_PROCESSING,
+        self::HANDLER_CATCH_EXCEPTION
     );
 
     /**
@@ -125,37 +131,15 @@ class PaymentProcessor
         try
         {
             $response = $this->getWorkflow($workflowName)
-                            ->processPayment($payment, $callbackData);
+                ->processPayment($payment, $callbackData);
         }
         catch (Exception $e)
         {
-            $payment->addError($e);
-            $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment);
-            throw $e;
+            $this->handleException($e, $payment);
+            return;
         }
 
-        $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
-
-        // no action needed if payment is finished
-        if ($payment->isFinished())
-        {
-            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment, $response);
-        }
-        else
-        {
-            switch ($response->getNeededAction())
-            {
-                case Response::NEEDED_STATUS_UPDATE:
-                    $this->callHandler(self::HANDLER_STATUS_UPDATE,    $payment, $response);
-                break;
-                case Response::NEEDED_SHOW_HTML:
-                    $this->callHandler(self::HANDLER_SHOW_HTML,         $payment, $response);
-                break;
-                case Response::NEEDED_REDIRECT:
-                    $this->callHandler(self::HANDLER_REDIRECT,     $payment, $response);
-                break;
-            }
-        }
+        $this->handleQueryResult($payment, $response);
     }
 
     /**
@@ -168,18 +152,26 @@ class PaymentProcessor
      */
     public function executeQuery($queryName, Payment $payment)
     {
-        $query      = $this->getQuery($queryName);
-        $request    = $query->createRequest($payment);
+        $query = $this->getQuery($queryName);
 
         try
         {
-            $response   = $this->makeRequest($request);
+            $request = $query->createRequest($payment);
         }
         catch (Exception $e)
         {
-            $payment->addError($e);
-            $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment);
-            throw $e;
+            $this->handleException($e, $payment);
+            return;
+        }
+
+        try
+        {
+            $response = $this->makeRequest($request);
+        }
+        catch (Exception $e)
+        {
+            $this->handleException($e, $payment);
+            return;
         }
 
         try
@@ -188,33 +180,11 @@ class PaymentProcessor
         }
         catch (Exception $e)
         {
-            $payment->addError($e);
-            $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
-            throw $e;
+            $this->handleException($e, $payment, $response);
+            return;
         }
 
-        $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
-
-        // no action needed if payment is finished
-        if ($payment->isFinished())
-        {
-            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment, $response);
-        }
-        else
-        {
-            switch ($response->getNeededAction())
-            {
-                case Response::NEEDED_STATUS_UPDATE:
-                    $this->callHandler(self::HANDLER_STATUS_UPDATE,    $payment, $response);
-                break;
-                case Response::NEEDED_SHOW_HTML:
-                    $this->callHandler(self::HANDLER_SHOW_HTML,         $payment, $response);
-                break;
-                case Response::NEEDED_REDIRECT:
-                    $this->callHandler(self::HANDLER_REDIRECT,     $payment, $response);
-                break;
-            }
-        }
+        $this->handleQueryResult($payment, $response);
 
         return $response;
     }
@@ -244,9 +214,8 @@ class PaymentProcessor
         }
         catch (Exception $e)
         {
-            $payment->addError($e);
-            $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $callbackResponse);
-            throw $e;
+            $this->handleException($e, $payment, $callbackResponse);
+            return;
         }
 
         $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $callbackResponse);
@@ -504,22 +473,85 @@ class PaymentProcessor
     }
 
     /**
+     * Handle query result.
+     * Method calls handlers for:
+     *  - self::HANDLER_SAVE_PAYMENT            on method call
+     *  - self::HANDLER_FINISH_PROCESSING       if payment is finished
+     *  - self::HANDLER_STATUS_UPDATE           if needed payment status update
+     *  - self::HANDLER_SHOW_HTML               if needed to show response html
+     *  - self::HANDLER_REDIRECT                if needed to redirect to response URL
+     *
+     * @param       Payment         $payment        Payment
+     * @param       Response        $response       Query result
+     */
+    protected function handleQueryResult(Payment $payment, Response $response)
+    {
+        $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
+
+        // no action needed if payment is finished
+        if ($payment->isFinished())
+        {
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment, $response);
+        }
+        else
+        {
+            switch ($response->getNeededAction())
+            {
+                case Response::NEEDED_STATUS_UPDATE:
+                    $this->callHandler(self::HANDLER_STATUS_UPDATE,    $payment, $response);
+                break;
+                case Response::NEEDED_SHOW_HTML:
+                    $this->callHandler(self::HANDLER_SHOW_HTML,         $payment, $response);
+                break;
+                case Response::NEEDED_REDIRECT:
+                    $this->callHandler(self::HANDLER_REDIRECT,     $payment, $response);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Handle throwned exception. If configured self::HANDLER_CATCH_EXCEPTION, handler will be called,
+     * if not - exception will be rethrowned.
+     *
+     * @param       Exception       $exception      Exception to handle
+     * @param       Payment         $payment        Payment
+     * @param       Response        $response       Response or CallbackResponse
+     *
+     * @throws      Exception                       Rethrowned exception, if has not self::HANDLER_CATCH_EXCEPTION
+     */
+    protected function handleException(Exception $exception, Payment $payment, Response $response = null)
+    {
+        $payment->addError($exception);
+
+        $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
+
+        if (!$this->hasHandler(self::HANDLER_CATCH_EXCEPTION))
+        {
+            throw $exception;
+        }
+
+        $this->callHandler(self::HANDLER_CATCH_EXCEPTION, $exception, $payment, $response);
+    }
+
+    /**
      * Executes handler callback.
      * Handler callback receives two parameters: Payment and Response (optional)
      *
-     * @param       string                                                      $handlerName        Handler name
-     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\Payment      $payment            Payment
-     * @param       \PaynetEasy\PaynetEasyApi\Transport\Response                $response           Gateway response
+     * @param       string                                              $handlerName        Handler name
      *
      * @return      self
      */
-    protected function callHandler($handlerName, Payment $payment, Response $response = null)
+    protected function callHandler($handlerName)
     {
         $this->checkHandlerName($handlerName);
 
+        $arguments = func_get_args();
+        array_shift($arguments);
+
         if ($this->hasHandler($handlerName))
         {
-            call_user_func($this->handlers[$handlerName], $payment, $response);
+            call_user_func_array($this->handlers[$handlerName], $arguments);
         }
 
         return $this;
