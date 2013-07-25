@@ -48,7 +48,7 @@
 * get-card-info
 * status
 
-Для удобного выполнения этих операций в **PaymentProcessor** реализован метод **[executeQuery()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L178)**.
+Для удобного выполнения этих операций в **PaymentProcessor** реализован метод **[executeQuery()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L153)**.
 Метод принимает два параметра:
 * Название запроса
 * Платеж для обработки
@@ -60,7 +60,7 @@
 
 ### <a name="executeCallback"></a>executeCallback(): простая обработка данных, полученных от PaynetEasy
 
-Каждый [асинхронный запрос](#async_queries_list) может завершиться перенаправлением пользователя на платежный шлюз для выполнения дополнительных действий, а каждый [запрос для интеграции платежной формы](#form_queries_list) обязательно содержит такое перенаправление. Каждый раз при возвращении пользователя на сервис мерчанта передаются данные с результатом обработки платежа. Также, если в [конфигурации стартового запроса](../00-basic-tutorial.md#stage_1_step_3) был задан ключ **server_callback_url**, то через некоторое время PaynetEasy вызовет этот url и передаст ему данные, описанные в wiki PaynetEasy в разделе [Merchant Callbacks](http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks). Для удобной обработки этих данных в **PaymentProcessor** реализован метод **[executeCallback()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L215)**.
+Каждый [асинхронный запрос](#async_queries_list) может завершиться перенаправлением пользователя на платежный шлюз для выполнения дополнительных действий, а каждый [запрос для интеграции платежной формы](#form_queries_list) обязательно содержит такое перенаправление. Каждый раз при возвращении пользователя на сервис мерчанта передаются данные с результатом обработки платежа. Также, если в [конфигурации стартового запроса](../00-basic-tutorial.md#stage_1_step_3) был задан ключ **server_callback_url**, то через некоторое время PaynetEasy вызовет этот url и передаст ему данные, описанные в wiki PaynetEasy в разделе [Merchant Callbacks](http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks). Для удобной обработки этих данных в **PaymentProcessor** реализован метод **[executeCallback()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L200)**.
 Метод принимает два параметра:
 * Объект с данными, полученными при возвращении пользователя от PaynetEasy
 * Платеж для обработки
