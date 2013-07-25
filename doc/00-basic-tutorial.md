@@ -46,6 +46,7 @@
     use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
     use PaynetEasy\PaynetEasyApi\Transport\Response;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
+    use Exception;
     ```
 2. <a name="stage_1_step_2"></a>Создание нового платежа:
     ##### С использованием массивов, переданных в конструктор:
@@ -61,6 +62,7 @@
     (
         'country'                   => 'US',
         'city'                      => 'Houston',
+        'state'                 => 'TX',
         'first_line'                => '2704 Colonial Drive',
         'zip_code'                  => '1235',
         'phone'                     => '660-485-6353'
@@ -98,6 +100,7 @@
 
     $billingAddress = (new BillingAddress)
         ->setCountry('US')
+        ->setState('TX')
         ->setCity('Houston')
         ->setFirstLine('2704 Colonial Drive')
         ->setZipCode('1235')
@@ -138,12 +141,20 @@
     ```php
     $paymentProcessor = new PaymentProcessor(array
     (
-        PaymentProcessor::HANDLER_SAVE_PAYMENT  => function(Payment $payment)
+        PaymentProcessor::HANDLER_CATCH_EXCEPTION   => function(Exception $exception)
+        {
+            print "<pre>";
+            print "Exception catched.\n";
+            print "Exception message: '{$exception->getMessage()}'.\n";
+            print "Exception traceback: \n{$exception->getTraceAsString()}\n";
+            print "</pre>";
+        },
+        PaymentProcessor::HANDLER_SAVE_PAYMENT      => function(Payment $payment)
         {
             start_session();
             $_SESSION['payment'] = serialize($payment);
         },
-        PaymentProcessor::HANDLER_REDIRECT      => function(Payment $payment, Response $response)
+        PaymentProcessor::HANDLER_REDIRECT          => function(Response $response)
         {
             header("Location: {$response->getRedirectUrl()}");
             exit;
@@ -152,6 +163,7 @@
     ```
 
     Обработчики событий для сервиса:
+    * **PaymentProcessor::HANDLER_CATCH_EXCEPTION** - для обработки исключения, если оно было брошено
     * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
     * **PaymentProcessor::HANDLER_REDIRECT** - для переадресации пользователя на URL платежной формы, полученный от PaynetEasy
 
@@ -178,6 +190,7 @@
     use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
     use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
+    use Exception;
     ```
 2. <a name="stage_2_step_2"></a>Загрузка сохраненного платежа:
 
@@ -191,6 +204,14 @@
     ```php
     $paymentProcessor = new PaymentProcessor(array
     (
+        PaymentProcessor::HANDLER_CATCH_EXCEPTION   => function(Exception $exception)
+        {
+            print "<pre>";
+            print "Exception catched.\n";
+            print "Exception message: '{$exception->getMessage()}'.\n";
+            print "Exception traceback: \n{$exception->getTraceAsString()}\n";
+            print "</pre>";
+        },
         PaymentProcessor::HANDLER_SAVE_PAYMENT      => function(Payment $payment)
         {
             $_SESSION['payment'] = serialize($payment);
@@ -206,6 +227,7 @@
     ```
 
     Обработчики событий для сервиса:
+    * **PaymentProcessor::HANDLER_CATCH_EXCEPTION** - для обработки исключения, если оно было брошено
     * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
     * **PaymentProcessor::HANDLER_FINISH_PROCESSING** - для вывода информации о платеже после окончания обработки
 
@@ -235,6 +257,7 @@
     use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
     use PaynetEasy\PaynetEasyApi\Transport\Response;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
+    use Exception;
     ```
 2. Создание нового платежа:
     ##### С использованием массивов, переданных в конструктор:
@@ -257,6 +280,7 @@
         $billingAddress = new BillingAddress(array
         (
             'country'                   => 'US',
+            'state'                     => 'TX',
             'city'                      => 'Houston',
             'first_line'                => '2704 Colonial Drive',
             'zip_code'                  => '1235',
@@ -304,6 +328,7 @@
 
         $billingAddress = (new BillingAddress)
             ->setCountry('US')
+            ->setState('TX')
             ->setCity('Houston')
             ->setFirstLine('2704 Colonial Drive')
             ->setZipCode('1235')
@@ -345,6 +370,14 @@
     ```php
     $paymentProcessor = new PaymentProcessor(array
     (
+        PaymentProcessor::HANDLER_CATCH_EXCEPTION   => function(Exception $exception)
+        {
+            print "<pre>";
+            print "Exception catched.\n";
+            print "Exception message: '{$exception->getMessage()}'.\n";
+            print "Exception traceback: \n{$exception->getTraceAsString()}\n";
+            print "</pre>";
+        },
         PaymentProcessor::HANDLER_SAVE_PAYMENT      => function(Payment $payment)
         {
             start_session();
@@ -366,6 +399,7 @@
     ```
 
     Обработчики событий для сервиса:
+    * **PaymentProcessor::HANDLER_CATCH_EXCEPTION** - для обработки исключения, если оно было брошено
     * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
     * **PaymentProcessor::HANDLER_REDIRECT** - для переадресации пользователя на URL платежной формы, полученный от PaynetEasy
     * **PaymentProcessor::HANDLER_FINISH_PROCESSING** - для вывода информации о платеже после окончания обработки
