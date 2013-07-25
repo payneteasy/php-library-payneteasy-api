@@ -62,7 +62,7 @@ $payment    = (new Payment)->setCreditCard($creditCard);
 PropertyAccessor::setValue($payment, 'creditCard.expireYear', 2015);
 var_dump(PropertyAccessor::getValue($payment, 'creditCard.expireYear')); // 2015
 
-PropertyAccessor::setValue($payment, 'creditCard.nonExistentProperty', 'value', false)); // nothing will happen
+PropertyAccessor::setValue($payment, 'creditCard.nonExistentProperty', 'value', false); // nothing will happen
 
 // prints 'nonexistent property'
 try

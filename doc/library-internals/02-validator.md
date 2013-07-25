@@ -45,7 +45,7 @@ var_dump(Validator::validateByRule('some string', '#\d#', false));              
 // prints 'invalid'
 try
 {
-    Validator::validateByRule('test[at]mail.com', Validator::EMAIL));
+    Validator::validateByRule('test[at]mail.com', Validator::EMAIL);
     print 'valid';
 }
 catch (ValidationException $e)

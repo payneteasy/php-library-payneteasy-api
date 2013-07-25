@@ -242,7 +242,7 @@
     ```php
     session_start();
 
-    if (isset($_SESSION['payment']
+    if (isset($_SESSION['payment']))
     {
         $payment = unserialize($_SESSION['payment']);
     }
@@ -291,7 +291,7 @@
     ```php
     session_start();
 
-    if (isset($_SESSION['payment']
+    if (isset($_SESSION['payment']))
     {
         $payment = unserialize($_SESSION['payment']);
     }
