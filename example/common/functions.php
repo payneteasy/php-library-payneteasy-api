@@ -84,10 +84,9 @@ $loadPayment = function()
 /**
  * Функция сохраняет платеж в сессию
  *
- * @param       Payment        $payment        Платеж
- * @param       Response                $response       Ответ от сервера Paynet
+ * @param       Payment        $payment         Платеж
  */
-$savePayment = function(Payment $payment, Response $response = null)
+$savePayment = function(Payment $payment)
 {
     $_SESSION['payment'] = serialize($payment);
 };
@@ -97,11 +96,8 @@ $savePayment = function(Payment $payment, Response $response = null)
  * которая автоматически обновляется через определенное время
  *
  * @see ./common/waitPage.html
- *
- * @param       Payment        $payment        Платеж
- * @param       Response                $response       Ответ от сервера Paynet
  */
-$displayWaitPage = function(Payment $payment, Response $response)
+$displayWaitPage = function()
 {
     print file_get_contents(__DIR__ . '/common/waitPage.html');
 };
@@ -112,10 +108,9 @@ $displayWaitPage = function(Payment $payment, Response $response)
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#3D_Sale_transaction_diagram
  *
- * @param       Payment        $payment        Платеж
- * @param       Response                $response       Ответ от сервера Paynet
+ * @param       Response       $response       Ответ от сервера Paynet
  */
-$displayResponseHtml = function(Payment $payment, Response $response)
+$displayResponseHtml = function(Response $response)
 {
     // выводим полученную форму для редиректа на 3D-авторизацию
     print $response->getHtml();
@@ -126,11 +121,8 @@ $displayResponseHtml = function(Payment $payment, Response $response)
  * который ведет на платежную форму на стороне Paynet
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#General_Payment_Form_Process_Flow
- *
- * @param       Payment        $payment        Платеж
- * @param       Response                $response       Ответ от сервера Paynet
  */
-$redirectToResponseUrl = function(Payment $payment, Response $response)
+$redirectToResponseUrl = function(Response $response)
 {
     // Переадресуем пользователя на платежную форму
     header("Location: {$response->getRedirectUrl()}");
@@ -140,15 +132,15 @@ $redirectToResponseUrl = function(Payment $payment, Response $response)
 /**
  * Функция выводит статус платежа после того, как его обработка завершена
  *
- * @param       Payment        $payment        Платеж
- * @param       Response                $response       Ответ от сервера Paynet
+ * @param       Payment        $payment         Платеж
  */
-$displayEndedPayment = function(Payment $payment, Response $response = null)
+$displayEndedPayment = function(Payment $payment)
 {
     // платеж завершен, выводим его статус
     print "<pre>";
-    print_r("Payment state: {$payment->getProcessingStage()}\n");
-    print_r("Payment status: {$payment->getStatus()}\n");
+    print "Payment processing finished.\n";
+    print "Payment state: '{$payment->getProcessingStage()}'.\n";
+    print "Payment status: '{$payment->getStatus()}'.\n";
     print "</pre>";
 
     session_destroy();

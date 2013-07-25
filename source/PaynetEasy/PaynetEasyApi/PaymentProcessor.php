@@ -498,13 +498,13 @@ class PaymentProcessor
             switch ($response->getNeededAction())
             {
                 case Response::NEEDED_STATUS_UPDATE:
-                    $this->callHandler(self::HANDLER_STATUS_UPDATE,    $payment, $response);
+                    $this->callHandler(self::HANDLER_STATUS_UPDATE, $response, $payment);
                 break;
                 case Response::NEEDED_SHOW_HTML:
-                    $this->callHandler(self::HANDLER_SHOW_HTML,         $payment, $response);
+                    $this->callHandler(self::HANDLER_SHOW_HTML, $response, $payment);
                 break;
                 case Response::NEEDED_REDIRECT:
-                    $this->callHandler(self::HANDLER_REDIRECT,     $payment, $response);
+                    $this->callHandler(self::HANDLER_REDIRECT, $response, $payment);
                 break;
             }
         }
