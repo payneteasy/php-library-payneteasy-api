@@ -12,6 +12,10 @@
 
 ## <a name="sale"></a> Запрос "sale"
 
+Запрос применяется для оплаты с помощью кредитной карты. При этом информация о карте вводится на стороне сервиса мерчанта и передается в запросе к PaynetEasy. После выполнения данного запроса необходимо выполнить серию запросов "**status**" для обновления статуса платежа. Для этого сервис мерчанта может вывести самообновляющуюся страницу, каждая перезагрузка которой будет выполнять запрос "**status**".
+
+[Пример самообновляющейся страницы](../../example/common/waitPage.html)
+
 ##### Обязательные параметры запроса
 
 Поле запроса        |Цепочка свойств платежа        |Правило валидации
@@ -32,6 +36,7 @@ credit_card_number  |creditCard.creditCardNumber    |Validator::CREDIT_CARD_NUMB
 expire_month        |creditCard.expireMonth         |Validator::MONTH
 expire_year         |creditCard.expireYear          |Validator::YEAR
 cvv2                |creditCard.cvv2                |Validator::CVV2
+redirect_url        |queryConfig.redirectUrl        |Validator::URL
 
 ##### Необязательные параметры запроса
 
@@ -43,12 +48,27 @@ ssn                 |customer.ssn                   |Validator::SSN
 birthday            |customer.birthday              |Validator::DATE
 state               |billingAddress.state           |Validator::COUNTRY
 cell_phone          |billingAddress.cellPhone       |Validator::PHONE
-site_url            |siteUrl                        |Validator::URL
 destination         |destination                    |Validator::LONG_STRING
+site_url            |queryConfig.siteUrl            |Validator::URL
+server_callback_url |queryConfig.callbackUrl        |Validator::URL
 
 [Пример выполнения запроса sale](../../example/sale.php)
 
 ## <a name="status"></a> Запрос "status"
+
+Запрос применяется для проверки статуса платежа. Обычно требуется серия таких запросов из-за того, что обработка платежа занимает некоторое время. В зависимости от типа авторизации клиента (необходима 3D-авторизация или нет) и статуса платежа обработка результата этого запроса может происходить несколькими путями.
+
+##### Необходимо обновление платежа
+
+В том случае, если статус платежа не изменился (значение поля **status** - **processing**) и нет необходимости в дополнительных шагах авторизации, то запустить проверку статуса еще раз.
+
+##### Необходима 3D-аторизация
+
+В ответе на запрос будет передано поле **html**, содержимое которого необходимо вывести на экран браузера клиента. Содержимое поля представляет собой форму, которая переадресует пользователя для выполнения 3D-авторизации.
+
+##### Обработка платежа завершена
+
+В ответе на запрос поле **status** содержит результат обработки платежа - **approved**, **filtered**, **declined**, **error**
 
 ##### Обязательные параметры запроса
 
@@ -56,5 +76,16 @@ destination         |destination                    |Validator::LONG_STRING
 --------------------|-------------------------------|-----------------
 client_orderid      |clientPaymentId                |Validator::ID
 orderid             |paynetPaymentId                |Validator::ID
+login               |queryConfig.login              |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса status](../../example/status.php)
+
+## <a name="3d-redirect"> Обработка результата платежа после 3D-авторизации
+
+Если при обработке платежа выполнялась 3D-авторизация, то при возвращении пользователя с формы авторизации на сервис мерчанта будут переданы данные с результатом обработки платежа. Обработка этих данных совпадает с обработкой данных для [sale-form, preauth-form или transfer-form](05-payment-form-integration.md) и описана в [базовом примере использования библиотеки](../00-basic-tutorial.md#stage_2).
+
+## <a name="callback"></a> Обработка обратного вызова
+
+После завершения обработки платежа на стороне PaynetEasy, данные с результатом обработки передаются в сервис мерчанта с помощью обратного вызова. Это необходимо, чтобы платеж был обработан сервисом мерчанта независимо от того, выполнил пользователь корректно возврат с шлюза PaynetEasy или нет. Обработка этих данных совпадает с обработкой данных для [sale-form, preauth-form или transfer-form](05-payment-form-integration.md) и описана в [базовом примере использования библиотеки](../00-basic-tutorial.md#stage_2).
+
+[Подробнее о Merchant callbacks](06-merchant-callbacks.md)

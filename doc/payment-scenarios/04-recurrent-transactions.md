@@ -14,6 +14,7 @@
 
 ## <a name="create-card-ref"></a> Запрос "create-card-ref"
 
+Запрос применяется для получения id для кредитной карты, сохраненной на стороне PaynetEasy. Этот id позволяет совершать повторные платежи без ввода данных кредитной карты как на стороне сервиса мерчанта так и на стороне PaynetEasy.
 Перед выполнением этого запроса необходимо выполнить один из следующих сценариев для проверки данных, которые ввел клиент:
 * [Sale Transactions](00-sale-transactions.md)
 * [Preauth/Capture Transactions](01-preauth-capture-transactions.md)
@@ -25,6 +26,7 @@
 --------------------|-------------------------------|-----------------
 client_orderid      |clientPaymentId                |Validator::ID
 orderid             |paynetPaymentId                |Validator::ID
+login               |queryConfig.login              |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса create-card-ref](../../example/create-card-ref.php)
 
@@ -33,13 +35,15 @@ orderid             |paynetPaymentId                |Validator::ID
 
 ## <a name="get-card-info"></a> Запрос "get-card-info"
 
-##### Обязательные параметры запроса
-
+Запрос применяется для получения некоторых данных сохраненной кредитной карты.
 Перед выполнением данного запроса необходимо выполнить запрос [create-card-ref](#create-card-ref).
+
+##### Обязательные параметры запроса
 
 Поле запроса        |Цепочка свойств платежа            |Правило валидации
 --------------------|-----------------------------------|-----------------
 cardrefid           |recurrentCardFrom.cardReferenceId  |Validator::ID
+login               |queryConfig.login                  |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса get-card-info](../../example/get-card-info.php)
 
@@ -52,7 +56,9 @@ cardrefid           |recurrentCardFrom.cardReferenceId  |Validator::ID
 
 ## <a name="make-rebill"></a> Запрос "make-rebill"
 
+Запрос применяется для списания средств с кредитной карты клиента.
 Перед выполнением данного запроса необходимо выполнить запрос [create-card-ref](#create-card-ref).
+После выполнения данного запроса необходимо выполнить серию запросов "**status**" для обновления статуса платежа. Для этого сервис мерчанта может вывести самообновляющуюся страницу, каждая перезагрузка которой будет выполнять запрос "**status**".
 
 ##### Обязательные параметры запроса
 
@@ -64,6 +70,7 @@ amount              |amount                             |Validator::AMOUNT
 currency            |currency                           |Validator::CURRENCY
 ipaddress           |customer.ipAddress                 |Validator::IP
 cardrefid           |recurrentCardFrom.cardReferenceId  |Validator::ID
+login               |queryConfig.login                  |Validator::MEDIUM_STRING
 
 ##### Необязательные параметры запроса
 
@@ -71,10 +78,21 @@ cardrefid           |recurrentCardFrom.cardReferenceId  |Validator::ID
 --------------------|-----------------------------------|-----------------
 comment             |comment                            |Validator::MEDIUM_STRING
 cvv2                |recurrentCardFrom.cvv2             |Validator::CVV2
+server_callback_url |queryConfig.callbackUrl            |Validator::URL
 
 [Пример выполнения запроса make-rebill](../../example/make-rebill.php)
 
 ## <a name="status"></a> Запрос "status"
+
+Запрос применяется для проверки статуса платежа. Обычно требуется серия таких запросов из-за того, что обработка платежа занимает некоторое время. В зависимости от статуса платежа обработка результата этого запроса может происходить несколькими путями.
+
+##### Необходимо обновление платежа
+
+В том случае, если статус платежа не изменился (значение поля **status** - **processing**) и нет необходимости в дополнительных шагах авторизации, то запустить проверку статуса еще раз.
+
+##### Обработка платежа завершена
+
+В ответе на запрос поле **status** содержит результат обработки платежа - **approved**, **filtered**, **declined**, **error**
 
 ##### Обязательные параметры запроса
 
@@ -82,5 +100,12 @@ cvv2                |recurrentCardFrom.cvv2             |Validator::CVV2
 --------------------|-------------------------------|-----------------
 client_orderid      |clientPaymentId                |Validator::ID
 orderid             |paynetPaymentId                |Validator::ID
+login               |queryConfig.login              |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса status](../../example/status.php)
+
+## <a name="callback"></a> Обработка обратного вызова
+
+После завершения обработки платежа на стороне PaynetEasy, данные с результатом обработки передаются в сервис мерчанта с помощью обратного вызова. Это необходимо, чтобы платеж был обработан сервисом мерчанта независимо от того, выполнил пользователь корректно возврат с шлюза PaynetEasy или нет. Обработка этих данных совпадает с обработкой данных для [sale-form, preauth-form или transfer-form](05-payment-form-integration.md) и описана в [базовом примере использования библиотеки](../00-basic-tutorial.md#stage_2).
+
+[Подробнее о Merchant callbacks](06-merchant-callbacks.md)
