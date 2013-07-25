@@ -144,11 +144,6 @@ class GatewayClient implements GatewayClientInterface
 
         parse_str($response, $responseFields);
 
-        if(empty($responseFields))
-        {
-            throw new ResponseException("Can not parse response: '{$response}'");
-        }
-
         return new Response($responseFields);
     }
 
