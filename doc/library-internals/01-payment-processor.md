@@ -4,6 +4,7 @@
 * **[executeWorkflow()](#executeWorkflow)**: простое выполнение сценариев оплаты, которые состоят из нескольких запросов
 * **[executeQuery()](#executeQuery)**: простое выполнение запроса к PaynetEasy
 * **[executeCallback()](#executeCallback)**: простая обработка данных, полученных от PaynetEasy при возвращении пользователя с платежного шлюза или при поступлении коллбэка от PaynetEasy
+* **[setHandlers()](#setHandlers)**: установка обработчиков для различных событий, происходящих при обработке заказа
 
 ### <a name="executeWorkflow"></a>executeWorkflow(): простое выполнение сценариев оплаты, которые состоят из нескольких запросов
 
@@ -66,3 +67,83 @@
 
 Ознакомиться с использованием данного метода можно в следующих файлах:
 * [Базовый пример использования библиотеки](../00-basic-tutorial.md#stage_2)
+
+### <a name="setHandlers"></a> setHandlers(): установка обработчиков для различных событий, происходящих при обработке заказа
+
+**PaymentProcessor** скрывает от конечного пользователя алгоритм обработки заказа в методах **[executeWorkflow()](#executeWorkflow)**, **[executeQuery()](#executeQuery)** и **[executeCallback()](#executeCallback)**. При этом во время обработки заказа возникают ситуации, обработка которых должна быть реализована на стороне сервиса мерчанта. Для обработки таких ситуаций в **PaymentProcessor** реализована система событий и их обработчиков. Обработчики могут быть установлены тремя разными способами:
+* Передача массива обработчиков в [конструктор класса **PaymentProcessor**](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L110)
+* Передача массива обработчиков в метод [**setHandlers()**](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L319)
+* Установка обработчиков по одному с помощью метода **[setHandler()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L295)**
+
+Список обработчиков событий:
+* **HANDLER_SAVE_PAYMENT** - обработчик для сохранения платежа. Вызывается, если данные платежа изменены. Должен реализовывать сохранение платежа в хранилище. Принимает следующие параметры:
+    * Платеж
+    * Ответ от PaynetEasy (опционально, не доступен, если произошла ошибка на этапе формирования или выполнения запроса к PaynetEasy)
+* **HANDLER_STATUS_UPDATE** - обработчик для обновления статуса платежа. Вызывается, если статус платежа не изменился с момента последней проверки. Должен реализовывать запуск проверки статуса платежа. Принимает следующие параметры:
+    * Ответ от PaynetEasy
+    * Платеж
+* **HANDLER_SHOW_HTML** - обработчик для вывода HTML-кода, полученного от PaynetEasy. Вызывается, если необходима 3D-авторизация пользователя. Должен реализовывать вывод HTML-кода из ответа от PaynetEasy в браузер клиента. Принимает следующие параметры:
+    * Ответ от PaynetEasy
+    * Платеж
+* **HANDLER_REDIRECT** - обработчик для перенаправления клиента на платежную форму PaynetEasy. Вызывается после выполнения запроса [sale-form, preauth-form или transfer-form](../payment-scenarios/05-payment-form-integration.md). Должен реализовывать перенаправление пользователя на URL из ответа от PaynetEasy. Принимает следующие параметры:
+    * Ответ от PaynetEasy
+    * Платеж
+* **HANDLER_FINISH_PROCESSING** - обработчик для дальнейшей обработки платежа сервисом мерчанта после завершения обработки на стороне PaynetEasy. Вызывается после того, как платеж полностью обработан на стороне PaynetEasy. Принимает следующие параметры:
+    * Платеж
+    * Ответ от PaynetEasy (опционально, не доступен, если обработка платежа уже была завершена ранее)
+* **HANDLER_CATCH_EXCEPTION** - обработчик для исключения. Вызывается, если при обработке платежа было брошено исключение. **Внимание!** Если этот обработчик не установлен, то исключение будет брошено из библиотеки выше в сервис мерчанта. Принимает следующие параметры:
+    * Исключение
+    * Платеж
+    * Ответ от PaynetEasy (опционально, не доступен, если произошла ошибка на этапе формирования или выполнения запроса к PaynetEasy)
+
+Метод принимает один параметр:
+* Массив с обработчиками событий. Ключами элементов массива являются названия обработчиков, заданные в константах класса, значениями - любые значения типа [callable](http://php.net/manual/en/language.types.callable.php)
+
+Пример вызова метода с простейшими обработчиками:
+
+```php
+use PaynetEasy\PaynetEasyApi\PaymentProcessor;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\Transport\Response;
+use Exception;
+
+$paymentProcessor = new PaymentProcessor;
+$paymentProcessor->setHandlers(array
+(
+    PaymentProcessor::HANDLER_SAVE_PAYMENT      => function(Payment $payment)
+    {
+        start_session();
+        $_SESSION['payment'] = serialize($payment);
+    },
+    PaymentProcessor::HANDLER_STATUS_UPDATE     => function()
+    {
+        header("Location: http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}");
+        exit;
+    },
+    PaymentProcessor::HANDLER_SHOW_HTML         => function(Response $response)
+    {
+        print $response->getHtml();
+        exit;
+    },
+    PaymentProcessor::HANDLER_REDIRECT          => function(Response $response)
+    {
+        header("Location: {$response->getRedirectUrl()}");
+        exit;
+    },
+    PaymentProcessor::HANDLER_FINISH_PROCESSING => function(Payment $payment)
+    {
+        print "<pre>";
+        print_r("Payment state: {$payment->getProcessingStage()}\n");
+        print_r("Payment status: {$payment->getStatus()}\n");
+        print "</pre>";
+    },
+    PaymentProcessor::HANDLER_CATCH_EXCEPTION   => function(Exception $exception)
+    {
+        print "<pre>";
+        print "Exception catched.\n";
+        print "Exception message: '{$exception->getMessage()}'.\n";
+        print "Exception traceback: \n{$exception->getTraceAsString()}\n";
+        print "</pre>";
+    }
+));
+```
