@@ -45,8 +45,17 @@ class WorkflowFactoryTest extends \PHPUnit_Framework_TestCase
      * @expectedException RuntimeException
      * @expectedExceptionMessage Unknown workflow class 'PaynetEasy\PaynetEasyApi\Workflow\UnknownWorkflow' for workflow with name 'unknown'
      */
-    public function testGetWorkflowWithException()
+    public function testGetWorkflowWithUnknownClass()
     {
         $this->object->getWorkflow('unknown');
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Workflow class 'PaynetEasy\PaynetEasyApi\Workflow\NotworkflowWorkflow' does not implements 'PaynetEasy\PaynetEasyApi\Workflow\WorkflowInterface' interface
+     */
+    public function testGetWorkflowWithNotWorkflowClass()
+    {
+        $this->object->getWorkflow('notworkflow');
     }
 }

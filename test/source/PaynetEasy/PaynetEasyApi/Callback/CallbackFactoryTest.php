@@ -41,8 +41,17 @@ class CallbackFactoryTest extends \PHPUnit_Framework_TestCase
      * @expectedException RuntimeException
      * @expectedExceptionMessage Unknown callback class 'PaynetEasy\PaynetEasyApi\Callback\UnknownCallback' for callback with type 'unknown'
      */
-    public function testGetQueryWithException()
+    public function testGetQueryWithUnknownClass()
     {
         $this->object->getCallback(new CallbackResponse(array('type' => 'unknown')), array());
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Callback class 'PaynetEasy\PaynetEasyApi\Callback\NotcallbackCallback' does not implements 'PaynetEasy\PaynetEasyApi\Callback\CallbackInterface' interface
+     */
+    public function testGetQueryWithNotCallbackClass()
+    {
+        $this->object->getCallback(new CallbackResponse(array('type' => 'notcallback')), array());
     }
 }

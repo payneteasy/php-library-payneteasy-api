@@ -3,7 +3,6 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
-use RuntimeException;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration
@@ -37,18 +36,6 @@ class FormQuery extends AbstractQuery
         array('cell_phone',             'billingAddress.cellPhone',     false,  Validator::PHONE),
         array('site_url',               'queryConfig.siteUrl',          false,  Validator::URL),
         array('server_callback_url',    'queryConfig.callbackUrl',      false,  Validator::URL)
-    );
-
-    /**
-     * Allowed form query methods
-     *
-     * @var array
-     */
-    static protected $allowedApiMethods = array
-    (
-        'sale-form',
-        'preauth-form',
-        'transfer-form'
     );
 
     /**

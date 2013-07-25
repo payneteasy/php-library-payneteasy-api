@@ -34,6 +34,13 @@ class WorkflowFactory implements WorkflowFactoryInterface
     protected $callbackFactory;
 
     /**
+     * Interface, that workflow class must implement
+     *
+     * @var     string
+     */
+    static protected $workflowInterface = 'PaynetEasy\PaynetEasyApi\Workflow\WorkflowInterface';
+
+    /**
      *
      * @param       \PaynetEasy\PaynetEasyApi\Transport\GatewayClientInterface         $gatewayClient      API gateway client
      * @param       \PaynetEasy\PaynetEasyApi\Query\QueryFactoryInterface              $queryFactory       API queries factory
@@ -58,10 +65,7 @@ class WorkflowFactory implements WorkflowFactoryInterface
 
         if (class_exists($workflowClass, true))
         {
-            return new $workflowClass($workflowName,
-                                      $this->gatewayClient,
-                                      $this->queryFactory,
-                                      $this->callbackFactory);
+            return $this->instantiateWorkflow($workflowClass, $workflowName);
         }
 
         // :NOTICE:         Imenem          18.06.13
@@ -70,12 +74,33 @@ class WorkflowFactory implements WorkflowFactoryInterface
         // therefore they have only one class - FormWorkflow
         if (preg_match('#.*-form$#i', $workflowName))
         {
-            return new FormWorkflow($workflowName,
-                                    $this->gatewayClient,
-                                    $this->queryFactory,
-                                    $this->callbackFactory);
+            return $this->instantiateWorkflow(__NAMESPACE__ . '\\FormWorkflow', $workflowName);
         }
 
         throw new RuntimeException("Unknown workflow class '{$workflowClass}' for workflow with name '{$workflowName}'");
+    }
+
+    /**
+     * Method check workflow class and return new workflow object
+     *
+     * @param       string      $workflowClass      Workflow class
+     * @param       string      $workflowName       Workflow initial api method name
+     *
+     * @return      WorkflowInterface               New workflow object
+     *
+     * @throws      RuntimeException                Workflow does not implements WorkflowInterface
+     */
+    protected function instantiateWorkflow($workflowClass, $workflowName)
+    {
+        if (!is_a($workflowClass, static::$workflowInterface, true))
+        {
+            throw new RuntimeException("Workflow class '{$workflowClass}' does not implements '" .
+                                       static::$workflowInterface. "' interface.");
+        }
+
+        return new $workflowClass($workflowName,
+                                  $this->gatewayClient,
+                                  $this->queryFactory,
+                                  $this->callbackFactory);
     }
 }

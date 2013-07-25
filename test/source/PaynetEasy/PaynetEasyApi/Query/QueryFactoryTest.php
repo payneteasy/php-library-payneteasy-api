@@ -39,8 +39,17 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
      * @expectedException RuntimeException
      * @expectedExceptionMessage Unknown query class 'PaynetEasy\PaynetEasyApi\Query\UnknownQuery' for query with name 'unknown'
      */
-    public function testGetQueryWithException()
+    public function testGetQueryWithUnknownClass()
     {
         $this->object->getQuery('unknown', array());
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Query class 'PaynetEasy\PaynetEasyApi\Query\NotqueryQuery' does not implements 'PaynetEasy\PaynetEasyApi\Query\QueryInterface' interface
+     */
+    public function testGetQueryWithNotQueryClass()
+    {
+        $this->object->getQuery('notquery', array());
     }
 }

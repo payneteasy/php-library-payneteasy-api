@@ -2,22 +2,9 @@
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
-use RuntimeException;
 
 class ServerCallbackUrlCallback extends AbstractCallback
 {
-    /**
-     * Allowed callback types
-     *
-     * @var array
-     */
-    static protected $allowedCallbackTypes = array
-    (
-        'sale',
-        'reversal',
-        'chargeback'
-    );
-
     /**
      * {@inheritdoc}
      */

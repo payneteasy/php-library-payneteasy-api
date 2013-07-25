@@ -7,15 +7,4 @@ namespace PaynetEasy\PaynetEasyApi\Workflow;
  */
 class FormWorkflow extends AbstractWorkflow
 {
-    /**
-     * Allowed form query methods
-     *
-     * @var array
-     */
-    static protected $allowedInitialApiMethods = array
-    (
-        'sale-form',
-        'preauth-form',
-        'transfer-form'
-    );
 }

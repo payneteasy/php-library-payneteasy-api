@@ -20,29 +20,57 @@ class CallbackFactory implements CallbackFactoryInterface
     );
 
     /**
+     * Interface, that callback class must implement
+     *
+     * @var     string
+     */
+    static protected $callbackInterface = 'PaynetEasy\PaynetEasyApi\Callback\CallbackInterface';
+
+    /**
      * {@inheritdoc}
      */
     public function getCallback(CallbackResponse $callback)
     {
-        $callbackType   = $callback->getType();
+        $callbackType = $callback->getType();
 
         if (empty($callbackType))
         {
-            return new RedirectUrlCallback('redirect_url');
+            return $this->instantiateCallback(__NAMESPACE__ . '\\RedirectUrlCallback', 'redirect_url');
         }
 
         $callbackClass  = __NAMESPACE__ . '\\' . ucfirst($callbackType) . 'Callback';
 
         if (class_exists($callbackClass, true))
         {
-            return new $callbackClass($callbackType);
+            return $this->instantiateCallback($callbackClass, $callbackType);
         }
 
         if (in_array($callbackType, static::$allowedServerCallbackUrlTypes))
         {
-            return new ServerCallbackUrlCallback($callbackType);
+            return $this->instantiateCallback(__NAMESPACE__ . '\\ServerCallbackUrlCallback', $callbackType);
         }
 
         throw new RuntimeException("Unknown callback class '{$callbackClass}' for callback with type '{$callbackType}'");
+    }
+
+    /**
+     * Method check callback class and return new callback object
+     *
+     * @param       string      $callbackClass      Callback class
+     * @param       string      $callbackType       Callback type
+     *
+     * @return      CallbackInterface               New callback object
+     *
+     * @throws      RuntimeException                Callback does not implements CallbackInterface
+     */
+    protected function instantiateCallback($callbackClass, $callbackType)
+    {
+        if (!is_a($callbackClass, static::$callbackInterface, true))
+        {
+            throw new RuntimeException("Callback class '{$callbackClass}' does not implements '" .
+                                       static::$callbackInterface . "' interface.");
+        }
+
+        return new $callbackClass($callbackType);
     }
 }
