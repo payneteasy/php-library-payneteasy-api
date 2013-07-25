@@ -100,6 +100,7 @@ $savePayment = function(Payment $payment)
 $displayWaitPage = function()
 {
     print file_get_contents(__DIR__ . '/common/waitPage.html');
+    exit;
 };
 
 /**
@@ -114,6 +115,7 @@ $displayResponseHtml = function(Response $response)
 {
     // выводим полученную форму для редиректа на 3D-авторизацию
     print $response->getHtml();
+    exit;
 };
 
 /**

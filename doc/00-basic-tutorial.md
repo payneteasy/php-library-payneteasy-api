@@ -219,8 +219,9 @@
         PaymentProcessor::HANDLER_FINISH_PROCESSING => function(Payment $payment)
         {
             print "<pre>";
-            print_r("Payment state: {$payment->getProcessingStage()}\n");
-            print_r("Payment status: {$payment->getStatus()}\n");
+            print "Payment processing finished.\n";
+            print "Payment state: '{$payment->getProcessingStage()}'.\n";
+            print "Payment status: '{$payment->getStatus()}'.\n";
             print "</pre>";
         }
     ));
@@ -383,7 +384,7 @@
             start_session();
             $_SESSION['payment'] = serialize($payment);
         },
-        PaymentProcessor::HANDLER_REDIRECT          => function(Payment $payment, Response $response)
+        PaymentProcessor::HANDLER_REDIRECT          => function(Response $response)
         {
             header("Location: {$response->getRedirectUrl()}");
             exit;
@@ -391,8 +392,9 @@
         PaymentProcessor::HANDLER_FINISH_PROCESSING => function(Payment $payment)
         {
             print "<pre>";
-            print_r("Payment state: {$payment->getProcessingStage()}\n");
-            print_r("Payment status: {$payment->getStatus()}\n");
+            print "Payment processing finished.\n";
+            print "Payment state: '{$payment->getProcessingStage()}'.\n";
+            print "Payment status: '{$payment->getStatus()}'.\n";
             print "</pre>";
         }
     ));
