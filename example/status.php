@@ -41,19 +41,24 @@ $payment = $loadPayment() ?: new Payment(array
 $payment->setQueryConfig($getConfig());
 
 /**
- * Создадим обработчик платежей
+ * Создадим обработчик платежей и назначим обработчики для разных событий, происходящих при обработке платежа
+ *
+ * @see ./common/functions.php
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::callHandler()
  */
-$paymentProcessor = new PaymentProcessor;
+$paymentProcessor = new PaymentProcessor(array
+(
+    PaymentProcessor::HANDLER_CATCH_EXCEPTION     => $displayException,
+    PaymentProcessor::HANDLER_SAVE_PAYMENT        => $savePayment,
+    PaymentProcessor::HANDLER_STATUS_UPDATE       => $displayWaitPage,
+    PaymentProcessor::HANDLER_SHOW_HTML           => $displayResponseHtml,
+    PaymentProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedPayment
+));
 
 /**
  * Вызов этого метода обновит статус обработки платежа
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\Status::updatePaymentOnSuccess()
  */
-$paymentProcessor->executeQuery('status', $payment, $_REQUEST);
-
-/**
- * Сохраним платеж и выведем его на экран
- */
-$savePayment($payment);
-$displayEndedPayment($payment);
+$paymentProcessor->executeQuery('status', $payment);

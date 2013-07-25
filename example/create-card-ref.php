@@ -43,19 +43,22 @@ $payment->setProcessingStage(Payment::STAGE_FINISHED);
 $payment->setStatus(Payment::STATUS_APPROVED);
 
 /**
- * Создадим обработчик платежей
+ * Создадим обработчик платежей и назначим обработчики для разных событий, происходящих при обработке платежа
+ *
+ * @see ./common/functions.php
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::callHandler()
  */
-$paymentProcessor = new PaymentProcessor;
+$paymentProcessor = new PaymentProcessor(array
+(
+    PaymentProcessor::HANDLER_CATCH_EXCEPTION     => $displayException,
+    PaymentProcessor::HANDLER_SAVE_PAYMENT        => $savePayment,
+    PaymentProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedPayment
+));
 
 /**
  * Вызов этого метода создаст в объекте Payment объект RecurrentCard
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::updatePaymentOnSuccess()
  */
-$paymentProcessor->executeQuery('create-card-ref', $payment, $_REQUEST);
-
-/**
- * Сохраним платеж и выведем его на экран
- */
-$savePayment($payment);
-$displayEndedPayment($payment);
+$paymentProcessor->executeQuery('create-card-ref', $payment);

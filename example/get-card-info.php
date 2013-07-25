@@ -42,19 +42,22 @@ $payment->setQueryConfig($getConfig());
 $payment->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058)));
 
 /**
- * Создадим обработчик платежей
+ * Создадим обработчик платежей и назначим обработчики для разных событий, происходящих при обработке платежа
+ *
+ * @see ./common/functions.php
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::callHandler()
  */
-$paymentProcessor = new PaymentProcessor;
+$paymentProcessor = new PaymentProcessor(array
+(
+    PaymentProcessor::HANDLER_CATCH_EXCEPTION     => $displayException,
+    PaymentProcessor::HANDLER_SAVE_PAYMENT        => $savePayment,
+    PaymentProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedPayment
+));
 
 /**
  * Вызов этого метода заполнит поля объекта RecurrentCard, размещенного в объекте Payment
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::updatePaymentOnSuccess()
  */
-$paymentProcessor->executeQuery('get-card-info', $payment, $_REQUEST);
-
-/**
- * Сохраним платеж и выведем его на экран
- */
-$savePayment($payment);
-$displayEndedPayment($payment);
+$paymentProcessor->executeQuery('get-card-info', $payment);

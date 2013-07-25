@@ -145,3 +145,18 @@ $displayEndedPayment = function(Payment $payment)
 
     session_destroy();
 };
+
+/**
+ * Функция выводит сообщение и трейс пойманного исключения
+ *
+ * @param       Exception       $exception      Исключение
+ */
+$displayException = function(Exception $exception)
+{
+    // поймано исключение, выведем его сообщение и трейс
+    print "<pre>";
+    print "Exception catched.\n";
+    print "Exception message: '{$exception->getMessage()}'.\n";
+    print "Exception traceback: \n{$exception->getTraceAsString()}\n";
+    print "</pre>";
+};

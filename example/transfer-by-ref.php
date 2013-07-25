@@ -57,19 +57,15 @@ $payment->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058, 'cvv
 $payment->setRecurrentCardTo(new RecurrentCard(array('cardrefid' => 8059)));
 
 /**
- * Создадим обработчик платежей
- */
-$paymentProcessor = new PaymentProcessor;
-
-/**
- * Назначим обработчики для разных событий, происходящих при обработке платежа
+ * Создадим обработчик платежей и назначим обработчики для разных событий, происходящих при обработке платежа
  *
  * @see ./common/functions.php
  * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeWorkflow()
  * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::callHandler()
  */
-$paymentProcessor->setHandlers(array
+$paymentProcessor = new PaymentProcessor(array
 (
+    PaymentProcessor::HANDLER_CATCH_EXCEPTION     => $displayException,
     PaymentProcessor::HANDLER_SAVE_PAYMENT        => $savePayment,
     PaymentProcessor::HANDLER_STATUS_UPDATE       => $displayWaitPage,
     PaymentProcessor::HANDLER_SHOW_HTML           => $displayResponseHtml,
