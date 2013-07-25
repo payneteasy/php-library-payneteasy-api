@@ -6,3 +6,4 @@
 * [Return Transactions](payment-scenarios/03-return-transactions.md)
 * [Recurrent Transactions](payment-scenarios/04-recurrent-transactions.md)
 * [Payment Form Integration](payment-scenarios/05-payment-form-integration.md)
+* [Merchant Callbacks](payment-scenarios/06-merchant-callbacks.md)
