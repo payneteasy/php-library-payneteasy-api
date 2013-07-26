@@ -181,13 +181,6 @@ class Payment extends Data
     protected $recurrentCardTo;
 
     /**
-     * Payment processing errors
-     *
-     * @var array
-     */
-    protected $errors = array();
-
-    /**
      * Set merchant payment identifier
      *
      * @param       string      $clientPaymentId        Merchant payment identifier
@@ -663,57 +656,6 @@ class Payment extends Data
     public function getComment()
     {
         return $this->comment;
-    }
-
-    /**
-     * Adds new payment error
-     *
-     * @param       Exception       $error      Payment error
-     *
-     * @return      self
-     */
-    public function addError(Exception $error)
-    {
-        // :NOTICE:         Imenem          19.06.13
-        //
-        // Use spl_object_hash to prevent duplicated errors
-        $this->errors[spl_object_hash($error)] = $error;
-
-        return $this;
-    }
-
-    /**
-     * True if payment has errors
-     *
-     * @return      boolean
-     */
-    public function hasErrors()
-    {
-        return count($this->getErrors()) > 0;
-    }
-
-    /**
-     * Get all payment errors
-     *
-     * @return      array       Payment errors
-     */
-    public function getErrors()
-    {
-        return $this->errors;
-    }
-
-    /**
-     * Get payment last error
-     *
-     * @return      Exception
-     */
-    public function getLastError()
-    {
-        if ($this->hasErrors())
-        {
-            $errors = $this->getErrors();
-            return end($errors);
-        }
     }
 
     /**

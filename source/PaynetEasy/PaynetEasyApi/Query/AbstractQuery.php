@@ -82,7 +82,7 @@ implements      QueryInterface
         }
         catch (Exception $e)
         {
-            $payment->addError($e)
+            $payment
                   ->setProcessingStage(Payment::STAGE_FINISHED)
                   ->setStatus(Payment::STATUS_ERROR);
 
@@ -122,7 +122,7 @@ implements      QueryInterface
         }
         catch (Exception $e)
         {
-            $payment->addError($e)
+            $payment
                   ->setProcessingStage(Payment::STAGE_FINISHED)
                   ->setStatus(Payment::STATUS_ERROR);
 
@@ -339,7 +339,6 @@ implements      QueryInterface
     protected function updatePaymentOnError(Payment $payment, Response $response)
     {
         $payment->setProcessingStage(Payment::STAGE_FINISHED);
-        $payment->addError($response->getError());
 
         if ($response->isDeclined())
         {

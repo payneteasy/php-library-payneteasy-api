@@ -34,9 +34,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
             'email'         => 'vass.pupkin@example.com',
         )));
 
-        $this->object->addError(new Exception);
-        $this->object->addError(new Exception);
-
         $this->object->setStatus(Payment::STATUS_APPROVED);
 
         $serializedPayment = serialize($this->object);

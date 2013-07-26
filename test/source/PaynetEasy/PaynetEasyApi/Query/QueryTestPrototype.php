@@ -42,7 +42,6 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($request->getEndPoint());
         $this->assertNotNull($requestFields['control']);
         $this->assertEquals($controlCode, $requestFields['control']);
-        $this->assertFalse($payment->hasErrors());
     }
 
     abstract public function testCreateRequestProvider();
@@ -87,7 +86,6 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         $this->object->processResponse($payment, new Response($response));
 
         $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_DECLINED);
-        $this->assertTrue($payment->hasErrors());
     }
 
     abstract public function testProcessResponseDeclinedProvider();
@@ -102,7 +100,6 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         $this->object->processResponse($payment, new Response($response));
 
         $this->assertPaymentStates($payment, Payment::STAGE_CREATED, Payment::STATUS_PROCESSING);
-        $this->assertFalse($payment->hasErrors());
     }
 
     abstract public function testProcessResponseProcessingProvider();
@@ -122,7 +119,9 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         catch (PaynetException $error)
         {
             $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_ERROR);
-            $this->assertPaymentError($payment, $response['error-message'], $response['error-code']);
+
+            $this->assertEquals($response['error-message'], $error->getMessage());
+            $this->assertEquals($response['error-code'], $error->getCode());
             $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
 
             return;
@@ -208,23 +207,6 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals($processingStage, $payment->getProcessingStage());
         $this->assertEquals($status, $payment->getStatus());
-    }
-
-    /**
-     * Validates last payment error
-     *
-     * @param       string      $errorMessage       Error message
-     * @param       int         $errorCode          Error code
-     */
-    protected function assertPaymentError($payment, $errorMessage, $errorCode)
-    {
-        $this->assertTrue($payment->hasErrors());
-
-        $error = $payment->getLastError();
-
-        $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
-        $this->assertEquals($errorMessage, $error->getMessage());
-        $this->assertEquals($errorCode, $error->getCode());
     }
 
     /**

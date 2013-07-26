@@ -36,7 +36,6 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
         $this->object->processCallback($payment, new CallbackResponse($callback));
 
         $this->assertPaymentStates($payment, Payment::STAGE_CREATED, Payment::STATUS_PROCESSING);
-        $this->assertFalse($payment->hasErrors());
     }
 
     public function testProcessCallbackProcessingProvider()

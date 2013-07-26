@@ -26,7 +26,6 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
         $this->object->processCallback($payment, new CallbackResponse($callback));
 
         $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_APPROVED);
-        $this->assertFalse($payment->hasErrors());
     }
 
     abstract public function testProcessCallbackApprovedProvider();
@@ -43,7 +42,6 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
         $this->object->processCallback($payment, new CallbackResponse($callback));
 
         $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_DECLINED);
-        $this->assertTrue($payment->hasErrors());
     }
 
     abstract public function testProcessCallbackDeclinedProvider();
@@ -65,7 +63,9 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
         catch (PaynetException $error)
         {
             $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_ERROR);
-            $this->assertPaymentError($payment, $callback['error_message'], $callback['error_code']);
+
+            $this->assertEquals($callback['error_message'], $error->getMessage());
+            $this->assertEquals($callback['error_code'], $error->getCode());
             $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
 
             return;
@@ -134,23 +134,6 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals($processingStage, $payment->getProcessingStage());
         $this->assertEquals($status, $payment->getStatus());
-    }
-
-    /**
-     * Validates last payment error
-     *
-     * @param       string      $errorMessage       Error message
-     * @param       int         $errorCode          Error code
-     */
-    protected function assertPaymentError($payment, $errorMessage, $errorCode)
-    {
-        $this->assertTrue($payment->hasErrors());
-
-        $error = $payment->getLastError();
-
-        $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
-        $this->assertEquals($errorMessage, $error->getMessage());
-        $this->assertEquals($errorCode, $error->getCode());
     }
 
     /**

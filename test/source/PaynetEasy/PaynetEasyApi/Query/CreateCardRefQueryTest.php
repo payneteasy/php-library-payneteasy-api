@@ -74,7 +74,6 @@ class CreateCardRefQueryTest extends SaleQueryTest
 
         $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard', $payment->getRecurrentCardFrom());
         $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_APPROVED);
-        $this->assertFalse($payment->hasErrors());
     }
 
     public function testProcessResponseApprovedProvider()

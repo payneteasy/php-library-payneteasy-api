@@ -64,7 +64,7 @@ abstract class AbstractCallback implements CallbackInterface
         }
         catch (Exception $e)
         {
-            $payment->addError($e)
+            $payment
                   ->setProcessingStage(Payment::STAGE_FINISHED)
                   ->setStatus(Payment::STATUS_ERROR);
 
@@ -191,7 +191,6 @@ abstract class AbstractCallback implements CallbackInterface
         {
             $payment->setProcessingStage(Payment::STAGE_FINISHED);
             $payment->setStatus(Payment::STATUS_ERROR);
-            $payment->addError($callbackResponse->getError());
         }
         elseif($callbackResponse->isApproved())
         {
@@ -203,7 +202,6 @@ abstract class AbstractCallback implements CallbackInterface
         {
             $payment->setProcessingStage(Payment::STAGE_FINISHED);
             $payment->setStatus(Payment::STATUS_DECLINED);
-            $payment->addError($callbackResponse->getError());
         }
         // If it does not redirect, it's processing
         elseif($callbackResponse->isProcessing())

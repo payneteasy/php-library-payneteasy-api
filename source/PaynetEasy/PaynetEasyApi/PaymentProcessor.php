@@ -438,8 +438,6 @@ class PaymentProcessor
      */
     protected function handleException(Exception $exception, Payment $payment, Response $response = null)
     {
-        $payment->addError($exception);
-
         $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
 
         if (!$this->hasHandler(self::HANDLER_CATCH_EXCEPTION))
