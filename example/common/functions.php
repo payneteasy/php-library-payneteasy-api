@@ -2,8 +2,8 @@
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
-
 use PaynetEasy\PaynetEasyApi\Transport\Response;
+use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 /**
  * Функция возвращает конфигурацию для выполнения запросов
@@ -37,13 +37,13 @@ $getConfig = function()
          * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#3D_redirect
          * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect
          */
-        'redirect_url'              => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}",
+        'redirect_url'              => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}?stage=processCustomerReturn",
         /**
          * URL на который пользователь будет перенаправлен после окончания запроса
          *
          * @see http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks
          */
-        'server_callback_url'       => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}",
+        'server_callback_url'       => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}?stage=processPaynetEasyCallback",
         /**
          * Режим работы библиотеки: sandbox, production
          *
@@ -99,7 +99,8 @@ $savePayment = function(Payment $payment)
  */
 $displayWaitPage = function()
 {
-    print file_get_contents(__DIR__ . '/common/waitPage.html');
+    $formAction = "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}?stage=updateStatus";
+    include(__DIR__ . '/waitPage.php');
     exit;
 };
 
@@ -161,4 +162,30 @@ $displayException = function(Exception $exception)
     print "Exception message: '{$exception->getMessage()}'.\n";
     print "Exception traceback: \n{$exception->getTraceAsString()}\n";
     print "</pre>";
+};
+
+/**
+ * Метод создает сервис для обработки платежей
+ * и назначает обработчики для разных событий, происходящих при обработке платежа
+ *
+ * @see ./common/functions.php
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeCallback()
+ */
+$getPaymentProcessor = function() use ($displayException,
+                                       $savePayment,
+                                       $displayWaitPage,
+                                       $redirectToResponseUrl,
+                                       $displayResponseHtml,
+                                       $displayEndedPayment)
+{
+    return new PaymentProcessor(array
+    (
+        PaymentProcessor::HANDLER_CATCH_EXCEPTION     => $displayException,
+        PaymentProcessor::HANDLER_SAVE_PAYMENT        => $savePayment,
+        PaymentProcessor::HANDLER_STATUS_UPDATE       => $displayWaitPage,
+        PaymentProcessor::HANDLER_REDIRECT            => $redirectToResponseUrl,
+        PaymentProcessor::HANDLER_SHOW_HTML           => $displayResponseHtml,
+        PaymentProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedPayment
+    ));
 };

@@ -4,7 +4,6 @@ namespace PaynetEasy\PaynetEasyApi;
 
 use PaynetEasy\PaynetEasyApi\Transport\GatewayClientInterface;
 use PaynetEasy\PaynetEasyApi\Query\QueryFactoryInterface;
-use PaynetEasy\PaynetEasyApi\Workflow\WorkflowFactoryInterface;
 use PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
@@ -14,7 +13,6 @@ use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
 use PaynetEasy\PaynetEasyApi\Transport\GatewayClient;
 use PaynetEasy\PaynetEasyApi\Query\QueryFactory;
-use PaynetEasy\PaynetEasyApi\Workflow\WorkflowFactory;
 use PaynetEasy\PaynetEasyApi\Callback\CallbackFactory;
 
 use RuntimeException;
@@ -82,13 +80,6 @@ class PaymentProcessor
     protected $queryFactory;
 
     /**
-     * Payment workflow factory
-     *
-     * @var \PaynetEasy\PaynetEasyApi\Workflow\WorkflowFactoryInterface
-     */
-    protected $workflowFactory;
-
-    /**
      * API callbacks factory
      *
      * @var \PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface
@@ -113,42 +104,12 @@ class PaymentProcessor
     }
 
     /**
-     * Executes payment workflow
-     *
-     * @param       string      $workflowName       Payment workflow name
-     * @param       Payment     $payment            Payment for processing
-     * @param       array       $callbackData       Paynet callback data (optional)
-     */
-    public function executeWorkflow($workflowName, Payment $payment, array $callbackData = array())
-    {
-        // prevent double processing for finished payment
-        if ($payment->isFinished())
-        {
-            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment);
-            return;
-        }
-
-        try
-        {
-            $response = $this->getWorkflow($workflowName)
-                ->processPayment($payment, $callbackData);
-        }
-        catch (Exception $e)
-        {
-            $this->handleException($e, $payment);
-            return;
-        }
-
-        $this->handleQueryResult($payment, $response);
-    }
-
-    /**
      * Executes payment API query
      *
      * @param       string      $queryName      Payment API query name
      * @param       Payment     $payment        Payment for processing
      *
-     * @return      Response                    Current workflow query response
+     * @return      Response                    Query response
      */
     public function executeQuery($queryName, Payment $payment)
     {
@@ -226,20 +187,6 @@ class PaymentProcessor
         }
 
         return $callbackResponse;
-    }
-
-    /**
-     * Get workflow by their name.
-     * Usually it is name of first workflow API method query.
-     *
-     * @param       string      $workflowName                               Workflow name
-     *
-     * @return      \PaynetEasy\PaynetEasyApi\Workflow\WorkflowInterface    Workflow for payment processing
-     */
-    public function getWorkflow($workflowName)
-    {
-        return $this->getWorkflowFactory()
-                    ->getWorkflow($workflowName);
     }
 
     /**
@@ -383,20 +330,6 @@ class PaymentProcessor
     }
 
     /**
-     * Set workflow factory
-     *
-     * @param       \PaynetEasy\PaynetEasyApi\Workflow\WorkflowFactoryInterface        $workflowFactory        Workflow factory
-     *
-     * @return      self
-     */
-    public function setWorkflowFactory(WorkflowFactoryInterface $workflowFactory)
-    {
-        $this->workflowFactory = $workflowFactory;
-
-        return $this;
-    }
-
-    /**
      * Set callback factory
      *
      * @param       \PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface        $callbackFactory        Callback factory
@@ -441,23 +374,6 @@ class PaymentProcessor
     }
 
     /**
-     * Get workflow factory
-     *
-     * @return      \PaynetEasy\PaynetEasyApi\Workflow\WorkflowFactoryInterface        Workflow factory
-     */
-    public function getWorkflowFactory()
-    {
-        if (!is_object($this->workflowFactory))
-        {
-            $this->workflowFactory = new WorkflowFactory($this->getGatewayClient(),
-                                                         $this->getQueryFactory(),
-                                                         $this->getCallbackFactory());
-        }
-
-        return $this->workflowFactory;
-    }
-
-    /**
      * Get callback factory
      *
      * @return      \PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface        Callback factory
@@ -493,20 +409,20 @@ class PaymentProcessor
         {
             $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment, $response);
         }
-        else
+        elseif ($response->hasRedirectUrl())
         {
-            switch ($response->getNeededAction())
-            {
-                case Response::NEEDED_STATUS_UPDATE:
-                    $this->callHandler(self::HANDLER_STATUS_UPDATE, $response, $payment);
-                break;
-                case Response::NEEDED_SHOW_HTML:
-                    $this->callHandler(self::HANDLER_SHOW_HTML, $response, $payment);
-                break;
-                case Response::NEEDED_REDIRECT:
-                    $this->callHandler(self::HANDLER_REDIRECT, $response, $payment);
-                break;
-            }
+            $response->setNeededAction(Response::NEEDED_REDIRECT);
+            $this->callHandler(self::HANDLER_REDIRECT, $response, $payment);
+        }
+        elseif ($response->hasHtml())
+        {
+            $response->setNeededAction(Response::NEEDED_SHOW_HTML);
+            $this->callHandler(self::HANDLER_SHOW_HTML, $response, $payment);
+        }
+        elseif ($response->isProcessing())
+        {
+            $response->setNeededAction(Response::NEEDED_STATUS_UPDATE);
+            $this->callHandler(self::HANDLER_STATUS_UPDATE, $response, $payment);
         }
     }
 

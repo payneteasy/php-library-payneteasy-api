@@ -1,7 +1,6 @@
 <?php
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
-use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -9,52 +8,52 @@ require_once './common/functions.php';
 session_start();
 
 /**
- * Если платеж был сохранен - получим его сохраненную версию, иначе создадим новый
- *
- * @see http://wiki.payneteasy.com/index.php/PnE:Return_Transactions#Return_Request_Parameters
- * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
+ * Первый этап обработки платежа.
+ * Создание нового платежа, выполнение запроса preauth
  */
-$payment = $loadPayment() ?: new Payment(array
-(
-    'client_payment_id'         => 'CLIENT-112244',
-    'paynet_payment_id'         =>  1969589,
-    'amount'                    =>  9.99,
-    'currency'                  => 'USD',
-    'comment'                   => 'cancel payment'
-));
+if (!isset($_GET['stage']))
+{
+    /**
+     * Создадим новый платеж
+     *
+     * @see http://wiki.payneteasy.com/index.php/PnE:Return_Transactions#Return_Request_Parameters
+     * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::$requestFieldsDefinition
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
+     */
+    $payment = new Payment(array
+    (
+        'client_payment_id'         => 'CLIENT-112244',
+        'paynet_payment_id'         =>  1969589,
+        'amount'                    =>  9.99,
+        'currency'                  => 'USD',
+        'comment'                   => 'cancel payment'
+    ));
 
-/**
- * Установим конфигурацию для выполнения запроса
- *
- * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
- * @see functions.php, $getConfig()
- */
-$payment->setQueryConfig($getConfig());
+    /**
+     * Установим конфигурацию для выполнения запроса
+     *
+     * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::$requestFieldsDefinition
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+     * @see functions.php, $getConfig()
+     */
+    $payment->setQueryConfig($getConfig());
 
+    /**
+     * Выполним запрос return
+     *
+     * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
+     * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::updatePaymentOnSuccess()
+     */
+    $getPaymentProcessor()->executeQuery('return', $payment);
+}
 /**
- * Создадим обработчик платежей и назначим обработчики для разных событий, происходящих при обработке платежа
- *
- * @see ./common/functions.php
- * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeWorkflow()
- * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::callHandler()
+ * Второй этап обработки платежа.
+ * Ожидание изменения статуса платежа.
  */
-$paymentProcessor = new PaymentProcessor(array
-(
-    PaymentProcessor::HANDLER_CATCH_EXCEPTION     => $displayException,
-    PaymentProcessor::HANDLER_SAVE_PAYMENT        => $savePayment,
-    PaymentProcessor::HANDLER_STATUS_UPDATE       => $displayWaitPage,
-    PaymentProcessor::HANDLER_SHOW_HTML           => $displayResponseHtml,
-    PaymentProcessor::HANDLER_FINISH_PROCESSING   => $displayEndedPayment
-));
-
-/**
- * Каждый вызов этого метода выполняет определенный запрос к API Paynet,
- * выбор запроса зависит от этапа обработки платежа
- *
- * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment::$processingStage
- * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeWorkflow()
- * @see \PaynetEasy\PaynetEasyApi\Workflow\AbstractWorkflow::processPayment()
- */
-$paymentProcessor->executeWorkflow('return', $payment, $_REQUEST);
+elseif ($_GET['stage'] == 'updateStatus')
+{
+    /**
+     * Запросим статус платежа
+     */
+    $getPaymentProcessor()->executeQuery('status', $loadPayment());
+}

@@ -7,7 +7,6 @@ use PaynetEasy\PaynetEasyApi\Transport\Request;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
-use PaynetEasy\PaynetEasyApi\Workflow\FakeWorkflow;
 use PaynetEasy\PaynetEasyApi\Query\FakeQuery;
 use PaynetEasy\PaynetEasyApi\Query\ExceptionQuery;
 use PaynetEasy\PaynetEasyApi\Transport\FakeGatewayClient;
@@ -35,52 +34,18 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
-        FakeWorkflow::$response         = null;
         FakeQuery::$request             = null;
         FakeGatewayClient::$response    = null;
         ExceptionQuery::$request        = null;
     }
 
-    public function testExecuteWorkflowWithEndedPayment()
-    {
-        $payment = new Payment;
-        $payment->setProcessingStage(Payment::STAGE_FINISHED);
-
-        $handlerCalled = false;
-        $handler  = function() use (&$handlerCalled)
-        {
-            $handlerCalled = true;
-        };
-
-        $this->object->setHandler(PaymentProcessor::HANDLER_FINISH_PROCESSING, $handler);
-        $this->object->executeWorkflow('fake', $payment);
-
-        $this->assertTrue($handlerCalled);
-    }
-
-    public function testExecuteWorkflowWithException()
-    {
-        $handlerCalled = false;
-        $handler  = function() use (&$handlerCalled)
-        {
-            $handlerCalled = true;
-        };
-
-        $this->object->setHandler(PaymentProcessor::HANDLER_CATCH_EXCEPTION, $handler);
-        $this->object->executeWorkflow('sale', new Payment);
-
-        $this->assertTrue($handlerCalled);
-    }
-
     /**
-     * @dataProvider testExecuteWorkflowProvider
+     * @dataProvider testExecuteQueryProvider
      */
-    public function testExecuteWorkflow($neededAction, $handlerName)
+    public function testExecuteQuery(array $responseData, $handlerName)
     {
-        $response = new Response;
-        $response->setNeededAction($neededAction);
-
-        FakeWorkflow::$response = $response;
+        FakeQuery::$request             = new Request;
+        FakeGatewayClient::$response    = new Response($responseData);
 
         $handlerCalled = false;
         $handler  = function() use (&$handlerCalled)
@@ -89,42 +54,35 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         };
 
         $this->object->setHandler($handlerName, $handler);
-        $this->object->executeWorkflow('fake', new Payment(array()));
+        $this->object->setGatewayClient(new FakeGatewayClient);
 
+        $this->assertNotNull($this->object->executeQuery('fake', new Payment));
         $this->assertTrue($handlerCalled);
     }
 
-    public function testExecuteWorkflowProvider()
+    public function testExecuteQueryProvider()
     {
         return(array(
         array
         (
-            Response::NEEDED_REDIRECT,
+            array('status'          => 'approved'),
+            PaymentProcessor::HANDLER_FINISH_PROCESSING
+        ),
+        array
+        (
+            array('redirect-url'    => 'http://example.com'),
             PaymentProcessor::HANDLER_REDIRECT
         ),
         array
         (
-            Response::NEEDED_SHOW_HTML,
+            array('html'            => urlencode('<html></html>')),
             PaymentProcessor::HANDLER_SHOW_HTML
         ),
         array
         (
-            Response::NEEDED_STATUS_UPDATE,
+            array('status'          => 'processing'),
             PaymentProcessor::HANDLER_STATUS_UPDATE
         )));
-    }
-
-    public function testExecuteQuery()
-    {
-        FakeQuery::$request             = new Request;
-        FakeGatewayClient::$response    = new Response;
-
-        $this->object->setGatewayClient(new FakeGatewayClient);
-
-        $response = $this->object->executeQuery('fake', new Payment);
-
-        $this->assertNotNull($response);
-        $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Transport\Response', $response);
     }
 
     /**

@@ -44,6 +44,11 @@ class Response extends ArrayObject
     public function __construct($response = array())
     {
         parent::__construct(array_map('trim', $response));
+
+        if ($this->offsetExists('html'))
+        {
+            $this->offsetSet('html', urldecode($this->offsetGet('html')));
+        }
     }
 
     /**
