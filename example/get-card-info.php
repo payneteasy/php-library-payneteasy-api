@@ -1,6 +1,7 @@
 <?php
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -19,26 +20,18 @@ session_start();
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Information_request_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::$requestFieldsDefinition
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
- */
-$payment = new Payment(array());
-
-/**
- * Установим конфигурацию для выполнения запроса
- *
- * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
  * @see functions.php, $getConfig()
  */
-$payment->setQueryConfig($getConfig());
-
-/**
- * Для этого запроса необходимо передать ID кредитной карты
- *
- * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Information_request_parameters
- * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
- */
-$payment->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058)));
+$payment = new Payment(array
+(
+    'recurrent_card_from'   =>  new RecurrentCard(array
+    (
+        'card_reference_id'     => 8058
+    )),
+    'query_config'          =>  $getConfig()
+));
 
 /**
  * Вызов этого метода заполнит поля объекта RecurrentCard, размещенного в объекте Payment

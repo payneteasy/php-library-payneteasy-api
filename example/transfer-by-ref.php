@@ -2,6 +2,7 @@
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
+use PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -20,6 +21,10 @@ if (!isset($_GET['stage']))
      * @see http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions#Money_transfer_request_parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\TransferByRefQuery::$requestFieldsDefinition
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
+     * @see functions.php, $getConfig()
      */
     $payment = new Payment(array
     (
@@ -27,39 +32,21 @@ if (!isset($_GET['stage']))
         'amount'                =>  9.99,
         'currency'              => 'USD',
         'ip_address'            => '127.0.0.1',
+        'customer'              =>  new Customer(array
+        (
+            'ip_address'            => '127.0.0.1'
+        )),
+        'recurrent_card_from'   =>  new RecurrentCard(array
+        (
+            'card_reference_id'     => 8058,
+            'cvv2'                  => 123
+        )),
+        'recurrent_card_to'     =>  new RecurrentCard(array
+        (
+            'card_reference_id'     => 8059
+        )),
+        'query_config'          =>  $getConfig()
     ));
-
-    /**
-     * Установим конфигурацию для выполнения запроса
-     *
-     * @see \PaynetEasy\PaynetEasyApi\Query\TransferByRefQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     * @see functions.php, $getConfig()
-     */
-    $payment->setQueryConfig($getConfig());
-
-    /**
-     * Для этого запроса необходимо передать данные клиента
-     *
-     * @see http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions#Money_transfer_request_parameters
-     * @see \PaynetEasy\PaynetEasyApi\Query\TransferByRefQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
-     */
-    $payment->setCustomer(new Customer(array
-    (
-        'ip_address'            => '127.0.0.1'
-    )));
-
-    /**
-     * Для этого запроса необходимо передать данные кредитных карт,
-     * между которыми будет происходить перевод средств
-     *
-     * @see http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions#Money_transfer_request_parameters
-     * @see \PaynetEasy\PaynetEasyApi\Query\TransferByRefQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
-     */
-    $payment->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058, 'cvv2' => 123)));
-    $payment->setRecurrentCardTo(new RecurrentCard(array('cardrefid' => 8059)));
 
     /**
      * Выполним запрос transfer-by-ref

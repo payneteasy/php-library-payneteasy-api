@@ -22,53 +22,33 @@ if (!isset($_GET['stage']))
      * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+     * @see functions.php, $getConfig()
      */
     $payment = new Payment(array
     (
         'client_payment_id'     => 'CLIENT-112244',
         'description'           => 'This is test payment',
         'amount'                =>  9.99,
-        'currency'              => 'USD'
+        'currency'              => 'USD',
+        'customer'              =>  new Customer(array
+        (
+            'email'                 => 'vass.pupkin@example.com',
+            'ip_address'            => '127.0.0.1'
+        )),
+        'billing_address'       =>  new BillingAddress(array
+        (
+            'country'               => 'US',
+            'city'                  => 'Houston',
+            'state'                 => 'TX',
+            'first_line'            => '2704 Colonial Drive',
+            'zip_code'              => '1235',
+            'phone'                 => '660-485-6353'
+        )),
+        'query_config'          =>  $getConfig()
     ));
-
-    /**
-     * Установим конфигурацию для выполнения запроса
-     *
-     * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     * @see functions.php, $getConfig()
-     */
-    $payment->setQueryConfig($getConfig());
-
-    /**
-     * Для этого запроса необходимо передать данные клиента
-     *
-     * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
-     * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
-     */
-    $payment->setCustomer(new Customer(array
-    (
-        'email'                 => 'vass.pupkin@example.com',
-        'ip_address'            => '127.0.0.1'
-    )));
-
-    /**
-     * Для этого запроса необходимо передать данные адреса
-     *
-     * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
-     * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress
-     */
-    $payment->setBillingAddress(new BillingAddress(array
-    (
-        'country'               => 'US',
-        'city'                  => 'Houston',
-        'state'                 => 'TX',
-        'first_line'            => '2704 Colonial Drive',
-        'zip_code'              => '1235',
-        'phone'                 => '660-485-6353'
-    )));
 
     /**
      * Выполним запрос transfer-form

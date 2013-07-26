@@ -19,21 +19,15 @@ if (!isset($_GET['stage']))
      * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Capture_Request_Parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\CaptureQuery::$requestFieldsDefinition
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+     * @see functions.php, $getConfig()
      */
     $payment = new Payment(array
     (
         'client_payment_id'     => 'CLIENT-112244',
-        'paynet_payment_id'     =>  1969596
+        'paynet_payment_id'     =>  1969596,
+        'query_config'          =>  $getConfig()
     ));
-
-    /**
-     * Установим конфигурацию для выполнения запроса
-     *
-     * @see \PaynetEasy\PaynetEasyApi\Query\CaptureQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     * @see functions.php, $getConfig()
-     */
-    $payment->setQueryConfig($getConfig());
 
     /**
      * Выполним запрос capture

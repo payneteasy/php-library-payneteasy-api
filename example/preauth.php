@@ -23,69 +23,42 @@ if (!isset($_GET['stage']))
      * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Preauth_Request_Parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\CreditCard
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+     * @see functions.php, $getConfig()
      */
     $payment = new Payment(array
     (
         'client_payment_id'     => 'CLIENT-112244',
         'description'           => 'This is test payment',
         'amount'                =>  0.99,
-        'currency'              => 'USD'
+        'currency'              => 'USD',
+        'customer'              => new Customer(array
+        (
+            'email'                 => 'vass.pupkin@example.com',
+            'ip_address'            => '127.0.0.1'
+        )),
+        'billing_address'       => new BillingAddress(array
+        (
+            'country'               => 'US',
+            'state'                 => 'TX',
+            'city'                  => 'Houston',
+            'first_line'            => '2704 Colonial Drive',
+            'zip_code'              => '1235',
+            'phone'                 => '660-485-6353'
+        )),
+        'credit_card'           => new CreditCard(array
+        (
+            'card_printed_name'     => 'Vasya Pupkin',
+            'credit_card_number'    => '4444 5555 6666 1111',
+            'expire_month'          => '12',
+            'expire_year'           => '14',
+            'cvv2'                  => '123'
+        )),
+        'query_config'          =>  $getConfig()
     ));
-
-    /**
-     * Установим конфигурацию для выполнения запроса
-     *
-     * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     * @see functions.php, $getConfig()
-     */
-    $payment->setQueryConfig($getConfig());
-
-    /**
-     * Для этого запроса необходимо передать данные клиента
-     *
-     * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Preauth_Request_Parameters
-     * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
-     */
-    $payment->setCustomer(new Customer(array
-    (
-        'email'                 => 'vass.pupkin@example.com',
-        'ip_address'            => '127.0.0.1'
-    )));
-
-    /**
-     * Для этого запроса необходимо передать данные адреса
-     *
-     * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Preauth_Request_Parameters
-     * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress
-     */
-    $payment->setBillingAddress(new BillingAddress(array
-    (
-        'country'               => 'US',
-        'state'                 => 'TX',
-        'city'                  => 'Houston',
-        'first_line'            => '2704 Colonial Drive',
-        'zip_code'              => '1235',
-        'phone'                 => '660-485-6353'
-    )));
-
-    /**
-     * Для этого запроса необходимо передать данные кредитной карты
-     *
-     * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Preauth_Request_Parameters
-     * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\CreditCard
-     */
-    $payment->setCreditCard(new CreditCard(array
-    (
-        'card_printed_name'     => 'Vasya Pupkin',
-        'credit_card_number'    => '4444 5555 6666 1111',
-        'expire_month'          => '12',
-        'expire_year'           => '14',
-        'cvv2'                  => '123'
-    )));
 
     /**
      * Выполним запрос preauth

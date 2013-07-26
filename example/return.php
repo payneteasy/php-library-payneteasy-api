@@ -19,6 +19,8 @@ if (!isset($_GET['stage']))
      * @see http://wiki.payneteasy.com/index.php/PnE:Return_Transactions#Return_Request_Parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::$requestFieldsDefinition
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+     * @see functions.php, $getConfig()
      */
     $payment = new Payment(array
     (
@@ -26,18 +28,10 @@ if (!isset($_GET['stage']))
         'paynet_payment_id'         =>  1969589,
         'amount'                    =>  9.99,
         'currency'                  => 'USD',
-        'comment'                   => 'cancel payment'
+        'comment'                   => 'cancel payment',
+        'query_config'              =>  $getConfig()
     ));
-
-    /**
-     * Установим конфигурацию для выполнения запроса
-     *
-     * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     * @see functions.php, $getConfig()
-     */
-    $payment->setQueryConfig($getConfig());
-
+    
     /**
      * Выполним запрос return
      *

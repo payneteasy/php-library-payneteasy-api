@@ -2,6 +2,7 @@
 
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
+use PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard;
 
 require_once './common/autoload.php';
 require_once './common/functions.php';
@@ -27,45 +28,28 @@ if (!isset($_GET['stage']))
      * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Recurrent_Payment_request_parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\MakeRebillQuery::$requestFieldsDefinition
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+     * @see functions.php, $getConfig()
      */
-    $payment = $loadPayment() ?: new Payment(array
+    $payment = new Payment(array
     (
         'client_payment_id'     => 'CLIENT-112244',
         'description'           => 'This is test payment',
         'amount'                =>  0.99,
         'currency'              => 'USD',
-        'ip_address'            => '127.0.0.1'
+        'ip_address'            => '127.0.0.1',
+        'customer'              =>  new Customer(array
+        (
+            'ip_address'            => '127.0.0.1'
+        )),
+        'recurrent_card_from'   => new RecurrentCard(array
+        (
+            'card_reference_id'     => 8058
+        )),
+        'query_config'          =>  $getConfig(),
     ));
-
-    /**
-     * Установим конфигурацию для выполнения запроса
-     *
-     * @see \PaynetEasy\PaynetEasyApi\Query\MakeRebillQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     * @see functions.php, $getConfig()
-     */
-    $payment->setQueryConfig($getConfig());
-
-    /**
-     * Для этого запроса необходимо передать данные клиента
-     *
-     * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Recurrent_Payment_request_parameters
-     * @see \PaynetEasy\PaynetEasyApi\Query\MakeRebillQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
-     */
-    $payment->setCustomer(new Customer(array
-    (
-        'ip_address'            => '127.0.0.1'
-    )));
-
-    /**
-     * Для этого запроса необходимо передать ID кредитной карты
-     *
-     * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Recurrent_Payment_request_parameters
-     * @see \PaynetEasy\PaynetEasyApi\Query\MakeRebillQuery::$requestFieldsDefinition
-     * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
-     */
-    $payment->setRecurrentCardFrom(new RecurrentCard(array('cardrefid' => 8058)));
 
     /**
      * Выполним запрос make-rebill

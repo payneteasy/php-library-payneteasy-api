@@ -23,21 +23,15 @@ session_start();
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Payment_status_call_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\StatusQuery::$requestFieldsDefinition
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
+ * @see functions.php, $getConfig()
  */
 $payment = $loadPayment() ?: new Payment(array
 (
     'client_payment_id'     => 'CLIENT-112244',
-    'paynet_payment_id'     =>  1969595
+    'paynet_payment_id'     =>  1969595,
+    'query_config'          =>  $getConfig()
 ));
-
-/**
- * Установим конфигурацию для выполнения запроса
- *
- * @see \PaynetEasy\PaynetEasyApi\Query\StatusQuery::$requestFieldsDefinition
- * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
- * @see functions.php, $getConfig()
- */
-$payment->setQueryConfig($getConfig());
 
 /**
  * Вызов этого метода обновит статус обработки платежа
