@@ -52,7 +52,8 @@ class ReturnQueryTest extends QueryTestPrototype
 
         $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_APPROVED);
+        $this->assertTrue($paymentTransaction->isApproved());
+        $this->assertTrue($paymentTransaction->isFinished());
     }
 
     public function testProcessResponseApprovedProvider()

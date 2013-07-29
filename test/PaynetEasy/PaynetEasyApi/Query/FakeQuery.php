@@ -18,7 +18,6 @@ class FakeQuery implements QueryInterface
     {
         if ($response->isApproved())
         {
-            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
             $paymentTransaction->setStatus(PaymentTransaction::STATUS_APPROVED);
         }
 

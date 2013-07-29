@@ -37,21 +37,6 @@ class PaymentTransaction extends Data
     const STATUS_ERROR      = 'error';
 
     /**
-     * Payment created in bank
-     */
-    const STAGE_CREATED     = 'created';
-
-    /**
-     * Customer is redirected to Paynet to perform additional steps
-     */
-    const STAGE_REDIRECTED  = 'redirected';
-
-    /**
-     * Payment processing is ended
-     */
-    const STAGE_FINISHED    = 'ended';
-
-    /**
      * All allowed payment transaction statuses
      *
      * @var array
@@ -60,20 +45,9 @@ class PaymentTransaction extends Data
     (
         self::STATUS_PROCESSING,
         self::STATUS_APPROVED,
+        self::STATUS_FILTERED,
         self::STATUS_DECLINED,
         self::STATUS_ERROR
-    );
-
-    /**
-     * All allowed payment processing stages
-     *
-     * @var array
-     */
-    static protected $allowedProcessingStages = array
-    (
-        self::STAGE_CREATED,
-        self::STAGE_REDIRECTED,
-        self::STAGE_FINISHED
     );
 
     /**
@@ -82,13 +56,6 @@ class PaymentTransaction extends Data
      * @var string
      */
     protected $status = self::STATUS_NEW;
-
-    /**
-     * Payment processing stage
-     *
-     * @var string
-     */
-    protected $processingStage;
 
     /**
      * Payment transaction payment
@@ -172,7 +139,7 @@ class PaymentTransaction extends Data
      */
     public function isDeclined()
     {
-        return $this->getStatus() == self::STATUS_DECLINED;
+        return in_array($this->getStatus(), array(self::STATUS_FILTERED, self::STATUS_DECLINED));
     }
 
     /**
@@ -192,7 +159,7 @@ class PaymentTransaction extends Data
      */
     public function isFinished()
     {
-        return $this->getProcessingStage() == self::STAGE_FINISHED;
+        return !$this->isNew() && !$this->isProcessing();
     }
 
     /**
@@ -251,34 +218,5 @@ class PaymentTransaction extends Data
         }
 
         return $this->queryConfig;
-    }
-
-    /**
-     * Set payment processing stage
-     *
-     * @param       string      $processingStage      Payment transport stage
-     *
-     * @return      self
-     */
-    public function setProcessingStage($processingStage)
-    {
-        if (!in_array($processingStage, static::$allowedProcessingStages))
-        {
-            throw new RuntimeException("Unknown transport stage given: '{$processingStage}'");
-        }
-
-        $this->processingStage = $processingStage;
-
-        return $this;
-    }
-
-    /**
-     * Get payment processing state
-     *
-     * @return      string
-     */
-    public function getProcessingStage()
-    {
-        return $this->processingStage;
     }
 }

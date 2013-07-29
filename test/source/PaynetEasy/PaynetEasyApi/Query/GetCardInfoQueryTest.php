@@ -52,7 +52,8 @@ class GetCardInfoQueryTest extends QueryTestPrototype
 
         $recurrentCard = $paymentTransaction->getPayment()->getRecurrentCardFrom();
 
-        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_APPROVED);
+        $this->assertTrue($paymentTransaction->isApproved());
+        $this->assertTrue($paymentTransaction->isFinished());
         $this->assertEquals($response['card-printed-name'], $recurrentCard->getCardPrintedName());
         $this->assertEquals($response['expire-year'],       $recurrentCard->getExpireYear());
         $this->assertEquals($response['expire-month'],      $recurrentCard->getExpireMonth());

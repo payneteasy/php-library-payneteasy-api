@@ -50,7 +50,8 @@ class StatusQueryTest extends QueryTestPrototype
 
         $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_REDIRECTED, PaymentTransaction::STATUS_PROCESSING);
+        $this->assertTrue($paymentTransaction->isProcessing());
+        $this->assertFalse($paymentTransaction->isFinished());
     }
 
     public function testProcessRedirectProvider()
@@ -87,7 +88,8 @@ class StatusQueryTest extends QueryTestPrototype
 
         $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_APPROVED);
+        $this->assertTrue($paymentTransaction->isApproved());
+        $this->assertTrue($paymentTransaction->isFinished());
     }
 
     public function testProcessResponseApprovedProvider()

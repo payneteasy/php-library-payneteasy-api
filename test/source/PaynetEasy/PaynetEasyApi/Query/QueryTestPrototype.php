@@ -86,7 +86,8 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_DECLINED);
+        $this->assertTrue($paymentTransaction->isDeclined());
+        $this->assertTrue($paymentTransaction->isFinished());
     }
 
     abstract public function testProcessResponseDeclinedProvider();
@@ -100,7 +101,8 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_CREATED, PaymentTransaction::STATUS_PROCESSING);
+        $this->assertTrue($paymentTransaction->isProcessing());
+        $this->assertFalse($paymentTransaction->isFinished());
     }
 
     abstract public function testProcessResponseProcessingProvider();
@@ -119,7 +121,8 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         }
         catch (PaynetException $error)
         {
-            $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_ERROR);
+            $this->assertTrue($paymentTransaction->isError());
+            $this->assertTrue($paymentTransaction->isFinished());
 
             $this->assertEquals($response['error-message'], $error->getMessage());
             $this->assertEquals($response['error-code'], $error->getCode());
@@ -196,18 +199,6 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         ));
 
         $this->object->processResponse($this->getPaymentTransaction(), $response);
-    }
-
-    /**
-     * Validates payment transport stage and bank status
-     *
-     * @param       string      $processingStage     Payment transport stage
-     * @param       string      $status             Payment bank status
-     */
-    protected function assertPaymentStates(PaymentTransaction $paymentTransaction, $processingStage, $status)
-    {
-        $this->assertEquals($processingStage, $paymentTransaction->getProcessingStage());
-        $this->assertEquals($status, $paymentTransaction->getStatus());
     }
 
     /**

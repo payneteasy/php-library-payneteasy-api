@@ -26,7 +26,8 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
 
-        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_APPROVED);
+        $this->assertTrue($paymentTransaction->isApproved());
+        $this->assertTrue($paymentTransaction->isFinished());
     }
 
     abstract public function testProcessCallbackApprovedProvider();
@@ -42,7 +43,8 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
 
-        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_DECLINED);
+        $this->assertTrue($paymentTransaction->isDeclined());
+        $this->assertTrue($paymentTransaction->isFinished());
     }
 
     abstract public function testProcessCallbackDeclinedProvider();
@@ -63,7 +65,8 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
         }
         catch (PaynetException $error)
         {
-            $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_ERROR);
+            $this->assertTrue($paymentTransaction->isError());
+            $this->assertTrue($paymentTransaction->isFinished());
 
             $this->assertEquals($callback['error_message'], $error->getMessage());
             $this->assertEquals($callback['error_code'], $error->getCode());
@@ -123,18 +126,6 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
         $callback['control'] = $this->createSignature($callback);
 
         $this->object->processCallback($this->getPaymentTransaction(), new CallbackResponse($callback));
-    }
-
-    /**
-     * Validates payment transport stage and bank status
-     *
-     * @param       string      $processingStage        Payment transport stage
-     * @param       string      $status                 Payment bank status
-     */
-    protected function assertPaymentStates(PaymentTransaction $paymentTransaction, $processingStage, $status)
-    {
-        $this->assertEquals($processingStage, $paymentTransaction->getProcessingStage());
-        $this->assertEquals($status, $paymentTransaction->getStatus());
     }
 
     /**

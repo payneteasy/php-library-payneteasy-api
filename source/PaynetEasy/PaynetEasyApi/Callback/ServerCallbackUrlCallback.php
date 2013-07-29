@@ -2,7 +2,6 @@
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
-use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
 class ServerCallbackUrlCallback extends AbstractCallback
 {
@@ -11,7 +10,6 @@ class ServerCallbackUrlCallback extends AbstractCallback
      */
     static protected $allowedStatuses = array
     (
-        PaymentTransaction::STATUS_PROCESSING,
         PaymentTransaction::STATUS_APPROVED,
         PaymentTransaction::STATUS_DECLINED,
         PaymentTransaction::STATUS_FILTERED,

@@ -64,9 +64,7 @@ abstract class AbstractCallback implements CallbackInterface
         }
         catch (Exception $e)
         {
-            $paymentTransaction
-                  ->setProcessingStage(PaymentTransaction::STAGE_FINISHED)
-                  ->setStatus(PaymentTransaction::STATUS_ERROR);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
 
             throw $e;
         }
@@ -187,28 +185,7 @@ abstract class AbstractCallback implements CallbackInterface
      */
     protected function updatePaymentTransaction(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
     {
-        if($callbackResponse->isError())
-        {
-            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
-        }
-        elseif($callbackResponse->isApproved())
-        {
-            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_APPROVED);
-        }
-        // "filtered" status is interpreted as the "DECLINED"
-        elseif($callbackResponse->isDeclined())
-        {
-            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_DECLINED);
-        }
-        // If it does not redirect, it's processing
-        elseif($callbackResponse->isProcessing())
-        {
-            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_CREATED);
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
-        }
+        $paymentTransaction->setStatus($callbackResponse->getStatus());
 
         $paymentTransaction
             ->getPayment()

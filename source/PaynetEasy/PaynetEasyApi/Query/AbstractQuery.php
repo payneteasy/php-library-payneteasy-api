@@ -82,9 +82,7 @@ implements      QueryInterface
         }
         catch (Exception $e)
         {
-            $paymentTransaction
-                  ->setProcessingStage(PaymentTransaction::STAGE_FINISHED)
-                  ->setStatus(PaymentTransaction::STATUS_ERROR);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
 
             throw $e;
         }
@@ -122,9 +120,7 @@ implements      QueryInterface
         }
         catch (Exception $e)
         {
-            $paymentTransaction
-                  ->setProcessingStage(PaymentTransaction::STAGE_FINISHED)
-                  ->setStatus(PaymentTransaction::STATUS_ERROR);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
 
             throw $e;
         }
@@ -270,7 +266,7 @@ implements      QueryInterface
                                           implode(', ', $missedFields) . ". \n");
         }
 
-        $this->validateClientOrderId($paymentTransaction, $response);
+        $this->validateClientPaymentId($paymentTransaction, $response);
     }
 
     /**
@@ -289,7 +285,7 @@ implements      QueryInterface
             throw new ValidationException("Unknown response type '{$response->getType()}'");
         }
 
-        $this->validateClientOrderId($paymentTransaction, $response);
+        $this->validateClientPaymentId($paymentTransaction, $response);
     }
 
     /**
@@ -301,29 +297,8 @@ implements      QueryInterface
      */
     protected function updatePaymentTransactionOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
-        if($response->isApproved())
-        {
-            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_APPROVED);
-        }
-        elseif($response->hasHtml() || $response->hasRedirectUrl())
-        {
-            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_REDIRECTED);
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
-        }
-        elseif($response->isProcessing())
-        {
-            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_CREATED);
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
-        }
-
-        if(strlen($response->getPaynetPaymentId()) > 0)
-        {
-            $paymentTransaction
-                ->getPayment()
-                ->setPaynetPaymentId($response->getPaynetPaymentId())
-            ;
-        }
+        $paymentTransaction->setStatus($response->getStatus());
+        $this->setPaynetPaynetId($paymentTransaction, $response);
     }
 
     /**
@@ -335,16 +310,16 @@ implements      QueryInterface
      */
     protected function updatePaymentTransactionOnError(PaymentTransaction $paymentTransaction, Response $response)
     {
-        $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
-
         if ($response->isDeclined())
         {
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_DECLINED);
+            $paymentTransaction->setStatus($response->getStatus());
         }
         else
         {
             $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
         }
+
+        $this->setPaynetPaynetId($paymentTransaction, $response);
     }
 
     /**
@@ -398,7 +373,7 @@ implements      QueryInterface
      *
      * @throws ValidationException
      */
-    protected function validateClientOrderId(PaymentTransaction $paymentTransaction, Response $response)
+    protected function validateClientPaymentId(PaymentTransaction $paymentTransaction, Response $response)
     {
         $paymentClientPaymentId = $paymentTransaction->getPayment()->getClientPaymentId();
 
@@ -407,6 +382,23 @@ implements      QueryInterface
         {
             throw new ValidationException("Response clientPaymentId '{$response->getClientPaymentId()}' does " .
                                           "not match Payment clientPaymentId '{$paymentClientPaymentId}'");
+        }
+    }
+
+    /**
+     * Set paynet payment id to payment transaction
+     *
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
+     * @param       Response                $response               Query response
+     */
+    protected function setPaynetPaynetId(PaymentTransaction $paymentTransaction, Response $response)
+    {
+        if(strlen($response->getPaynetPaymentId()) > 0)
+        {
+            $paymentTransaction
+                ->getPayment()
+                ->setPaynetPaymentId($response->getPaynetPaymentId())
+            ;
         }
     }
 }

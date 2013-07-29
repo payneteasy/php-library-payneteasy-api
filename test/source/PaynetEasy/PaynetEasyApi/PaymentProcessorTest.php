@@ -160,9 +160,6 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessPaynetEasyCallbackOnFinishedPayment()
     {
-        $paymentTransaction  = new PaymentTransaction;
-        $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
-
         $handlerCalled = false;
         $handler  = function() use (&$handlerCalled)
         {
@@ -171,7 +168,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setHandler(PaymentProcessor::HANDLER_FINISH_PROCESSING, $handler);
 
-        $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'fake')), $paymentTransaction);
+        $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'fake')), new PaymentTransaction);
 
         $this->assertTrue($handlerCalled);
     }

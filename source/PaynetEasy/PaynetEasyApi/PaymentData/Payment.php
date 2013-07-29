@@ -43,6 +43,7 @@ class Payment extends Data
     (
         self::STATUS_PROCESSING,
         self::STATUS_APPROVED,
+        self::STATUS_FILTERED,
         self::STATUS_DECLINED,
         self::STATUS_ERROR
     );
