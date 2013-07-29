@@ -170,7 +170,8 @@ $displayException = function(Exception $exception)
  *
  * @see ./common/functions.php
  * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
- * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeCallback()
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::processCustomerReturn()
+ * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::processPaynetEasyCallback()
  */
 $getPaymentProcessor = function() use ($displayException,
                                        $savePayment,

@@ -141,7 +141,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($handlerCalled);
     }
 
-    public function testExecuteCallback()
+    public function testProcessPaynetEasyCallback()
     {
         $handlerCalled = false;
         $handler  = function() use (&$handlerCalled)
@@ -151,14 +151,14 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setHandler(PaymentProcessor::HANDLER_FINISH_PROCESSING, $handler);
 
-        $response = $this->object->executeCallback(new CallbackResponse(array('type' => 'fake')), new Payment);
+        $response = $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'fake')), new Payment);
 
         $this->assertTrue($handlerCalled);
         $this->assertNotNull($response);
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Transport\CallbackResponse', $response);
     }
 
-    public function testExecuteCallbackOnFinishedPayment()
+    public function testProcessPaynetEasyCallbackOnFinishedPayment()
     {
         $payment  = new Payment;
         $payment->setProcessingStage(Payment::STAGE_FINISHED);
@@ -171,12 +171,12 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setHandler(PaymentProcessor::HANDLER_FINISH_PROCESSING, $handler);
 
-        $this->object->executeCallback(new CallbackResponse(array('type' => 'fake')), $payment);
+        $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'fake')), $payment);
 
         $this->assertTrue($handlerCalled);
     }
 
-    public function testExecuteCallbackWithException()
+    public function testProcessPaynetEasyCallbackException()
     {
         $handlerCalled = false;
         $handler  = function() use (&$handlerCalled)
@@ -186,7 +186,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setHandler(PaymentProcessor::HANDLER_CATCH_EXCEPTION, $handler);
 
-        $this->object->executeCallback(new CallbackResponse(array('type' => 'sale')), new Payment);
+        $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'sale')), new Payment);
 
         $this->assertTrue($handlerCalled);
     }

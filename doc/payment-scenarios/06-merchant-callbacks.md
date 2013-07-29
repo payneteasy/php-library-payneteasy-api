@@ -22,4 +22,8 @@ status              |
 type                |
 control             |
 
-[Пример обработки возврата пользователя, аналогичен обработке обратного вызова](../00-basic-tutorial.md#stage_2)
+[Пример выполнения запроса sale](../../example/sale.php#L102)
+[Пример выполнения запроса preauth](../../example/preauth.php#L102)
+[Пример выполнения запроса sale-form](../../example/sale-form.php#L81)
+[Пример выполнения запроса preauth-form](../../example/preauth-form.php#81)
+[Пример выполнения запроса transfer-form](../../example/transfer-form.php#81)

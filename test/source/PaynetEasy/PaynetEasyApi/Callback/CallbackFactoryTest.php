@@ -26,12 +26,12 @@ class CallbackFactoryTest extends \PHPUnit_Framework_TestCase
     public function testGetCallback()
     {
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Callback\RedirectUrlCallback',
-                                $this->object->getCallback(new CallbackResponse()));
+                                $this->object->getCallback('redirect_url'));
 
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Callback\FakeCallback',
-                                $this->object->getCallback(new CallbackResponse(array('type' => 'fake'))));
+                                $this->object->getCallback('fake'));
 
-        $saleCallback = $this->object->getCallback(new CallbackResponse(array('type' => 'sale')));
+        $saleCallback = $this->object->getCallback('sale');
 
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Callback\ServerCallbackUrlCallback', $saleCallback);
         $this->assertEquals('sale', $this->readAttribute($saleCallback, 'callbackType'));
@@ -43,7 +43,7 @@ class CallbackFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetQueryWithUnknownClass()
     {
-        $this->object->getCallback(new CallbackResponse(array('type' => 'unknown')), array());
+        $this->object->getCallback('unknown');
     }
 
     /**
@@ -52,6 +52,6 @@ class CallbackFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetQueryWithNotCallbackClass()
     {
-        $this->object->getCallback(new CallbackResponse(array('type' => 'notcallback')), array());
+        $this->object->getCallback('notcallback');
     }
 }

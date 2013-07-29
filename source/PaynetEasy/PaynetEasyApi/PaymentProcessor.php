@@ -151,6 +151,21 @@ class PaymentProcessor
     }
 
     /**
+     * Executes payment gateway processor for customer return from payment form or 3D-auth
+     *
+     * @param       CallbackResponse        $callbackResponse       Callback object with data from payment gateway
+     * @param       Payment                 $payment                Payment for processing
+     *
+     * @return      CallbackResponse                                Validated payment gateway callback
+     */
+    public function processCustomerReturn(CallbackResponse $callbackResponse, Payment $payment)
+    {
+        $callbackResponse->setType('redirect_url');
+
+        return $this->processPaynetEasyCallback($callbackResponse, $payment);
+    }
+
+    /**
      * Executes payment gateway callback processor
      *
      * @param       CallbackResponse        $callbackResponse       Callback object with data from payment gateway
@@ -158,19 +173,11 @@ class PaymentProcessor
      *
      * @return      CallbackResponse                                Validated payment gateway callback
      */
-    public function executeCallback(CallbackResponse $callbackResponse, Payment $payment)
+    public function processPaynetEasyCallback(CallbackResponse $callbackResponse, Payment $payment)
     {
-        // prevent double processing for finished payment
-        if ($payment->isFinished())
-        {
-            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment);
-
-            return $callbackResponse;
-        }
-
         try
         {
-            $this->getCallback($callbackResponse)
+            $this->getCallback($callbackResponse->getType())
                  ->processCallback($payment, $callbackResponse);
         }
         catch (Exception $e)
@@ -205,14 +212,14 @@ class PaymentProcessor
     /**
      * Create API callback processor by callback response
      *
-     * @param       \PaynetEasy\PaynetEasyApi\Transport\CallbackResponse        $callbackResponse       Callback response
+     * @param       string              $callbackType                       Callback response type
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Callback\CallbackInterface                                Callback processor
+     * @return      \PaynetEasy\PaynetEasyApi\Callback\CallbackInterface    Callback processor
      */
-    public function getCallback(CallbackResponse $callbackResponse)
+    public function getCallback($callbackType)
     {
         return $this->getCallbackFactory()
-                    ->getCallback($callbackResponse);
+                    ->getCallback($callbackType);
     }
 
     /**

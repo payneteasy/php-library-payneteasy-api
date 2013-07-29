@@ -83,10 +83,21 @@ elseif ($_GET['stage'] == 'updateStatus')
  * Третий этап обработки платежа.
  * Обработка возврата пользователя от PaynetEasy, если была проведена 3D-авторизация
  */
-elseif ($_GET['stage'] == 'processCustomerReturn' || $_GET['stage'] == 'processPaynetEasyCallback')
+elseif ($_GET['stage'] == 'processCustomerReturn')
 {
     /**
      * Обработаем данные, полученные от PaynetEasy
      */
-    $getPaymentProcessor()->executeCallback(new CallbackResponse($_REQUEST), $loadPayment());
+    $getPaymentProcessor()->processCustomerReturn(new CallbackResponse($_POST), $loadPayment());
+}
+/**
+ * Дополнительный этап обработки платежа.
+ * Обработка коллбэка от PaynetEasy.
+ */
+elseif ($_GET['stage'] == 'processPaynetEasyCallback')
+{
+    /**
+     * Обработаем данные, полученные от PaynetEasy
+     */
+    $getPaymentProcessor()->processPaynetEasyCallback(new CallbackResponse($_GET), $loadPayment());
 }

@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
+use PaynetEasy\PaynetEasyApi\Utils\String;
 use RuntimeException;
 
 class CallbackFactory implements CallbackFactoryInterface
@@ -29,16 +29,9 @@ class CallbackFactory implements CallbackFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getCallback(CallbackResponse $callback)
+    public function getCallback($callbackType)
     {
-        $callbackType = $callback->getType();
-
-        if (empty($callbackType))
-        {
-            return $this->instantiateCallback(__NAMESPACE__ . '\\RedirectUrlCallback', 'redirect_url');
-        }
-
-        $callbackClass  = __NAMESPACE__ . '\\' . ucfirst($callbackType) . 'Callback';
+        $callbackClass  = __NAMESPACE__ . '\\' . String::camelize($callbackType) . 'Callback';
 
         if (class_exists($callbackClass, true))
         {

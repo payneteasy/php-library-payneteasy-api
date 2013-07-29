@@ -50,16 +50,33 @@ if (!isset($_GET['stage']))
         'query_config'          =>  $getConfig()
     ));
 
+    /**
+     * Выполним запрос preauth-form
+     *
+     * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
+     * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::updatePaymentOnSuccess()
+     */
     $getPaymentProcessor()->executeQuery('sale-form', $payment);
 }
 /**
  * Второй этап обработки платежа.
  * Обработка возврата пользователя от PaynetEasy
  */
-elseif ($_GET['stage'] == 'processCustomerReturn' || $_GET['stage'] == 'processPaynetEasyCallback')
+elseif ($_GET['stage'] == 'processCustomerReturn')
 {
     /**
      * Обработаем данные, полученные от PaynetEasy
      */
-    $getPaymentProcessor()->executeCallback(new CallbackResponse($_REQUEST), $loadPayment());
+    $getPaymentProcessor()->processCustomerReturn(new CallbackResponse($_POST), $loadPayment());
+}
+/**
+ * Дополнительный этап обработки платежа.
+ * Обработка коллбэка от PaynetEasy.
+ */
+elseif ($_GET['stage'] == 'processPaynetEasyCallback')
+{
+    /**
+     * Обработаем данные, полученные от PaynetEasy
+     */
+    $getPaymentProcessor()->processPaynetEasyCallback(new CallbackResponse($_GET), $loadPayment());
 }

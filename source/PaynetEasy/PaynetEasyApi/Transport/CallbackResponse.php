@@ -40,4 +40,14 @@ class CallbackResponse extends Response
     {
         return $this->getValue('merchantdata');
     }
+
+    /**
+     * Set callback type
+     *
+     * @param       string      $type       Callback type
+     */
+    public function setType($type)
+    {
+        $this->offsetSet('type', $type);
+    }
 }

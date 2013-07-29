@@ -235,7 +235,7 @@
 4. <a name="stage_2_step_6"></a>Запуск обработки данных, полученных при возвращении пользователя с платежной формы:
 
     ```php
-    $paymentProcessor->executeCallback(new CallbackResponse($_REQUEST), $payment);
+    $paymentProcessor->processCustomerReturn(new CallbackResponse($_POST), $payment);
     ```
     Будут выполнены следующие шаги:
     1. Проверка данных, полученные по возвращении клиента с платежной формы PaynetEasy (суперглобальный массив $_REQUEST)
