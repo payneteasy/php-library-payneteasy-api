@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
 
 use PaynetEasy\PaynetEasyApi\Transport\Response;
@@ -31,9 +31,9 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testCreateRequest($controlCode)
     {
-        $payment  = $this->getPayment();
+        $paymentTransaction  = $this->getPaymentTransaction();
 
-        $request        = $this->object->createRequest($payment);
+        $request        = $this->object->createRequest($paymentTransaction);
         $requestFields  = $request->getRequestFields();
 
 
@@ -53,7 +53,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testCreateRequestWithEmptyFields()
     {
-        $payment = new Payment(array
+        $paymentTransaction = new PaymentTransaction(array
         (
             'query_config'  => new QueryConfig(array
             (
@@ -61,7 +61,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
             ))
         ));
 
-        $this->object->createRequest($payment);
+        $this->object->createRequest($paymentTransaction);
     }
 
     /**
@@ -70,10 +70,11 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testCreateRequestWithInvalidFields()
     {
-        $payment = $this->getPayment();
-        $payment->setClientPaymentId('123456789012345678901234567890');
+        $paymentTransaction = $this->getPaymentTransaction();
+        $paymentTransaction->getPayment()->setClientPaymentId('123456789012345678901234567890');
+        $paymentTransaction->getQueryConfig()->setLogin('123456789012345678901234567890123456789012345678901234567890');
 
-        $this->object->createRequest($payment);
+        $this->object->createRequest($paymentTransaction);
     }
 
     /**
@@ -81,11 +82,11 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessResponseDeclined(array $response)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
-        $this->object->processResponse($payment, new Response($response));
+        $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_DECLINED);
+        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_DECLINED);
     }
 
     abstract public function testProcessResponseDeclinedProvider();
@@ -95,11 +96,11 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessResponseProcessing(array $response)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
-        $this->object->processResponse($payment, new Response($response));
+        $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($payment, Payment::STAGE_CREATED, Payment::STATUS_PROCESSING);
+        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_CREATED, PaymentTransaction::STATUS_PROCESSING);
     }
 
     abstract public function testProcessResponseProcessingProvider();
@@ -109,16 +110,16 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessResponseError(array $response)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
         try
         {
             // Payment error after check
-            $this->object->processResponse($payment, new Response($response));
+            $this->object->processResponse($paymentTransaction, new Response($response));
         }
         catch (PaynetException $error)
         {
-            $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_ERROR);
+            $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_ERROR);
 
             $this->assertEquals($response['error-message'], $error->getMessage());
             $this->assertEquals($response['error-code'], $error->getCode());
@@ -139,7 +140,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     public function testProcessSuccessResponseWithInvalidType()
     {
         $response = new Response(array('type' => 'invalid'));
-        $this->object->processResponse($this->getPayment(), $response);
+        $this->object->processResponse($this->getPaymentTransaction(), $response);
     }
 
     /**
@@ -149,7 +150,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     public function testProcessSuccessResponseWithEmptyFields()
     {
         $response = new Response(array('type' => $this->successType));
-        $this->object->processResponse($this->getPayment(), $response);
+        $this->object->processResponse($this->getPaymentTransaction(), $response);
     }
 
     /**
@@ -169,7 +170,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
             'client_orderid'    => 'invalid'
         ));
 
-        $this->object->processResponse($this->getPayment(), $response);
+        $this->object->processResponse($this->getPaymentTransaction(), $response);
     }
 
     /**
@@ -179,7 +180,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     public function testProcessErrorResponseWithoutType()
     {
         $response = new Response(array('status'    => 'error'));
-        $this->object->processResponse($this->getPayment(), $response);
+        $this->object->processResponse($this->getPaymentTransaction(), $response);
     }
 
     /**
@@ -194,7 +195,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
             'client_orderid'    => 'invalid'
         ));
 
-        $this->object->processResponse($this->getPayment(), $response);
+        $this->object->processResponse($this->getPaymentTransaction(), $response);
     }
 
     /**
@@ -203,10 +204,10 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      * @param       string      $processingStage     Payment transport stage
      * @param       string      $status             Payment bank status
      */
-    protected function assertPaymentStates(Payment $payment, $processingStage, $status)
+    protected function assertPaymentStates(PaymentTransaction $paymentTransaction, $processingStage, $status)
     {
-        $this->assertEquals($processingStage, $payment->getProcessingStage());
-        $this->assertEquals($status, $payment->getStatus());
+        $this->assertEquals($processingStage, $paymentTransaction->getProcessingStage());
+        $this->assertEquals($status, $paymentTransaction->getStatus());
     }
 
     /**
@@ -215,6 +216,20 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
      * @return      \PaynetEasy\PaynetEasyApi\PaymentData\Payment       Payment for test
      */
     abstract protected function getPayment();
+
+    /**
+     * Get payment transaction for test
+     *
+     * @return      \PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction
+     */
+    protected function getPaymentTransaction()
+    {
+        return new PaymentTransaction(array
+        (
+            'payment'       => $this->getPayment(),
+            'query_config'  => $this->getConfig()
+        ));
+    }
 
     /**
      * Get query config

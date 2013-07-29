@@ -33,7 +33,7 @@ class MakeRebillQueryTest extends SaleQueryTest
         ));
     }
 
-    public function getPayment()
+    public function getPaymentTransaction()
     {
         $recurrentCard = new RecurrentCard(array
         (
@@ -41,7 +41,13 @@ class MakeRebillQueryTest extends SaleQueryTest
             'cvv2'      => 123
         ));
 
-        return parent::getPayment()
-            ->setRecurrentCardFrom($recurrentCard);
+        $paymentTransaction = parent::getPaymentTransaction();
+
+        $paymentTransaction
+            ->getPayment()
+            ->setRecurrentCardFrom($recurrentCard)
+        ;
+
+        return $paymentTransaction;
     }
 }

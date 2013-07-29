@@ -22,7 +22,7 @@ class SaleQueryTest extends QueryTestPrototype
     /**
      * @var \PaynetEasy\PaynetEasyApi\PaymentData\Payment
      */
-    protected $payment;
+    protected $paymentTransaction;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -136,8 +136,7 @@ class SaleQueryTest extends QueryTestPrototype
                 'expire_month'          => '12',
                 'expire_year'           => '14',
                 'cvv2'                  => '084'
-            )),
-            'query_config'          => $this->getConfig()
+            ))
         ));
     }
 }

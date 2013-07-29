@@ -2,14 +2,14 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
 class FakeCallback implements CallbackInterface
 {
-    public function processCallback(Payment $payment, CallbackResponse $callback)
+    public function processCallback(PaymentTransaction $paymentTransaction, CallbackResponse $callback)
     {
-        $payment->setProcessingStage(Payment::STAGE_FINISHED);
+        $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
         return $callback;
     }
 }

@@ -2,24 +2,24 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 class FakeQuery implements QueryInterface
 {
     static public $request;
 
-    public function createRequest(Payment $payment)
+    public function createRequest(PaymentTransaction $paymentTransaction)
     {
         return static::$request;
     }
 
-    public function processResponse(Payment $payment, Response $response)
+    public function processResponse(PaymentTransaction $paymentTransaction, Response $response)
     {
         if ($response->isApproved())
         {
-            $payment->setProcessingStage(Payment::STAGE_FINISHED);
-            $payment->setStatus(Payment::STATUS_APPROVED);
+            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_APPROVED);
         }
 
         return $response;

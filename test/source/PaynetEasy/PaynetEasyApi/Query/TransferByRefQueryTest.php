@@ -143,8 +143,7 @@ class TransferByRefQueryTest extends QueryTestPrototype
             'recurrent_card_to'     => new RecurrentCard(array
             (
                 'cardrefid'             => self::RECURRENT_CARD_TO_ID,
-            )),
-            'query_config'          => $this->getConfig()
+            ))
         ));
     }
 }

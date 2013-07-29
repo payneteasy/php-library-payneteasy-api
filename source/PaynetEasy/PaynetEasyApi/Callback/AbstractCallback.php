@@ -4,7 +4,7 @@ namespace PaynetEasy\PaynetEasyApi\Callback;
 
 use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
@@ -56,22 +56,22 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * {@inheritdoc}
      */
-    final public function processCallback(Payment $payment, CallbackResponse $callbackResponse)
+    final public function processCallback(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
     {
         try
         {
-            $this->validateCallback($payment, $callbackResponse);
+            $this->validateCallback($paymentTransaction, $callbackResponse);
         }
         catch (Exception $e)
         {
-            $payment
-                  ->setProcessingStage(Payment::STAGE_FINISHED)
-                  ->setStatus(Payment::STATUS_ERROR);
+            $paymentTransaction
+                  ->setProcessingStage(PaymentTransaction::STAGE_FINISHED)
+                  ->setStatus(PaymentTransaction::STATUS_ERROR);
 
             throw $e;
         }
 
-        $this->updatePayment($payment, $callbackResponse);
+        $this->updatePaymentTransaction($paymentTransaction, $callbackResponse);
 
         if ($callbackResponse->isError())
         {
@@ -104,13 +104,13 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Validates payment query config
      *
-     * @param       Payment         $payment        Payment
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
      *
-     * @throws      RuntimeException                Some query config property is empty
+     * @throws      RuntimeException                                Some query config property is empty
      */
-    public function validateQueryConfig(Payment $payment)
+    public function validateQueryConfig(PaymentTransaction $paymentTransaction)
     {
-        $queryConfig = $payment->getQueryConfig();
+        $queryConfig = $paymentTransaction->getQueryConfig();
 
         if(strlen($queryConfig->getSigningKey()) === 0)
         {
@@ -121,15 +121,15 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Validates callback
      *
-     * @param       Payment                 $payment                Payment
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
      * @param       CallbackResponse        $callbackResponse       Callback from paynet
      *
      * @throws      ValidationException                             Validation error
      */
-    protected function validateCallback(Payment $payment, CallbackResponse $callbackResponse)
+    protected function validateCallback(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
     {
-        $this->validateQueryConfig($payment);
-        $this->validateSignature($payment, $callbackResponse);
+        $this->validateQueryConfig($paymentTransaction);
+        $this->validateSignature($paymentTransaction, $callbackResponse);
 
         if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
         {
@@ -150,7 +150,7 @@ abstract class AbstractCallback implements CallbackInterface
             }
             elseif ($propertyPath)
             {
-                $propertyValue = PropertyAccessor::getValue($payment, $propertyPath, false);
+                $propertyValue = PropertyAccessor::getValue($paymentTransaction, $propertyPath, false);
                 $callbackValue = $callbackResponse[$fieldName];
 
                 if ($propertyValue != $callbackValue)
@@ -182,35 +182,38 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Updates Payment by Callback data
      *
-     * @param       Payment        $payment        Payment for updating
-     * @param       CallbackResponse        $response       Callback for payment updating
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for updating
+     * @param       CallbackResponse        $response               Callback for payment updating
      */
-    protected function updatePayment(Payment $payment, CallbackResponse $callbackResponse)
+    protected function updatePaymentTransaction(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
     {
         if($callbackResponse->isError())
         {
-            $payment->setProcessingStage(Payment::STAGE_FINISHED);
-            $payment->setStatus(Payment::STATUS_ERROR);
+            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
         }
         elseif($callbackResponse->isApproved())
         {
-            $payment->setProcessingStage(Payment::STAGE_FINISHED);
-            $payment->setStatus(Payment::STATUS_APPROVED);
+            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_APPROVED);
         }
         // "filtered" status is interpreted as the "DECLINED"
         elseif($callbackResponse->isDeclined())
         {
-            $payment->setProcessingStage(Payment::STAGE_FINISHED);
-            $payment->setStatus(Payment::STATUS_DECLINED);
+            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_DECLINED);
         }
         // If it does not redirect, it's processing
         elseif($callbackResponse->isProcessing())
         {
-            $payment->setProcessingStage(Payment::STAGE_CREATED);
-            $payment->setStatus(Payment::STATUS_PROCESSING);
+            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_CREATED);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
         }
 
-        $payment->setPaynetPaymentId($callbackResponse->getPaynetPaymentId());
+        $paymentTransaction
+            ->getPayment()
+            ->setPaynetPaymentId($callbackResponse->getPaynetPaymentId())
+        ;
     }
 
     /**
@@ -220,7 +223,7 @@ abstract class AbstractCallback implements CallbackInterface
      *
      * @throws      ValidationException                     Invalid control code
      */
-    protected function validateSignature(Payment $payment, CallbackResponse $callback)
+    protected function validateSignature(PaymentTransaction $paymentTransaction, CallbackResponse $callback)
     {
         // This is SHA-1 checksum of the concatenation
         // status + orderid + client_orderid + merchant-control.
@@ -229,7 +232,7 @@ abstract class AbstractCallback implements CallbackInterface
             $callback->getStatus() .
             $callback->getPaynetPaymentId() .
             $callback->getClientPaymentId() .
-            $payment->getQueryConfig()->getSigningKey()
+            $paymentTransaction->getQueryConfig()->getSigningKey()
         );
 
         if($expectedControl !== $callback->getControlCode())

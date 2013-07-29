@@ -6,7 +6,7 @@ use PaynetEasy\PaynetEasyApi\Transport\GatewayClientInterface;
 use PaynetEasy\PaynetEasyApi\Query\QueryFactoryInterface;
 use PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
@@ -23,7 +23,7 @@ class PaymentProcessor
     /**
      * Payment changed and should be saved
      */
-    const HANDLER_SAVE_PAYMENT      = 'save_payment';
+    const HANDLER_SAVE_CHANGES      = 'save_payment';
 
     /**
      * Payment status not changed and should be updated
@@ -57,7 +57,7 @@ class PaymentProcessor
      */
     static protected $allowedHandlers = array
     (
-        self::HANDLER_SAVE_PAYMENT,
+        self::HANDLER_SAVE_CHANGES,
         self::HANDLER_STATUS_UPDATE,
         self::HANDLER_SHOW_HTML,
         self::HANDLER_REDIRECT,
@@ -106,22 +106,22 @@ class PaymentProcessor
     /**
      * Executes payment API query
      *
-     * @param       string      $queryName      Payment API query name
-     * @param       Payment     $payment        Payment for processing
+     * @param       string                  $queryName              Payment API query name
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for processing
      *
-     * @return      Response                    Query response
+     * @return      Response                                        Query response
      */
-    public function executeQuery($queryName, Payment $payment)
+    public function executeQuery($queryName, PaymentTransaction $paymentTransaction)
     {
         $query = $this->getQuery($queryName);
 
         try
         {
-            $request = $query->createRequest($payment);
+            $request = $query->createRequest($paymentTransaction);
         }
         catch (Exception $e)
         {
-            $this->handleException($e, $payment);
+            $this->handleException($e, $paymentTransaction);
             return;
         }
 
@@ -131,21 +131,21 @@ class PaymentProcessor
         }
         catch (Exception $e)
         {
-            $this->handleException($e, $payment);
+            $this->handleException($e, $paymentTransaction);
             return;
         }
 
         try
         {
-            $query->processResponse($payment, $response);
+            $query->processResponse($paymentTransaction, $response);
         }
         catch (Exception $e)
         {
-            $this->handleException($e, $payment, $response);
+            $this->handleException($e, $paymentTransaction, $response);
             return;
         }
 
-        $this->handleQueryResult($payment, $response);
+        $this->handleQueryResult($paymentTransaction, $response);
 
         return $response;
     }
@@ -154,43 +154,43 @@ class PaymentProcessor
      * Executes payment gateway processor for customer return from payment form or 3D-auth
      *
      * @param       CallbackResponse        $callbackResponse       Callback object with data from payment gateway
-     * @param       Payment                 $payment                Payment for processing
+     * @param       PaymentTransaction      $paymentTransaction     Payment for processing
      *
      * @return      CallbackResponse                                Validated payment gateway callback
      */
-    public function processCustomerReturn(CallbackResponse $callbackResponse, Payment $payment)
+    public function processCustomerReturn(CallbackResponse $callbackResponse, PaymentTransaction $paymentTransaction)
     {
         $callbackResponse->setType('redirect_url');
 
-        return $this->processPaynetEasyCallback($callbackResponse, $payment);
+        return $this->processPaynetEasyCallback($callbackResponse, $paymentTransaction);
     }
 
     /**
      * Executes payment gateway callback processor
      *
      * @param       CallbackResponse        $callbackResponse       Callback object with data from payment gateway
-     * @param       Payment                 $payment                Payment for processing
+     * @param       PaymentTransaction      $paymentTransaction     Payment for processing
      *
      * @return      CallbackResponse                                Validated payment gateway callback
      */
-    public function processPaynetEasyCallback(CallbackResponse $callbackResponse, Payment $payment)
+    public function processPaynetEasyCallback(CallbackResponse $callbackResponse, PaymentTransaction $paymentTransaction)
     {
         try
         {
             $this->getCallback($callbackResponse->getType())
-                 ->processCallback($payment, $callbackResponse);
+                 ->processCallback($paymentTransaction, $callbackResponse);
         }
         catch (Exception $e)
         {
-            $this->handleException($e, $payment, $callbackResponse);
+            $this->handleException($e, $paymentTransaction, $callbackResponse);
             return;
         }
 
-        $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $callbackResponse);
+        $this->callHandler(self::HANDLER_SAVE_CHANGES, $paymentTransaction, $callbackResponse);
 
-        if ($payment->isFinished())
+        if ($paymentTransaction->isFinished())
         {
-            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment, $callbackResponse);
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $paymentTransaction, $callbackResponse);
         }
 
         return $callbackResponse;
@@ -225,9 +225,9 @@ class PaymentProcessor
     /**
      * Make request to the Paynet gateway
      *
-     * @param   \PaynetEasy\PaynetEasyApi\Transport\Request    $request    Request data
+     * @param   \PaynetEasy\PaynetEasyApi\Transport\Request     $request    Request data
      *
-     * @return  \PaynetEasy\PaynetEasyApi\Transport\Response               Response data
+     * @return  \PaynetEasy\PaynetEasyApi\Transport\Response                Response data
      */
     public function makeRequest(Request $request)
     {
@@ -311,7 +311,7 @@ class PaymentProcessor
     /**
      * Set gateway client
      *
-     * @param       \PaynetEasy\PaynetEasyApi\Transport\GatewayClientInterface         $gatewayClient          Gateway client
+     * @param       GatewayClientInterface      $gatewayClient      Gateway client
      *
      * @return      self
      */
@@ -325,7 +325,7 @@ class PaymentProcessor
     /**
      * Set query factory
      *
-     * @param       \PaynetEasy\PaynetEasyApi\Query\QueryFactoryInterface              $queryFactory           Query factory
+     * @param       QueryFactoryInterface       $queryFactory       Query factory
      *
      * @return      self
      */
@@ -339,7 +339,7 @@ class PaymentProcessor
     /**
      * Set callback factory
      *
-     * @param       \PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface        $callbackFactory        Callback factory
+     * @param       CallbackFactoryInterface        $callbackFactory        Callback factory
      *
      * @return      self
      */
@@ -353,7 +353,7 @@ class PaymentProcessor
     /**
      * Get getaway client
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Transport\GatewayClientInterface         Gateway client
+     * @return      GatewayClientInterface      Gateway client
      */
     public function getGatewayClient()
     {
@@ -368,7 +368,7 @@ class PaymentProcessor
     /**
      * Get query factory
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Query\QueryFactoryInterface              Query factory
+     * @return      QueryFactoryInterface       Query factory
      */
     public function getQueryFactory()
     {
@@ -383,7 +383,7 @@ class PaymentProcessor
     /**
      * Get callback factory
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Callback\CallbackFactoryInterface        Callback factory
+     * @return      CallbackFactoryInterface        Callback factory
      */
     public function getCallbackFactory()
     {
@@ -398,38 +398,38 @@ class PaymentProcessor
     /**
      * Handle query result.
      * Method calls handlers for:
-     *  - self::HANDLER_SAVE_PAYMENT            on method call
-     *  - self::HANDLER_FINISH_PROCESSING       if payment is finished
-     *  - self::HANDLER_STATUS_UPDATE           if needed payment status update
+     *  - self::HANDLER_SAVE_CHANGES            on method call
+     *  - self::HANDLER_FINISH_PROCESSING       if payment transaction is finished
+     *  - self::HANDLER_STATUS_UPDATE           if needed payment transaction status update
      *  - self::HANDLER_SHOW_HTML               if needed to show response html
      *  - self::HANDLER_REDIRECT                if needed to redirect to response URL
      *
-     * @param       Payment         $payment        Payment
-     * @param       Response        $response       Query result
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
+     * @param       Response                $response               Query result
      */
-    protected function handleQueryResult(Payment $payment, Response $response)
+    protected function handleQueryResult(PaymentTransaction $paymentTransaction, Response $response)
     {
-        $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
+        $this->callHandler(self::HANDLER_SAVE_CHANGES, $paymentTransaction, $response);
 
         // no action needed if payment is finished
-        if ($payment->isFinished())
+        if ($paymentTransaction->isFinished())
         {
-            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $payment, $response);
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $paymentTransaction, $response);
         }
         elseif ($response->hasRedirectUrl())
         {
             $response->setNeededAction(Response::NEEDED_REDIRECT);
-            $this->callHandler(self::HANDLER_REDIRECT, $response, $payment);
+            $this->callHandler(self::HANDLER_REDIRECT, $response, $paymentTransaction);
         }
         elseif ($response->hasHtml())
         {
             $response->setNeededAction(Response::NEEDED_SHOW_HTML);
-            $this->callHandler(self::HANDLER_SHOW_HTML, $response, $payment);
+            $this->callHandler(self::HANDLER_SHOW_HTML, $response, $paymentTransaction);
         }
         elseif ($response->isProcessing())
         {
             $response->setNeededAction(Response::NEEDED_STATUS_UPDATE);
-            $this->callHandler(self::HANDLER_STATUS_UPDATE, $response, $payment);
+            $this->callHandler(self::HANDLER_STATUS_UPDATE, $response, $paymentTransaction);
         }
     }
 
@@ -437,29 +437,29 @@ class PaymentProcessor
      * Handle throwned exception. If configured self::HANDLER_CATCH_EXCEPTION, handler will be called,
      * if not - exception will be rethrowned.
      *
-     * @param       Exception       $exception      Exception to handle
-     * @param       Payment         $payment        Payment
-     * @param       Response        $response       Response or CallbackResponse
+     * @param       Exception               $exception              Exception to handle
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
+     * @param       Response                $response               Response or CallbackResponse
      *
-     * @throws      Exception                       Rethrowned exception, if has not self::HANDLER_CATCH_EXCEPTION
+     * @throws      Exception                                       Rethrowned exception, if has not self::HANDLER_CATCH_EXCEPTION
      */
-    protected function handleException(Exception $exception, Payment $payment, Response $response = null)
+    protected function handleException(Exception $exception, PaymentTransaction $paymentTransaction, Response $response = null)
     {
-        $this->callHandler(self::HANDLER_SAVE_PAYMENT, $payment, $response);
+        $this->callHandler(self::HANDLER_SAVE_CHANGES, $paymentTransaction, $response);
 
         if (!$this->hasHandler(self::HANDLER_CATCH_EXCEPTION))
         {
             throw $exception;
         }
 
-        $this->callHandler(self::HANDLER_CATCH_EXCEPTION, $exception, $payment, $response);
+        $this->callHandler(self::HANDLER_CATCH_EXCEPTION, $exception, $paymentTransaction, $response);
     }
 
     /**
      * Executes handler callback.
      * Handler callback receives two parameters: Payment and Response (optional)
      *
-     * @param       string                                              $handlerName        Handler name
+     * @param       string      $handlerName        Handler name
      *
      * @return      self
      */

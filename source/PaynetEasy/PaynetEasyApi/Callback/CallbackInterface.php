@@ -2,16 +2,16 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
 interface CallbackInterface
 {
     /**
-     * Process API gateway Response and update Payment
+     * Process API gateway Response and update Payment transaction
      *
-     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\Payment               $payment                Payment for update
-     * @param       \PaynetEasy\PaynetEasyApi\Transport\CallbackResponse        $callbackResponse       Paynet callback
+     * @param       PaymentTransaction      $paymentTransaction     Payment for update
+     * @param       CallbackResponse        $callbackResponse       Paynet callback
      */
-    public function processCallback(Payment $payment, CallbackResponse $callbackResponse);
+    public function processCallback(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse);
 }

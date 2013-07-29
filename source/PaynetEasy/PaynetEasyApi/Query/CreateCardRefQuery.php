@@ -2,7 +2,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
@@ -17,8 +17,8 @@ class CreateCardRefQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',     'clientPaymentId',              true,   Validator::ID),
-        array('orderid',            'paynetPaymentId',              true,   Validator::ID),
+        array('client_orderid',     'payment.clientPaymentId',      true,   Validator::ID),
+        array('orderid',            'payment.paynetPaymentId',      true,   Validator::ID),
         array('login',              'queryConfig.login',            true,   Validator::MEDIUM_STRING)
     );
 
@@ -28,8 +28,8 @@ class CreateCardRefQuery extends AbstractQuery
     static protected $signatureDefinition = array
     (
         'queryConfig.login',
-        'clientPaymentId',
-        'paynetPaymentId',
+        'payment.clientPaymentId',
+        'payment.paynetPaymentId',
         'queryConfig.signingKey'
     );
 
@@ -52,33 +52,34 @@ class CreateCardRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function validatePayment(Payment $payment)
+    protected function validatePaymentTransaction(PaymentTransaction $paymentTransaction)
     {
-        parent::validatePayment($payment);
+        parent::validatePaymentTransaction($paymentTransaction);
 
-        $this->checkPaymentProcessingStage($payment);
+        $this->checkPaymentTransactionStatus($paymentTransaction);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function validateResponseOnSuccess(Payment $payment, Response $response)
+    protected function validateResponseOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
-        parent::validateResponseOnSuccess($payment, $response);
+        parent::validateResponseOnSuccess($paymentTransaction, $response);
 
-        $this->checkPaymentProcessingStage($payment);
+        $this->checkPaymentTransactionStatus($paymentTransaction);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function updatePaymentOnSuccess(Payment $payment, Response $response)
+    protected function updatePaymentTransactionOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
-        parent::updatePaymentOnSuccess($payment, $response);
+        parent::updatePaymentTransactionOnSuccess($paymentTransaction, $response);
 
         if($response->isApproved())
         {
-            $payment
+            $paymentTransaction
+                ->getPayment()
                 ->getRecurrentCardFrom()
                 ->setCardReferenceId($response->getCardReferenceId())
             ;
@@ -86,16 +87,16 @@ class CreateCardRefQuery extends AbstractQuery
     }
 
     /**
-     * Check Payment transport stage and bank status.
+     * Check payment transaction processing stage and bank status.
      * State must be STAGE_FINISHED and status must be STATUS_APPROVED.
      *
-     * @param       Payment        $payment        Payment for checking
+     * @param       PaymentTransaction      $paymentTransaction     Payment for checking
      */
-    protected function checkPaymentProcessingStage(Payment $payment)
+    protected function checkPaymentTransactionStatus(PaymentTransaction $paymentTransaction)
     {
-        if (!$payment->isFinished() || !$payment->isApproved())
+        if (!$paymentTransaction->isFinished() || !$paymentTransaction->isApproved())
         {
-            throw new ValidationException('Only approved and finished Payment can be used for create-card-ref-id');
+            throw new ValidationException('Only approved and finished payment transaction can be used for create-card-ref-id');
         }
     }
 }

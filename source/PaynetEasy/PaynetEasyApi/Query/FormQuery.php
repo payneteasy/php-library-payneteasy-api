@@ -15,27 +15,27 @@ class FormQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',         'clientPaymentId',              true,   Validator::ID),
-        array('order_desc',             'description',                  true,   Validator::LONG_STRING),
-        array('amount',                 'amount',                       true,   Validator::AMOUNT),
-        array('currency',               'currency',                     true,   Validator::CURRENCY),
-        array('address1',               'billingAddress.firstLine',     true,   Validator::MEDIUM_STRING),
-        array('city',                   'billingAddress.city',          true,   Validator::MEDIUM_STRING),
-        array('zip_code',               'billingAddress.zipCode',       true,   Validator::ZIP_CODE),
-        array('country',                'billingAddress.country',       true,   Validator::COUNTRY),
-        array('phone',                  'billingAddress.phone',         true,   Validator::PHONE),
-        array('ipaddress',              'customer.ipAddress',           true,   Validator::IP),
-        array('email',                  'customer.email',               true,   Validator::EMAIL),
-        array('redirect_url',           'queryConfig.redirectUrl',      true,   Validator::URL),
+        array('client_orderid',         'payment.clientPaymentId',              true,   Validator::ID),
+        array('order_desc',             'payment.description',                  true,   Validator::LONG_STRING),
+        array('amount',                 'payment.amount',                       true,   Validator::AMOUNT),
+        array('currency',               'payment.currency',                     true,   Validator::CURRENCY),
+        array('address1',               'payment.billingAddress.firstLine',     true,   Validator::MEDIUM_STRING),
+        array('city',                   'payment.billingAddress.city',          true,   Validator::MEDIUM_STRING),
+        array('zip_code',               'payment.billingAddress.zipCode',       true,   Validator::ZIP_CODE),
+        array('country',                'payment.billingAddress.country',       true,   Validator::COUNTRY),
+        array('phone',                  'payment.billingAddress.phone',         true,   Validator::PHONE),
+        array('ipaddress',              'payment.customer.ipAddress',           true,   Validator::IP),
+        array('email',                  'payment.customer.email',               true,   Validator::EMAIL),
+        array('redirect_url',           'queryConfig.redirectUrl',              true,   Validator::URL),
         // optional
-        array('first_name',             'customer.firstName',           false,  Validator::MEDIUM_STRING),
-        array('last_name',              'customer.lastName',            false,  Validator::MEDIUM_STRING),
-        array('ssn',                    'customer.ssn',                 false,  Validator::SSN),
-        array('birthday',               'customer.birthday',            false,  Validator::DATE),
-        array('state',                  'billingAddress.state',         false,  Validator::COUNTRY),
-        array('cell_phone',             'billingAddress.cellPhone',     false,  Validator::PHONE),
-        array('site_url',               'queryConfig.siteUrl',          false,  Validator::URL),
-        array('server_callback_url',    'queryConfig.callbackUrl',      false,  Validator::URL)
+        array('first_name',             'payment.customer.firstName',           false,  Validator::MEDIUM_STRING),
+        array('last_name',              'payment.customer.lastName',            false,  Validator::MEDIUM_STRING),
+        array('ssn',                    'payment.customer.ssn',                 false,  Validator::SSN),
+        array('birthday',               'payment.customer.birthday',            false,  Validator::DATE),
+        array('state',                  'payment.billingAddress.state',         false,  Validator::COUNTRY),
+        array('cell_phone',             'payment.billingAddress.cellPhone',     false,  Validator::PHONE),
+        array('site_url',               'queryConfig.siteUrl',                  false,  Validator::URL),
+        array('server_callback_url',    'queryConfig.callbackUrl',              false,  Validator::URL)
     );
 
     /**
@@ -44,9 +44,9 @@ class FormQuery extends AbstractQuery
     static protected $signatureDefinition = array
     (
         'queryConfig.endPoint',
-        'clientPaymentId',
-        'amountInCents',
-        'customer.email',
+        'payment.clientPaymentId',
+        'payment.amountInCents',
+        'payment.customer.email',
         'queryConfig.signingKey'
     );
 

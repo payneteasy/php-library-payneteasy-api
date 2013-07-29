@@ -2,25 +2,25 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 interface QueryInterface
 {
     /**
-     * Create API gateway Request from Payment data
+     * Create API gateway request from payment transaction data
      *
-     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\Payment      $payment        Payment for query
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for query
      *
-     * @return      \PaynetEasy\PaynetEasyApi\Transport\Request                                 Request object
+     * @return      Request                                         Request object
      */
-    public function createRequest(Payment $payment);
+    public function createRequest(PaymentTransaction $paymentTransaction);
 
     /**
-     * Process API gateway Response and update Payment
+     * Process API gateway response and update payment transaction
      *
-     * @param       \PaynetEasy\PaynetEasyApi\PaymentData\Payment      $payment        Payment for update
-     * @param       \PaynetEasy\PaynetEasyApi\Transport\Response                $response       API gateway Response
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for update
+     * @param       Response                $response               API gateway response
      */
-    public function processResponse(Payment $payment, Response $response);
+    public function processResponse(PaymentTransaction $paymentTransaction, Response $response);
 }

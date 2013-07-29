@@ -14,8 +14,8 @@ class StatusQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',     'clientPaymentId',                  true,    Validator::ID),
-        array('orderid',            'paynetPaymentId',                  true,    Validator::ID),
+        array('client_orderid',     'payment.clientPaymentId',          true,    Validator::ID),
+        array('orderid',            'payment.paynetPaymentId',          true,    Validator::ID),
         array('login',              'queryConfig.login',                true,    Validator::MEDIUM_STRING)
     );
 
@@ -25,8 +25,8 @@ class StatusQuery extends AbstractQuery
     static protected $signatureDefinition = array
     (
         'queryConfig.login',
-        'clientPaymentId',
-        'paynetPaymentId',
+        'payment.clientPaymentId',
+        'payment.paynetPaymentId',
         'queryConfig.signingKey'
     );
 

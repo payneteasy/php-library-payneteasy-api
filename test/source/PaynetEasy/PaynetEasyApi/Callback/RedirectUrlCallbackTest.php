@@ -76,7 +76,7 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
      */
     public function testProcessCallbackProcessing()
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
         $callback = array
         (
@@ -89,6 +89,6 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
 
         $callback['control'] = $this->createSignature($callback);
 
-        $this->object->processCallback($payment, new CallbackResponse($callback));
+        $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
     }
 }

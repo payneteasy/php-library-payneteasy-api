@@ -2,6 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
 
@@ -19,13 +20,13 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessCallbackApproved(array $callback)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
         $callback['control'] = $this->createSignature($callback);
 
-        $this->object->processCallback($payment, new CallbackResponse($callback));
+        $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
 
-        $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_APPROVED);
+        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_APPROVED);
     }
 
     abstract public function testProcessCallbackApprovedProvider();
@@ -35,13 +36,13 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessCallbackDeclined(array $callback)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
         $callback['control'] = $this->createSignature($callback);
 
-        $this->object->processCallback($payment, new CallbackResponse($callback));
+        $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
 
-        $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_DECLINED);
+        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_DECLINED);
     }
 
     abstract public function testProcessCallbackDeclinedProvider();
@@ -51,18 +52,18 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessCallbackError(array $callback)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
         $callback['control'] = $this->createSignature($callback);
 
         try
         {
             // Payment error after check
-            $this->object->processCallback($payment, new CallbackResponse($callback));
+            $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
         }
         catch (PaynetException $error)
         {
-            $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_ERROR);
+            $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_ERROR);
 
             $this->assertEquals($callback['error_message'], $error->getMessage());
             $this->assertEquals($callback['error_code'], $error->getCode());
@@ -82,9 +83,9 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessCallbackWithEmptyControl()
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
-        $this->object->processCallback($payment, new CallbackResponse);
+        $this->object->processCallback($paymentTransaction, new CallbackResponse);
     }
 
     /**
@@ -102,7 +103,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $callback['control'] = $this->createSignature($callback);
 
-        $this->object->processCallback($this->getPayment(), new CallbackResponse($callback));
+        $this->object->processCallback($this->getPaymentTransaction(), new CallbackResponse($callback));
     }
 
     /**
@@ -121,7 +122,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $callback['control'] = $this->createSignature($callback);
 
-        $this->object->processCallback($this->getPayment(), new CallbackResponse($callback));
+        $this->object->processCallback($this->getPaymentTransaction(), new CallbackResponse($callback));
     }
 
     /**
@@ -130,10 +131,10 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      * @param       string      $processingStage        Payment transport stage
      * @param       string      $status                 Payment bank status
      */
-    protected function assertPaymentStates(Payment $payment, $processingStage, $status)
+    protected function assertPaymentStates(PaymentTransaction $paymentTransaction, $processingStage, $status)
     {
-        $this->assertEquals($processingStage, $payment->getProcessingStage());
-        $this->assertEquals($status, $payment->getStatus());
+        $this->assertEquals($processingStage, $paymentTransaction->getProcessingStage());
+        $this->assertEquals($status, $paymentTransaction->getStatus());
     }
 
     /**
@@ -141,14 +142,17 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      *
      * @return      \PaynetEasy\PaynetEasyApi\PaymentData\Payment       Payment for test
      */
-    protected function getPayment()
+    protected function getPaymentTransaction()
     {
-        return new Payment(array
+        return new PaymentTransaction(array
         (
-            'client_payment_id'         =>  self::CLIENT_PAYMENT_ID,
-            'paynet_payment_id'         =>  self::PAYNET_PAYMENT_ID,
-            'amount'                    =>  0.99,
-            'currency'                  => 'USD',
+            'payment'                   =>  new Payment(array
+            (
+                'client_payment_id'         =>  self::CLIENT_PAYMENT_ID,
+                'paynet_payment_id'         =>  self::PAYNET_PAYMENT_ID,
+                'amount'                    =>  0.99,
+                'currency'                  => 'USD',
+            )),
             'queryConfig'               =>  new QueryConfig(array
             (
                 'signing_key'               =>  self::SIGNING_KEY

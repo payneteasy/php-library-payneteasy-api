@@ -2,6 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
@@ -47,11 +48,11 @@ class ReturnQueryTest extends QueryTestPrototype
      */
     public function testProcessResponseApproved(array $response)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
-        $this->object->processResponse($payment, new Response($response));
+        $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_APPROVED);
+        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_APPROVED);
     }
 
     public function testProcessResponseApprovedProvider()
@@ -144,7 +145,6 @@ class ReturnQueryTest extends QueryTestPrototype
             'paynet_payment_id'     => self::PAYNET_PAYMENT_ID,
             'amount'                => 99.1,
             'currency'              => 'EUR',
-            'query_config'          => $this->getConfig(),
             'comment'               => 'cancel payment'
         ));
     }

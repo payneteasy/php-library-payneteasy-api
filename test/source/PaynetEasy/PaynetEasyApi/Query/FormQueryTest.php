@@ -3,6 +3,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Transport\Response;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress;
 use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
@@ -61,11 +62,11 @@ class FormQueryTest extends QueryTestPrototype
      */
     public function testProcessResponseProcessing(array $response)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
-        $this->object->processResponse($payment, new Response($response));
+        $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($payment, Payment::STAGE_REDIRECTED, Payment::STATUS_PROCESSING);
+        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_REDIRECTED, PaymentTransaction::STATUS_PROCESSING);
     }
 
     public function testProcessResponseProcessingProvider()
@@ -135,8 +136,7 @@ class FormQueryTest extends QueryTestPrototype
                 'zip_code'              => '1235',
                 'phone'                 => '660-485-6353',
                 'cell_phone'            => '660-485-6353'
-            )),
-            'query_config'          => $this->getConfig()
+            ))
         ));
     }
 }

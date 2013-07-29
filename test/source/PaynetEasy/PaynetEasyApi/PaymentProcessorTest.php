@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
@@ -56,7 +56,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         $this->object->setHandler($handlerName, $handler);
         $this->object->setGatewayClient(new FakeGatewayClient);
 
-        $this->assertNotNull($this->object->executeQuery('fake', new Payment));
+        $this->assertNotNull($this->object->executeQuery('fake', new PaymentTransaction));
         $this->assertTrue($handlerCalled);
     }
 
@@ -90,7 +90,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteQueryWithoutExceptionHandler()
     {
-        $this->object->executeQuery('sale', new Payment);
+        $this->object->executeQuery('sale', new PaymentTransaction);
     }
 
     public function testExecuteQueryWithExceptionOnCreateRequest()
@@ -102,7 +102,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         };
 
         $this->object->setHandler(PaymentProcessor::HANDLER_CATCH_EXCEPTION, $handler);
-        $this->object->executeQuery('sale', new Payment);
+        $this->object->executeQuery('sale', new PaymentTransaction);
 
         $this->assertTrue($handlerCalled);
     }
@@ -117,7 +117,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setHandler(PaymentProcessor::HANDLER_CATCH_EXCEPTION, $handler);
 
-        $this->object->executeQuery('fake', new Payment);
+        $this->object->executeQuery('fake', new PaymentTransaction);
 
         $this->assertTrue($handlerCalled);
     }
@@ -136,7 +136,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         $this->object->setHandler(PaymentProcessor::HANDLER_CATCH_EXCEPTION, $handler);
         $this->object->setGatewayClient(new FakeGatewayClient);
 
-        $this->object->executeQuery('exception', new Payment);
+        $this->object->executeQuery('exception', new PaymentTransaction);
 
         $this->assertTrue($handlerCalled);
     }
@@ -151,7 +151,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setHandler(PaymentProcessor::HANDLER_FINISH_PROCESSING, $handler);
 
-        $response = $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'fake')), new Payment);
+        $response = $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'fake')), new PaymentTransaction);
 
         $this->assertTrue($handlerCalled);
         $this->assertNotNull($response);
@@ -160,8 +160,8 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessPaynetEasyCallbackOnFinishedPayment()
     {
-        $payment  = new Payment;
-        $payment->setProcessingStage(Payment::STAGE_FINISHED);
+        $paymentTransaction  = new PaymentTransaction;
+        $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
 
         $handlerCalled = false;
         $handler  = function() use (&$handlerCalled)
@@ -171,7 +171,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setHandler(PaymentProcessor::HANDLER_FINISH_PROCESSING, $handler);
 
-        $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'fake')), $payment);
+        $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'fake')), $paymentTransaction);
 
         $this->assertTrue($handlerCalled);
     }
@@ -186,7 +186,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setHandler(PaymentProcessor::HANDLER_CATCH_EXCEPTION, $handler);
 
-        $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'sale')), new Payment);
+        $this->object->processPaynetEasyCallback(new CallbackResponse(array('type' => 'sale')), new PaymentTransaction);
 
         $this->assertTrue($handlerCalled);
     }
@@ -195,18 +195,18 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $this->object->setHandlers(array
         (
-            PaymentProcessor::HANDLER_SAVE_PAYMENT => function (){},
+            PaymentProcessor::HANDLER_SAVE_CHANGES => function (){},
             PaymentProcessor::HANDLER_SHOW_HTML => function (){}
         ));
 
         $this->assertCount(2, $this->object->handlers);
-        $this->assertArrayHasKey(PaymentProcessor::HANDLER_SAVE_PAYMENT, $this->object->handlers);
+        $this->assertArrayHasKey(PaymentProcessor::HANDLER_SAVE_CHANGES, $this->object->handlers);
         $this->assertArrayHasKey(PaymentProcessor::HANDLER_SHOW_HTML, $this->object->handlers);
 
-        $this->object->removeHandler(PaymentProcessor::HANDLER_SAVE_PAYMENT);
+        $this->object->removeHandler(PaymentProcessor::HANDLER_SAVE_CHANGES);
 
         $this->assertCount(1, $this->object->handlers);
-        $this->assertArrayNotHasKey(PaymentProcessor::HANDLER_SAVE_PAYMENT, $this->object->handlers);
+        $this->assertArrayNotHasKey(PaymentProcessor::HANDLER_SAVE_CHANGES, $this->object->handlers);
         $this->assertArrayHasKey(PaymentProcessor::HANDLER_SHOW_HTML, $this->object->handlers);
 
         $this->object->removeHandlers();
@@ -222,8 +222,8 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
             $handlerCalled = true;
         };
 
-        $this->object->setHandler(PaymentProcessor::HANDLER_SAVE_PAYMENT, $handler);
-        $this->object->callHandler(PaymentProcessor::HANDLER_SAVE_PAYMENT, new Payment, new Response);
+        $this->object->setHandler(PaymentProcessor::HANDLER_SAVE_CHANGES, $handler);
+        $this->object->callHandler(PaymentProcessor::HANDLER_SAVE_CHANGES, new PaymentTransaction, new Response);
 
         $this->assertTrue($handlerCalled);
     }
@@ -243,7 +243,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetHandlerNotCallable()
     {
-        $this->object->setHandler(PaymentProcessor::HANDLER_SAVE_PAYMENT, 'not_callable');
+        $this->object->setHandler(PaymentProcessor::HANDLER_SAVE_CHANGES, 'not_callable');
     }
 }
 

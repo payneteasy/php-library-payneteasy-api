@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 
 /**
@@ -29,13 +29,13 @@ class ServerCallbackUrlCallbackTest extends CallbackTestPrototype
      */
     public function testProcessCallbackProcessing(array $callback)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
         $callback['control'] = $this->createSignature($callback);
 
-        $this->object->processCallback($payment, new CallbackResponse($callback));
+        $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
 
-        $this->assertPaymentStates($payment, Payment::STAGE_CREATED, Payment::STATUS_PROCESSING);
+        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_CREATED, PaymentTransaction::STATUS_PROCESSING);
     }
 
     public function testProcessCallbackProcessingProvider()

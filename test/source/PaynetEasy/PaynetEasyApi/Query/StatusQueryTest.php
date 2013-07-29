@@ -2,6 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
@@ -45,11 +46,11 @@ class StatusQueryTest extends QueryTestPrototype
      */
     public function testProcessRedirect(array $response)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
-        $this->object->processResponse($payment, new Response($response));
+        $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($payment, Payment::STAGE_REDIRECTED, Payment::STATUS_PROCESSING);
+        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_REDIRECTED, PaymentTransaction::STATUS_PROCESSING);
     }
 
     public function testProcessRedirectProvider()
@@ -82,11 +83,11 @@ class StatusQueryTest extends QueryTestPrototype
      */
     public function testProcessResponseApproved(array $response)
     {
-        $payment = $this->getPayment();
+        $paymentTransaction = $this->getPaymentTransaction();
 
-        $this->object->processResponse($payment, new Response($response));
+        $this->object->processResponse($paymentTransaction, new Response($response));
 
-        $this->assertPaymentStates($payment, Payment::STAGE_FINISHED, Payment::STATUS_APPROVED);
+        $this->assertPaymentStates($paymentTransaction, PaymentTransaction::STAGE_FINISHED, PaymentTransaction::STATUS_APPROVED);
     }
 
     public function testProcessResponseApprovedProvider()
@@ -176,8 +177,7 @@ class StatusQueryTest extends QueryTestPrototype
         return new Payment(array
         (
             'client_payment_id'     => self::CLIENT_PAYMENT_ID,
-            'paynet_payment_id'     => self::PAYNET_PAYMENT_ID,
-            'query_config'          => $this->getConfig()
+            'paynet_payment_id'     => self::PAYNET_PAYMENT_ID
         ));
     }
 }

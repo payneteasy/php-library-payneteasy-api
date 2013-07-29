@@ -3,28 +3,12 @@
 namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
 use RuntimeException;
-use Exception;
 
 /**
  * Container for payment data
  */
 class Payment extends Data
 {
-    /**
-     * Payment created in bank
-     */
-    const STAGE_CREATED     = 'created';
-
-    /**
-     * Customer is redirected to Paynet to perform additional steps
-     */
-    const STAGE_REDIRECTED  = 'redirected';
-
-    /**
-     * Payment processing is ended
-     */
-    const STAGE_FINISHED    = 'ended';
-
     /**
      * Payment is now processing
      */
@@ -49,18 +33,6 @@ class Payment extends Data
      * Payment processed with error
      */
     const STATUS_ERROR      = 'error';
-
-    /**
-     * All allowed payment processing stages
-     *
-     * @var array
-     */
-    static protected $allowedProcessingStages = array
-    (
-        self::STAGE_CREATED,
-        self::STAGE_REDIRECTED,
-        self::STAGE_FINISHED
-    );
 
     /**
      * All allowed payment statuses in bank
@@ -125,25 +97,11 @@ class Payment extends Data
     protected $comment;
 
     /**
-     * Payment processing stage
-     *
-     * @var string
-     */
-    protected $processingStage;
-
-    /**
      * Payment status in bank
      *
      * @var string
      */
     protected $status;
-
-    /**
-     * Payment query config
-     *
-     * @var \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     */
-    protected $queryConfig;
 
     /**
      * Payment customer
@@ -333,35 +291,6 @@ class Payment extends Data
     }
 
     /**
-     * Set payment query config
-     *
-     * @param       QueryConfig         $queryConfig        Payment query config
-     *
-     * @return      self
-     */
-    public function setQueryConfig(QueryConfig $queryConfig)
-    {
-        $this->queryConfig = $queryConfig;
-
-        return $this;
-    }
-
-    /**
-     * Get payment query config
-     *
-     * @return      QueryConfig
-     */
-    public function getQueryConfig()
-    {
-        if (empty($this->queryConfig))
-        {
-            $this->queryConfig = new QueryConfig;
-        }
-
-        return $this->queryConfig;
-    }
-
-    /**
      * Set payment customer
      *
      * @param       Customer       $customer           Payment customer
@@ -504,65 +433,6 @@ class Payment extends Data
         }
 
         return $this->recurrentCardTo;
-    }
-
-    /**
-     * Set payment processing stage
-     *
-     * @param       string      $processingStage      Payment transport stage
-     *
-     * @return      self
-     */
-    public function setProcessingStage($processingStage)
-    {
-        if (!in_array($processingStage, static::$allowedProcessingStages))
-        {
-            throw new RuntimeException("Unknown transport stage given: '{$processingStage}'");
-        }
-
-        $this->processingStage = $processingStage;
-
-        return $this;
-    }
-
-    /**
-     * Get payment processing state
-     *
-     * @return      string
-     */
-    public function getProcessingStage()
-    {
-        return $this->processingStage;
-    }
-
-    /**
-     * True, if payment created in bank
-     *
-     * @return      boolean
-     */
-    public function isCreated()
-    {
-        return $this->getProcessingStage() == self::STAGE_CREATED;
-    }
-
-    /**
-     * True, if customer is redirected to Paynet to perform additional steps
-     *
-     * @return      boolean
-     */
-    public function isRedirected()
-    {
-        return $this->getProcessingStage() == self::STAGE_REDIRECTED;
-    }
-
-    /**
-     * True, if transport stage is finished
-     *
-     * @return      boolean
-     */
-    public function isFinished()
-    {
-        return $this->getProcessingStage() == self::STAGE_FINISHED;
     }
 
     /**

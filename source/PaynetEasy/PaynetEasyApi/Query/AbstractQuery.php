@@ -4,7 +4,7 @@ namespace PaynetEasy\PaynetEasyApi\Query;
 use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
 
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
@@ -74,27 +74,27 @@ implements      QueryInterface
     /**
      * {@inheritdoc}
      */
-    final public function createRequest(Payment $payment)
+    final public function createRequest(PaymentTransaction $paymentTransaction)
     {
         try
         {
-            $this->validatePayment($payment);
+            $this->validatePaymentTransaction($paymentTransaction);
         }
         catch (Exception $e)
         {
-            $payment
-                  ->setProcessingStage(Payment::STAGE_FINISHED)
-                  ->setStatus(Payment::STATUS_ERROR);
+            $paymentTransaction
+                  ->setProcessingStage(PaymentTransaction::STAGE_FINISHED)
+                  ->setStatus(PaymentTransaction::STATUS_ERROR);
 
             throw $e;
         }
 
-        $request = new Request($this->paymentToRequest($payment));
+        $request = new Request($this->paymentTransactionToRequest($paymentTransaction));
 
         $request->setApiMethod($this->apiMethod)
-                ->setEndPoint($payment->getQueryConfig()->getEndPoint())
-                ->setGatewayUrl($payment->getQueryConfig()->getGatewayUrl())
-                ->setSignature($this->createSignature($payment));
+                ->setEndPoint($paymentTransaction->getQueryConfig()->getEndPoint())
+                ->setGatewayUrl($paymentTransaction->getQueryConfig()->getGatewayUrl())
+                ->setSignature($this->createSignature($paymentTransaction));
 
         return $request;
     }
@@ -102,34 +102,34 @@ implements      QueryInterface
     /**
      * {@inheritdoc}
      */
-    final public function processResponse(Payment $payment, Response $response)
+    final public function processResponse(PaymentTransaction $paymentTransaction, Response $response)
     {
         if(   !$response->isProcessing()
            && !$response->isApproved())
         {
             $validate = array($this, 'validateResponseOnError');
-            $update   = array($this, 'updatePaymentOnError');
+            $update   = array($this, 'updatePaymentTransactionOnError');
         }
         else
         {
             $validate = array($this, 'validateResponseOnSuccess');
-            $update   = array($this, 'updatePaymentOnSuccess');
+            $update   = array($this, 'updatePaymentTransactionOnSuccess');
         }
 
         try
         {
-            call_user_func($validate, $payment, $response);
+            call_user_func($validate, $paymentTransaction, $response);
         }
         catch (Exception $e)
         {
-            $payment
-                  ->setProcessingStage(Payment::STAGE_FINISHED)
-                  ->setStatus(Payment::STATUS_ERROR);
+            $paymentTransaction
+                  ->setProcessingStage(PaymentTransaction::STAGE_FINISHED)
+                  ->setStatus(PaymentTransaction::STATUS_ERROR);
 
             throw $e;
         }
 
-        call_user_func($update, $payment, $response);
+        call_user_func($update, $paymentTransaction, $response);
 
         if ($response->isError())
         {
@@ -140,13 +140,13 @@ implements      QueryInterface
     }
 
     /**
-     * Validates payment before query constructing
+     * Validates payment transaction before query constructing
      *
-     * @param       Payment        $payment        Payment for validation
+     * @param       PaymentTransaction      $paymentTransaction        Payment transaction for validation
      */
-    protected function validatePayment(Payment $payment)
+    protected function validatePaymentTransaction(PaymentTransaction $paymentTransaction)
     {
-        $this->validateQueryConfig($payment);
+        $this->validateQueryConfig($paymentTransaction);
 
         $errorMessage   = '';
         $missedFields   = array();
@@ -156,7 +156,7 @@ implements      QueryInterface
         {
             list($fieldName, $propertyPath, $isFieldRequired, $validationRule) = $fieldDescription;
 
-            $fieldValue = PropertyAccessor::getValue($payment, $propertyPath, false);
+            $fieldValue = PropertyAccessor::getValue($paymentTransaction, $propertyPath, false);
 
             if (!empty($fieldValue))
             {
@@ -194,13 +194,13 @@ implements      QueryInterface
     }
 
     /**
-     * Creates request from Payment
+     * Creates request from payment transaction
      *
-     * @param       Payment        $payment        Payment for request
+     * @param       PaymentTransaction      $paymentTransaction     Payment for request
      *
-     * @return      array                          Request
+     * @return      array                                           Request
      */
-    protected function paymentToRequest(Payment $payment)
+    protected function paymentTransactionToRequest(PaymentTransaction $paymentTransaction)
     {
         $request = array();
 
@@ -208,7 +208,7 @@ implements      QueryInterface
         {
             list($fieldName, $propertyPath) = $fieldDescription;
 
-            $fieldValue = PropertyAccessor::getValue($payment, $propertyPath);
+            $fieldValue = PropertyAccessor::getValue($paymentTransaction, $propertyPath);
 
             if (!empty($fieldValue))
             {
@@ -223,29 +223,30 @@ implements      QueryInterface
      * Generates the control code is used to ensure that it is a particular
      * Merchant (and not a fraudster) that initiates the transaction.
      *
-     * @param       Payment        $payment        Payment to generate control code
+     * @param       PaymentTransaction      $paymentTransaction     Payment to generate control code
      *
-     * @return      string                         Generated control code
+     * @return      string                                          Generated control code
      */
-    protected function createSignature(Payment $payment)
+    protected function createSignature(PaymentTransaction $paymentTransaction)
     {
         $controlCode = '';
 
         foreach (static::$signatureDefinition as $propertyPath)
         {
-            $controlCode .= PropertyAccessor::getValue($payment, $propertyPath);
+            $controlCode .= PropertyAccessor::getValue($paymentTransaction, $propertyPath);
         }
 
         return sha1($controlCode);
     }
 
     /**
-     * Validates response before Payment updating if Payment is processing or approved
+     * Validates response before payment transaction updating
+     * if payment transaction is processing or approved
      *
-     * @param       Payment        $payment        Payment
-     * @param       Response       $response       Response for validating
+     * @param       PaymentTransaction      $paymentTransaction     Payment
+     * @param       Response                $response               Response for validating
      */
-    protected function validateResponseOnSuccess(Payment $payment, Response $response)
+    protected function validateResponseOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
         if ($response->getType() !== static::$successResponseType)
         {
@@ -269,21 +270,17 @@ implements      QueryInterface
                                           implode(', ', $missedFields) . ". \n");
         }
 
-        if (     strlen($response->getClientPaymentId()) > 0
-            &&   $payment->getClientPaymentId() != $response->getClientPaymentId())
-        {
-            throw new ValidationException("Response clientPaymentId '{$response->getClientPaymentId()}' does " .
-                                          "not match Payment clientPaymentId '{$payment->getClientPaymentId()}'");
-        }
+        $this->validateClientOrderId($paymentTransaction, $response);
     }
 
     /**
-     * Validates response before Payment updating if Payment is not processing or approved
+     * Validates response before payment transaction updating
+     * if payment transaction is not processing or approved
      *
-     * @param       Payment        $payment        Payment
-     * @param       Response       $response       Response for validating
+     * @param       PaymentTransaction      $paymentTransaction     Payment
+     * @param       Response                $response               Response for validating
      */
-    protected function validateResponseOnError(Payment $payment, Response $response)
+    protected function validateResponseOnError(PaymentTransaction $paymentTransaction, Response $response)
     {
         $allowedTypes = array(static::$successResponseType, 'error', 'validation-error');
 
@@ -292,61 +289,61 @@ implements      QueryInterface
             throw new ValidationException("Unknown response type '{$response->getType()}'");
         }
 
-        if (     strlen($response->getClientPaymentId()) > 0
-            &&   $payment->getClientPaymentId() !== $response->getClientPaymentId())
-        {
-            throw new ValidationException("Response clientPaymentId '{$response->getClientPaymentId()}' does " .
-                                          "not match Payment clientPaymentId '{$payment->getClientPaymentId()}'");
-        }
+        $this->validateClientOrderId($paymentTransaction, $response);
     }
 
     /**
-     * Updates Payment by Response data if Payment is processing or approved
+     * Updates payment transaction by query response data
+     * if payment transaction is processing or approved
      *
-     * @param       Payment       $payment        Payment for updating
-     * @param       Response      $response       Response for payment updating
+     * @param       PaymentTransaction      $paymentTransaction     Payment for updating
+     * @param       Response                $response               Response for payment updating
      */
-    protected function updatePaymentOnSuccess(Payment $payment, Response $response)
+    protected function updatePaymentTransactionOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
         if($response->isApproved())
         {
-            $payment->setProcessingStage(Payment::STAGE_FINISHED);
-            $payment->setStatus(Payment::STATUS_APPROVED);
+            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_APPROVED);
         }
         elseif($response->hasHtml() || $response->hasRedirectUrl())
         {
-            $payment->setProcessingStage(Payment::STAGE_REDIRECTED);
-            $payment->setStatus(Payment::STATUS_PROCESSING);
+            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_REDIRECTED);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
         }
         elseif($response->isProcessing())
         {
-            $payment->setProcessingStage(Payment::STAGE_CREATED);
-            $payment->setStatus(Payment::STATUS_PROCESSING);
+            $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_CREATED);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
         }
 
         if(strlen($response->getPaynetPaymentId()) > 0)
         {
-            $payment->setPaynetPaymentId($response->getPaynetPaymentId());
+            $paymentTransaction
+                ->getPayment()
+                ->setPaynetPaymentId($response->getPaynetPaymentId())
+            ;
         }
     }
 
     /**
-     * Updates Payment by Response data if Payment is not processing or approved
+     * Updates payment transaction by query response data
+     * if payment transaction is not processing or approved
      *
-     * @param       Payment       $payment        Payment for updating
-     * @param       Response      $response       Response for payment updating
+     * @param       PaymentTransaction      $paymentTransaction     Payment for updating
+     * @param       Response                $response               Response for payment updating
      */
-    protected function updatePaymentOnError(Payment $payment, Response $response)
+    protected function updatePaymentTransactionOnError(PaymentTransaction $paymentTransaction, Response $response)
     {
-        $payment->setProcessingStage(Payment::STAGE_FINISHED);
+        $paymentTransaction->setProcessingStage(PaymentTransaction::STAGE_FINISHED);
 
         if ($response->isDeclined())
         {
-            $payment->setStatus(Payment::STATUS_DECLINED);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_DECLINED);
         }
         else
         {
-            $payment->setStatus(Payment::STATUS_ERROR);
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
         }
     }
 
@@ -379,17 +376,37 @@ implements      QueryInterface
     }
 
     /**
-     * Validates payment query config
+     * Validates payment transaction query config
      *
-     * @param       Payment         $payment        Payment
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
      *
-     * @throws      RuntimeException                Some query config property is empty
+     * @throws      RuntimeException                                Some query config property is empty
      */
-    public function validateQueryConfig(Payment $payment)
+    protected function validateQueryConfig(PaymentTransaction $paymentTransaction)
     {
-        if(strlen($payment->getQueryConfig()->getSigningKey()) === 0)
+        if(strlen($paymentTransaction->getQueryConfig()->getSigningKey()) === 0)
         {
             throw new ValidationException("Property 'signingKey' does not defined in Payment property 'queryConfig'");
+        }
+    }
+
+    /**
+     * Check, is payment transaction client order id and query response client order id equal or not.
+     *
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
+     * @param       Response                $response               Query response
+     *
+     * @throws ValidationException
+     */
+    protected function validateClientOrderId(PaymentTransaction $paymentTransaction, Response $response)
+    {
+        $paymentClientPaymentId = $paymentTransaction->getPayment()->getClientPaymentId();
+
+        if (     strlen($response->getClientPaymentId()) > 0
+            &&   $paymentClientPaymentId !== $response->getClientPaymentId())
+        {
+            throw new ValidationException("Response clientPaymentId '{$response->getClientPaymentId()}' does " .
+                                          "not match Payment clientPaymentId '{$paymentClientPaymentId}'");
         }
     }
 }

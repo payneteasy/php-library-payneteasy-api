@@ -105,7 +105,6 @@ class CaptureQueryTest extends QueryTestPrototype
             'paynet_payment_id'     => self::PAYNET_PAYMENT_ID,
             'amount'                => 99.1,
             'currency'              => 'EUR',
-            'query_config'          => $this->getConfig()
         ));
     }
 }

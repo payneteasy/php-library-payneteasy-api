@@ -2,9 +2,8 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
-use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
-use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Get_Cardholder_details_with_Card_Reference_Identifier
@@ -17,8 +16,8 @@ class GetCardInfoQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('cardrefid',          'recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
-        array('login',              'queryConfig.login',                    true,    Validator::MEDIUM_STRING)
+        array('cardrefid',          'payment.recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
+        array('login',              'queryConfig.login',                            true,    Validator::MEDIUM_STRING)
     );
 
     /**
@@ -27,7 +26,7 @@ class GetCardInfoQuery extends AbstractQuery
     static protected $signatureDefinition = array
     (
         'queryConfig.login',
-        'recurrentCardFrom.cardReferenceId',
+        'payment.recurrentCardFrom.cardReferenceId',
         'queryConfig.signingKey'
     );
 
@@ -53,25 +52,18 @@ class GetCardInfoQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function updatePaymentOnSuccess(Payment $payment, Response $response)
+    protected function updatePaymentTransactionOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
-        parent::updatePaymentOnSuccess($payment, $response);
+        parent::updatePaymentTransactionOnSuccess($paymentTransaction, $response);
 
-        $payment->getRecurrentCardFrom()
+        $paymentTransaction
+            ->getPayment()
+            ->getRecurrentCardFrom()
             ->setCardPrintedName($response['card-printed-name'])
             ->setExpireYear($response['expire-year'])
             ->setExpireMonth($response['expire-month'])
             ->setBin($response['bin'])
-            ->setLastFourDigits($response['last-four-digits']);
-    }
-
-    protected function validateResponseOnSuccess(Payment $payment, Response $response)
-    {
-        parent::validateResponseOnSuccess($payment, $response);
-
-        if(!$payment->getRecurrentCardFrom())
-        {
-            throw new ValidationException('Recurrent card must be defined in Payment');
-        }
+            ->setLastFourDigits($response['last-four-digits'])
+        ;
     }
 }

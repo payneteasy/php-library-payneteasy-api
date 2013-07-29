@@ -15,17 +15,17 @@ class MakeRebillQuery extends AbstractQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',         'clientPaymentId',                      true,    Validator::ID),
-        array('order_desc',             'description',                          true,    Validator::LONG_STRING),
-        array('amount',                 'amount',                               true,    Validator::AMOUNT),
-        array('currency',               'currency',                             true,    Validator::CURRENCY),
-        array('ipaddress',              'customer.ipAddress',                   true,    Validator::IP),
-        array('cardrefid',              'recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
-        array('login',                  'queryConfig.login',                    true,    Validator::MEDIUM_STRING),
+        array('client_orderid',         'payment.clientPaymentId',                      true,    Validator::ID),
+        array('order_desc',             'payment.description',                          true,    Validator::LONG_STRING),
+        array('amount',                 'payment.amount',                               true,    Validator::AMOUNT),
+        array('currency',               'payment.currency',                             true,    Validator::CURRENCY),
+        array('ipaddress',              'payment.customer.ipAddress',                   true,    Validator::IP),
+        array('cardrefid',              'payment.recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
+        array('login',                  'queryConfig.login',                            true,    Validator::MEDIUM_STRING),
         // optional
-        array('comment',                'comment',                              false,   Validator::MEDIUM_STRING),
-        array('cvv2',                   'recurrentCardFrom.cvv2',               false,   Validator::CVV2),
-        array('server_callback_url',    'queryConfig.callbackUrl',              false,   Validator::URL)
+        array('comment',                'payment.comment',                              false,   Validator::MEDIUM_STRING),
+        array('cvv2',                   'payment.recurrentCardFrom.cvv2',               false,   Validator::CVV2),
+        array('server_callback_url',    'queryConfig.callbackUrl',                      false,   Validator::URL)
     );
 
     /**
@@ -34,9 +34,9 @@ class MakeRebillQuery extends AbstractQuery
     static protected $signatureDefinition = array
     (
         'queryConfig.endPoint',
-        'clientPaymentId',
-        'amountInCents',
-        'recurrentCardFrom.cardReferenceId',
+        'payment.clientPaymentId',
+        'payment.amountInCents',
+        'payment.recurrentCardFrom.cardReferenceId',
         'queryConfig.signingKey'
     );
 
