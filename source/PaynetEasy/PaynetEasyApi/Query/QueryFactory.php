@@ -27,15 +27,6 @@ implements  QueryFactoryInterface
             return $this->instantiateQuery($queryClass, $apiQueryName);
         }
 
-        // :NOTICE:         Imenem          18.06.13
-        //
-        // All "*-form" methods has the same format,
-        // therefore they have only one class - FormQuery
-        if (preg_match('#.*-form$#i', $apiQueryName))
-        {
-            return $this->instantiateQuery(__NAMESPACE__ . '\\FormQuery', $apiQueryName);
-        }
-
         throw new RuntimeException("Unknown query class '{$queryClass}' for query with name '{$apiQueryName}'");
     }
 

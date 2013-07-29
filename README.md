@@ -1,4 +1,4 @@
-# PHP Library for Paynet API integration [![Build Status](https://travis-ci.org/payneteasy/php-library-paynet.png)](https://travis-ci.org/payneteasy/php-library-paynet)
+# PHP Library for Paynet API integration [![Build Status](https://travis-ci.org/payneteasy/php-library-payneteasy-api.png?branch=transaction-based)](https://travis-ci.org/payneteasy/php-library-paynet)
 ## Доступная функциональность
 
 Данная библиотека позволяет производить оплату с помощью [merchant PaynetEasy API](http://wiki.payneteasy.com/index.php/PnE:Merchant_API). На текущий момент реализованы следующие платежные методы:

@@ -74,7 +74,7 @@ implements      QueryInterface
     /**
      * {@inheritdoc}
      */
-    final public function createRequest(PaymentTransaction $paymentTransaction)
+    public function createRequest(PaymentTransaction $paymentTransaction)
     {
         try
         {
@@ -100,7 +100,7 @@ implements      QueryInterface
     /**
      * {@inheritdoc}
      */
-    final public function processResponse(PaymentTransaction $paymentTransaction, Response $response)
+    public function processResponse(PaymentTransaction $paymentTransaction, Response $response)
     {
         if(   !$response->isProcessing()
            && !$response->isApproved())
@@ -290,7 +290,6 @@ implements      QueryInterface
 
     /**
      * Updates payment transaction by query response data
-     * if payment transaction is processing or approved
      *
      * @param       PaymentTransaction      $paymentTransaction     Payment for updating
      * @param       Response                $response               Response for payment updating

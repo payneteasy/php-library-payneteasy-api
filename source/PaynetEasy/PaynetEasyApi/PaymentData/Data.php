@@ -58,7 +58,9 @@ class Data implements Serializable
 
         foreach ($this as $propertyName => $propertyValue)
         {
-            if (is_scalar($propertyValue) || $propertyValue instanceof self)
+            if (    is_scalar($propertyValue)
+                ||  is_array($propertyValue)
+                ||  $propertyValue instanceof Serializable)
             {
                 $objectData[$propertyName] = $propertyValue;
             }

@@ -3,11 +3,12 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Process_Recurrent_Payment
  */
-class MakeRebillQuery extends AbstractQuery
+class MakeRebillQuery extends AbstractPaymentQuery
 {
     /**
      * {@inheritdoc}
@@ -43,17 +44,5 @@ class MakeRebillQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    static protected $responseFieldsDefinition = array
-    (
-        'type',
-        'status',
-        'paynet-order-id',
-        'merchant-order-id',
-        'serial-number'
-    );
-
-    /**
-     * {@inheritdoc}
-     */
-    static protected $successResponseType = 'async-response';
+    static protected $paymentStatus = Payment::STATUS_CAPTURE;
 }

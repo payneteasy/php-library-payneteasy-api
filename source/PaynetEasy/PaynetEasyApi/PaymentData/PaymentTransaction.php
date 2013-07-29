@@ -87,8 +87,6 @@ class PaymentTransaction extends Data
 
         $this->status = $status;
 
-        $this->getPayment()->setStatus($this->status);
-
         return $this;
     }
 
@@ -172,6 +170,11 @@ class PaymentTransaction extends Data
     public function setPayment(Payment $payment)
     {
         $this->payment = $payment;
+
+        if (!$payment->hasPaymentTransaction($this))
+        {
+            $payment->addPaymentTransaction($this);
+        }
 
         return $this;
     }

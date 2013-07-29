@@ -2,11 +2,12 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Process_Capture_Transaction
  */
-class CaptureQuery extends AbstractQuery
+class CaptureQuery extends AbstractPaymentQuery
 {
     /**
      * {@inheritdoc}
@@ -35,17 +36,5 @@ class CaptureQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    static protected $responseFieldsDefinition = array
-    (
-        'type',
-        'status',
-        'paynet-order-id',
-        'merchant-order-id',
-        'serial-number'
-    );
-
-    /**
-     * {@inheritdoc}
-     */
-    static protected $successResponseType = 'async-response';
+    static protected $paymentStatus = Payment::STATUS_CAPTURE;
 }

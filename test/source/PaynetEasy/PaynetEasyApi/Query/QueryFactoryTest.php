@@ -31,7 +31,7 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
         $formQuery = $this->object->getQuery('sale-form');
 
-        $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Query\FormQuery', $formQuery);
+        $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Query\SaleFormQuery', $formQuery);
         $this->assertEquals('sale-form', $this->readAttribute($formQuery, 'apiMethod'));
     }
 

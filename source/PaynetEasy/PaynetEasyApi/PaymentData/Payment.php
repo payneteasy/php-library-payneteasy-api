@@ -10,24 +10,24 @@ use RuntimeException;
 class Payment extends Data
 {
     /**
-     * Payment is now processing
+     * Payment is new, and not processing
      */
-    const STATUS_PROCESSING = 'processing';
+    const STATUS_NEW        = 'new';
 
     /**
-     * Payment approved
+     * Payment is under preauth, or preauth is finished
      */
-    const STATUS_APPROVED   = 'approved';
+    const STATUS_PREAUTH    = 'preauth';
 
     /**
-     * Payment declined by bank
+     * Payment is under capture, or capture is finished
      */
-    const STATUS_DECLINED   = 'declined';
+    const STATUS_CAPTURE    = 'capture';
 
     /**
-     * Payment declined by Paynet filters
+     * Payment is under return, or return is finisged
      */
-    const STATUS_FILTERED   = 'filtered';
+    const STATUS_RETURN     = 'return';
 
     /**
      * Payment processed with error
@@ -35,16 +35,15 @@ class Payment extends Data
     const STATUS_ERROR      = 'error';
 
     /**
-     * All allowed payment statuses in bank
+     * All allowed payment statuses
      *
      * @var array
      */
     static protected $allowedStatuses = array
     (
-        self::STATUS_PROCESSING,
-        self::STATUS_APPROVED,
-        self::STATUS_FILTERED,
-        self::STATUS_DECLINED,
+        self::STATUS_PREAUTH,
+        self::STATUS_CAPTURE,
+        self::STATUS_RETURN,
         self::STATUS_ERROR
     );
 
@@ -98,11 +97,11 @@ class Payment extends Data
     protected $comment;
 
     /**
-     * Payment status in bank
+     * Payment status
      *
      * @var string
      */
-    protected $status;
+    protected $status = self::STATUS_NEW;
 
     /**
      * Payment customer
@@ -138,6 +137,13 @@ class Payment extends Data
      * @var \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
      */
     protected $recurrentCardTo;
+
+    /**
+     * Payment transactions for payment
+     *
+     * @var array
+     */
+    protected $paymentTransactions = array();
 
     /**
      * Set merchant payment identifier
@@ -437,9 +443,68 @@ class Payment extends Data
     }
 
     /**
-     * Set payment bank status
+     * Add payment transaction
      *
-     * @param       string      $status     Payment bank status
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
+     *
+     * @return      self
+     */
+    public function addPaymentTransaction(PaymentTransaction $paymentTransaction)
+    {
+        $this->paymentTransactions[] = $paymentTransaction;
+
+        if ($paymentTransaction->getPayment() !== $this)
+        {
+            $paymentTransaction->setPayment($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * True, is payment has given payment transaction
+     *
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
+     *
+     * @return      self
+     */
+    public function hasPaymentTransaction(PaymentTransaction $paymentTransaction)
+    {
+        return in_array($paymentTransaction, $this->getPaymentTransactions());
+    }
+
+    /**
+     * True, if the payment has a transaction that is currently being processed
+     *
+     * @return      boolean
+     */
+    public function hasProcessingTransaction()
+    {
+        foreach ($this->getPaymentTransactions() as $paymentTransaction)
+        {
+            if ($paymentTransaction->isProcessing())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get payment transactions
+     *
+     * @return      array
+     */
+    public function getPaymentTransactions()
+    {
+        return $this->paymentTransactions;
+    }
+
+    /**
+     * Set payment status
+     *
+     * @param       string      $status     Payment status
      *
      * @return      self
      */
@@ -456,7 +521,7 @@ class Payment extends Data
     }
 
     /**
-     * Get payment bank status
+     * Get payment status
      *
      * @return      string
      */
@@ -466,33 +531,13 @@ class Payment extends Data
     }
 
     /**
-     * True, if payment is now processing
+     * True, if payment is new
      *
      * @return      boolean
      */
-    public function isProcessing()
+    public function isNew()
     {
-        return $this->getStatus() == self::STATUS_PROCESSING;
-    }
-
-    /**
-     * True, if payment approved
-     *
-     * @return      boolean
-     */
-    public function isApproved()
-    {
-        return $this->getStatus() == self::STATUS_APPROVED;
-    }
-
-    /**
-     * True, if payment declined
-     *
-     * @return      boolean
-     */
-    public function isDeclined()
-    {
-        return $this->getStatus() == self::STATUS_DECLINED;
+        return $this->getStatus() == self::STATUS_NEW;
     }
 
     /**

@@ -7,8 +7,6 @@ namespace PaynetEasy\PaynetEasyApi\PaymentData;
  */
 class PaymentTest extends \PHPUnit_Framework_TestCase
 {
-    static protected $serializedPayment = 'C:44:"PaynetEasy\PaynetEasyApi\PaymentData\Payment":213:{a:2:{s:6:"status";s:8:"approved";s:8:"customer";C:45:"PaynetEasy\PaynetEasyApi\PaymentData\Customer":105:{a:3:{s:9:"firstName";s:5:"Vasya";s:8:"lastName";s:6:"Pupkin";s:5:"email";s:23:"vass.pupkin@example.com";}}}}';
-
     /**
      * @var Payment
      */
@@ -23,7 +21,7 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         $this->object = new Payment;
     }
 
-    public function testSerialize()
+    public function testSerializeAndUnserialize()
     {
         $this->object->setCustomer(new Customer(array
         (
@@ -32,18 +30,27 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
             'email'         => 'vass.pupkin@example.com',
         )));
 
-        $this->object->setStatus(Payment::STATUS_APPROVED);
+        $this->object->setStatus(Payment::STATUS_CAPTURE);
+        $this->object
+            ->addPaymentTransaction(new PaymentTransaction(array
+            (
+                'status'    => PaymentTransaction::STATUS_APPROVED
+            )))
+            ->addPaymentTransaction(new PaymentTransaction(array
+            (
+                'status'    => PaymentTransaction::STATUS_DECLINED
+            )));
 
-        $serializedPayment = serialize($this->object);
+        $unserializedPayment = unserialize(serialize($this->object));
 
-        $this->assertEquals(static::$serializedPayment, $serializedPayment);
-    }
+        $this->assertEquals(Payment::STATUS_CAPTURE, $unserializedPayment->getStatus());
+        $this->assertEquals('vass.pupkin@example.com', $unserializedPayment->getCustomer()->getEmail());
 
-    public function testUnserialize()
-    {
-        $payment = unserialize(static::$serializedPayment);
+        $paymentTransactions = $unserializedPayment->getPaymentTransactions();
 
-        $this->assertEquals(Payment::STATUS_APPROVED, $payment->getStatus());
-        $this->assertEquals('vass.pupkin@example.com', $payment->getCustomer()->getEmail());
+        $this->assertCount(2, $paymentTransactions);
+        $this->assertEquals(PaymentTransaction::STATUS_APPROVED, reset($paymentTransactions)->getStatus());
+        $this->assertEquals(PaymentTransaction::STATUS_DECLINED, end($paymentTransactions)->getStatus());
+
     }
 }

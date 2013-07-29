@@ -3,11 +3,12 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions
  */
-class TransferByRefQuery extends AbstractQuery
+class TransferByRefQuery extends AbstractPaymentQuery
 {
     /**
      * {@inheritdoc}
@@ -46,17 +47,5 @@ class TransferByRefQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    static protected $responseFieldsDefinition = array
-    (
-        'type',
-        'status',
-        'paynet-order-id',
-        'merchant-order-id',
-        'serial-number'
-    );
-
-    /**
-     * {@inheritdoc}
-     */
-    static protected $successResponseType = 'async-response';
+    static protected $paymentStatus = Payment::STATUS_CAPTURE;
 }

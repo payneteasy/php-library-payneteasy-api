@@ -3,6 +3,8 @@
 namespace PaynetEasy\PaynetEasyApi;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
@@ -139,6 +141,45 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         $this->object->executeQuery('exception', new PaymentTransaction);
 
         $this->assertTrue($handlerCalled);
+    }
+
+    public function testProcessCustomerReturn()
+    {
+        $paymentTransaction = new PaymentTransaction(array
+        (
+            'payment'           =>  new Payment(array
+            (
+                'client_payment_id' => '_',
+                'paynet_payment_id' => '_'
+            )),
+            'query_config'      =>  new QueryConfig(array
+            (
+                'signing_key'       => 'key'
+            ))
+        ));
+
+        $callbackResponse = new CallbackResponse(array
+        (
+            'status'            => 'approved',
+            'orderid'           => '_',
+            'merchant_order'    => '_',
+            'client_orderid'    => '_',
+            'control'           => '2c84ae87d73fa3dc116b3203e8bb1c133eed829d'
+        ));
+
+        $handlerCalled = false;
+        $handler  = function() use (&$handlerCalled)
+        {
+            $handlerCalled = true;
+        };
+
+        $this->object->setHandler(PaymentProcessor::HANDLER_FINISH_PROCESSING, $handler);
+
+        $response = $this->object->processCustomerReturn($callbackResponse, $paymentTransaction);
+
+        $this->assertTrue($handlerCalled);
+        $this->assertNotNull($response);
+        $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Transport\CallbackResponse', $response);
     }
 
     public function testProcessPaynetEasyCallback()

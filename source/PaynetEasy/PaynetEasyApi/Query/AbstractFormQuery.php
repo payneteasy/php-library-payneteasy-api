@@ -7,7 +7,7 @@ use PaynetEasy\PaynetEasyApi\Utils\Validator;
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration
  */
-class FormQuery extends AbstractQuery
+abstract class AbstractFormQuery extends AbstractPaymentQuery
 {
     /**
      * {@inheritdoc}
