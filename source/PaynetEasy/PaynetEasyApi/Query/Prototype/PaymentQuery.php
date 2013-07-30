@@ -34,6 +34,8 @@ class PaymentQuery extends Query
     public function createRequest(PaymentTransaction $paymentTransaction)
     {
         $paymentTransaction->getPayment()->setStatus(static::$paymentStatus);
+        $paymentTransaction->setProcessorType(PaymentTransaction::PROCESSOR_QUERY);
+        $paymentTransaction->setProcessorName($this->apiMethod);
 
         $request = parent::createRequest($paymentTransaction);
 

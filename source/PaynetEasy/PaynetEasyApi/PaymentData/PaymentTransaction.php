@@ -7,6 +7,16 @@ use RuntimeException;
 class PaymentTransaction extends Data
 {
     /**
+     * Payment transaction processed by payment query
+     */
+    const PROCESSOR_QUERY        = 'query';
+
+    /**
+     * Payment transaction processed by PaynetEasy callback
+     */
+    const PROCESSOR_CALLBACK     = 'callback';
+
+    /**
      * Payment transaction is new
      */
     const STATUS_NEW        = 'new';
@@ -37,6 +47,17 @@ class PaymentTransaction extends Data
     const STATUS_ERROR      = 'error';
 
     /**
+     * All allowed callback types
+     *
+     * @var array
+     */
+    static protected $allowedProcessorTypes = array
+    (
+        self::PROCESSOR_QUERY,
+        self::PROCESSOR_CALLBACK
+    );
+
+    /**
      * All allowed payment transaction statuses
      *
      * @var array
@@ -49,6 +70,27 @@ class PaymentTransaction extends Data
         self::STATUS_DECLINED,
         self::STATUS_ERROR
     );
+
+    /**
+     * Payment transaction processor type
+     *
+     * @var string
+     */
+    protected $processorType;
+
+    /**
+     * Payment transaction processor name
+     *
+     * @var string
+     */
+    protected $processorName;
+
+    /**
+     * Payment transaction name,
+     *
+     * @var string
+     */
+    protected $typeName;
 
     /**
      * Transaction status
@@ -70,6 +112,74 @@ class PaymentTransaction extends Data
      * @var \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
      */
     protected $queryConfig;
+
+    /**
+     * Set payment transaction processor type
+     *
+     * @param       string      $processorType      Processor type
+     *
+     * @return      self
+     *
+     * @throws      RuntimeException                Unknown processor type given
+     * @throws      RuntimeException                Processor type already specified
+     */
+    public function setProcessorType($processorType)
+    {
+        if (!in_array($processorType, static::$allowedProcessorTypes))
+        {
+            throw new RuntimeException("Unknown transaction processor type given: {$processorType}");
+        }
+
+        if (!empty($this->processorType))
+        {
+            throw new RuntimeException('You can set payment transaction processor type only once');
+        }
+
+        $this->processorType = $processorType;
+
+        return $this;
+    }
+
+    /**
+     * Get payment transaction processor type
+     *
+     * @return      string
+     */
+    public function getProcessorType()
+    {
+        return $this->processorType;
+    }
+
+    /**
+     * Set payment transaction processor name
+     *
+     * @param       string      $processorName      Processor name
+     *
+     * @return      self
+     *
+     * @throws      RuntimeException                Processor name already specified
+     */
+    public function setProcessorName($processorName)
+    {
+        if (!empty($this->processorName))
+        {
+            throw new RuntimeException('You can set payment transaction processor name only once');
+        }
+
+        $this->processorName = $processorName;
+
+        return $this;
+    }
+
+    /**
+     * Get payment transaction processor name
+     *
+     * @return      string
+     */
+    public function getProcessorName()
+    {
+        return $this->processorName;
+    }
 
     /**
      * Set payment transaction status

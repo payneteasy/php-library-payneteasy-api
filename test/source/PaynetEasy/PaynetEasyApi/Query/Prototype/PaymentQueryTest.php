@@ -26,6 +26,8 @@ abstract class PaymentQueryTest extends QueryTest
 
         $this->assertEquals($this->paymentStatus, $payment->getStatus());
         $this->assertTrue($payment->hasProcessingTransaction());
+        $this->assertEquals(PaymentTransaction::PROCESSOR_QUERY, $paymentTransaction->getProcessorType());
+        $this->assertEquals($this->readAttribute($this->object, 'apiMethod'), $paymentTransaction->getProcessorName());
 
         return array($paymentTransaction, $request);
     }

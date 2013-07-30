@@ -21,13 +21,16 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     public function testProcessCallbackApproved(array $callback)
     {
         $paymentTransaction = $this->getPaymentTransaction();
+        $callbackResponse   = new CallbackResponse($callback);
 
-        $callback['control'] = $this->createSignature($callback);
+        $callbackResponse['control'] = $this->createSignature($callback);
 
-        $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
+        $this->object->processCallback($paymentTransaction, $callbackResponse);
 
         $this->assertTrue($paymentTransaction->isApproved());
         $this->assertTrue($paymentTransaction->isFinished());
+
+        return array($paymentTransaction, $callbackResponse);
     }
 
     abstract public function testProcessCallbackApprovedProvider();
