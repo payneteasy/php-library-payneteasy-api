@@ -2,13 +2,14 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
+use PaynetEasy\PaynetEasyApi\Query\Prototype\PaymentQuery;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions
  */
-class SaleQuery extends AbstractPaymentQuery
+class SaleQuery extends PaymentQuery
 {
     /**
      * {@inheritdoc}

@@ -1,11 +1,11 @@
 <?php
 
-namespace PaynetEasy\PaynetEasyApi\Query;
+namespace PaynetEasy\PaynetEasyApi\Query\Prototype;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
-class AbstractPaymentQuery extends AbstractQuery
+class PaymentQuery extends Query
 {
     /**
      * Status for payment, when it is processing by this query

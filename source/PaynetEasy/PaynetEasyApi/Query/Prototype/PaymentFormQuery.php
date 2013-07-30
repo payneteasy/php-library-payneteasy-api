@@ -1,6 +1,6 @@
 <?php
 
-namespace PaynetEasy\PaynetEasyApi\Query;
+namespace PaynetEasy\PaynetEasyApi\Query\Prototype;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
@@ -9,7 +9,7 @@ use PaynetEasy\PaynetEasyApi\Transport\Response;
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration
  */
-abstract class AbstractFormQuery extends AbstractPaymentQuery
+abstract class PaymentFormQuery extends PaymentQuery
 {
     /**
      * {@inheritdoc}

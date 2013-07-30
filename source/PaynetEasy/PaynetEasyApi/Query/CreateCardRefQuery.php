@@ -1,6 +1,7 @@
 <?php
 namespace PaynetEasy\PaynetEasyApi\Query;
 
+use PaynetEasy\PaynetEasyApi\Query\Prototype\Query;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
@@ -9,7 +10,7 @@ use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Registration
  */
-class CreateCardRefQuery extends AbstractQuery
+class CreateCardRefQuery extends Query
 {
     /**
      * {@inheritdoc}

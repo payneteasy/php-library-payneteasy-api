@@ -2,9 +2,10 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
+use PaynetEasy\PaynetEasyApi\Query\Prototype\PaymentFormQuery;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
-class PreauthFormQuery extends AbstractFormQuery
+class PreauthFormQuery extends PaymentFormQuery
 {
     /**
      * {@inheritdoc}

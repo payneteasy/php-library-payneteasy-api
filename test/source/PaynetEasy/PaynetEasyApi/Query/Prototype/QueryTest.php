@@ -1,6 +1,6 @@
 <?php
 
-namespace PaynetEasy\PaynetEasyApi\Query;
+namespace PaynetEasy\PaynetEasyApi\Query\Prototype;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
@@ -8,7 +8,7 @@ use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Exception\PaynetException;
 
-abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
+abstract class QueryTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var QueryInterface
@@ -42,10 +42,11 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($request->getEndPoint());
         $this->assertNotNull($requestFields['control']);
         $this->assertEquals($controlCode, $requestFields['control']);
+
+        return array($paymentTransaction, $request);
     }
 
     abstract public function testCreateRequestProvider();
-
 
     /**
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
@@ -78,31 +79,19 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider testProcessResponseDeclinedProvider
-     */
-    public function testProcessResponseDeclined(array $response)
-    {
-        $paymentTransaction = $this->getPaymentTransaction();
-
-        $this->object->processResponse($paymentTransaction, new Response($response));
-
-        $this->assertTrue($paymentTransaction->isDeclined());
-        $this->assertTrue($paymentTransaction->isFinished());
-    }
-
-    abstract public function testProcessResponseDeclinedProvider();
-
-    /**
      * @dataProvider testProcessResponseProcessingProvider
      */
     public function testProcessResponseProcessing(array $response)
     {
         $paymentTransaction = $this->getPaymentTransaction();
+        $responseObject     = new Response($response);
 
-        $this->object->processResponse($paymentTransaction, new Response($response));
+        $this->object->processResponse($paymentTransaction, $responseObject);
 
         $this->assertTrue($paymentTransaction->isProcessing());
         $this->assertFalse($paymentTransaction->isFinished());
+
+        return array($paymentTransaction, $responseObject);
     }
 
     abstract public function testProcessResponseProcessingProvider();
@@ -113,11 +102,12 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
     public function testProcessResponseError(array $response)
     {
         $paymentTransaction = $this->getPaymentTransaction();
+        $responseObject     = new Response($response);
 
         try
         {
             // Payment error after check
-            $this->object->processResponse($paymentTransaction, new Response($response));
+            $this->object->processResponse($paymentTransaction, $responseObject);
         }
         catch (PaynetException $error)
         {
@@ -128,7 +118,7 @@ abstract class QueryTestPrototype extends \PHPUnit_Framework_TestCase
             $this->assertEquals($response['error-code'], $error->getCode());
             $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
 
-            return;
+            return array($paymentTransaction, $responseObject);
         }
 
         $this->fail('Exception must be throwned');

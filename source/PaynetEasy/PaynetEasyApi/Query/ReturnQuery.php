@@ -1,13 +1,14 @@
 <?php
 namespace PaynetEasy\PaynetEasyApi\Query;
 
+use PaynetEasy\PaynetEasyApi\Query\Prototype\PaymentQuery;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
  */
-class ReturnQuery extends AbstractPaymentQuery
+class ReturnQuery extends PaymentQuery
 {
     /**
      * {@inheritdoc}

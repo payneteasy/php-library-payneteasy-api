@@ -1,13 +1,14 @@
 <?php
 namespace PaynetEasy\PaynetEasyApi\Query;
 
+use PaynetEasy\PaynetEasyApi\Query\Prototype\PaymentQuery;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Process_Capture_Transaction
  */
-class CaptureQuery extends AbstractPaymentQuery
+class CaptureQuery extends PaymentQuery
 {
     /**
      * {@inheritdoc}

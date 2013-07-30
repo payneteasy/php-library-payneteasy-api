@@ -1,5 +1,8 @@
 <?php
-namespace PaynetEasy\PaynetEasyApi\Query;
+
+namespace PaynetEasy\PaynetEasyApi\Query\Prototype;
+
+use PaynetEasy\PaynetEasyApi\Query\QueryInterface;
 
 use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
@@ -16,8 +19,7 @@ use Exception;
 /**
  * Abstract Query
  */
-abstract class  AbstractQuery
-implements      QueryInterface
+abstract class Query implements QueryInterface
 {
     /**
      * API gateway method

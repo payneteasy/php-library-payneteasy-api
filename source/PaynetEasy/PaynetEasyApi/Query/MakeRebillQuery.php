@@ -2,13 +2,14 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
+use PaynetEasy\PaynetEasyApi\Query\Prototype\PaymentQuery;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Process_Recurrent_Payment
  */
-class MakeRebillQuery extends AbstractPaymentQuery
+class MakeRebillQuery extends PaymentQuery
 {
     /**
      * {@inheritdoc}

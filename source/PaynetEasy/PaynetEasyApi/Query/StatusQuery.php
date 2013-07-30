@@ -1,15 +1,15 @@
 <?php
 namespace PaynetEasy\PaynetEasyApi\Query;
 
+use PaynetEasy\PaynetEasyApi\Query\Prototype\Query;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
-
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Payment_status
  */
-class StatusQuery extends AbstractQuery
+class StatusQuery extends Query
 {
     /**
      * {@inheritdoc}
