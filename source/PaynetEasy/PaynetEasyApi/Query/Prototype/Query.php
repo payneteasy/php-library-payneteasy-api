@@ -84,17 +84,22 @@ abstract class Query implements QueryInterface
         }
         catch (Exception $e)
         {
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
+            $paymentTransaction
+                ->addError($e)
+                ->setStatus(PaymentTransaction::STATUS_ERROR)
+            ;
 
             throw $e;
         }
 
         $request = new Request($this->paymentTransactionToRequest($paymentTransaction));
 
-        $request->setApiMethod($this->apiMethod)
-                ->setEndPoint($paymentTransaction->getQueryConfig()->getEndPoint())
-                ->setGatewayUrl($paymentTransaction->getQueryConfig()->getGatewayUrl())
-                ->setSignature($this->createSignature($paymentTransaction));
+        $request
+            ->setApiMethod($this->apiMethod)
+            ->setEndPoint($paymentTransaction->getQueryConfig()->getEndPoint())
+            ->setGatewayUrl($paymentTransaction->getQueryConfig()->getGatewayUrl())
+            ->setSignature($this->createSignature($paymentTransaction))
+        ;
 
         return $request;
     }
@@ -122,7 +127,10 @@ abstract class Query implements QueryInterface
         }
         catch (Exception $e)
         {
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
+            $paymentTransaction
+                ->addError($e)
+                ->setStatus(PaymentTransaction::STATUS_ERROR)
+            ;
 
             throw $e;
         }
@@ -299,7 +307,7 @@ abstract class Query implements QueryInterface
     protected function updatePaymentTransactionOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
         $paymentTransaction->setStatus($response->getStatus());
-        $this->setPaynetPaynetId($paymentTransaction, $response);
+        $this->setPaynetId($paymentTransaction, $response);
     }
 
     /**
@@ -320,7 +328,9 @@ abstract class Query implements QueryInterface
             $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
         }
 
-        $this->setPaynetPaynetId($paymentTransaction, $response);
+        $paymentTransaction->addError($response->getError());
+
+        $this->setPaynetId($paymentTransaction, $response);
     }
 
     /**
@@ -392,7 +402,7 @@ abstract class Query implements QueryInterface
      * @param       PaymentTransaction      $paymentTransaction     Payment transaction
      * @param       Response                $response               Query response
      */
-    protected function setPaynetPaynetId(PaymentTransaction $paymentTransaction, Response $response)
+    protected function setPaynetId(PaymentTransaction $paymentTransaction, Response $response)
     {
         if(strlen($response->getPaynetPaymentId()) > 0)
         {

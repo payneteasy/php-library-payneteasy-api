@@ -3,6 +3,7 @@
 namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
 use RuntimeException;
+use Exception;
 
 class PaymentTransaction extends Data
 {
@@ -112,6 +113,13 @@ class PaymentTransaction extends Data
      * @var \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
      */
     protected $queryConfig;
+
+    /**
+     * Payment transaction processing errors
+     *
+     * @var array
+     */
+    protected $errors = array();
 
     /**
      * Set payment transaction processor type
@@ -331,5 +339,42 @@ class PaymentTransaction extends Data
         }
 
         return $this->queryConfig;
+    }
+
+    /**
+     * Adds new payment error
+     *
+     * @param       Exception       $error      Payment error
+     *
+     * @return      self
+     */
+    public function addError(Exception $error)
+    {
+        // :NOTICE:         Imenem          19.06.13
+        //
+        // Use spl_object_hash to prevent duplicated errors
+        $this->errors[spl_object_hash($error)] = $error;
+
+        return $this;
+    }
+
+    /**
+     * True if payment has errors
+     *
+     * @return      boolean
+     */
+    public function hasErrors()
+    {
+        return count($this->getErrors()) > 0;
+    }
+
+    /**
+     * Get all payment errors
+     *
+     * @return      array       Payment errors
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
 }

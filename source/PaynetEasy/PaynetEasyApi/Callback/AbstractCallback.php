@@ -79,7 +79,10 @@ abstract class AbstractCallback implements CallbackInterface
         }
         catch (Exception $e)
         {
-            $paymentTransaction->setStatus(PaymentTransaction::STATUS_ERROR);
+            $paymentTransaction
+                ->addError($e)
+                ->setStatus(PaymentTransaction::STATUS_ERROR)
+            ;
 
             throw $e;
         }
@@ -211,6 +214,11 @@ abstract class AbstractCallback implements CallbackInterface
             ->getPayment()
             ->setPaynetPaymentId($callbackResponse->getPaynetPaymentId())
         ;
+
+        if ($callbackResponse->isError() || $callbackResponse->isDeclined())
+        {
+            $paymentTransaction->addError($callbackResponse->getError());
+        }
     }
 
     /**

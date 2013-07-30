@@ -42,6 +42,7 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($request->getEndPoint());
         $this->assertNotNull($requestFields['control']);
         $this->assertEquals($controlCode, $requestFields['control']);
+        $this->assertFalse($paymentTransaction->hasErrors());
 
         return array($paymentTransaction, $request);
     }
@@ -90,6 +91,7 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($paymentTransaction->isProcessing());
         $this->assertFalse($paymentTransaction->isFinished());
+        $this->assertFalse($paymentTransaction->hasErrors());
 
         return array($paymentTransaction, $responseObject);
     }
@@ -113,10 +115,10 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
         {
             $this->assertTrue($paymentTransaction->isError());
             $this->assertTrue($paymentTransaction->isFinished());
+            $this->assertTrue($paymentTransaction->hasErrors());
 
             $this->assertEquals($response['error-message'], $error->getMessage());
             $this->assertEquals($response['error-code'], $error->getCode());
-            $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
 
             return array($paymentTransaction, $responseObject);
         }

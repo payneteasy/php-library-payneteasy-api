@@ -18,6 +18,7 @@ abstract class SyncQueryTest extends QueryTest
 
         $this->assertTrue($paymentTransaction->isApproved());
         $this->assertTrue($paymentTransaction->isFinished());
+        $this->assertFalse($paymentTransaction->hasErrors());
 
         return array($paymentTransaction, $responseObject);
     }
@@ -36,6 +37,7 @@ abstract class SyncQueryTest extends QueryTest
 
         $this->assertTrue($paymentTransaction->isDeclined());
         $this->assertTrue($paymentTransaction->isFinished());
+        $this->assertTrue($paymentTransaction->hasErrors());
 
         return array($paymentTransaction, $responseObject);
     }

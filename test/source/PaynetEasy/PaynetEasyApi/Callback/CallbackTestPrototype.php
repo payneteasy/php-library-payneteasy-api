@@ -29,6 +29,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($paymentTransaction->isApproved());
         $this->assertTrue($paymentTransaction->isFinished());
+        $this->assertFalse($paymentTransaction->hasErrors());
 
         return array($paymentTransaction, $callbackResponse);
     }
@@ -48,6 +49,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($paymentTransaction->isDeclined());
         $this->assertTrue($paymentTransaction->isFinished());
+        $this->assertTrue($paymentTransaction->hasErrors());
     }
 
     abstract public function testProcessCallbackDeclinedProvider();
@@ -58,24 +60,24 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     public function testProcessCallbackError(array $callback)
     {
         $paymentTransaction = $this->getPaymentTransaction();
-
         $callback['control'] = $this->createSignature($callback);
+        $callbackObject     = new CallbackResponse($callback);
 
         try
         {
             // Payment error after check
-            $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
+            $this->object->processCallback($paymentTransaction, $callbackObject);
         }
         catch (PaynetException $error)
         {
             $this->assertTrue($paymentTransaction->isError());
             $this->assertTrue($paymentTransaction->isFinished());
+            $this->assertTrue($paymentTransaction->hasErrors());
 
             $this->assertEquals($callback['error_message'], $error->getMessage());
             $this->assertEquals($callback['error_code'], $error->getCode());
-            $this->assertInstanceOf('\PaynetEasy\PaynetEasyApi\Exception\PaynetException', $error);
 
-            return;
+            return array($paymentTransaction, $callbackObject);
         }
 
         $this->fail('Exception must be throwned');
