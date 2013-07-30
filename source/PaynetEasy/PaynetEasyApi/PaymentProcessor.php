@@ -416,19 +416,16 @@ class PaymentProcessor
         {
             $this->callHandler(self::HANDLER_FINISH_PROCESSING, $paymentTransaction, $response);
         }
-        elseif ($response->hasRedirectUrl())
+        elseif ($response->isRedirectNeeded())
         {
-            $response->setNeededAction(Response::NEEDED_REDIRECT);
             $this->callHandler(self::HANDLER_REDIRECT, $response, $paymentTransaction);
         }
-        elseif ($response->hasHtml())
+        elseif ($response->isShowHtmlNeeded())
         {
-            $response->setNeededAction(Response::NEEDED_SHOW_HTML);
             $this->callHandler(self::HANDLER_SHOW_HTML, $response, $paymentTransaction);
         }
-        elseif ($response->isProcessing())
+        elseif ($response->isStatusUpdateNeeded())
         {
-            $response->setNeededAction(Response::NEEDED_STATUS_UPDATE);
             $this->callHandler(self::HANDLER_STATUS_UPDATE, $response, $paymentTransaction);
         }
     }

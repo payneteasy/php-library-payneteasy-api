@@ -42,7 +42,7 @@ class SaleQueryTest extends PaymentQueryTestPrototype
             )
         ));
     }
-
+    
     protected function getPayment()
     {
         return new Payment(array

@@ -4,6 +4,8 @@ namespace PaynetEasy\PaynetEasyApi;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
+use PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress;
 use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
@@ -44,7 +46,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider testExecuteQueryProvider
      */
-    public function testExecuteQuery(array $responseData, $handlerName)
+    public function testExecuteQuery($queryName, array $responseData, $handlerName)
     {
         FakeQuery::$request             = new Request;
         FakeGatewayClient::$response    = new Response($responseData);
@@ -58,7 +60,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         $this->object->setHandler($handlerName, $handler);
         $this->object->setGatewayClient(new FakeGatewayClient);
 
-        $this->assertNotNull($this->object->executeQuery('fake', new PaymentTransaction));
+        $this->assertNotNull($this->object->executeQuery($queryName, $this->getPaymentTransaction()));
         $this->assertTrue($handlerCalled);
     }
 
@@ -67,22 +69,54 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         return(array(
         array
         (
-            array('status'          => 'approved'),
+            'status',
+            array
+            (
+                'status'            => 'approved',
+                'type'              => 'status-response',
+                'paynet-order-id'   => '_',
+                'merchant-order-id' => '_',
+                'serial-number'     => '_'
+            ),
             PaymentProcessor::HANDLER_FINISH_PROCESSING
         ),
         array
         (
-            array('redirect-url'    => 'http://example.com'),
+            'sale-form',
+            array
+            (
+                'redirect-url'      => 'http://example.com',
+                'type'              => 'async-form-response',
+                'paynet-order-id'   => '_',
+                'merchant-order-id' => '_',
+                'serial-number'     => '_'
+            ),
             PaymentProcessor::HANDLER_REDIRECT
         ),
         array
         (
-            array('html'            => urlencode('<html></html>')),
+            'status',
+            array
+            (
+                'html'              => urlencode('<html></html>'),
+                'type'              => 'status-response',
+                'paynet-order-id'   => '_',
+                'merchant-order-id' => '_',
+                'serial-number'     => '_'
+            ),
             PaymentProcessor::HANDLER_SHOW_HTML
         ),
         array
         (
-            array('status'          => 'processing'),
+            'status',
+            array
+            (
+                'status'            => 'processing',
+                'type'              => 'status-response',
+                'paynet-order-id'   => '_',
+                'merchant-order-id' => '_',
+                'serial-number'     => '_'
+            ),
             PaymentProcessor::HANDLER_STATUS_UPDATE
         )));
     }
@@ -145,20 +179,6 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessCustomerReturn()
     {
-        $paymentTransaction = new PaymentTransaction(array
-        (
-            'payment'           =>  new Payment(array
-            (
-                'client_payment_id' => '_',
-                'paynet_payment_id' => '_'
-            )),
-            'query_config'      =>  new QueryConfig(array
-            (
-                'signing_key'       => 'key'
-            )),
-            'status'            => PaymentTransaction::STATUS_PROCESSING
-        ));
-
         $callbackResponse = new CallbackResponse(array
         (
             'status'            => 'approved',
@@ -167,6 +187,9 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
             'client_orderid'    => '_',
             'control'           => '2c84ae87d73fa3dc116b3203e8bb1c133eed829d'
         ));
+
+        $paymentTransaction = $this->getPaymentTransaction();
+        $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
 
         $handlerCalled = false;
         $handler  = function() use (&$handlerCalled)
@@ -283,6 +306,45 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
     public function testSetHandlerNotCallable()
     {
         $this->object->setHandler(PaymentProcessor::HANDLER_SAVE_CHANGES, 'not_callable');
+    }
+
+    protected function getPaymentTransaction()
+    {
+        return new PaymentTransaction(array
+        (
+            'payment'             =>  new Payment(array
+            (
+                'client_payment_id'     => '_',
+                'paynet_payment_id'     => '_',
+                'description'           => 'This is test payment',
+                'amount'                =>  99.1,
+                'currency'              => 'USD',
+                'customer'              =>  new Customer(array
+                (
+                    'first_name'            => 'Vasya',
+                    'last_name'             => 'Pupkin',
+                    'email'                 => 'vass.pupkin@example.com',
+                    'ip_address'            => '127.0.0.1',
+                    'birthday'              => '112681'
+                )),
+                'billing_address'       =>  new BillingAddress(array
+                (
+                    'country'               => 'US',
+                    'state'                 => 'TX',
+                    'city'                  => 'Houston',
+                    'first_line'            => '2704 Colonial Drive',
+                    'zip_code'              => '1235',
+                    'phone'                 => '660-485-6353',
+                    'cell_phone'            => '660-485-6353'
+                ))
+            )),
+            'query_config'      => new QueryConfig(array
+            (
+                'login'             => '_',
+                'redirect_url'      => 'http://example.com',
+                'signing_key'       => 'key'
+            ))
+        ));
     }
 }
 

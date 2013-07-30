@@ -162,25 +162,25 @@ implements      QueryInterface
                 }
                 catch (ValidationException $e)
                 {
-                    $invalidFields[] = "Field '{$fieldName}', {$e->getMessage()}";
+                    $invalidFields[] = "Field '{$fieldName}' from property path '{$propertyPath}', {$e->getMessage()}.";
                 }
             }
             elseif ($isFieldRequired)
             {
-                $missedFields[] = $fieldName;
+                $missedFields[] = "Field '{$fieldName}' from property path '{$propertyPath}' missed or empty";
             }
         }
 
         if (!empty($missedFields))
         {
             $errorMessage .= "Some required fields missed or empty in Payment: \n" .
-                             implode(', ', $missedFields) . ". \n";
+                             implode(". \n", $missedFields) . ". \n";
         }
 
         if (!empty($invalidFields))
         {
             $errorMessage .= "Some fields invalid in Payment: \n" .
-                             implode(", \n", $invalidFields) . ". \n";
+                             implode(". \n", $invalidFields) . ". \n";
         }
 
         if (!empty($errorMessage))

@@ -3,6 +3,8 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
+use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration
@@ -67,4 +69,17 @@ abstract class AbstractFormQuery extends AbstractPaymentQuery
      * {@inheritdoc}
      */
     static protected $successResponseType = 'async-form-response';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function updatePaymentTransactionOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
+    {
+        parent::updatePaymentTransactionOnSuccess($paymentTransaction, $response);
+
+        if ($response->hasRedirectUrl())
+        {
+            $response->setNeededAction(Response::NEEDED_REDIRECT);
+        }
+    }
 }

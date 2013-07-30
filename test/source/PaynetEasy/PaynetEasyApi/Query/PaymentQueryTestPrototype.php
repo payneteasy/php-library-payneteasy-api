@@ -2,6 +2,8 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
+
 abstract class PaymentQueryTestPrototype extends QueryTestPrototype
 {
     /**
@@ -31,6 +33,18 @@ abstract class PaymentQueryTestPrototype extends QueryTestPrototype
         $this->assertEquals($controlCode, $requestFields['control']);
         $this->assertEquals($this->paymentStatus, $payment->getStatus());
         $this->assertTrue($payment->hasProcessingTransaction());
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Payment can not has processing payment transaction
+     */
+    public function testCreateRequestWithProcessingPayment()
+    {
+        $paymentTransaction = $this->getPaymentTransaction();
+        $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
+
+        $this->object->createRequest($paymentTransaction);
     }
 
     public function testProcessResponseDeclinedProvider()
