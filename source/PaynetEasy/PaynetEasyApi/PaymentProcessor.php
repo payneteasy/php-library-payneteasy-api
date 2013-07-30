@@ -160,7 +160,7 @@ class PaymentProcessor
      */
     public function processCustomerReturn(CallbackResponse $callbackResponse, PaymentTransaction $paymentTransaction)
     {
-        $callbackResponse->setType('redirect_url');
+        $callbackResponse->setType('customer_return');
 
         return $this->processPaynetEasyCallback($callbackResponse, $paymentTransaction);
     }

@@ -147,7 +147,8 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
             'queryConfig'               =>  new QueryConfig(array
             (
                 'signing_key'               =>  self::SIGNING_KEY
-            ))
+            )),
+            'status'                    => PaymentTransaction::STATUS_PROCESSING
         ));
     }
 

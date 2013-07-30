@@ -4,7 +4,7 @@ namespace PaynetEasy\PaynetEasyApi\Callback;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 
-class RedirectUrlCallback extends AbstractCallback
+class CustomerReturnCallback extends AbstractCallback
 {
     /**
      * {@inheritdoc}

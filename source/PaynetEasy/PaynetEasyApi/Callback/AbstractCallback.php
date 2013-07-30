@@ -25,7 +25,13 @@ abstract class AbstractCallback implements CallbackInterface
      *
      * @var array
      */
-    static protected $allowedStatuses = array();
+    static protected $allowedStatuses = array
+    (
+        PaymentTransaction::STATUS_APPROVED,
+        PaymentTransaction::STATUS_DECLINED,
+        PaymentTransaction::STATUS_FILTERED,
+        PaymentTransaction::STATUS_ERROR
+    );
 
     /**
      * Callback fields definition if format:
@@ -42,7 +48,16 @@ abstract class AbstractCallback implements CallbackInterface
      *
      * @var array
      */
-    static protected $callbackFieldsDefinition = array();
+    static protected $callbackFieldsDefinition = array
+    (
+        array('orderid',        'payment.paynetPaymentId'),
+        array('merchant_order', 'payment.clientPaymentId'),
+        array('client_orderid', 'payment.clientPaymentId'),
+        array('amount',         'payment.amount'),
+        array('status',          null),
+        array('type',            null),
+        array('control',         null)
+    );
 
     /**
      * @param       string      $callbackType       Callback type
@@ -56,7 +71,7 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * {@inheritdoc}
      */
-    final public function processCallback(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
+    public function processCallback(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
     {
         try
         {
@@ -128,6 +143,11 @@ abstract class AbstractCallback implements CallbackInterface
     {
         $this->validateQueryConfig($paymentTransaction);
         $this->validateSignature($paymentTransaction, $callbackResponse);
+
+        if (!$paymentTransaction->isProcessing())
+        {
+            throw new ValidationException("Only processing payment transaction can be processed");
+        }
 
         if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
         {

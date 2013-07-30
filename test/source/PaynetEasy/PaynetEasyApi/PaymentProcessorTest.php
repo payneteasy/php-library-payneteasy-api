@@ -155,7 +155,8 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
             'query_config'      =>  new QueryConfig(array
             (
                 'signing_key'       => 'key'
-            ))
+            )),
+            'status'            => PaymentTransaction::STATUS_PROCESSING
         ));
 
         $callbackResponse = new CallbackResponse(array

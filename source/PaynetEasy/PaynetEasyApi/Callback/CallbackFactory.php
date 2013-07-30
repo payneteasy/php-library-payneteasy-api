@@ -12,7 +12,7 @@ class CallbackFactory implements CallbackFactoryInterface
      *
      * @var array
      */
-    static protected $allowedServerCallbackUrlTypes = array
+    static protected $allowedPaynetEasyCallbackTypes = array
     (
         'sale',
         'reversal',
@@ -38,9 +38,9 @@ class CallbackFactory implements CallbackFactoryInterface
             return $this->instantiateCallback($callbackClass, $callbackType);
         }
 
-        if (in_array($callbackType, static::$allowedServerCallbackUrlTypes))
+        if (in_array($callbackType, static::$allowedPaynetEasyCallbackTypes))
         {
-            return $this->instantiateCallback(__NAMESPACE__ . '\\ServerCallbackUrlCallback', $callbackType);
+            return $this->instantiateCallback(__NAMESPACE__ . '\\PaynetEasyCallback', $callbackType);
         }
 
         throw new RuntimeException("Unknown callback class '{$callbackClass}' for callback with type '{$callbackType}'");

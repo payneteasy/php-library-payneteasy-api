@@ -25,15 +25,15 @@ class CallbackFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetCallback()
     {
-        $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Callback\RedirectUrlCallback',
-                                $this->object->getCallback('redirect_url'));
+        $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Callback\CustomerReturnCallback',
+                                $this->object->getCallback('customer_return'));
 
         $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Callback\FakeCallback',
                                 $this->object->getCallback('fake'));
 
         $saleCallback = $this->object->getCallback('sale');
 
-        $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Callback\ServerCallbackUrlCallback', $saleCallback);
+        $this->assertInstanceOf('PaynetEasy\PaynetEasyApi\Callback\PaynetEasyCallback', $saleCallback);
         $this->assertEquals('sale', $this->readAttribute($saleCallback, 'callbackType'));
     }
 
