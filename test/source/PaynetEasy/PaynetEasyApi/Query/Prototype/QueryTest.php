@@ -85,25 +85,6 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider testProcessResponseProcessingProvider
-     */
-    public function testProcessResponseProcessing(array $response)
-    {
-        $paymentTransaction = $this->getPaymentTransaction();
-        $responseObject     = new Response($response);
-
-        $this->object->processResponse($paymentTransaction, $responseObject);
-
-        $this->assertTrue($paymentTransaction->isProcessing());
-        $this->assertFalse($paymentTransaction->isFinished());
-        $this->assertFalse($paymentTransaction->hasErrors());
-
-        return array($paymentTransaction, $responseObject);
-    }
-
-    abstract public function testProcessResponseProcessingProvider();
-
-    /**
      * @dataProvider testProcessResponseErrorProvider
      */
     public function testProcessResponseError(array $response)

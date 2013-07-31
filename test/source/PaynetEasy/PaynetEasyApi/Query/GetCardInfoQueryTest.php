@@ -46,9 +46,11 @@ class GetCardInfoQueryTest extends SyncQueryTest
      */
     public function testProcessResponseApproved(array $response)
     {
-        list($paymentTransaction, $responseObject) = parent::testProcessResponseApproved($response);
+        $paymentTransaction = $this->getPaymentTransaction();
+        $recurrentCard      = $paymentTransaction->getPayment()->getRecurrentCardFrom();
+        $responseObject     = new Response($response);
 
-        $recurrentCard = $paymentTransaction->getPayment()->getRecurrentCardFrom();
+        $this->object->processResponse($paymentTransaction, $responseObject);
 
         $this->assertEquals($responseObject['card-printed-name'], $recurrentCard->getCardPrintedName());
         $this->assertEquals($responseObject['expire-year'],       $recurrentCard->getExpireYear());
@@ -64,24 +66,6 @@ class GetCardInfoQueryTest extends SyncQueryTest
         return array(array(array
         (
             'type'              =>  $this->successType,
-            'status'            => 'approved',
-            'paynet-order-id'   =>  self::PAYNET_ID,
-            'merchant-order-id' =>  self::CLIENT_ID,
-            'serial-number'     =>  md5(time()),
-            'card-printed-name' => 'Vasya Pupkin',
-            'expire-month'      => '12',
-            'expire-year'       => '14',
-            'bin'               => '4485',
-            'last-four-digits'  => '9130'
-        )));
-    }
-
-    public function testProcessResponseProcessingProvider()
-    {
-        return array(array(array
-        (
-            'type'              =>  $this->successType,
-            'status'            => 'processing',
             'paynet-order-id'   =>  self::PAYNET_ID,
             'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time()),

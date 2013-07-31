@@ -3,6 +3,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query\Prototype;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
+use PaynetEasy\PaynetEasyApi\Transport\Response;
 
 abstract class PaymentQueryTest extends QueryTest
 {
@@ -54,6 +55,23 @@ abstract class PaymentQueryTest extends QueryTest
         $paymentTransaction->setStatus(PaymentTransaction::STATUS_APPROVED);
 
         $this->object->createRequest($paymentTransaction);
+    }
+
+    /**
+     * @dataProvider testProcessResponseProcessingProvider
+     */
+    public function testProcessResponseProcessing(array $response)
+    {
+        $paymentTransaction = $this->getPaymentTransaction();
+        $responseObject     = new Response($response);
+
+        $this->object->processResponse($paymentTransaction, $responseObject);
+
+        $this->assertTrue($paymentTransaction->isProcessing());
+        $this->assertFalse($paymentTransaction->isFinished());
+        $this->assertFalse($paymentTransaction->hasErrors());
+
+        return array($paymentTransaction, $responseObject);
     }
 
     public function testProcessResponseProcessingProvider()
