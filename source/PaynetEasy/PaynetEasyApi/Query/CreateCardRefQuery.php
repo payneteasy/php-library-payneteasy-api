@@ -55,9 +55,8 @@ class CreateCardRefQuery extends Query
      */
     protected function validatePaymentTransaction(PaymentTransaction $paymentTransaction)
     {
-        parent::validatePaymentTransaction($paymentTransaction);
-
         $this->checkPaymentTransactionStatus($paymentTransaction);
+        parent::validatePaymentTransaction($paymentTransaction);
     }
 
     /**
@@ -65,9 +64,8 @@ class CreateCardRefQuery extends Query
      */
     protected function validateResponseOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
-        parent::validateResponseOnSuccess($paymentTransaction, $response);
-
         $this->checkPaymentTransactionStatus($paymentTransaction);
+        parent::validateResponseOnSuccess($paymentTransaction, $response);
     }
 
     /**
@@ -75,16 +73,11 @@ class CreateCardRefQuery extends Query
      */
     protected function updatePaymentTransactionOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
-        parent::updatePaymentTransactionOnSuccess($paymentTransaction, $response);
-
-        if($response->isApproved())
-        {
-            $paymentTransaction
-                ->getPayment()
-                ->getRecurrentCardFrom()
-                ->setPaynetId($response->getCardPaynetId())
-            ;
-        }
+        $paymentTransaction
+            ->getPayment()
+            ->getRecurrentCardFrom()
+            ->setPaynetId($response->getCardPaynetId())
+        ;
     }
 
     /**

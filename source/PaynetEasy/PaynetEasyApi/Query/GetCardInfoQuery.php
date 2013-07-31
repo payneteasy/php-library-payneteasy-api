@@ -55,8 +55,6 @@ class GetCardInfoQuery extends Query
      */
     protected function updatePaymentTransactionOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
-        parent::updatePaymentTransactionOnSuccess($paymentTransaction, $response);
-
         $paymentTransaction
             ->getPayment()
             ->getRecurrentCardFrom()
