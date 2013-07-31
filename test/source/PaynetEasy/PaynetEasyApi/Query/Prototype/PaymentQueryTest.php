@@ -49,8 +49,8 @@ abstract class PaymentQueryTest extends QueryTest
         return array(array(array
         (
             'type'              =>  $this->successType,
-            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
-            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
+            'paynet-order-id'   =>  self::PAYNET_ID,
+            'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time())
         )));
     }

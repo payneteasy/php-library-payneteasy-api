@@ -48,18 +48,18 @@ class Payment extends Data
     );
 
     /**
-     * Merchant payment identifier
+     * Unique identifier of payment assigned by merchant
      *
      * @var string
      */
-    protected $clientPaymentId;
+    protected $clientId;
 
     /**
-     * Unique identifier of transaction assigned by PaynetEasy
+     * Unique identifier of payment assigned by PaynetEasy
      *
      * @var string
      */
-    protected $paynetPaymentId;
+    protected $paynetId;
 
     /**
      * Brief payment description
@@ -148,13 +148,13 @@ class Payment extends Data
     /**
      * Set merchant payment identifier
      *
-     * @param       string      $clientPaymentId        Merchant payment identifier
+     * @param       string      $clientId        Merchant payment identifier
      *
      * @return      self
      */
-    public function setClientPaymentId($clientPaymentId)
+    public function setClientId($clientId)
     {
-        $this->clientPaymentId = $clientPaymentId;
+        $this->clientId = $clientId;
 
         return $this;
     }
@@ -164,21 +164,21 @@ class Payment extends Data
      *
      * @return      string
      */
-    public function getClientPaymentId()
+    public function getClientId()
     {
-        return $this->clientPaymentId;
+        return $this->clientId;
     }
 
     /**
      * Set unique identifier of transaction assigned by PaynetEasy
      *
-     * @param       string      $paynetPaymentId        Unique identifier of transaction assigned by PaynetEasy
+     * @param       string      $paynetId       Unique identifier of transaction assigned by PaynetEasy
      *
      * @return      self
      */
-    public function setPaynetPaymentId($paynetPaymentId)
+    public function setPaynetId($paynetId)
     {
-        $this->paynetPaymentId = $paynetPaymentId;
+        $this->paynetId = $paynetId;
 
         return $this;
     }
@@ -188,9 +188,9 @@ class Payment extends Data
      *
      * @return       string
      */
-    public function getPaynetPaymentId()
+    public function getPaynetId()
     {
-        return $this->paynetPaymentId;
+        return $this->paynetId;
     }
 
     /**
@@ -572,39 +572,5 @@ class Payment extends Data
     public function getComment()
     {
         return $this->comment;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getPropertyByField($fieldName)
-    {
-        switch ($fieldName)
-        {
-            case 'client_orderid':
-            case 'client-orderid':
-            {
-                return 'ClientPaymentId';
-            }
-            case 'paynet_order_id':
-            case 'paynet-order-id':
-            case 'orderid':
-            {
-                return 'PaynetPaymentId';
-            }
-            case 'order_desc':
-            case 'order-desc':
-            {
-                return 'Description';
-            }
-            case 'ipaddress':
-            {
-                return 'IpAddress';
-            }
-            default:
-            {
-                return parent::getPropertyByField($fieldName);
-            }
-        }
     }
 }

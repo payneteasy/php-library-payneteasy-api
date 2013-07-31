@@ -11,9 +11,9 @@ use PaynetEasy\PaynetEasyApi\Exception\PaynetException;
 
 abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 {
-    const SIGNING_KEY           = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
-    const CLIENT_PAYMENT_ID     = 'CLIENT-112233';
-    const PAYNET_PAYMENT_ID     = 'PAYNET-112233';
+    const SIGNING_KEY   = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
+    const CLIENT_ID     = 'CLIENT-112233';
+    const PAYNET_ID     = 'PAYNET-112233';
 
     /**
      * @dataProvider testProcessCallbackApprovedProvider
@@ -142,18 +142,18 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     {
         return new PaymentTransaction(array
         (
-            'payment'                   =>  new Payment(array
+            'payment'           =>  new Payment(array
             (
-                'client_payment_id'         =>  self::CLIENT_PAYMENT_ID,
-                'paynet_payment_id'         =>  self::PAYNET_PAYMENT_ID,
-                'amount'                    =>  0.99,
-                'currency'                  => 'USD',
+                'client_id'         =>  self::CLIENT_ID,
+                'paynet_id'         =>  self::PAYNET_ID,
+                'amount'            =>  0.99,
+                'currency'          => 'USD',
             )),
-            'queryConfig'               =>  new QueryConfig(array
+            'queryConfig'       =>  new QueryConfig(array
             (
-                'signing_key'               =>  self::SIGNING_KEY
+                'signing_key'       =>  self::SIGNING_KEY
             )),
-            'status'                    => PaymentTransaction::STATUS_PROCESSING
+            'status'            => PaymentTransaction::STATUS_PROCESSING
         ));
     }
 

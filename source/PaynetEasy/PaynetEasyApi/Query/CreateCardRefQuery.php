@@ -18,8 +18,8 @@ class CreateCardRefQuery extends Query
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',     'payment.clientPaymentId',      true,   Validator::ID),
-        array('orderid',            'payment.paynetPaymentId',      true,   Validator::ID),
+        array('client_orderid',     'payment.clientId',             true,   Validator::ID),
+        array('orderid',            'payment.paynetId',             true,   Validator::ID),
         array('login',              'queryConfig.login',            true,   Validator::MEDIUM_STRING)
     );
 
@@ -29,8 +29,8 @@ class CreateCardRefQuery extends Query
     static protected $signatureDefinition = array
     (
         'queryConfig.login',
-        'payment.clientPaymentId',
-        'payment.paynetPaymentId',
+        'payment.clientId',
+        'payment.paynetId',
         'queryConfig.signingKey'
     );
 
@@ -82,22 +82,26 @@ class CreateCardRefQuery extends Query
             $paymentTransaction
                 ->getPayment()
                 ->getRecurrentCardFrom()
-                ->setCardReferenceId($response->getCardReferenceId())
+                ->setPaynetId($response->getCardPaynetId())
             ;
         }
     }
 
     /**
-     * Check payment transaction processing stage and bank status.
-     * State must be STAGE_FINISHED and status must be STATUS_APPROVED.
+     * Check, if payment transaction is finished and payment is not new.
      *
      * @param       PaymentTransaction      $paymentTransaction     Payment for checking
      */
     protected function checkPaymentTransactionStatus(PaymentTransaction $paymentTransaction)
     {
-        if (!$paymentTransaction->isFinished() || !$paymentTransaction->isApproved())
+        if (!$paymentTransaction->isFinished())
         {
-            throw new ValidationException('Only approved and finished payment transaction can be used for create-card-ref-id');
+            throw new ValidationException('Only finished payment transaction can be used for create-card-ref-id');
+        }
+
+        if ($paymentTransaction->getPayment()->isNew())
+        {
+            throw new ValidationException("Can not use new payment for create-card-ref-id. Execute 'sale' or 'preauth' query first");
         }
     }
 }

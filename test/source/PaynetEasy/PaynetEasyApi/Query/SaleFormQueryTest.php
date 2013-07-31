@@ -37,7 +37,7 @@ class SaleFormQueryTest extends PaymentQueryTest
             sha1
             (
                 self::END_POINT .
-                self::CLIENT_PAYMENT_ID .
+                self::CLIENT_ID .
                 9910 .
                'vass.pupkin@example.com' .
                 self::SIGNING_KEY
@@ -63,8 +63,8 @@ class SaleFormQueryTest extends PaymentQueryTest
         (
             'type'              =>  $this->successType,
             'status'            => 'processing',
-            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
-            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
+            'merchant-order-id' =>  self::CLIENT_ID,
+            'paynet-order-id'   =>  self::PAYNET_ID,
             'serial-number'     =>  md5(time()),
             'redirect-url'      => 'http://redirect-url.com'
         )));
@@ -74,7 +74,8 @@ class SaleFormQueryTest extends PaymentQueryTest
     {
         return new Payment(array
         (
-            'client_payment_id'     =>  self::CLIENT_PAYMENT_ID,
+            'client_id'             => self::CLIENT_ID,
+            'paynet_id'             => self::PAYNET_ID,
             'description'           => 'This is test payment',
             'amount'                =>  99.1,
             'currency'              => 'USD',

@@ -36,7 +36,7 @@ class SaleQueryTest extends PaymentQueryTest
             sha1
             (
                 self::END_POINT .
-                self::CLIENT_PAYMENT_ID .
+                self::CLIENT_ID .
                 '99' .                          // amount
                 'vass.pupkin@example.com' .     // customer email
                 self::SIGNING_KEY
@@ -48,8 +48,8 @@ class SaleQueryTest extends PaymentQueryTest
     {
         return new Payment(array
         (
-            'paynet_payment_id'     =>  self::PAYNET_PAYMENT_ID,
-            'client_payment_id'     =>  self::CLIENT_PAYMENT_ID,
+            'client_id'             => self::CLIENT_ID,
+            'paynet_id'             => self::PAYNET_ID,
             'description'           => 'This is test payment',
             'amount'                =>  0.99,
             'currency'              => 'USD',

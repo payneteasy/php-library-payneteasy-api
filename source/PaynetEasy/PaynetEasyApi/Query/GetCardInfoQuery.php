@@ -17,7 +17,7 @@ class GetCardInfoQuery extends Query
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('cardrefid',          'payment.recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
+        array('cardrefid',          'payment.recurrentCardFrom.paynetId',           true,    Validator::ID),
         array('login',              'queryConfig.login',                            true,    Validator::MEDIUM_STRING)
     );
 
@@ -27,7 +27,7 @@ class GetCardInfoQuery extends Query
     static protected $signatureDefinition = array
     (
         'queryConfig.login',
-        'payment.recurrentCardFrom.cardReferenceId',
+        'payment.recurrentCardFrom.paynetId',
         'queryConfig.signingKey'
     );
 

@@ -183,13 +183,13 @@ abstract class Query implements QueryInterface
 
         if (!empty($missedFields))
         {
-            $errorMessage .= "Some required fields missed or empty in Payment: \n" .
+            $errorMessage .= "Some required fields missed or empty in PaymentTransaction: \n" .
                              implode(". \n", $missedFields) . ". \n";
         }
 
         if (!empty($invalidFields))
         {
-            $errorMessage .= "Some fields invalid in Payment: \n" .
+            $errorMessage .= "Some fields invalid in PaymentTransaction: \n" .
                              implode(". \n", $invalidFields) . ". \n";
         }
 
@@ -276,7 +276,7 @@ abstract class Query implements QueryInterface
                                           implode(', ', $missedFields) . ". \n");
         }
 
-        $this->validateClientPaymentId($paymentTransaction, $response);
+        $this->validateClientId($paymentTransaction, $response);
     }
 
     /**
@@ -295,7 +295,7 @@ abstract class Query implements QueryInterface
             throw new ValidationException("Unknown response type '{$response->getType()}'");
         }
 
-        $this->validateClientPaymentId($paymentTransaction, $response);
+        $this->validateClientId($paymentTransaction, $response);
     }
 
     /**
@@ -384,15 +384,16 @@ abstract class Query implements QueryInterface
      *
      * @throws ValidationException
      */
-    protected function validateClientPaymentId(PaymentTransaction $paymentTransaction, Response $response)
+    protected function validateClientId(PaymentTransaction $paymentTransaction, Response $response)
     {
-        $paymentClientPaymentId = $paymentTransaction->getPayment()->getClientPaymentId();
+        $paymentClientId  = $paymentTransaction->getPayment()->getClientId();
+        $responseClientId = $response->getPaymentClientId();
 
-        if (     strlen($response->getClientPaymentId()) > 0
-            &&   $paymentClientPaymentId !== $response->getClientPaymentId())
+        if (     strlen($responseClientId) > 0
+            &&   $paymentClientId !== $responseClientId)
         {
-            throw new ValidationException("Response clientPaymentId '{$response->getClientPaymentId()}' does " .
-                                          "not match Payment clientPaymentId '{$paymentClientPaymentId}'");
+            throw new ValidationException("Response clientId '{$responseClientId}' does " .
+                                          "not match Payment clientId '{$paymentClientId}'");
         }
     }
 
@@ -404,11 +405,13 @@ abstract class Query implements QueryInterface
      */
     protected function setPaynetId(PaymentTransaction $paymentTransaction, Response $response)
     {
-        if(strlen($response->getPaynetPaymentId()) > 0)
+        $responseClientId = $response->getPaymentClientId();
+
+        if(strlen($responseClientId) > 0)
         {
             $paymentTransaction
                 ->getPayment()
-                ->setPaynetPaymentId($response->getPaynetPaymentId())
+                ->setPaynetId($responseClientId)
             ;
         }
     }

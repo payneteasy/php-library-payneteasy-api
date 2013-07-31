@@ -30,9 +30,9 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
         (
             'status'            => 'approved',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_PAYMENT_ID,
-            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
-            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
+            'orderid'           =>  self::PAYNET_ID,
+            'merchant_order'    =>  self::CLIENT_ID,
+            'client_orderid'    =>  self::CLIENT_ID,
         )));
     }
 
@@ -43,17 +43,17 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
         (
             'status'            => 'declined',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_PAYMENT_ID,
-            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
-            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
+            'orderid'           =>  self::PAYNET_ID,
+            'merchant_order'    =>  self::CLIENT_ID,
+            'client_orderid'    =>  self::CLIENT_ID,
         )),
         array(array
         (
             'status'            => 'filtered',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_PAYMENT_ID,
-            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
-            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
+            'orderid'           =>  self::PAYNET_ID,
+            'merchant_order'    =>  self::CLIENT_ID,
+            'client_orderid'    =>  self::CLIENT_ID,
         )));
     }
 
@@ -63,9 +63,9 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
         (
             'status'            => 'error',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_PAYMENT_ID,
-            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
-            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
+            'orderid'           =>  self::PAYNET_ID,
+            'merchant_order'    =>  self::CLIENT_ID,
+            'client_orderid'    =>  self::CLIENT_ID,
             'error_message'     => 'test type error message',
             'error_code'        =>  5
         )));
@@ -83,9 +83,9 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
         (
             'status'            => 'processing',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_PAYMENT_ID,
-            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
-            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
+            'orderid'           =>  self::PAYNET_ID,
+            'merchant_order'    =>  self::CLIENT_ID,
+            'client_orderid'    =>  self::CLIENT_ID,
         );
 
         $callback['control'] = $this->createSignature($callback);
@@ -106,9 +106,9 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
         (
             'status'            => 'processing',
             'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_PAYMENT_ID,
-            'merchant_order'    =>  self::CLIENT_PAYMENT_ID,
-            'client_orderid'    =>  self::CLIENT_PAYMENT_ID,
+            'orderid'           =>  self::PAYNET_ID,
+            'merchant_order'    =>  self::CLIENT_ID,
+            'client_orderid'    =>  self::CLIENT_ID,
         );
 
         $callback['control'] = $this->createSignature($callback);

@@ -49,8 +49,8 @@ abstract class SyncQueryTest extends QueryTest
         (
             'type'              =>  $this->successType,
             'status'            => 'filtered',
-            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
-            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
+            'paynet-order-id'   =>  self::PAYNET_ID,
+            'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test filtered message',
             'error-code'        =>  8876
@@ -59,8 +59,8 @@ abstract class SyncQueryTest extends QueryTest
         (
             'type'              =>  $this->successType,
             'status'            => 'declined',
-            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
-            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
+            'paynet-order-id'   =>  self::PAYNET_ID,
+            'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'test error message',
             'error-code'        =>  578
@@ -75,8 +75,8 @@ abstract class SyncQueryTest extends QueryTest
         (
             'type'              =>  $this->successType,
             'status'            => 'error',
-            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
-            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
+            'paynet-order-id'   =>  self::PAYNET_ID,
+            'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time()),
             'error-message'     => 'status error message',
             'error-code'        =>  24

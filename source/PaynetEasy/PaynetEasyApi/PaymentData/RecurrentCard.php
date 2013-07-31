@@ -13,7 +13,7 @@ class RecurrentCard extends Data
      *
      * @var integer
      */
-    protected $cardReferenceId;
+    protected $paynetId;
 
     /**
      * RecurrentCard CVV2
@@ -60,13 +60,13 @@ class RecurrentCard extends Data
     /**
      * Set RecurrentCard referense ID
      *
-     * @param       integer     $cardReferenceId        RecurrentCard referense ID
+     * @param       integer     $paynetId       RecurrentCard referense ID
      *
      * @return      self
      */
-    public function setCardReferenceId($cardReferenceId)
+    public function setPaynetId($paynetId)
     {
-        $this->cardReferenceId = $cardReferenceId;
+        $this->paynetId = $paynetId;
 
         return $this;
     }
@@ -76,9 +76,9 @@ class RecurrentCard extends Data
      *
      * @return  integer
      */
-    public function getCardReferenceId()
+    public function getPaynetId()
     {
-        return $this->cardReferenceId;
+        return $this->paynetId;
     }
 
     /**
@@ -219,28 +219,5 @@ class RecurrentCard extends Data
     public function getLastFourDigits()
     {
         return $this->lastFourDigits;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getPropertyByField($fieldName)
-    {
-        switch ($fieldName)
-        {
-            case 'id':
-            case 'cardrefid':
-            case 'card_ref_id':
-            case 'card-ref-id':
-            case 'source-card-ref-id':
-            case 'destination-card-ref-id':
-            {
-                return 'CardReferenceId';
-            }
-            default:
-            {
-                return parent::getPropertyByField($fieldName);
-            }
-        }
     }
 }

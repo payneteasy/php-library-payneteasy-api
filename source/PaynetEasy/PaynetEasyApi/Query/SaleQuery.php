@@ -17,7 +17,7 @@ class SaleQuery extends PaymentQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',         'payment.clientPaymentId',              true,   Validator::ID),
+        array('client_orderid',         'payment.clientId',                     true,   Validator::ID),
         array('order_desc',             'payment.description',                  true,   Validator::LONG_STRING),
         array('amount',                 'payment.amount',                       true,   Validator::AMOUNT),
         array('currency',               'payment.currency',                     true,   Validator::CURRENCY),
@@ -52,7 +52,7 @@ class SaleQuery extends PaymentQuery
     static protected $signatureDefinition = array
     (
         'queryConfig.endPoint',
-        'payment.clientPaymentId',
+        'payment.clientId',
         'payment.amountInCents',
         'payment.customer.email',
         'queryConfig.signingKey'

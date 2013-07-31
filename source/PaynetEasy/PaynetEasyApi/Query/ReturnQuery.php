@@ -16,8 +16,8 @@ class ReturnQuery extends PaymentQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',     'payment.clientPaymentId',          true,   Validator::ID),
-        array('orderid',            'payment.paynetPaymentId',          true,   Validator::ID),
+        array('client_orderid',     'payment.clientId',                 true,   Validator::ID),
+        array('orderid',            'payment.paynetId',                 true,   Validator::ID),
         array('amount',             'payment.amount',                   true,   Validator::AMOUNT),
         array('currency',           'payment.currency',                 true,   Validator::CURRENCY),
         array('comment',            'payment.comment',                  true,   Validator::MEDIUM_STRING),
@@ -30,8 +30,8 @@ class ReturnQuery extends PaymentQuery
     static protected $signatureDefinition = array
     (
         'queryConfig.login',
-        'payment.clientPaymentId',
-        'payment.paynetPaymentId',
+        'payment.clientId',
+        'payment.paynetId',
         'payment.amountInCents',
         'payment.currency',
         'queryConfig.signingKey'

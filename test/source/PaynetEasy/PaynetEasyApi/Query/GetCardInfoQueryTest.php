@@ -65,8 +65,8 @@ class GetCardInfoQueryTest extends SyncQueryTest
         (
             'type'              =>  $this->successType,
             'status'            => 'approved',
-            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
-            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
+            'paynet-order-id'   =>  self::PAYNET_ID,
+            'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time()),
             'card-printed-name' => 'Vasya Pupkin',
             'expire-month'      => '12',
@@ -82,8 +82,8 @@ class GetCardInfoQueryTest extends SyncQueryTest
         (
             'type'              =>  $this->successType,
             'status'            => 'processing',
-            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
-            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
+            'paynet-order-id'   =>  self::PAYNET_ID,
+            'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time()),
             'card-printed-name' => 'Vasya Pupkin',
             'expire-month'      => '12',
@@ -95,7 +95,7 @@ class GetCardInfoQueryTest extends SyncQueryTest
 
     /**
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
-     * @expectedExceptionMessage Response clientPaymentId 'invalid' does not match Payment clientPaymentId
+     * @expectedExceptionMessage Response clientId 'invalid' does not match Payment clientId
      */
     public function testProcessErrorResponseWithInvalidId()
     {
@@ -115,7 +115,7 @@ class GetCardInfoQueryTest extends SyncQueryTest
 
     /**
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
-     * @expectedExceptionMessage Response clientPaymentId '_' does not match Payment clientPaymentId
+     * @expectedExceptionMessage Response clientId '_' does not match Payment clientId
      */
     public function testProcessSuccessResponseWithInvalidId()
     {
@@ -142,10 +142,11 @@ class GetCardInfoQueryTest extends SyncQueryTest
     {
         return new Payment(array
         (
-            'client_payment_id'     => self::CLIENT_PAYMENT_ID,
+            'client_id'             => self::CLIENT_ID,
+            'paynet_id'             => self::PAYNET_ID,
             'recurrent_card_from'   => new RecurrentCard(array
             (
-                'card_reference_id'     => self::RECURRENT_CARD_FROM_ID
+                'paynet_id'     => self::RECURRENT_CARD_FROM_ID
             ))
         ));
     }

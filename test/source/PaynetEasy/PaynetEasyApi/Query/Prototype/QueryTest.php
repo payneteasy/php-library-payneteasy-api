@@ -20,8 +20,8 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
     const LOGIN                     = 'test-login';
     const END_POINT                 =  789;
     const SIGNING_KEY               = 'D5F82EC1-8575-4482-AD89-97X6X0X20X22';
-    const CLIENT_PAYMENT_ID         = 'CLIENT-112233';
-    const PAYNET_PAYMENT_ID         = 'PAYNET-112233';
+    const CLIENT_ID                 = 'CLIENT-112233';
+    const PAYNET_ID                 = 'PAYNET-112233';
 
     const RECURRENT_CARD_FROM_ID    = '5588943';
     const RECURRENT_CARD_TO_ID      = '5588978';
@@ -73,7 +73,7 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
     public function testCreateRequestWithInvalidFields()
     {
         $paymentTransaction = $this->getPaymentTransaction();
-        $paymentTransaction->getPayment()->setClientPaymentId('123456789012345678901234567890');
+        $paymentTransaction->getPayment()->setClientId('123456789012345678901234567890');
         $paymentTransaction->getQueryConfig()->setLogin('123456789012345678901234567890123456789012345678901234567890');
 
         $this->object->createRequest($paymentTransaction);
@@ -150,7 +150,7 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
-     * @expectedExceptionMessage Response clientPaymentId '_' does not match Payment clientPaymentId
+     * @expectedExceptionMessage Response clientId '_' does not match Payment clientId
      */
     public function testProcessSuccessResponseWithInvalidId()
     {
@@ -180,7 +180,7 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
-     * @expectedExceptionMessage Response clientPaymentId 'invalid' does not match Payment clientPaymentId
+     * @expectedExceptionMessage Response clientId 'invalid' does not match Payment clientId
      */
     public function testProcessErrorResponseWithInvalidId()
     {

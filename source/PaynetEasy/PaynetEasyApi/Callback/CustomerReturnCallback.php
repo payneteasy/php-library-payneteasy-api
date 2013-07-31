@@ -22,9 +22,9 @@ class CustomerReturnCallback extends AbstractCallback
      */
     static protected $callbackFieldsDefinition = array
     (
-        array('orderid',        'payment.paynetPaymentId'),
-        array('merchant_order', 'payment.clientPaymentId'),
-        array('client_orderid', 'payment.clientPaymentId'),
+        array('orderid',        'payment.paynetId'),
+        array('merchant_order', 'payment.clientId'),
+        array('client_orderid', 'payment.clientId'),
         array('status',          null),
         array('control',         null)
     );

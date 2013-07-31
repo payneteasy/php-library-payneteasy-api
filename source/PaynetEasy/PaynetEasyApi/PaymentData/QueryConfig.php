@@ -369,26 +369,4 @@ class QueryConfig extends Data
             throw new RuntimeException("Unknown gateway mode given: '{$gatewayMode}'");
         }
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getPropertyByField($fieldName)
-    {
-        switch ($fieldName)
-        {
-            case 'control':
-            {
-                return 'signingKey';
-            }
-            case 'server_callback_url':
-            {
-                return 'callbackUrl';
-            }
-            default:
-            {
-                return parent::getPropertyByField($fieldName);
-            }
-        }
-    }
 }

@@ -33,8 +33,8 @@ class StatusQueryTest extends SyncQueryTest
             sha1
             (
                 self::LOGIN .
-                self::CLIENT_PAYMENT_ID .
-                self::PAYNET_PAYMENT_ID .
+                self::CLIENT_ID .
+                self::PAYNET_ID .
                 self::SIGNING_KEY
             )
         ));
@@ -46,8 +46,8 @@ class StatusQueryTest extends SyncQueryTest
         (
             'type'              =>  $this->successType,
             'status'            => 'approved',
-            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
-            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
+            'paynet-order-id'   =>  self::PAYNET_ID,
+            'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -71,8 +71,8 @@ class StatusQueryTest extends SyncQueryTest
             'type'              =>  $this->successType,
             'status'            => 'processing',
             'html'              =>  urlencode('<html></html>'),
-            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
-            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
+            'paynet-order-id'   =>  self::PAYNET_ID,
+            'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -84,8 +84,8 @@ class StatusQueryTest extends SyncQueryTest
     {
         return new Payment(array
         (
-            'client_payment_id'     => self::CLIENT_PAYMENT_ID,
-            'paynet_payment_id'     => self::PAYNET_PAYMENT_ID
+            'client_id'             => self::CLIENT_ID,
+            'paynet_id'             => self::PAYNET_ID
         ));
     }
 }

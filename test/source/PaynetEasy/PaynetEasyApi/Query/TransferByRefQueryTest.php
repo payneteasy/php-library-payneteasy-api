@@ -35,7 +35,7 @@ class TransferByRefQueryTest extends PaymentQueryTest
             sha1
             (
                 self::LOGIN .
-                self::CLIENT_PAYMENT_ID .
+                self::CLIENT_ID .
                 self::RECURRENT_CARD_FROM_ID .
                 self::RECURRENT_CARD_TO_ID .
                  9910 .
@@ -49,7 +49,8 @@ class TransferByRefQueryTest extends PaymentQueryTest
     {
         return new Payment(array
         (
-            'client_payment_id'     =>  self::CLIENT_PAYMENT_ID,
+            'client_id'             => self::CLIENT_ID,
+            'paynet_id'             => self::PAYNET_ID,
             'description'           => 'This is test payment',
             'amount'                =>  99.1,
             'currency'              => 'EUR',
@@ -59,12 +60,12 @@ class TransferByRefQueryTest extends PaymentQueryTest
             )),
             'recurrent_card_from'   => new RecurrentCard(array
             (
-                'cardrefid'             => self::RECURRENT_CARD_FROM_ID,
+                'paynet_id'             => self::RECURRENT_CARD_FROM_ID,
                 'cvv2'                  => 123
             )),
             'recurrent_card_to'     => new RecurrentCard(array
             (
-                'cardrefid'             => self::RECURRENT_CARD_TO_ID,
+                'paynet_id'             => self::RECURRENT_CARD_TO_ID,
             ))
         ));
     }

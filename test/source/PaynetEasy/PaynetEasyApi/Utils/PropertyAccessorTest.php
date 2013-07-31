@@ -10,9 +10,9 @@ class PropertyAccessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider testGetValueProvider
      */
-    public function testGetValue($propertyPath, $expectedValue, $failOnError = true)
+    public function testGetValue($propertyPath, $expectedValue)
     {
-        $actualValue = PropertyAccessor::getValue(new TestObject, $propertyPath, $failOnError);
+        $actualValue = PropertyAccessor::getValue(new TestObject, $propertyPath, false);
 
         $this->assertEquals($expectedValue, $actualValue);
     }
@@ -33,15 +33,67 @@ class PropertyAccessorTest extends \PHPUnit_Framework_TestCase
         array
         (
             'testProperty.testProperty',
-            null,
-            false
+            null
         ),
         array
         (
             'unknownProperty',
-            null,
-            false
+            null
         ));
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Object expected, array given
+     */
+    public function testGetValueWithNoObject()
+    {
+        PropertyAccessor::getValue(array('test' => 1), 'test');
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Object expected for property path 'testProperty', 'string' given
+     */
+    public function testGetValueWithNoObjectInProperty()
+    {
+        PropertyAccessor::getValue(new TestObject, 'testProperty.testProperty');
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Unknown getter for property 'test'
+     */
+    public function testGetValueWithNoGetter()
+    {
+        PropertyAccessor::getValue(new TestObject, 'test');
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Object expected, array given
+     */
+    public function testSetValueWithNoObject()
+    {
+        PropertyAccessor::setValue(array('test' => 1), 'test', 'new value');
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Object expected for property path 'testProperty', 'string' given
+     */
+    public function testSetValueWithNoObjectInProperty()
+    {
+        PropertyAccessor::setValue(new TestObject, 'testProperty.testProperty', 'new value');
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Unknown setter for property 'test'
+     */
+    public function testSetValueWithNoGetter()
+    {
+        PropertyAccessor::setValue(new TestObject, 'test', 'new value');
     }
 
     /**

@@ -17,12 +17,12 @@ class MakeRebillQuery extends PaymentQuery
     static protected $requestFieldsDefinition = array
     (
         // mandatory
-        array('client_orderid',         'payment.clientPaymentId',                      true,    Validator::ID),
+        array('client_orderid',         'payment.clientId',                             true,    Validator::ID),
         array('order_desc',             'payment.description',                          true,    Validator::LONG_STRING),
         array('amount',                 'payment.amount',                               true,    Validator::AMOUNT),
         array('currency',               'payment.currency',                             true,    Validator::CURRENCY),
         array('ipaddress',              'payment.customer.ipAddress',                   true,    Validator::IP),
-        array('cardrefid',              'payment.recurrentCardFrom.cardReferenceId',    true,    Validator::ID),
+        array('cardrefid',              'payment.recurrentCardFrom.paynetId',           true,    Validator::ID),
         array('login',                  'queryConfig.login',                            true,    Validator::MEDIUM_STRING),
         // optional
         array('comment',                'payment.comment',                              false,   Validator::MEDIUM_STRING),
@@ -36,9 +36,9 @@ class MakeRebillQuery extends PaymentQuery
     static protected $signatureDefinition = array
     (
         'queryConfig.endPoint',
-        'payment.clientPaymentId',
+        'payment.clientId',
         'payment.amountInCents',
-        'payment.recurrentCardFrom.cardReferenceId',
+        'payment.recurrentCardFrom.paynetId',
         'queryConfig.signingKey'
     );
 

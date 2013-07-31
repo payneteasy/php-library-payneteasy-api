@@ -25,11 +25,29 @@ class CreateCardRefQueryTest extends SyncQueryTest
 
     /**
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
-     * @expectedExceptionMessage Only approved and finished payment transaction can be used for create-card-ref-id
+     * @expectedExceptionMessage Only finished payment transaction can be used for create-card-ref-id
      */
     public function testCreateWithNotEndedPayment()
     {
         $this->object->createRequest(parent::getPaymentTransaction());
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Can not use new payment for create-card-ref-id. Execute 'sale' or 'preauth' query first
+     */
+    public function testCreateWithNewPayment()
+    {
+        $payment = new Payment(array
+        (
+            'client_id'             => self::CLIENT_ID,
+            'paynet_id'             => self::PAYNET_ID
+        ));
+
+        $paymentTransaction = $this->getPaymentTransaction();
+        $paymentTransaction->setPayment($payment);
+
+        $this->object->createRequest($paymentTransaction);
     }
 
     public function testCreateRequestProvider()
@@ -39,8 +57,8 @@ class CreateCardRefQueryTest extends SyncQueryTest
             sha1
             (
                 self::LOGIN .
-                self::CLIENT_PAYMENT_ID .
-                self::PAYNET_PAYMENT_ID .
+                self::CLIENT_ID .
+                self::PAYNET_ID .
                 self::SIGNING_KEY
             ),
             'recurrent'
@@ -51,7 +69,7 @@ class CreateCardRefQueryTest extends SyncQueryTest
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
      * @expectedExceptionMessage Some required fields missed or empty in Response: card-ref-id
      */
-    public function testProcessResponseWithException()
+    public function testProcessResponseWithEmptyFields()
     {
         $paymentTransaction = $this->getPaymentTransaction();
 
@@ -59,8 +77,8 @@ class CreateCardRefQueryTest extends SyncQueryTest
         (
             'type'              =>  $this->successType,
             'status'            => 'processing',
-            'paynet-order-id'   =>  self::PAYNET_PAYMENT_ID,
-            'merchant-order-id' =>  self::CLIENT_PAYMENT_ID,
+            'paynet-order-id'   =>  self::PAYNET_ID,
+            'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time())
         )));
     }
@@ -100,8 +118,9 @@ class CreateCardRefQueryTest extends SyncQueryTest
     {
         return new Payment(array
         (
-            'paynet_payment_id'     =>  self::PAYNET_PAYMENT_ID,
-            'client_payment_id'     =>  self::CLIENT_PAYMENT_ID
+            'client_id'             => self::CLIENT_ID,
+            'paynet_id'             => self::PAYNET_ID,
+            'status'                => Payment::STATUS_PREAUTH
         ));
     }
 }

@@ -50,9 +50,9 @@ abstract class AbstractCallback implements CallbackInterface
      */
     static protected $callbackFieldsDefinition = array
     (
-        array('orderid',        'payment.paynetPaymentId'),
-        array('merchant_order', 'payment.clientPaymentId'),
-        array('client_orderid', 'payment.clientPaymentId'),
+        array('orderid',        'payment.paynetId'),
+        array('merchant_order', 'payment.clientId'),
+        array('client_orderid', 'payment.clientId'),
         array('amount',         'payment.amount'),
         array('status',          null),
         array('type',            null),
@@ -208,11 +208,10 @@ abstract class AbstractCallback implements CallbackInterface
      */
     protected function updatePaymentTransaction(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
     {
-        $paymentTransaction->setStatus($callbackResponse->getStatus());
-
         $paymentTransaction
+            ->setStatus($callbackResponse->getStatus())
             ->getPayment()
-            ->setPaynetPaymentId($callbackResponse->getPaynetPaymentId())
+            ->setPaynetId($callbackResponse->getPaymentPaynetId())
         ;
 
         if ($callbackResponse->isError() || $callbackResponse->isDeclined())
@@ -235,8 +234,8 @@ abstract class AbstractCallback implements CallbackInterface
         $expectedControl   = sha1
         (
             $callback->getStatus() .
-            $callback->getPaynetPaymentId() .
-            $callback->getClientPaymentId() .
+            $callback->getPaymentPaynetId() .
+            $callback->getPaymentClientId() .
             $paymentTransaction->getQueryConfig()->getSigningKey()
         );
 

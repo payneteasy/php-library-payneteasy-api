@@ -171,19 +171,9 @@ class Response extends ArrayObject
      *
      * @return      string
      */
-    public function getClientPaymentId()
+    public function getPaymentClientId()
     {
         return $this->getAnyKey(array('merchant-order-id', 'client_orderid', 'merchant_order'));
-    }
-
-    /**
-     * Get payment card reference id
-     *
-     * @return      string
-     */
-    public function getCardReferenceId()
-    {
-        return $this->getValue('card-ref-id');
     }
 
     /**
@@ -191,9 +181,19 @@ class Response extends ArrayObject
      *
      * @return      string
      */
-    public function getPaynetPaymentId()
+    public function getPaymentPaynetId()
     {
         return $this->getAnyKey(array('orderid', 'paynet-order-id'));
+    }
+
+    /**
+     * Get payment card reference id
+     *
+     * @return      string
+     */
+    public function getCardPaynetId()
+    {
+        return $this->getValue('card-ref-id');
     }
 
     /**

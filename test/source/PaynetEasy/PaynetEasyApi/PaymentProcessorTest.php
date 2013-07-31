@@ -314,8 +314,8 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         (
             'payment'             =>  new Payment(array
             (
-                'client_payment_id'     => '_',
-                'paynet_payment_id'     => '_',
+                'client_id'             => '_',
+                'paynet_id'             => '_',
                 'description'           => 'This is test payment',
                 'amount'                =>  99.1,
                 'currency'              => 'USD',

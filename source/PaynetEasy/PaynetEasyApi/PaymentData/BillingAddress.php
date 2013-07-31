@@ -225,23 +225,4 @@ class BillingAddress extends Data
     {
         return $this->cellPhone;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getPropertyByField($fieldName)
-    {
-        switch ($fieldName)
-        {
-            case 'address1':
-            case 'address':
-            {
-                return 'FirstLine';
-            }
-            default:
-            {
-                return parent::getPropertyByField($fieldName);
-            }
-        }
-    }
 }

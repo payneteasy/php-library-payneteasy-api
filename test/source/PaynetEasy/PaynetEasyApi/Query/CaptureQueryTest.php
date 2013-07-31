@@ -33,8 +33,8 @@ class CaptureQueryTest extends PaymentQueryTest
             sha1
             (
                 self::LOGIN .
-                self::CLIENT_PAYMENT_ID .
-                self::PAYNET_PAYMENT_ID .
+                self::CLIENT_ID .
+                self::PAYNET_ID .
                  9910 .
                 'EUR' .
                 self::SIGNING_KEY
@@ -46,8 +46,8 @@ class CaptureQueryTest extends PaymentQueryTest
     {
         return new Payment(array
         (
-            'client_payment_id'     => self::CLIENT_PAYMENT_ID,
-            'paynet_payment_id'     => self::PAYNET_PAYMENT_ID,
+            'client_id'             => self::CLIENT_ID,
+            'paynet_id'             => self::PAYNET_ID,
             'amount'                => 99.1,
             'currency'              => 'EUR',
         ));
