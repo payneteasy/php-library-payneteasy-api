@@ -1,5 +1,6 @@
 <?php
 
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
@@ -10,7 +11,7 @@ use PaynetEasy\PaynetEasyApi\PaymentProcessor;
  *
  * @return array
  */
-$getConfig = function()
+$getQueryConfig = function()
 {
     return new QueryConfig(array
     (
@@ -30,7 +31,7 @@ $getConfig = function()
         /**
          * Ключ мерчанта для подписывания запросов, выдается при подключении
          */
-        'control'                   => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
+        'signing_key'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
         /**
          * URL на который пользователь будет перенаправлен после окончания запроса
          *
@@ -43,7 +44,7 @@ $getConfig = function()
          *
          * @see http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks
          */
-        'server_callback_url'       => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}?stage=processPaynetEasyCallback",
+        'callback_url'              => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}?stage=processPaynetEasyCallback",
         /**
          * Режим работы библиотеки: sandbox, production
          *
@@ -73,22 +74,22 @@ $getConfig = function()
  *
  * @return      Payment        Платеж
  */
-$loadPayment = function()
+$loadPaymentTransaction = function()
 {
-    if (!empty($_SESSION['payment']))
+    if (!empty($_SESSION['payment_transaction']))
     {
-        return unserialize($_SESSION['payment']);
+        return unserialize($_SESSION['payment_transaction']);
     }
 };
 
 /**
  * Функция сохраняет платеж в сессию
  *
- * @param       Payment        $payment         Платеж
+ * @param       PaymentTransaction      $paymentTransaction     Платежная транзакция
  */
-$savePayment = function(Payment $payment)
+$savePaymentTransaction = function(PaymentTransaction $paymentTransaction)
 {
-    $_SESSION['payment'] = serialize($payment);
+    $_SESSION['payment_transaction'] = serialize($paymentTransaction);
 };
 
 /**
@@ -135,15 +136,15 @@ $redirectToResponseUrl = function(Response $response)
 /**
  * Функция выводит статус платежа после того, как его обработка завершена
  *
- * @param       Payment        $payment         Платеж
+ * @param       PaymentTransaction      $paymentTransaction     Платежная транзакция
  */
-$displayEndedPayment = function(Payment $payment)
+$displayEndedPayment = function(PaymentTransaction $paymentTransaction)
 {
     // платеж завершен, выводим его статус
     print "<pre>";
     print "Payment processing finished.\n";
-    print "Payment state: '{$payment->getProcessingStage()}'.\n";
-    print "Payment status: '{$payment->getStatus()}'.\n";
+    print "Payment status: '{$paymentTransaction->getPayment()->getStatus()}'.\n";
+    print "Payment transaction status: '{$paymentTransaction->getStatus()}'.\n";
     print "</pre>";
 
     session_destroy();
@@ -174,7 +175,7 @@ $displayException = function(Exception $exception)
  * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::processPaynetEasyCallback()
  */
 $getPaymentProcessor = function() use ($displayException,
-                                       $savePayment,
+                                       $savePaymentTransaction,
                                        $displayWaitPage,
                                        $redirectToResponseUrl,
                                        $displayResponseHtml,
@@ -183,7 +184,7 @@ $getPaymentProcessor = function() use ($displayException,
     return new PaymentProcessor(array
     (
         PaymentProcessor::HANDLER_CATCH_EXCEPTION     => $displayException,
-        PaymentProcessor::HANDLER_SAVE_PAYMENT        => $savePayment,
+        PaymentProcessor::HANDLER_SAVE_CHANGES        => $savePaymentTransaction,
         PaymentProcessor::HANDLER_STATUS_UPDATE       => $displayWaitPage,
         PaymentProcessor::HANDLER_REDIRECT            => $redirectToResponseUrl,
         PaymentProcessor::HANDLER_SHOW_HTML           => $displayResponseHtml,

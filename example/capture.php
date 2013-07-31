@@ -1,9 +1,10 @@
 <?php
 
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
-require_once './common/autoload.php';
-require_once './common/functions.php';
+require_once __DIR__ . '/common/autoload.php';
+require_once __DIR__ . '/common/functions.php';
 
 session_start();
 
@@ -18,15 +19,19 @@ if (!isset($_GET['stage']))
      *
      * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Capture_Request_Parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\CaptureQuery::$requestFieldsDefinition
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     * @see functions.php, $getConfig()
+     * @see functions.php, $getQueryConfig()
      */
-    $payment = new Payment(array
+    $paymentTransaction = new PaymentTransaction(array
     (
-        'client_payment_id'     => 'CLIENT-112244',
-        'paynet_payment_id'     =>  1969596,
-        'query_config'          =>  $getConfig()
+        'payment'       => new Payment(array
+        (
+            'client_id'     => 'CLIENT-112244',
+            'paynet_id'     =>  1969596,
+        )),
+        'query_config'  =>  $getQueryConfig()
     ));
 
     /**
@@ -35,7 +40,7 @@ if (!isset($_GET['stage']))
      * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
      * @see \PaynetEasy\PaynetEasyApi\Query\CaptureQuery::updatePaymentOnSuccess()
      */
-    $getPaymentProcessor()->executeQuery('capture', $payment);
+    $getPaymentProcessor()->executeQuery('capture', $paymentTransaction);
 }
 /**
  * Второй этап обработки платежа.
@@ -46,5 +51,5 @@ elseif ($_GET['stage'] == 'updateStatus')
     /**
      * Запросим статус платежа
      */
-    $getPaymentProcessor()->executeQuery('status', $loadPayment());
+    $getPaymentProcessor()->executeQuery('status', $loadPaymentTransaction());
 }

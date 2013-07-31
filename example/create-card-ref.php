@@ -1,9 +1,10 @@
 <?php
 
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
-require_once './common/autoload.php';
-require_once './common/functions.php';
+require_once __DIR__ . '/common/autoload.php';
+require_once __DIR__ . '/common/functions.php';
 
 session_start();
 
@@ -18,17 +19,21 @@ session_start();
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_registration_request_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
- * @see functions.php, $getConfig()
+ * @see functions.php, $getQueryConfig()
  */
-$payment = new Payment(array
+$paymentTransaction = new PaymentTransaction(array
 (
-    'client_payment_id'     => 'CLIENT-112244',
-    'paynet_payment_id'     =>  1969595,
-    'processing_stage'      =>  Payment::STAGE_FINISHED,
-    'status'                =>  Payment::STATUS_APPROVED,
-    'query_config'          =>  $getConfig()
+    'payment'               => new Payment(array
+    (
+        'client_id'             => 'CLIENT-112244',
+        'paynet_id'             =>  1969595,
+        'status'                =>  Payment::STATUS_PREAUTH
+    )),
+    'status'                =>  PaymentTransaction::STATUS_APPROVED,
+    'query_config'          =>  $getQueryConfig()
 ));
 
 /**
@@ -36,4 +41,4 @@ $payment = new Payment(array
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::updatePaymentOnSuccess()
  */
-$getPaymentProcessor()->executeQuery('create-card-ref', $payment);
+$getPaymentProcessor()->executeQuery('create-card-ref', $paymentTransaction);

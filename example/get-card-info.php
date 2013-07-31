@@ -1,10 +1,11 @@
 <?php
 
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard;
 
-require_once './common/autoload.php';
-require_once './common/functions.php';
+require_once __DIR__ . '/common/autoload.php';
+require_once __DIR__ . '/common/functions.php';
 
 session_start();
 
@@ -19,18 +20,22 @@ session_start();
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Information_request_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::$requestFieldsDefinition
+ * @see \PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
- * @see functions.php, $getConfig()
+ * @see functions.php, $getQueryConfig()
  */
-$payment = new Payment(array
+$paymentTransaction = new PaymentTransaction(array
 (
-    'recurrent_card_from'   =>  new RecurrentCard(array
+    'payment'               => new Payment(array
     (
-        'card_reference_id'     => 8058
+        'recurrent_card_from'   =>  new RecurrentCard(array
+        (
+            'paynet_id'             => 8058
+        ))
     )),
-    'query_config'          =>  $getConfig()
+    'query_config'          =>  $getQueryConfig()
 ));
 
 /**
@@ -38,4 +43,4 @@ $payment = new Payment(array
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::updatePaymentOnSuccess()
  */
-$getPaymentProcessor()->executeQuery('get-card-info', $payment);
+$getPaymentProcessor()->executeQuery('get-card-info', $paymentTransaction);

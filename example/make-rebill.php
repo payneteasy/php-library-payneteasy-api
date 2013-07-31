@@ -1,11 +1,12 @@
 <?php
 
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
 use PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard;
 
-require_once './common/autoload.php';
-require_once './common/functions.php';
+require_once __DIR__ . '/common/autoload.php';
+require_once __DIR__ . '/common/functions.php';
 
 session_start();
 
@@ -27,28 +28,31 @@ if (!isset($_GET['stage']))
      *
      * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Recurrent_Payment_request_parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\MakeRebillQuery::$requestFieldsDefinition
+     * @see \PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     * @see functions.php, $getConfig()
+     * @see functions.php, $getQueryConfig()
      */
-    $payment = new Payment(array
+    $paymentTransaction = new PaymentTransaction(array
     (
-        'client_payment_id'     => 'CLIENT-112244',
-        'description'           => 'This is test payment',
-        'amount'                =>  0.99,
-        'currency'              => 'USD',
-        'ip_address'            => '127.0.0.1',
-        'customer'              =>  new Customer(array
+        'payment'               => new Payment(array
         (
-            'ip_address'            => '127.0.0.1'
+            'client_id'             => 'CLIENT-112244',
+            'description'           => 'This is test payment',
+            'amount'                =>  0.99,
+            'currency'              => 'USD',
+            'customer'              =>  new Customer(array
+            (
+                'ip_address'            => '127.0.0.1'
+            )),
+            'recurrent_card_from'   => new RecurrentCard(array
+            (
+                'paynet_id'             => 8058
+            ))
         )),
-        'recurrent_card_from'   => new RecurrentCard(array
-        (
-            'card_reference_id'     => 8058
-        )),
-        'query_config'          =>  $getConfig(),
+        'query_config'          =>  $getQueryConfig(),
     ));
 
     /**
@@ -57,7 +61,7 @@ if (!isset($_GET['stage']))
      * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
      * @see \PaynetEasy\PaynetEasyApi\Query\MakeRebillQuery::updatePaymentOnSuccess()
      */
-    $getPaymentProcessor()->executeQuery('make-rebill', $payment);
+    $getPaymentProcessor()->executeQuery('make-rebill', $paymentTransaction);
 }
 /**
  * Второй этап обработки платежа.
@@ -68,5 +72,5 @@ elseif ($_GET['stage'] == 'updateStatus')
     /**
      * Запросим статус платежа
      */
-    $getPaymentProcessor()->executeQuery('status', $loadPayment());
+    $getPaymentProcessor()->executeQuery('status', $loadPaymentTransaction());
 }
