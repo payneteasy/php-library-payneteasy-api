@@ -9,17 +9,17 @@ class Validator
     /**
      * Validate value as email
      */
-    const EMAIL = FILTER_VALIDATE_EMAIL;
+    const EMAIL = 'email';
 
     /**
      * Validate value as IP address
      */
-    const IP    = FILTER_VALIDATE_IP;
+    const IP    = 'ip';
 
     /**
      * Validate value as URL
      */
-    const URL   = FILTER_VALIDATE_URL;
+    const URL   = 'url';
 
     /**
      * Validate value as month
@@ -130,10 +130,18 @@ class Validator
         switch ($rule)
         {
             case self::EMAIL:
+            {
+                $valid = filter_var($value, FILTER_VALIDATE_EMAIL);
+                break;
+            }
             case self::IP:
+            {
+                $valid = filter_var($value, FILTER_VALIDATE_IP);
+                break;
+            }
             case self::URL:
             {
-                $valid = filter_var($value, $rule);
+                $valid = filter_var($value, FILTER_VALIDATE_URL);
                 break;
             }
             case self::MONTH:
