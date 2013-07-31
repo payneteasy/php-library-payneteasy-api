@@ -186,12 +186,7 @@ class PaymentProcessor
             return;
         }
 
-        $this->callHandler(self::HANDLER_SAVE_CHANGES, $paymentTransaction, $callbackResponse);
-
-        if ($paymentTransaction->isFinished())
-        {
-            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $paymentTransaction, $callbackResponse);
-        }
+        $this->handleQueryResult($paymentTransaction, $callbackResponse);
 
         return $callbackResponse;
     }
@@ -398,11 +393,11 @@ class PaymentProcessor
     /**
      * Handle query result.
      * Method calls handlers for:
-     *  - self::HANDLER_SAVE_CHANGES            on method call
-     *  - self::HANDLER_FINISH_PROCESSING       if payment transaction is finished
+     *  - self::HANDLER_SAVE_CHANGES            allways
      *  - self::HANDLER_STATUS_UPDATE           if needed payment transaction status update
      *  - self::HANDLER_SHOW_HTML               if needed to show response html
      *  - self::HANDLER_REDIRECT                if needed to redirect to response URL
+     *  - self::HANDLER_FINISH_PROCESSING       if not additional action needed
      *
      * @param       PaymentTransaction      $paymentTransaction     Payment transaction
      * @param       Response                $response               Query result
@@ -411,12 +406,7 @@ class PaymentProcessor
     {
         $this->callHandler(self::HANDLER_SAVE_CHANGES, $paymentTransaction, $response);
 
-        // no action needed if payment is finished
-        if ($paymentTransaction->isFinished())
-        {
-            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $paymentTransaction, $response);
-        }
-        elseif ($response->isRedirectNeeded())
+        if ($response->isRedirectNeeded())
         {
             $this->callHandler(self::HANDLER_REDIRECT, $response, $paymentTransaction);
         }
@@ -427,6 +417,10 @@ class PaymentProcessor
         elseif ($response->isStatusUpdateNeeded())
         {
             $this->callHandler(self::HANDLER_STATUS_UPDATE, $response, $paymentTransaction);
+        }
+        else
+        {
+            $this->callHandler(self::HANDLER_FINISH_PROCESSING, $paymentTransaction, $response);
         }
     }
 
