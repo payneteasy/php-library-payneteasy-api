@@ -3,7 +3,9 @@ namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Query\Prototype\PaymentQuery;
 use PaynetEasy\PaynetEasyApi\Utils\Validator;
+use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
 /**
  * @see http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
@@ -41,4 +43,14 @@ class ReturnQuery extends PaymentQuery
      * {@inheritdoc}
      */
     static protected $paymentStatus = Payment::STATUS_RETURN;
+
+    protected function validatePaymentTransaction(PaymentTransaction $paymentTransaction)
+    {
+        if (!$paymentTransaction->getPayment()->isPaid())
+        {
+            throw new ValidationException("Payment must be paid up to return funds");
+        }
+
+        parent::validatePaymentTransaction($paymentTransaction);
+    }
 }

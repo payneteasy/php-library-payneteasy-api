@@ -43,6 +43,18 @@ class ReturnQueryTest extends PaymentQueryTest
     }
 
     /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Payment must be paid up to return funds
+     */
+    public function testCreateRequestWithFinishedTransaction()
+    {
+        $paymentTransaction = $this->getPaymentTransaction();
+        $paymentTransaction->getPayment()->setStatus(Payment::STATUS_RETURN);
+
+        $this->object->createRequest($paymentTransaction);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getPayment()
@@ -53,7 +65,8 @@ class ReturnQueryTest extends PaymentQueryTest
             'paynet_id'             => self::PAYNET_ID,
             'amount'                => 99.1,
             'currency'              => 'EUR',
-            'comment'               => 'cancel payment'
+            'comment'               => 'cancel payment',
+            'status'                => Payment::STATUS_CAPTURE
         ));
     }
 }

@@ -30,11 +30,6 @@ class Payment extends Data
     const STATUS_RETURN     = 'return';
 
     /**
-     * Payment processed with error
-     */
-    const STATUS_ERROR      = 'error';
-
-    /**
      * All allowed payment statuses
      *
      * @var array
@@ -43,8 +38,7 @@ class Payment extends Data
     (
         self::STATUS_PREAUTH,
         self::STATUS_CAPTURE,
-        self::STATUS_RETURN,
-        self::STATUS_ERROR
+        self::STATUS_RETURN
     );
 
     /**
@@ -541,13 +535,21 @@ class Payment extends Data
     }
 
     /**
-     * True, if error occured when processing payment
+     * True, is payment is paid up
      *
      * @return      boolean
      */
-    public function isError()
+    public function isPaid()
     {
-        return $this->getStatus() == self::STATUS_ERROR;
+        return in_array($this->getStatus(), array(self::STATUS_PREAUTH, self::STATUS_CAPTURE));
+    }
+
+    /**
+     * True, if funds returned to customer
+     */
+    public function isReturned()
+    {
+        return $this->getStatus() == self::STATUS_RETURN;
     }
 
     /**

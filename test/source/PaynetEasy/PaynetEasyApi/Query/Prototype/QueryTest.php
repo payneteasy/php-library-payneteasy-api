@@ -3,6 +3,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query\Prototype;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
+use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
 
 use PaynetEasy\PaynetEasyApi\Transport\Response;
@@ -57,6 +58,10 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
     {
         $paymentTransaction = new PaymentTransaction(array
         (
+            'payment'       => new Payment(array
+            (
+                'status'        => Payment::STATUS_CAPTURE
+            )),
             'query_config'  => new QueryConfig(array
             (
                 'signing_key'   => self::SIGNING_KEY

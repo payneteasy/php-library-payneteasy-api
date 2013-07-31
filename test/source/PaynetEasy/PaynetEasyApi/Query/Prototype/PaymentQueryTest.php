@@ -44,6 +44,18 @@ abstract class PaymentQueryTest extends QueryTest
         $this->object->createRequest($paymentTransaction);
     }
 
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Payment transaction must be new
+     */
+    public function testCreateRequestWithFinishedTransaction()
+    {
+        $paymentTransaction = $this->getPaymentTransaction();
+        $paymentTransaction->setStatus(PaymentTransaction::STATUS_APPROVED);
+
+        $this->object->createRequest($paymentTransaction);
+    }
+
     public function testProcessResponseProcessingProvider()
     {
         return array(array(array

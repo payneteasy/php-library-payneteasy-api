@@ -33,12 +33,11 @@ class PaymentQuery extends Query
 
     public function createRequest(PaymentTransaction $paymentTransaction)
     {
+        $request = parent::createRequest($paymentTransaction);
+
         $paymentTransaction->getPayment()->setStatus(static::$paymentStatus);
         $paymentTransaction->setProcessorType(PaymentTransaction::PROCESSOR_QUERY);
         $paymentTransaction->setProcessorName($this->apiMethod);
-
-        $request = parent::createRequest($paymentTransaction);
-
         $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
 
         return $request;
@@ -52,6 +51,11 @@ class PaymentQuery extends Query
         if ($paymentTransaction->getPayment()->hasProcessingTransaction())
         {
             throw new ValidationException('Payment can not has processing payment transaction');
+        }
+
+        if (!$paymentTransaction->isNew())
+        {
+            throw new ValidationException('Payment transaction must be new');
         }
 
         parent::validatePaymentTransaction($paymentTransaction);

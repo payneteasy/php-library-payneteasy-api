@@ -99,7 +99,7 @@ class CreateCardRefQuery extends Query
             throw new ValidationException('Only finished payment transaction can be used for create-card-ref-id');
         }
 
-        if ($paymentTransaction->getPayment()->isNew())
+        if (!$paymentTransaction->getPayment()->isPaid())
         {
             throw new ValidationException("Can not use new payment for create-card-ref-id. Execute 'sale' or 'preauth' query first");
         }
