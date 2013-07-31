@@ -4,15 +4,16 @@
 
 1. Инициация оплаты:
     1. [Подключение загрузчика классов и необходимых классов](#stage_1_step_1)
-    2. [Создание нового платежа](#stage_1_step_2)
+    2. [Создание новой платежной транзакции](#stage_1_step_2)
     3. [Создание сервиса для обработки платежей](#stage_1_step_4)
-    4. [Запуск обработки платежа](#stage_1_step_6)
-        1. Проверка данных платежа и формирование на его основе запроса к PaynetEasy
-        2. Выполнение запроса для старта обработки платежа и его первичной проверки
-        3. Получение ответа от PaynetEasy
-        4. Изменение статуса платежа **status** и этапа обработки платежа **processingStage** на основе данных ответа
-        5. Сохранение платежа
-        6. Перенаправление клиента на платежную форму
+    4. [Запуск обработки платежной транзакции](#stage_1_step_6)
+        1. Проверка данных платежной транзакции и формирование на ее основе запроса к PaynetEasy
+        3. Изменение статуса платежа **status**
+        4. Выполнение запроса для старта обработки платежной транзакции и ее первичной проверки
+        5. Получение ответа от PaynetEasy
+        6. Изменение статуса платежной транзакции **status** на основе данных ответа
+        7. Сохранение платежной транзакции
+        8. Перенаправление клиента на платежную форму
 
 2. Процессинг платежной формы:
     1. Заполнение клиентом платежной формы и отправка данных шлюзу PaynetEasy
@@ -21,25 +22,24 @@
 
 3. Обработка результатов:
     1. [Подключение загрузчика классов и необходимых классов](#stage_2_step_1)
-    2. [Загрузка сохраненного платежа](#stage_2_step_2)
+    2. [Загрузка сохраненной платежной транзакции](#stage_2_step_2)
     3. [Создание сервиса для обработки платежей](#stage_2_step_4)
     4. [Запуск обработки данных, полученных при возвращении пользователя с платежной формы](#stage_2_step_6)
         1. Проверка данных, полученные по возвращении клиента с платежной формы PaynetEasy
-        2. Изменение статуса платежа **status** и этапа обработки платежа **processingStage** на основе проверенных данных
-        3. Сохранение платежа обработчиком
-        4. Вывод статуса платежа **status** и этапа обработки платежа **processingStage** на экран
+        2. Изменение статуса платежной транзакции **status**
+        3. Сохранение платежной транзакции
+        4. Вывод статуса платежа **status** и статуса платежной транзакции **status** на экран
 
-## Раздельная обработка этапов
+Рассмотрим примеры исходного кода для выполнения обоих этапов. Код для выполнения второго этапа должен выполняться при переходе по ссылке, заданной в настройках по ключу **redirect_url**. Например, разместите исходный код первого этапа в файле `first_stage.php`, а второго - `second_stage.php`.
 
-Рассмотрим примеры исходного кода для раздельного выполнения обоих этапов. Код для выполнения второго этапа должен находиться в отдельном файле, доступном по ссылке, заданной в настройкам по ключу **redirect_url**.
-
-### <a name="stage_1"></a>Начало обработки платежа
+### <a name="stage_1"></a>Начало обработки платежной транзакции
 
 1. <a name="stage_1_step_1"></a>Подключение загрузчика классов, [предоставляемого composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading), и необходимых классов:
 
     ```php
     require_once 'project/root/dir/vendor/autoload.php';
 
+    use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
     use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
     use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
     use PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress;
@@ -48,7 +48,7 @@
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
     use Exception;
     ```
-2. <a name="stage_1_step_2"></a>Создание нового платежа:
+2. <a name="stage_1_step_2"></a>Создание новой платежной транзакции:
     ##### С использованием массивов, переданных в конструктор:
 
     ```php
@@ -62,7 +62,7 @@
     (
         'country'                   => 'US',
         'city'                      => 'Houston',
-        'state'                 => 'TX',
+        'state'                     => 'TX',
         'first_line'                => '2704 Colonial Drive',
         'zip_code'                  => '1235',
         'phone'                     => '660-485-6353'
@@ -81,12 +81,17 @@
 
     $payment = new Payment(array
     (
-        'client_payment_id'         => 'CLIENT-112244',
+        'client_id'                 => 'CLIENT-112244',
         'description'               => 'This is test payment',
         'amount'                    =>  9.99,
         'currency'                  => 'USD',
         'customer'                  => $customer,
-        'billing_address'           => $billingAddress,
+        'billing_address'           => $billingAddress
+    ));
+
+    $paymentTransaction = new PaymentTransaction(array
+    (
+        'payment'                   => $payment,
         'query_config'              => $queryConfig
     ));
     ```
@@ -118,12 +123,16 @@
     ;
 
     $payment = (new Payment)
-        ->setClientPaymentId('CLIENT-112244')
+        ->setClientId('CLIENT-112244')
         ->setDescription('This is test payment')
         ->setAmount(9.99)
         ->setCurrency('USD')
         ->setCustomer($customer)
         ->setBillingAddress($billingAddress)
+    ;
+
+    $paymentTransaction = (new PaymentTransaction)
+        ->setPayment($payment)
         ->setQueryConfig($queryConfig)
     ;
     ```
@@ -149,10 +158,10 @@
             print "Exception traceback: \n{$exception->getTraceAsString()}\n";
             print "</pre>";
         },
-        PaymentProcessor::HANDLER_SAVE_PAYMENT      => function(Payment $payment)
+        PaymentProcessor::HANDLER_SAVE_CHANGES      => function(PaymentTransaction $paymentTransaction)
         {
             start_session();
-            $_SESSION['payment'] = serialize($payment);
+            $_SESSION['payment_transaction'] = serialize($paymentTransaction);
         },
         PaymentProcessor::HANDLER_REDIRECT          => function(Response $response)
         {
@@ -164,39 +173,40 @@
 
     Обработчики событий для сервиса:
     * **PaymentProcessor::HANDLER_CATCH_EXCEPTION** - для обработки исключения, если оно было брошено
-    * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
+    * **PaymentProcessor::HANDLER_SAVE_CHANGES** - для сохранения платежной транзакции
     * **PaymentProcessor::HANDLER_REDIRECT** - для переадресации пользователя на URL платежной формы, полученный от PaynetEasy
 
 4. <a name="stage_1_step_6"></a>Запуск обработки платежа:
 
     ```php
-    $paymentProcessor->executeQuery('sale-form', $payment);
+    $paymentProcessor->executeQuery('sale-form', $paymentTransaction);
     ```
     Будут выполнены следующие шаги:
-    1. Проверка данных платежа и формирование на его основе запроса к PaynetEasy
-    2. Выполнение запроса для старта обработки платежа и его первичной проверки
-    3. Получение ответа от PaynetEasy
-    4. Изменение статуса платежа **status** и этапа обработки платежа **processingStage** на основе данных ответа
-    5. Сохранение платежа обработчиком для `PaymentProcessor::HANDLER_SAVE_PAYMENT`
-    6. Перенаправление клиента на платежную форму обработчиком для `PaymentProcessor::HANDLER_REDIRECT`
+    1. Проверка данных платежной транзакции и формирование на ее основе запроса к PaynetEasy
+    3. Изменение статуса платежа **status**
+    4. Выполнение запроса для старта обработки платежной транзакции и ее первичной проверки
+    5. Получение ответа от PaynetEasy
+    6. Изменение статуса платежной транзакции **status** на основе данных ответа
+    7. Сохранение платежной транзакции обработчиком для `PaymentProcessor::HANDLER_SAVE_PAYMENT`
+    8. Перенаправление клиента на платежную форму обработчиком для `PaymentProcessor::HANDLER_REDIRECT`
 
-### <a name="stage_2"></a>Окончание обработки платежа
+### <a name="stage_2"></a>Окончание обработки платежной транзакции
 
 1. <a name="stage_2_step_1"></a>Подключение загрузчика классов, [предоставляемого composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading), и необходимых классов:
 
     ```php
     require_once 'project/root/dir/vendor/autoload.php';
 
-    use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
+    use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
     use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
     use PaynetEasy\PaynetEasyApi\PaymentProcessor;
     use Exception;
     ```
-2. <a name="stage_2_step_2"></a>Загрузка сохраненного платежа:
+2. <a name="stage_2_step_2"></a>Загрузка сохраненной платежной транзакции:
 
     ```php
     session_start();
-    $payment = unserialize($_SESSION['payment']);
+    $paymentTransaction = unserialize($_SESSION['payment_transaction']);
     ```
 
 3. <a name="stage_2_step_4"></a>Создание сервиса для обработки платежей:
@@ -212,16 +222,16 @@
             print "Exception traceback: \n{$exception->getTraceAsString()}\n";
             print "</pre>";
         },
-        PaymentProcessor::HANDLER_SAVE_PAYMENT      => function(Payment $payment)
+        PaymentProcessor::HANDLER_SAVE_CHANGES      => function(PaymentTransaction $paymentTransaction)
         {
-            $_SESSION['payment'] = serialize($payment);
+            $_SESSION['payment_transaction'] = serialize($paymentTransaction);
         },
-        PaymentProcessor::HANDLER_FINISH_PROCESSING => function(Payment $payment)
+        PaymentProcessor::HANDLER_FINISH_PROCESSING => function(PaymentTransaction $paymentTransaction)
         {
             print "<pre>";
             print "Payment processing finished.\n";
-            print "Payment state: '{$payment->getProcessingStage()}'.\n";
-            print "Payment status: '{$payment->getStatus()}'.\n";
+            print "Payment status: '{$paymentTransaction->getPayment()->getStatus()}'.\n";
+            print "Payment transaction status: '{$paymentTransaction->getStatus()}'.\n";
             print "</pre>";
         }
     ));
@@ -229,16 +239,16 @@
 
     Обработчики событий для сервиса:
     * **PaymentProcessor::HANDLER_CATCH_EXCEPTION** - для обработки исключения, если оно было брошено
-    * **PaymentProcessor::HANDLER_SAVE_PAYMENT** - для сохранения платежа
+    * **PaymentProcessor::HANDLER_SAVE_CHANGES** - для сохранения платежа
     * **PaymentProcessor::HANDLER_FINISH_PROCESSING** - для вывода информации о платеже после окончания обработки
 
 4. <a name="stage_2_step_6"></a>Запуск обработки данных, полученных при возвращении пользователя с платежной формы:
 
     ```php
-    $paymentProcessor->processCustomerReturn(new CallbackResponse($_POST), $payment);
+    $paymentProcessor->processCustomerReturn(new CallbackResponse($_POST), $paymentTransaction);
     ```
     Будут выполнены следующие шаги:
-    1. Проверка данных, полученные по возвращении клиента с платежной формы PaynetEasy (суперглобальный массив $_REQUEST)
-    2. Изменение статуса платежа **status** и этапа обработки платежа **processingStage** на основе проверенных данных
-    3. Сохранение платежа обработчиком для `PaymentProcessor::HANDLER_SAVE_PAYMENT`
-    4. Вывод статуса платежа **status** и этапа обработки платежа **processingStage** на экран обработчиком для `PaymentProcessor::HANDLER_FINISH_PROCESSING`
+    1. Проверка данных, полученные по возвращении клиента с платежной формы PaynetEasy (суперглобальный массив $_POST)
+    2. Изменение статуса платежной транзакции **status** на основе проверенных данных
+    3. Сохранение платежной транзакции обработчиком для `PaymentProcessor::HANDLER_SAVE_PAYMENT`
+    4. Вывод статуса платежа **status** и статуса платежной транзакции **status** на экран обработчиком для `PaymentProcessor::HANDLER_FINISH_PROCESSING`
