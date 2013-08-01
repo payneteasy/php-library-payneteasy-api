@@ -20,11 +20,11 @@
 
 Поле запроса    |Цепочка свойств платежа|Правило валидации
 ----------------|-----------------------|-----------------
-client_orderid  |clientPaymentId        |Validator::ID
-orderid         |paynetPaymentId        |Validator::ID
-amount          |amount                 |Validator::AMOUNT
-currency        |currency               |Validator::CURRENCY
-comment         |comment                |Validator::MEDIUM_STRING
+client_orderid  |payment.clientId       |Validator::ID
+orderid         |payment.paynetId       |Validator::ID
+amount          |payment.amount         |Validator::AMOUNT
+currency        |payment.currency       |Validator::CURRENCY
+comment         |payment.comment        |Validator::MEDIUM_STRING
 login           |queryConfig.login      |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса return](../../example/return.php)
@@ -45,8 +45,8 @@ login           |queryConfig.login      |Validator::MEDIUM_STRING
 
 Поле запроса    |Цепочка свойств платежа|Правило валидации
 ----------------|-----------------------|-----------------
-client_orderid  |clientPaymentId        |Validator::ID
-orderid         |paynetPaymentId        |Validator::ID
+client_orderid  |payment.clientId       |Validator::ID
+orderid         |payment.paynetId       |Validator::ID
 login           |queryConfig.login      |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса status](../../example/status.php)

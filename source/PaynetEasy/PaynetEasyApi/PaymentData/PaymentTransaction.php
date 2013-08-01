@@ -87,13 +87,6 @@ class PaymentTransaction extends Data
     protected $processorName;
 
     /**
-     * Payment transaction name,
-     *
-     * @var string
-     */
-    protected $typeName;
-
-    /**
      * Transaction status
      *
      * @var string

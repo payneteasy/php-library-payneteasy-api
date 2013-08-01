@@ -24,8 +24,8 @@
 
 Поле запроса        |Цепочка свойств платежа        |Правило валидации
 --------------------|-------------------------------|-----------------
-client_orderid      |clientPaymentId                |Validator::ID
-orderid             |paynetPaymentId                |Validator::ID
+client_orderid      |clientId                       |Validator::ID
+orderid             |paynetId                       |Validator::ID
 login               |queryConfig.login              |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса create-card-ref](../../example/create-card-ref.php)
@@ -40,10 +40,10 @@ login               |queryConfig.login              |Validator::MEDIUM_STRING
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Цепочка свойств платежа            |Правило валидации
---------------------|-----------------------------------|-----------------
-cardrefid           |recurrentCardFrom.cardReferenceId  |Validator::ID
-login               |queryConfig.login                  |Validator::MEDIUM_STRING
+Поле запроса        |Цепочка свойств платежа    |Правило валидации
+--------------------|---------------------------|-----------------
+cardrefid           |recurrentCardFrom.paynetId |Validator::ID
+login               |queryConfig.login          |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса get-card-info](../../example/get-card-info.php)
 
@@ -64,21 +64,21 @@ login               |queryConfig.login                  |Validator::MEDIUM_STRIN
 
 Поле запроса        |Цепочка свойств платежа            |Правило валидации
 --------------------|-----------------------------------|-----------------
-client_orderid      |clientPaymentId                    |Validator::ID
-order_desc          |description                        |Validator::LONG_STRING
-amount              |amount                             |Validator::AMOUNT
-currency            |currency                           |Validator::CURRENCY
-ipaddress           |customer.ipAddress                 |Validator::IP
-cardrefid           |recurrentCardFrom.cardReferenceId  |Validator::ID
+client_orderid      |payment.clientId                   |Validator::ID
+order_desc          |payment.description                |Validator::LONG_STRING
+amount              |payment.amount                     |Validator::AMOUNT
+currency            |payment.currency                   |Validator::CURRENCY
+ipaddress           |payment.customer.ipAddress         |Validator::IP
+cardrefid           |payment.recurrentCardFrom.paynetId |Validator::ID
 login               |queryConfig.login                  |Validator::MEDIUM_STRING
 
 ##### Необязательные параметры запроса
 
-Поле запроса        |Цепочка свойств платежа            |Правило валидации
---------------------|-----------------------------------|-----------------
-comment             |comment                            |Validator::MEDIUM_STRING
-cvv2                |recurrentCardFrom.cvv2             |Validator::CVV2
-server_callback_url |queryConfig.callbackUrl            |Validator::URL
+Поле запроса        |Цепочка свойств платежа        |Правило валидации
+--------------------|-------------------------------|-----------------
+comment             |payment.comment                |Validator::MEDIUM_STRING
+cvv2                |payment.recurrentCardFrom.cvv2 |Validator::CVV2
+server_callback_url |queryConfig.callbackUrl        |Validator::URL
 
 [Пример выполнения запроса make-rebill](../../example/make-rebill.php)
 
@@ -96,11 +96,11 @@ server_callback_url |queryConfig.callbackUrl            |Validator::URL
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Цепочка свойств платежа        |Правило валидации
---------------------|-------------------------------|-----------------
-client_orderid      |clientPaymentId                |Validator::ID
-orderid             |paynetPaymentId                |Validator::ID
-login               |queryConfig.login              |Validator::MEDIUM_STRING
+Поле запроса        |Цепочка свойств платежа|Правило валидации
+--------------------|-----------------------|-----------------
+client_orderid      |payment.clientId       |Validator::ID
+orderid             |payment.paynetId       |Validator::ID
+login               |queryConfig.login      |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса status](../../example/status.php)
 

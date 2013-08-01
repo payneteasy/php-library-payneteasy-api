@@ -18,39 +18,39 @@
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Цепочка свойств платежа        |Правило валидации
---------------------|-------------------------------|-----------------
-client_orderid      |clientPaymentId                |Validator::ID
-order_desc          |description                    |Validator::LONG_STRING
-amount              |amount                         |Validator::AMOUNT
-currency            |currency                       |Validator::CURRENCY
-address1            |billingAddress.firstLine       |Validator::MEDIUM_STRING
-city                |billingAddress.city            |Validator::MEDIUM_STRING
-zip_code            |billingAddress.zipCode         |Validator::ZIP_CODE
-country             |billingAddress.country         |Validator::COUNTRY
-phone               |billingAddress.phone           |Validator::PHONE
-ipaddress           |customer.ipAddress             |Validator::IP
-email               |customer.email                 |Validator::EMAIL
-card_printed_name   |creditCard.cardPrintedName     |Validator::LONG_STRING
-credit_card_number  |creditCard.creditCardNumber    |Validator::CREDIT_CARD_NUMBER
-expire_month        |creditCard.expireMonth         |Validator::MONTH
-expire_year         |creditCard.expireYear          |Validator::YEAR
-cvv2                |creditCard.cvv2                |Validator::CVV2
-redirect_url        |queryConfig.redirectUrl        |Validator::URL
+Поле запроса        |Цепочка свойств платежа            |Правило валидации
+--------------------|-----------------------------------|-----------------
+client_orderid      |payment.clientId                   |Validator::ID
+order_desc          |payment.description                |Validator::LONG_STRING
+amount              |payment.amount                     |Validator::AMOUNT
+currency            |payment.currency                   |Validator::CURRENCY
+address1            |payment.billingAddress.firstLine   |Validator::MEDIUM_STRING
+city                |payment.billingAddress.city        |Validator::MEDIUM_STRING
+zip_code            |payment.billingAddress.zipCode     |Validator::ZIP_CODE
+country             |payment.billingAddress.country     |Validator::COUNTRY
+phone               |payment.billingAddress.phone       |Validator::PHONE
+ipaddress           |payment.customer.ipAddress         |Validator::IP
+email               |payment.customer.email             |Validator::EMAIL
+card_printed_name   |payment.creditCard.cardPrintedName |Validator::LONG_STRING
+credit_card_number  |payment.creditCard.creditCardNumber|Validator::CREDIT_CARD_NUMBER
+expire_month        |payment.creditCard.expireMonth     |Validator::MONTH
+expire_year         |payment.creditCard.expireYear      |Validator::YEAR
+cvv2                |payment.creditCard.cvv2            |Validator::CVV2
+redirect_url        |queryConfig.redirectUrl            |Validator::URL
 
 ##### Необязательные параметры запроса
 
-Поле запроса        |Цепочка свойств платежа        |Правило валидации
---------------------|-------------------------------|-----------------
-first_name          |customer.firstName             |Validator::MEDIUM_STRING
-last_name           |customer.lastName              |Validator::MEDIUM_STRING
-ssn                 |customer.ssn                   |Validator::SSN
-birthday            |customer.birthday              |Validator::DATE
-state               |billingAddress.state           |Validator::COUNTRY
-cell_phone          |billingAddress.cellPhone       |Validator::PHONE
-destination         |destination                    |Validator::LONG_STRING
-site_url            |queryConfig.siteUrl            |Validator::URL
-server_callback_url |queryConfig.callbackUrl        |Validator::URL
+Поле запроса        |Цепочка свойств платежа            |Правило валидации
+--------------------|-----------------------------------|-----------------
+first_name          |payment.customer.firstName         |Validator::MEDIUM_STRING
+last_name           |payment.customer.lastName          |Validator::MEDIUM_STRING
+ssn                 |payment.customer.ssn               |Validator::SSN
+birthday            |payment.customer.birthday          |Validator::DATE
+state               |payment.billingAddress.state       |Validator::COUNTRY
+cell_phone          |payment.billingAddress.cellPhone   |Validator::PHONE
+destination         |payment.destination                |Validator::LONG_STRING
+site_url            |queryConfig.siteUrl                |Validator::URL
+server_callback_url |queryConfig.callbackUrl            |Validator::URL
 
 [Пример выполнения запроса sale](../../example/sale.php)
 
@@ -72,11 +72,11 @@ server_callback_url |queryConfig.callbackUrl        |Validator::URL
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Цепочка свойств платежа        |Правило валидации
---------------------|-------------------------------|-----------------
-client_orderid      |clientPaymentId                |Validator::ID
-orderid             |paynetPaymentId                |Validator::ID
-login               |queryConfig.login              |Validator::MEDIUM_STRING
+Поле запроса        |Цепочка свойств платежа|Правило валидации
+--------------------|-----------------------|-----------------
+client_orderid      |payment.clientId       |Validator::ID
+orderid             |payment.paynetId       |Validator::ID
+login               |queryConfig.login      |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса status](../../example/status.php)
 

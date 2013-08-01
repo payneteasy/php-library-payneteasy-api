@@ -14,10 +14,10 @@
 
 Поле запроса        |Цепочка свойств платежа для проверки
 --------------------|---------------------------------------
-orderid             |paynetPaymentId
-merchant_order      |clientPaymentId
-client_orderid      |clientPaymentId
-amount              |amount
+orderid             |payment.paynetId
+merchant_order      |payment.clientId
+client_orderid      |payment.clientId
+amount              |payment.amount
 status              |
 type                |
 control             |
