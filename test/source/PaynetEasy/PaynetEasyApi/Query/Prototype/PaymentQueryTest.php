@@ -103,4 +103,23 @@ abstract class PaymentQueryTest extends QueryTest
             'error-code'        =>  5
         )));
     }
+
+    public function testValidateClientIdWithDifferentTypes()
+    {
+        $paymentTransaction = $this->getPaymentTransaction();
+        $paymentTransaction->getPayment()->setClientId(123);
+
+        $responseObject     = new Response(array
+        (
+            'type'              =>  $this->successType,
+            'status'            => 'approved',
+            'paynet-order-id'   =>  self::PAYNET_ID,
+            'merchant-order-id' =>  '123',
+            'serial-number'     =>  md5(time()),
+            'redirect-url'      => 'http://example.com'
+        ));
+
+        $this->object->processResponse($paymentTransaction, $responseObject);
+        $this->assertTrue($paymentTransaction->isApproved());
+    }
 }

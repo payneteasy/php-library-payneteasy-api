@@ -390,7 +390,7 @@ abstract class Query implements QueryInterface
         $responseClientId = $response->getPaymentClientId();
 
         if (     strlen($responseClientId) > 0
-            &&   $paymentClientId !== $responseClientId)
+            &&   $paymentClientId != $responseClientId)
         {
             throw new ValidationException("Response clientId '{$responseClientId}' does " .
                                           "not match Payment clientId '{$paymentClientId}'");
