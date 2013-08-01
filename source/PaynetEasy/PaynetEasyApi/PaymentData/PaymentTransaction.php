@@ -370,4 +370,18 @@ class PaymentTransaction extends Data
     {
         return $this->errors;
     }
+
+    /**
+     * Get payment last error
+     *
+     * @return      Exception
+     */
+    public function getLastError()
+    {
+        if ($this->hasErrors())
+        {
+            $errors = $this->getErrors();
+            return end($errors);
+        }
+    }
 }
