@@ -405,13 +405,13 @@ abstract class Query implements QueryInterface
      */
     protected function setPaynetId(PaymentTransaction $paymentTransaction, Response $response)
     {
-        $responseClientId = $response->getPaymentClientId();
+        $responsePaynetId = $response->getPaymentPaynetId();
 
-        if(strlen($responseClientId) > 0)
+        if(strlen($responsePaynetId) > 0)
         {
             $paymentTransaction
                 ->getPayment()
-                ->setPaynetId($responseClientId)
+                ->setPaynetId($responsePaynetId)
             ;
         }
     }

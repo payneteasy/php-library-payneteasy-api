@@ -67,6 +67,7 @@ abstract class PaymentQueryTest extends QueryTest
 
         $this->object->processResponse($paymentTransaction, $responseObject);
 
+        $this->assertEquals(self::PAYNET_ID, $paymentTransaction->getPayment()->getPaynetId());
         $this->assertTrue($paymentTransaction->isProcessing());
         $this->assertFalse($paymentTransaction->isFinished());
         $this->assertFalse($paymentTransaction->hasErrors());
