@@ -243,6 +243,10 @@ class QueryConfig extends Data
      */
     public function setGatewayMode($gatewayMode)
     {
+        if (!in_array($gatewayMode, static::$allowedGatewayModes))
+        {
+            throw new RuntimeException("Unknown gateway mode given: '{$gatewayMode}'");
+        }
 
         $this->gatewayMode = $gatewayMode;
 
