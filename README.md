@@ -27,7 +27,7 @@
 2. Перейдите в папку проекта: `cd my/project/directory`
 3. Создайте файл проекта для composer, если его еще нет: `composer init`
 4. Добавьте библиотеку в зависимости проекта: `composer require payneteasy/php-library-payneteasy-api:~1.0`
-5. Установите зависимости проекта: `composer install --prefer-dist`
+5. Установите зависимости проекта: `composer install --prefer-dist --optimize-autoloader`
 
 ## Запуск тестов
 

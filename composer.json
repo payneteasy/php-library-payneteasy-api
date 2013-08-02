@@ -39,8 +39,9 @@
     {
         "exclude":
         [
-            "/examples",
-            "/tests"
+            "/doc",
+            "/example",
+            "/test"
         ]
     },
     "extra":
