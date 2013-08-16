@@ -1,4 +1,4 @@
-# PHP Library for Paynet API integration [![Build Status](https://travis-ci.org/payneteasy/php-library-payneteasy-api.png?branch=transaction-based)](https://travis-ci.org/payneteasy/php-library-paynet)
+# PHP Library for Paynet API integration [![Build Status](https://travis-ci.org/payneteasy/php-library-payneteasy-api.png?branch=master)](https://travis-ci.org/payneteasy/php-library-paynet)
 ## Доступная функциональность
 
 Данная библиотека позволяет производить оплату с помощью [merchant PaynetEasy API](http://wiki.payneteasy.com/index.php/PnE:Merchant_API). На текущий момент реализованы следующие платежные методы:
@@ -26,8 +26,7 @@
 1. [Установите composer](http://getcomposer.org/doc/00-intro.md), если его еще нет
 2. Перейдите в папку проекта: `cd my/project/directory`
 3. Создайте файл проекта для composer, если его еще нет: `composer init`
-4. Добавьте библиотеку в зависимости проекта: `composer require payneteasy/php-library-payneteasy-api:~1.0`
-5. Установите зависимости проекта: `composer install --prefer-dist --optimize-autoloader`
+4. Добавьте библиотеку в зависимости проекта: `composer require payneteasy/php-library-payneteasy-api:dev-master --prefer-dist`
 
 ## Запуск тестов
 
