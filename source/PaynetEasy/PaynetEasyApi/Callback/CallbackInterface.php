@@ -11,7 +11,7 @@ interface CallbackInterface
      * Process API gateway Response and update Payment transaction
      *
      * @param       PaymentTransaction      $paymentTransaction     Payment for update
-     * @param       CallbackResponse        $callbackResponse       Paynet callback
+     * @param       CallbackResponse        $callbackResponse       PaynetEasy callback
      */
     public function processCallback(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse);
 }

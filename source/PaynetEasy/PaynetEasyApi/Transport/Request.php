@@ -9,21 +9,21 @@ namespace PaynetEasy\PaynetEasyApi\Transport;
 class Request
 {
     /**
-     * Paynet payment API method
+     * PaynetEasy payment API method
      *
      * @var     string
      */
     protected $apiMethod;
 
     /**
-     * Paynet gateway endpoint
+     * PaynetEasy gateway endpoint
      *
      * @var     integer
      */
     protected $endPoint;
 
     /**
-     * Paynet gateway URL
+     * PaynetEasy gateway URL
      *
      * @var     string
      */

@@ -4,7 +4,7 @@ namespace PaynetEasy\PaynetEasyApi\Transport;
 interface GatewayClientInterface
 {
     /**
-     * Make request to the Paynet gateway
+     * Make request to the PaynetEasy gateway
      *
      * @param   \PaynetEasy\PaynetEasyApi\Transport\Request    $request    Request data
      *

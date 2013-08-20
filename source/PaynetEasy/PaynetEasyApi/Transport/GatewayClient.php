@@ -87,7 +87,7 @@ class GatewayClient implements GatewayClientInterface
      *
      * @param       Request         $request        Request to execute
      *
-     * @return      string                          Paynet response
+     * @return      string                          PaynetEasy response
      *
      * @throws      RequestException                Error while executing request
      */
@@ -125,11 +125,11 @@ class GatewayClient implements GatewayClientInterface
     }
 
     /**
-     * Parse Paynet response from string to Response object
+     * Parse PaynetEasy response from string to Response object
      *
-     * @param       string      $response       Paynet response as string
+     * @param       string      $response       PaynetEasy response as string
      *
-     * @return      Response                    Paynet response as object
+     * @return      Response                    PaynetEasy response as object
      *
      * @throws      ResponseException           Error while parsing
      */

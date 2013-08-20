@@ -66,7 +66,7 @@ class PaymentProcessor
     );
 
     /**
-     * Paynet gateway client
+     * PaynetEasy gateway client
      *
      * @var \PaynetEasy\PaynetEasyApi\Transport\GatewayClientInterface
      */
@@ -218,7 +218,7 @@ class PaymentProcessor
     }
 
     /**
-     * Make request to the Paynet gateway
+     * Make request to the PaynetEasy gateway
      *
      * @param   \PaynetEasy\PaynetEasyApi\Transport\Request     $request    Request data
      *

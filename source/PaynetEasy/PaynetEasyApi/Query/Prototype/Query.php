@@ -398,7 +398,7 @@ abstract class Query implements QueryInterface
     }
 
     /**
-     * Set paynet payment id to payment transaction
+     * Set PaynetEasy payment id to payment transaction
      *
      * @param       PaymentTransaction      $paymentTransaction     Payment transaction
      * @param       Response                $response               Query response

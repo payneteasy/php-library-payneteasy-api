@@ -172,7 +172,7 @@ class Response extends ArrayObject
     }
 
     /**
-     * Get payment paynet payment id
+     * Get payment PaynetEasy payment id
      *
      * @return      string
      */
