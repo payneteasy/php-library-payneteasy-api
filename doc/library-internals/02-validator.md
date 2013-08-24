@@ -1,11 +1,11 @@
 # Валидатор данных, Validator
 
-Статический класс **[PaynetEasy\PaynetEasyApi\Utils\Validator](../../source/PaynetEasy/PaynetEasyApi/Utils/Validator.php)** предоставляет следующие методы для валидации данных:
+Статический класс **[PaynetEasy\PaynetEasyApi\Util\Validator](../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php)** предоставляет следующие методы для валидации данных:
 * **[validateByRule()](#validateByRule)**: валидация с помощью предопределенного правила или регулярного выражения
 
 ### <a name="validateByRule"></a>validateByRule(): валидация с помощью предопределнного правила
 
-Для удобной валидации данных в **[Validator](../../source/PaynetEasy/PaynetEasyApi/Utils/Validator.php)** реализован метод **[validateByRule()](../../source/PaynetEasy/PaynetEasyApi/Utils/Validator.php#L126)** и набор констант с правилами валидации. Список доступных правил:
+Для удобной валидации данных в **[Validator](../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php)** реализован метод **[validateByRule()](../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php#L126)** и набор констант с правилами валидации. Список доступных правил:
 
 Константа                       |Правило валидации          |Описание
 --------------------------------|---------------------------|--------
@@ -36,7 +36,7 @@ Validator::MEDIUM_STRING        |#^[\S\s]{1,50}$#i          |Validate value as m
 Пример использования метода:
 
 ```php
-use PaynetEasy\PaynetEasyApi\Utils\Validator;
+use PaynetEasy\PaynetEasyApi\Util\Validator;
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
 var_dump(Validator::validateByRule('test@mail.com', Validator::EMAIL, false));  // true

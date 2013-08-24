@@ -3,7 +3,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query;
 
 use PaynetEasy\PaynetEasyApi\Query\Prototype\PaymentQuery;
-use PaynetEasy\PaynetEasyApi\Utils\Validator;
+use PaynetEasy\PaynetEasyApi\Util\Validator;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 
 /**

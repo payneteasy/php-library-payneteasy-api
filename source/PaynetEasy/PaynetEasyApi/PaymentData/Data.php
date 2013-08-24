@@ -2,8 +2,8 @@
 
 namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
-use PaynetEasy\PaynetEasyApi\Utils\String;
-use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
+use PaynetEasy\PaynetEasyApi\Util\String;
+use PaynetEasy\PaynetEasyApi\Util\PropertyAccessor;
 
 use Serializable;
 use RuntimeException;

@@ -1,7 +1,7 @@
 <?php
 namespace PaynetEasy\PaynetEasyApi\Transport;
 
-use PaynetEasy\PaynetEasyApi\Utils\Validator;
+use PaynetEasy\PaynetEasyApi\Util\Validator;
 
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 

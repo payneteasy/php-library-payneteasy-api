@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\Utils\String;
+use PaynetEasy\PaynetEasyApi\Util\String;
 use RuntimeException;
 
 class CallbackFactory implements CallbackFactoryInterface

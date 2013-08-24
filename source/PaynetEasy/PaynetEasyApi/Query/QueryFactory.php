@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
-use PaynetEasy\PaynetEasyApi\Utils\String;
+use PaynetEasy\PaynetEasyApi\Util\String;
 use RuntimeException;
 
 class       QueryFactory

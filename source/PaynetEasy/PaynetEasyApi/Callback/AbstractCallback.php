@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
+use PaynetEasy\PaynetEasyApi\Util\PropertyAccessor;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;

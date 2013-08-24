@@ -1,6 +1,6 @@
 <?php
 
-namespace PaynetEasy\PaynetEasyApi\Utils;
+namespace PaynetEasy\PaynetEasyApi\Util;
 
 class String
 {

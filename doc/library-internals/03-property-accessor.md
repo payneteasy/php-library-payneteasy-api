@@ -1,6 +1,6 @@
 # Класс для работы с цепочками свойств, PropertyAccessor
 
-В процессе работы с данными платежа возникает необходимость читать и изменять свойства объектов, хранящихся в Payment. Например, для чтения email клиента необходимо вызвать `$payment->getCustomer()->getEmail()`, а для записи - `$payment->getCustomer()->setEmail()`. Для удобного выполнения этих операций в классе **[PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor](../../source/PaynetEasy/PaynetEasyApi/Utils/PropertyAccessor.php)** реализованы следующие методы:
+В процессе работы с данными платежа возникает необходимость читать и изменять свойства объектов, хранящихся в Payment. Например, для чтения email клиента необходимо вызвать `$payment->getCustomer()->getEmail()`, а для записи - `$payment->getCustomer()->setEmail()`. Для удобного выполнения этих операций в классе **[PaynetEasy\PaynetEasyApi\Util\PropertyAccessor](../../source/PaynetEasy/PaynetEasyApi/Util/PropertyAccessor.php)** реализованы следующие методы:
 * **[getValue()](#getValue)**: удобное чтение данных по цепочке свойств
 * **[setValue()](#setValue)**: удобная запись данных по цепочке свойств
 
@@ -16,7 +16,7 @@
 
 Пример использования метода:
 ```php
-use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
+use PaynetEasy\PaynetEasyApi\Util\PropertyAccessor;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\CreditCard;
 use RuntimeException;
@@ -51,7 +51,7 @@ catch (RuntimeException $e)
 
 Пример использования метода:
 ```php
-use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
+use PaynetEasy\PaynetEasyApi\Util\PropertyAccessor;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\CreditCard;
 use RuntimeException;

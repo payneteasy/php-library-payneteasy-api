@@ -4,8 +4,8 @@ namespace PaynetEasy\PaynetEasyApi\Query\Prototype;
 
 use PaynetEasy\PaynetEasyApi\Query\QueryInterface;
 
-use PaynetEasy\PaynetEasyApi\Utils\PropertyAccessor;
-use PaynetEasy\PaynetEasyApi\Utils\Validator;
+use PaynetEasy\PaynetEasyApi\Util\PropertyAccessor;
+use PaynetEasy\PaynetEasyApi\Util\Validator;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 

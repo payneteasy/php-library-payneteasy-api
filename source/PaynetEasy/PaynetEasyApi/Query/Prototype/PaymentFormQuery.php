@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query\Prototype;
 
-use PaynetEasy\PaynetEasyApi\Utils\Validator;
+use PaynetEasy\PaynetEasyApi\Util\Validator;
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
 
