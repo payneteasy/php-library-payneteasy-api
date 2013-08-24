@@ -121,7 +121,9 @@ class Validator
      * @param       string      $rule               Rule for validation
      * @param       boolean     $failOnError        Throw exception on invalid value or not
      *
-     * @throws      ValidationException             Value does not match rule
+     * @return      boolean                         Validation result
+     *
+     * @throws      ValidationException             Value does not match rule (if $failOnError == true)
      */
     static public function validateByRule($value, $rule, $failOnError = true)
     {
@@ -146,7 +148,7 @@ class Validator
             }
             case self::MONTH:
             {
-                $valid = ($value >= 1 && $value <= 12);
+                $valid = in_array($value, range(1, 12));
                 break;
             }
             default:

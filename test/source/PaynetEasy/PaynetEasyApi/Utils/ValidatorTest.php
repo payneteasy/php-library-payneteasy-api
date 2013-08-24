@@ -13,15 +13,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     public function testValidateByRule($value, $rule, $expectedResult)
     {
         $actualResult = Validator::validateByRule($value, $rule, false);
-
-        if ($expectedResult === true)
-        {
-            $this->assertTrue($actualResult);
-        }
-        else
-        {
-            $this->assertFalse($actualResult);
-        }
+        $this->assertEquals($actualResult, $actualResult);
     }
 
     public function testValidateByRuleProvider()
@@ -41,8 +33,8 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             array('0',                      Validator::MONTH,       false),
             array('str',                    Validator::MONTH,       false),
             array('str',                    Validator::MONTH,       false),
-            array('US',                     '#^[A-Z]{1,2}$#',       true),
-            array('USA',                    '#^[A-Z]{1,2}$#',       false),
+            array('US',                     Validator::COUNTRY,     true),
+            array('USA',                    Validator::COUNTRY,     false),
             array('(086)543 543 54',        Validator::PHONE,       true),
             array('(086)s543b543',          Validator::PHONE,       false),
             array('0.98',                   Validator::AMOUNT,      true),
