@@ -77,7 +77,7 @@ class QueryConfig extends Data
     protected $gatewayMode = self::GATEWAY_MODE_SANDBOX;
 
     /**
-     * PaynetEasy sanbox gateway URL
+     * PaynetEasy sandbox gateway URL
      *
      * @var     string
      */
@@ -243,11 +243,8 @@ class QueryConfig extends Data
      */
     public function setGatewayMode($gatewayMode)
     {
-        if (!in_array($gatewayMode, static::$allowedGatewayModes))
-        {
-            throw new RuntimeException("Unknown gateway mode given: '{$gatewayMode}'");
-        }
-
+        $this->checkGatewayMode($gatewayMode);
+        
         $this->gatewayMode = $gatewayMode;
 
         return $this;

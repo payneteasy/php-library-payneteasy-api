@@ -25,7 +25,7 @@ class Payment extends Data
     const STATUS_CAPTURE    = 'capture';
 
     /**
-     * Payment is under return, or return is finisged
+     * Payment is under return, or return is finished
      */
     const STATUS_RETURN     = 'return';
 
@@ -445,7 +445,10 @@ class Payment extends Data
      */
     public function addPaymentTransaction(PaymentTransaction $paymentTransaction)
     {
-        $this->paymentTransactions[] = $paymentTransaction;
+        if (!$this->hasPaymentTransaction($paymentTransaction))
+        {
+            $this->paymentTransactions[] = $paymentTransaction;
+        }
 
         if ($paymentTransaction->getPayment() !== $this)
         {

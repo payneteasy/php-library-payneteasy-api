@@ -27,50 +27,6 @@ class GatewayClient implements GatewayClientInterface
     );
 
     /**
-     * Set curl options
-     *
-     * @param       array       $curlOptions        Curl options
-     *
-     * @return      self
-     */
-    public function setCurlOptions(array $curlOptions)
-    {
-        foreach ($curlOptions as $optionName => $optionValue)
-        {
-            $this->setCurlOption($optionName, $optionValue);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Set curl option
-     *
-     * @param       string      $optionName         Curl option name
-     * @param       string      $optionValue        Curl option value
-     *
-     * @return      self
-     */
-    public function setCurlOption($optionName, $optionValue)
-    {
-        $this->curlOptions[$optionName] = $optionValue;
-
-        return $this;
-    }
-
-    /**
-     * Delete all curl options
-     *
-     * @return      self
-     */
-    public function removeCurlOptions()
-    {
-        $this->curlOptions = array();
-
-        return $this;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function makeRequest(Request $request)
@@ -103,13 +59,13 @@ class GatewayClient implements GatewayClientInterface
 
         if(curl_errno($curl))
         {
-            $error_message  = 'Error occured: ' . curl_error($curl);
+            $error_message  = 'Error occurred: ' . curl_error($curl);
             $error_code     = curl_errno($curl);
         }
         elseif(curl_getinfo($curl, CURLINFO_HTTP_CODE) != 200)
         {
             $error_code     = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            $error_message  = "Error occured. HTTP code: {$error_code}";
+            $error_message  = "Error occurred. HTTP code: '{$error_code}'";
         }
 
         curl_close($curl);
@@ -165,7 +121,7 @@ class GatewayClient implements GatewayClientInterface
 
         if (strlen($request->getEndPoint()) == 0)
         {
-            $validationErrors[] = 'Request endpoint is empty';
+            $validationErrors[] = 'Request end point is empty';
         }
 
         if (count($request->getRequestFields()) === 0)

@@ -9,7 +9,7 @@ namespace PaynetEasy\PaynetEasyApi\PaymentData;
 class RecurrentCard extends Data
 {
     /**
-     * RecurrentCard referense ID
+     * RecurrentCard reference ID
      *
      * @var integer
      */

@@ -242,7 +242,7 @@ class PaymentTransaction extends Data
     }
 
     /**
-     * True, if payment transaction declined
+     * True, if payment transaction declined or filtered
      *
      * @return      boolean
      */
@@ -252,7 +252,7 @@ class PaymentTransaction extends Data
     }
 
     /**
-     * True, if error occured when processing payment transaction
+     * True, if error occurred when processing payment transaction by PaynetEasy gateway
      *
      * @return      boolean
      */

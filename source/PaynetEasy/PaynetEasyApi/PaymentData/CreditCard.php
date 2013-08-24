@@ -9,7 +9,7 @@ namespace PaynetEasy\PaynetEasyApi\PaymentData;
 class CreditCard extends Data
 {
     /**
-     * RecurrentCard CVV2
+     * CreditCard CVV2
      *
      * @var integer
      */
@@ -98,7 +98,7 @@ class CreditCard extends Data
      */
     public function setCreditCardNumber($creditCardNumber)
     {
-        $this->creditCardNumber = str_replace(array(' ','-','.',','), '', $creditCardNumber);
+        $this->creditCardNumber = str_replace(array(' ', '-', '_', '.', ','), '', $creditCardNumber);
 
         return $this;
     }

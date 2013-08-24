@@ -11,9 +11,9 @@ class PropertyAccessor
      *
      * @param       object      $object             Object with data
      * @param       string      $propertyPath       Path to property
-     * @param       boolean     $failOnError        Throw exception if error occured or not
+     * @param       boolean     $failOnError        Throw exception if error occurred or not
      *
-     * @return      mixed|null                      Property value or null, if error ocured
+     * @return      mixed|null                      Property value or null, if error occurred
      *
      * @throws      RuntimeException                Property getter not found or parent property is not object
      */
@@ -52,9 +52,9 @@ class PropertyAccessor
      * @param       object      $object             Object with data
      * @param       string      $propertyPath       Path to property
      * @param       mixed       $propertyValue      Value to set
-     * @param       boolean     $failOnError        Throw exception if error occured or not
+     * @param       boolean     $failOnError        Throw exception if error occurred or not
      *
-     * @return      mixed|null                      Setter return value or null, if error ocured
+     * @return      mixed|null                      Setter return value or null, if error occurred
      *
      * @throws      RuntimeException                Property setter not found or parent property is not object
      */

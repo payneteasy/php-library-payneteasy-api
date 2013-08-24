@@ -26,20 +26,6 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
         CurlData::$errorMessage = null;
     }
 
-    public function testCurlOptions()
-    {
-        $this->object->setCurlOptions(array
-        (
-            CURLOPT_USERAGENT   => 'PaynetEasy-Client/2.0'
-        ));
-
-        $this->assertEquals('PaynetEasy-Client/2.0', $this->object->curlOptions[CURLOPT_USERAGENT]);
-
-        $this->object->removeCurlOptions();
-
-        $this->assertEquals(array(), $this->object->curlOptions);
-    }
-
     /**
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
      */
@@ -74,7 +60,7 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException PaynetEasy\PaynetEasyApi\Exception\RequestException
      * @expectedExceptionCode 500
-     * @expectedExceptionMessage Error occured. HTTP code: 500
+     * @expectedExceptionMessage Error occurred. HTTP code: '500'
      */
     public function testMakeRequestHttpError()
     {
