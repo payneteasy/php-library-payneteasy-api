@@ -22,8 +22,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     {
         $paymentTransaction = $this->getPaymentTransaction();
         $callbackResponse   = new CallbackResponse($callback);
-
-        $callbackResponse['control'] = $this->createSignature($callback);
+        $this->signCallback($callbackResponse);
 
         $this->object->processCallback($paymentTransaction, $callbackResponse);
 
@@ -42,14 +41,16 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     public function testProcessCallbackDeclined(array $callback)
     {
         $paymentTransaction = $this->getPaymentTransaction();
+        $callbackResponse   = new CallbackResponse($callback);
+        $this->signCallback($callbackResponse);
 
-        $callback['control'] = $this->createSignature($callback);
-
-        $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
+        $this->object->processCallback($paymentTransaction, $callbackResponse);
 
         $this->assertTrue($paymentTransaction->isDeclined());
         $this->assertTrue($paymentTransaction->isFinished());
         $this->assertTrue($paymentTransaction->hasErrors());
+
+        return array($paymentTransaction, $callbackResponse);
     }
 
     abstract public function testProcessCallbackDeclinedProvider();
@@ -60,13 +61,12 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
     public function testProcessCallbackError(array $callback)
     {
         $paymentTransaction = $this->getPaymentTransaction();
-        $callback['control'] = $this->createSignature($callback);
-        $callbackObject     = new CallbackResponse($callback);
+        $callbackResponse   = new CallbackResponse($callback);
+        $this->signCallback($callbackResponse);
 
         try
         {
-            // Payment error after check
-            $this->object->processCallback($paymentTransaction, $callbackObject);
+            $this->object->processCallback($paymentTransaction, $callbackResponse);
         }
         catch (PaynetException $error)
         {
@@ -74,10 +74,10 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
             $this->assertTrue($paymentTransaction->isFinished());
             $this->assertTrue($paymentTransaction->hasErrors());
 
-            $this->assertEquals($callback['error_message'], $error->getMessage());
-            $this->assertEquals($callback['error_code'], $error->getCode());
+            $this->assertEquals($callbackResponse->getErrorMessage(), $error->getMessage());
+            $this->assertEquals($callbackResponse->getErrorCode(), $error->getCode());
 
-            return array($paymentTransaction, $callbackObject);
+            return array($paymentTransaction, $callbackResponse);
         }
 
         $this->fail('Exception must be throwned');
@@ -91,9 +91,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessCallbackWithEmptyControl()
     {
-        $paymentTransaction = $this->getPaymentTransaction();
-
-        $this->object->processCallback($paymentTransaction, new CallbackResponse);
+        $this->object->processCallback($this->getPaymentTransaction(), new CallbackResponse);
     }
 
     /**
@@ -102,16 +100,16 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessCallbackWithEmptyFields()
     {
-        $callback = array
+        $callbackResponse = new CallbackResponse(array
         (
             'status'            => 'approved',
             'orderid'           => '_',
             'client_orderid'    => '_'
-        );
+        ));
 
-        $callback['control'] = $this->createSignature($callback);
+        $this->signCallback($callbackResponse);
 
-        $this->object->processCallback($this->getPaymentTransaction(), new CallbackResponse($callback));
+        $this->object->processCallback($this->getPaymentTransaction(), $callbackResponse);
     }
 
     /**
@@ -120,17 +118,37 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
      */
     public function testProcessCallbackWithUnequalFields()
     {
-        $callback = array
+        $callbackResponse = new CallbackResponse(array
         (
             'status'            => 'approved',
             'orderid'           => 'unequal',
             'merchant_order'    => 'unequal',
             'client_orderid'    => 'unequal'
-        );
+        ));
 
-        $callback['control'] = $this->createSignature($callback);
+        $this->signCallback($callbackResponse);
 
-        $this->object->processCallback($this->getPaymentTransaction(), new CallbackResponse($callback));
+        $this->object->processCallback($this->getPaymentTransaction(), $callbackResponse);
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Invalid callback status: 'processing'
+     */
+    public function testProcessCallbackWithInvalidStatus()
+    {
+        $callbackResponse = new CallbackResponse(array
+        (
+            'status'            => 'processing',
+            'amount'            =>  0.99,
+            'orderid'           =>  self::PAYNET_ID,
+            'merchant_order'    =>  self::CLIENT_ID,
+            'client_orderid'    =>  self::CLIENT_ID,
+        ));
+
+        $this->signCallback($callbackResponse);
+
+        $this->object->processCallback($this->getPaymentTransaction(), $callbackResponse);
     }
 
     /**
@@ -152,25 +170,22 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
             'queryConfig'       =>  new QueryConfig(array
             (
                 'signing_key'       =>  self::SIGNING_KEY
-            )),
-            'status'            => PaymentTransaction::STATUS_PROCESSING
+            ))
         ));
     }
 
     /**
-     * Creates control for callback
+     * Creates control code and set in to callback
      *
-     * @param       array       $callback       Callback data
-     *
-     * @return      string                      Callback control code
+     * @param       CallbackResponse        $callbackResponse       Callback object
      */
-    protected function createSignature(array $callback)
+    protected function signCallback(CallbackResponse $callbackResponse)
     {
-        return sha1
+        $callbackResponse['control'] = sha1
         (
-            $callback['status'] .
-            $callback['orderid'] .
-            $callback['client_orderid'] .
+            $callbackResponse->getStatus() .
+            $callbackResponse->getPaymentPaynetId() .
+            $callbackResponse->getPaymentClientId() .
             self::SIGNING_KEY
         );
     }

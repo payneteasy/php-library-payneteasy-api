@@ -3,20 +3,11 @@
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
+use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
+use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
 class CustomerReturnCallback extends AbstractCallback
 {
-    /**
-     * {@inheritdoc}
-     */
-    static protected $allowedStatuses = array
-    (
-        PaymentTransaction::STATUS_APPROVED,
-        PaymentTransaction::STATUS_DECLINED,
-        PaymentTransaction::STATUS_FILTERED,
-        PaymentTransaction::STATUS_ERROR
-    );
-
     /**
      * {@inheritdoc}
      */
@@ -28,4 +19,17 @@ class CustomerReturnCallback extends AbstractCallback
         array('status',          null),
         array('control',         null)
     );
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function validateCallback(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
+    {
+        if (!$paymentTransaction->isProcessing())
+        {
+            throw new ValidationException("Only processing payment transaction can be processed");
+        }
+
+        parent::validateCallback($paymentTransaction, $callbackResponse);
+    }
 }

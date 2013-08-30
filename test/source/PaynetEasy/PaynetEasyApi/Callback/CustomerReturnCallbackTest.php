@@ -73,46 +73,33 @@ class RedirectUrlCallbackTest extends CallbackTestPrototype
 
     /**
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
-     * @expectedExceptionMessage Invalid callback status: 'processing'
-     */
-    public function testProcessCallbackWithInvalidStatus()
-    {
-        $paymentTransaction = $this->getPaymentTransaction();
-
-        $callback = array
-        (
-            'status'            => 'processing',
-            'amount'            =>  0.99,
-            'orderid'           =>  self::PAYNET_ID,
-            'merchant_order'    =>  self::CLIENT_ID,
-            'client_orderid'    =>  self::CLIENT_ID,
-        );
-
-        $callback['control'] = $this->createSignature($callback);
-
-        $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
-    }
-
-    /**
-     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
      * @expectedExceptionMessage Only processing payment transaction can be processed
      */
-    public function testProcessCallbackWithFinishedTransaction()
+    public function testProcessCallbackWithNotProcessingTransaction()
     {
         $paymentTransaction = $this->getPaymentTransaction();
         $paymentTransaction->setStatus(PaymentTransaction::STATUS_APPROVED);
 
-        $callback = array
+        $callbackResponse = new CallbackResponse(array
         (
-            'status'            => 'processing',
+            'status'            => 'approved',
             'amount'            =>  0.99,
             'orderid'           =>  self::PAYNET_ID,
             'merchant_order'    =>  self::CLIENT_ID,
             'client_orderid'    =>  self::CLIENT_ID,
-        );
+        ));
 
-        $callback['control'] = $this->createSignature($callback);
+        $this->signCallback($callbackResponse);
 
-        $this->object->processCallback($paymentTransaction, new CallbackResponse($callback));
+        $this->object->processCallback($paymentTransaction, $callbackResponse);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getPaymentTransaction()
+    {
+        return parent::getPaymentTransaction()
+            ->setStatus(PaymentTransaction::STATUS_PROCESSING);
     }
 }

@@ -36,28 +36,19 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Callback fields definition if format:
      * [
-     *     [<first field name>:string, <first property path>:string]
-     *     [<second field name>:string, <second property path>:string]
+     *     [<first callback field name>:string, <first payment transaction property path>:string]
+     *     [<second callback field name>:string, <second payment transaction property path>:string]
      *     ...
-     *     [<last field name>:string, <last property path>:string]
+     *     [<last callback field name>:string, <last payment transaction property path>:string]
      * ]
      *
      * If property name present in field definition,
-     * callback response field value and payment property value will be compared.
+     * callback response field value and payment transaction property value will be compared.
      * If values not equal validation exception will be throwned.
      *
      * @var array
      */
-    static protected $callbackFieldsDefinition = array
-    (
-        array('orderid',        'payment.paynetId'),
-        array('merchant_order', 'payment.clientId'),
-        array('client_orderid', 'payment.clientId'),
-        array('amount',         'payment.amount'),
-        array('status',          null),
-        array('type',            null),
-        array('control',         null)
-    );
+    static protected $callbackFieldsDefinition = array();
 
     /**
      * @param       string      $callbackType       Callback type
@@ -100,8 +91,6 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Validates callback object definition
      *
-     * @param       array       $config         API query object config
-     *
      * @throws      RuntimeException
      */
     protected function validateCallbackDefinition()
@@ -118,7 +107,7 @@ abstract class AbstractCallback implements CallbackInterface
     }
 
     /**
-     * Validates payment query config
+     * Validates payment transaction query config
      *
      * @param       PaymentTransaction      $paymentTransaction     Payment transaction
      *
@@ -126,11 +115,9 @@ abstract class AbstractCallback implements CallbackInterface
      */
     public function validateQueryConfig(PaymentTransaction $paymentTransaction)
     {
-        $queryConfig = $paymentTransaction->getQueryConfig();
-
-        if(strlen($queryConfig->getSigningKey()) === 0)
+        if(strlen($paymentTransaction->getQueryConfig()->getSigningKey()) === 0)
         {
-            throw new RuntimeException("Property 'signingKey' does not defined in Payment property 'queryConfig'");
+            throw new ValidationException("Property 'signingKey' does not defined in PaymentTransaction property 'queryConfig'");
         }
     }
 
@@ -138,7 +125,7 @@ abstract class AbstractCallback implements CallbackInterface
      * Validates callback
      *
      * @param       PaymentTransaction      $paymentTransaction     Payment transaction
-     * @param       CallbackResponse        $callbackResponse       Callback from paynet
+     * @param       CallbackResponse        $callbackResponse       Callback from PaynetEasy
      *
      * @throws      ValidationException                             Validation error
      */
@@ -146,11 +133,6 @@ abstract class AbstractCallback implements CallbackInterface
     {
         $this->validateQueryConfig($paymentTransaction);
         $this->validateSignature($paymentTransaction, $callbackResponse);
-
-        if (!$paymentTransaction->isProcessing())
-        {
-            throw new ValidationException("Only processing payment transaction can be processed");
-        }
 
         if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
         {
@@ -177,7 +159,7 @@ abstract class AbstractCallback implements CallbackInterface
                 if ($propertyValue != $callbackValue)
                 {
                     $unequalValues[] = "CallbackResponse field '{$fieldName}' value '{$callbackValue}' does not " .
-                                       "equal Payment property '{$propertyPath}' value '{$propertyValue}'";
+                                       "equal PaymentTransaction property '{$propertyPath}' value '{$propertyValue}'";
                 }
             }
         }
@@ -185,13 +167,13 @@ abstract class AbstractCallback implements CallbackInterface
         if (!empty($missedFields))
         {
             $errorMessage .= "Some required fields missed or empty in CallbackResponse: \n" .
-                             implode(', ', $missedFields) . ". \n";
+                             implode(', ', $missedFields) . ".\n";
         }
 
         if (!empty($unequalValues))
         {
-            $errorMessage .= "Some fields from CallbackResponse unequal properties from Payment: \n" .
-                             implode(", \n", $unequalValues) . ". \n";
+            $errorMessage .= "Some fields from CallbackResponse unequal properties from PaymentTransaction: \n" .
+                             implode("\n", $unequalValues) . " \n";
         }
 
         if (!empty($errorMessage))
@@ -201,18 +183,15 @@ abstract class AbstractCallback implements CallbackInterface
     }
 
     /**
-     * Updates Payment by Callback data
+     * Updates Payment transaction by Callback data
      *
      * @param       PaymentTransaction      $paymentTransaction     Payment transaction for updating
-     * @param       CallbackResponse        $response               Callback for payment updating
+     * @param       CallbackResponse        $response               Callback for payment transaction updating
      */
     protected function updatePaymentTransaction(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
     {
-        $paymentTransaction
-            ->setStatus($callbackResponse->getStatus())
-            ->getPayment()
-            ->setPaynetId($callbackResponse->getPaymentPaynetId())
-        ;
+        $paymentTransaction->setStatus($callbackResponse->getStatus());
+        $paymentTransaction->getPayment()->setPaynetId($callbackResponse->getPaymentPaynetId());
 
         if ($callbackResponse->isError() || $callbackResponse->isDeclined())
         {
@@ -223,26 +202,27 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Validate callback response control code
      *
-     * @param       CallbackResponse        $callback       Callback for control code checking
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for control code checking
+     * @param       CallbackResponse        $callbackResponse       Callback for control code checking
      *
-     * @throws      ValidationException                     Invalid control code
+     * @throws      ValidationException                             Invalid control code
      */
-    protected function validateSignature(PaymentTransaction $paymentTransaction, CallbackResponse $callback)
+    protected function validateSignature(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
     {
         // This is SHA-1 checksum of the concatenation
         // status + orderid + client_orderid + merchant-control.
-        $expectedControl   = sha1
+        $expectedControlCode = sha1
         (
-            $callback->getStatus() .
-            $callback->getPaymentPaynetId() .
-            $callback->getPaymentClientId() .
+            $callbackResponse->getStatus() .
+            $callbackResponse->getPaymentPaynetId() .
+            $callbackResponse->getPaymentClientId() .
             $paymentTransaction->getQueryConfig()->getSigningKey()
         );
 
-        if($expectedControl !== $callback->getControlCode())
+        if($expectedControlCode !== $callbackResponse->getControlCode())
         {
-            throw new ValidationException("Actual control code '{$callback->getControlCode()}' does " .
-                                          "not equal expected '{$expectedControl}'");
+            throw new ValidationException("Actual control code '{$callbackResponse->getControlCode()}' does " .
+                                          "not equal expected '{$expectedControlCode}'");
         }
     }
 }
