@@ -91,7 +91,6 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
         $request->setApiMethod('sale');
         $request->setEndPoint(121);
         $request->setGatewayUrl('http://example.com');
-//        $request->setGatewayUrl('https://qa.clubber.me/paynet/api/v2/');
 
         return $request;
     }

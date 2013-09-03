@@ -5,7 +5,7 @@ namespace PaynetEasy\PaynetEasyApi\Callback;
 interface CallbackFactoryInterface
 {
     /**
-     * Get callback processor by callback data
+     * Get callback processor by callback type
      *
      * @param       string      $callback       Callback type
      *

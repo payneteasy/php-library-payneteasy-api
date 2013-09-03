@@ -76,7 +76,7 @@ class StatusQueryTest extends SyncQueryTest
         (
             'type'              =>  $this->successType,
             'status'            => 'processing',
-            'html'              =>  urlencode('<html></html>'),
+            'html'              => '<html></html>',
             'paynet-order-id'   =>  self::PAYNET_ID,
             'merchant-order-id' =>  self::CLIENT_ID,
             'serial-number'     =>  md5(time())

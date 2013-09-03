@@ -244,7 +244,7 @@ class QueryConfig extends Data
     public function setGatewayMode($gatewayMode)
     {
         $this->checkGatewayMode($gatewayMode);
-        
+
         $this->gatewayMode = $gatewayMode;
 
         return $this;
@@ -352,6 +352,10 @@ class QueryConfig extends Data
             case self::GATEWAY_MODE_PRODUCTION:
             {
                 return $this->getGatewayUrlProduction();
+            }
+            default:
+            {
+                throw new RuntimeException('You must set gatewayMode property first');
             }
         }
     }

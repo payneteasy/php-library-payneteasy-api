@@ -36,7 +36,7 @@ class PaymentProcessor
     const HANDLER_SHOW_HTML         = 'show_html';
 
     /**
-     * Redirect url received, customer shoud be to it
+     * Redirect url received, customer should be to it
      */
     const HANDLER_REDIRECT          = 'redirect';
 
@@ -114,29 +114,12 @@ class PaymentProcessor
     public function executeQuery($queryName, PaymentTransaction $paymentTransaction)
     {
         $query = $this->getQuery($queryName);
+        $response = null;
 
         try
         {
-            $request = $query->createRequest($paymentTransaction);
-        }
-        catch (Exception $e)
-        {
-            $this->handleException($e, $paymentTransaction);
-            return;
-        }
-
-        try
-        {
+            $request  = $query->createRequest($paymentTransaction);
             $response = $this->makeRequest($request);
-        }
-        catch (Exception $e)
-        {
-            $this->handleException($e, $paymentTransaction);
-            return;
-        }
-
-        try
-        {
             $query->processResponse($paymentTransaction, $response);
         }
         catch (Exception $e)
@@ -154,7 +137,7 @@ class PaymentProcessor
      * Executes payment gateway processor for customer return from payment form or 3D-auth
      *
      * @param       CallbackResponse        $callbackResponse       Callback object with data from payment gateway
-     * @param       PaymentTransaction      $paymentTransaction     Payment for processing
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for processing
      *
      * @return      CallbackResponse                                Validated payment gateway callback
      */
@@ -166,10 +149,10 @@ class PaymentProcessor
     }
 
     /**
-     * Executes payment gateway callback processor
+     * Executes payment gateway processor for PaynetEasy payment callback
      *
      * @param       CallbackResponse        $callbackResponse       Callback object with data from payment gateway
-     * @param       PaymentTransaction      $paymentTransaction     Payment for processing
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for processing
      *
      * @return      CallbackResponse                                Validated payment gateway callback
      */
@@ -232,12 +215,11 @@ class PaymentProcessor
 
     /**
      * Set handler callback for processing action.
-     * Handler receives two parameters: Payment and Response.
      *
      * @see PaymentProcessor::callHandler()
      *
      * @param       string          $handlerName            Handler name
-     * @param       callable        $handlerCallback        Handler callbac
+     * @param       callable        $handlerCallback        Handler callback
      *
      * @return      self
      */
@@ -276,7 +258,7 @@ class PaymentProcessor
     }
 
     /**
-     * Remove handler for procesing action
+     * Remove handler for processing action
      *
      * @param       string          $handlerName            Handler name
      *
@@ -393,7 +375,7 @@ class PaymentProcessor
     /**
      * Handle query result.
      * Method calls handlers for:
-     *  - self::HANDLER_SAVE_CHANGES            allways
+     *  - self::HANDLER_SAVE_CHANGES            always
      *  - self::HANDLER_STATUS_UPDATE           if needed payment transaction status update
      *  - self::HANDLER_SHOW_HTML               if needed to show response html
      *  - self::HANDLER_REDIRECT                if needed to redirect to response URL
@@ -448,7 +430,8 @@ class PaymentProcessor
 
     /**
      * Executes handler callback.
-     * Handler callback receives two parameters: Payment and Response (optional)
+     * Method receives at least one parameter - handler name,
+     * all other parameters will be passed to handler callback.
      *
      * @param       string      $handlerName        Handler name
      *
@@ -493,11 +476,6 @@ class PaymentProcessor
      */
     protected function hasHandler($handlerName)
     {
-        if (!array_key_exists($handlerName, $this->handlers))
-        {
-            return false;
-        }
-
-        return is_callable($this->handlers[$handlerName]);
+        return array_key_exists($handlerName, $this->handlers);
     }
 }

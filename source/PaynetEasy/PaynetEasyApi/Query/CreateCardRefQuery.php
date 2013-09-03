@@ -83,7 +83,7 @@ class CreateCardRefQuery extends Query
     /**
      * Check, if payment transaction is finished and payment is not new.
      *
-     * @param       PaymentTransaction      $paymentTransaction     Payment for checking
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for checking
      */
     protected function checkPaymentTransactionStatus(PaymentTransaction $paymentTransaction)
     {

@@ -7,7 +7,7 @@ interface QueryFactoryInterface
     /**
      * Create API query object by API query method
      *
-     * @param       string              $apiQueryName       API query method
+     * @param       string              $apiQueryName       API query method name
      *
      * @return      QueryInterface                          API query object
      */

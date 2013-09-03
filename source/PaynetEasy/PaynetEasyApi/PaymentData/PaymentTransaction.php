@@ -101,7 +101,7 @@ class PaymentTransaction extends Data
     protected $payment;
 
     /**
-     * Payment query config
+     * Payment transaction query config
      *
      * @var \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
      */
@@ -306,7 +306,7 @@ class PaymentTransaction extends Data
     }
 
     /**
-     * Set payment query config
+     * Set payment transaction query config
      *
      * @param       QueryConfig         $queryConfig        Payment query config
      *
@@ -320,7 +320,7 @@ class PaymentTransaction extends Data
     }
 
     /**
-     * Get payment query config
+     * Get payment transaction query config
      *
      * @return      QueryConfig
      */
@@ -335,9 +335,9 @@ class PaymentTransaction extends Data
     }
 
     /**
-     * Adds new payment error
+     * Adds new payment transaction error
      *
-     * @param       Exception       $error      Payment error
+     * @param       Exception       $error      Payment transaction processing error
      *
      * @return      self
      */
@@ -352,7 +352,7 @@ class PaymentTransaction extends Data
     }
 
     /**
-     * True if payment has errors
+     * True if payment transaction has errors
      *
      * @return      boolean
      */
@@ -362,9 +362,9 @@ class PaymentTransaction extends Data
     }
 
     /**
-     * Get all payment errors
+     * Get all payment transaction errors
      *
-     * @return      array       Payment errors
+     * @return      array       Payment transaction errors
      */
     public function getErrors()
     {
@@ -372,7 +372,7 @@ class PaymentTransaction extends Data
     }
 
     /**
-     * Get payment last error
+     * Get payment transaction last error
      *
      * @return      Exception
      */

@@ -31,10 +31,10 @@ abstract class Query implements QueryInterface
     /**
      * Request fields definition in format
      * [
-     *     [<first field name>:string,  <first payment property path>:string,   <is field required>:boolean, <validation rule>:string],
-     *     [<second field name>:string, <second payment property path>:string,  <is field required>:boolean, <validation rule>:string],
+     *     [<first field name>:string,  <first property path>:string,   <is field required>:boolean, <validation rule>:string],
+     *     [<second field name>:string, <second property path>:string,  <is field required>:boolean, <validation rule>:string],
      *     ...
-     *     [<last field name>:string,   <last payment property path>:string,    <is field required>:boolean, <validation rule>:string]
+     *     [<last field name>:string,   <last property path>:string,    <is field required>:boolean, <validation rule>:string]
      * ]
      *
      * @var array
@@ -92,7 +92,7 @@ abstract class Query implements QueryInterface
             throw $e;
         }
 
-        $request = new Request($this->paymentTransactionToRequest($paymentTransaction));
+        $request = $this->paymentTransactionToRequest($paymentTransaction);
 
         $request
             ->setApiMethod($this->apiMethod)
@@ -109,16 +109,16 @@ abstract class Query implements QueryInterface
      */
     public function processResponse(PaymentTransaction $paymentTransaction, Response $response)
     {
-        if(   !$response->isProcessing()
-           && !$response->isApproved())
-        {
-            $validate = array($this, 'validateResponseOnError');
-            $update   = array($this, 'updatePaymentTransactionOnError');
-        }
-        else
+        if(   $response->isProcessing()
+           || $response->isApproved())
         {
             $validate = array($this, 'validateResponseOnSuccess');
             $update   = array($this, 'updatePaymentTransactionOnSuccess');
+        }
+        else
+        {
+            $validate = array($this, 'validateResponseOnError');
+            $update   = array($this, 'updatePaymentTransactionOnError');
         }
 
         try
@@ -146,7 +146,7 @@ abstract class Query implements QueryInterface
     }
 
     /**
-     * Validates payment transaction before query constructing
+     * Validates payment transaction before request constructing
      *
      * @param       PaymentTransaction      $paymentTransaction        Payment transaction for validation
      */
@@ -177,20 +177,20 @@ abstract class Query implements QueryInterface
             }
             elseif ($isFieldRequired)
             {
-                $missedFields[] = "Field '{$fieldName}' from property path '{$propertyPath}' missed or empty";
+                $missedFields[] = "Field '{$fieldName}' from property path '{$propertyPath}' missed or empty.";
             }
         }
 
         if (!empty($missedFields))
         {
             $errorMessage .= "Some required fields missed or empty in PaymentTransaction: \n" .
-                             implode(". \n", $missedFields) . ". \n";
+                             implode("\n", $missedFields) . "\n";
         }
 
         if (!empty($invalidFields))
         {
             $errorMessage .= "Some fields invalid in PaymentTransaction: \n" .
-                             implode(". \n", $invalidFields) . ". \n";
+                             implode("\n", $invalidFields) . "\n";
         }
 
         if (!empty($errorMessage))
@@ -202,13 +202,13 @@ abstract class Query implements QueryInterface
     /**
      * Creates request from payment transaction
      *
-     * @param       PaymentTransaction      $paymentTransaction     Payment for request
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for request constructing
      *
-     * @return      array                                           Request
+     * @return      Request                                         Request object
      */
     protected function paymentTransactionToRequest(PaymentTransaction $paymentTransaction)
     {
-        $request = array();
+        $requestFields = array();
 
         foreach (static::$requestFieldsDefinition as $fieldDescription)
         {
@@ -218,18 +218,18 @@ abstract class Query implements QueryInterface
 
             if (!empty($fieldValue))
             {
-                $request[$fieldName] = $fieldValue;
+                $requestFields[$fieldName] = $fieldValue;
             }
         }
 
-        return $request;
+        return new Request($requestFields);
     }
 
     /**
      * Generates the control code is used to ensure that it is a particular
      * Merchant (and not a fraudster) that initiates the transaction.
      *
-     * @param       PaymentTransaction      $paymentTransaction     Payment to generate control code
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction to generate control code
      *
      * @return      string                                          Generated control code
      */
@@ -249,7 +249,7 @@ abstract class Query implements QueryInterface
      * Validates response before payment transaction updating
      * if payment transaction is processing or approved
      *
-     * @param       PaymentTransaction      $paymentTransaction     Payment
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
      * @param       Response                $response               Response for validating
      */
     protected function validateResponseOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
@@ -283,7 +283,7 @@ abstract class Query implements QueryInterface
      * Validates response before payment transaction updating
      * if payment transaction is not processing or approved
      *
-     * @param       PaymentTransaction      $paymentTransaction     Payment
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction
      * @param       Response                $response               Response for validating
      */
     protected function validateResponseOnError(PaymentTransaction $paymentTransaction, Response $response)
@@ -300,9 +300,10 @@ abstract class Query implements QueryInterface
 
     /**
      * Updates payment transaction by query response data
+     * if payment transaction is processing or approved
      *
-     * @param       PaymentTransaction      $paymentTransaction     Payment for updating
-     * @param       Response                $response               Response for payment updating
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for updating
+     * @param       Response                $response               Response for payment transaction updating
      */
     protected function updatePaymentTransactionOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
     {
@@ -314,8 +315,8 @@ abstract class Query implements QueryInterface
      * Updates payment transaction by query response data
      * if payment transaction is not processing or approved
      *
-     * @param       PaymentTransaction      $paymentTransaction     Payment for updating
-     * @param       Response                $response               Response for payment updating
+     * @param       PaymentTransaction      $paymentTransaction     Payment transaction for updating
+     * @param       Response                $response               Response for payment transaction updating
      */
     protected function updatePaymentTransactionOnError(PaymentTransaction $paymentTransaction, Response $response)
     {
@@ -372,7 +373,7 @@ abstract class Query implements QueryInterface
     {
         if(strlen($paymentTransaction->getQueryConfig()->getSigningKey()) === 0)
         {
-            throw new ValidationException("Property 'signingKey' does not defined in Payment property 'queryConfig'");
+            throw new ValidationException("Property 'signingKey' does not defined in PaymentTransaction property 'queryConfig'");
         }
     }
 
@@ -398,7 +399,7 @@ abstract class Query implements QueryInterface
     }
 
     /**
-     * Set PaynetEasy payment id to payment transaction
+     * Set PaynetEasy payment id to payment transaction Payment
      *
      * @param       PaymentTransaction      $paymentTransaction     Payment transaction
      * @param       Response                $response               Query response

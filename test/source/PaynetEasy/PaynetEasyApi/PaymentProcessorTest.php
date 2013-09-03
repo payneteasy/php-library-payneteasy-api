@@ -48,7 +48,6 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteQuery($queryName, array $responseData, $handlerName)
     {
-        FakeQuery::$request             = new Request;
         FakeGatewayClient::$response    = new Response($responseData);
 
         $handlerCalled = false;
@@ -262,14 +261,14 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertCount(2, $this->object->handlers);
-        $this->assertArrayHasKey(PaymentProcessor::HANDLER_SAVE_CHANGES, $this->object->handlers);
-        $this->assertArrayHasKey(PaymentProcessor::HANDLER_SHOW_HTML, $this->object->handlers);
+        $this->assertTrue($this->object->hasHandler(PaymentProcessor::HANDLER_SAVE_CHANGES));
+        $this->assertTrue($this->object->hasHandler(PaymentProcessor::HANDLER_SHOW_HTML));
 
         $this->object->removeHandler(PaymentProcessor::HANDLER_SAVE_CHANGES);
 
         $this->assertCount(1, $this->object->handlers);
-        $this->assertArrayNotHasKey(PaymentProcessor::HANDLER_SAVE_CHANGES, $this->object->handlers);
-        $this->assertArrayHasKey(PaymentProcessor::HANDLER_SHOW_HTML, $this->object->handlers);
+        $this->assertFalse($this->object->hasHandler(PaymentProcessor::HANDLER_SAVE_CHANGES));
+        $this->assertTrue($this->object->hasHandler(PaymentProcessor::HANDLER_SHOW_HTML));
 
         $this->object->removeHandlers();
 
@@ -294,7 +293,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Unknown handler name: '_'
      */
-    public function testSetHandlerWrongName()
+    public function testSetHandlerWithWrongName()
     {
         $this->object->setHandler('_', 'not_callable');
     }
@@ -355,5 +354,10 @@ class PublicPaymentProcessor extends PaymentProcessor
     public function callHandler($handlerName)
     {
         return call_user_func_array(array('parent', 'callHandler'), func_get_args());
+    }
+
+    public function hasHandler($handlerName)
+    {
+        return parent::hasHandler($handlerName);
     }
 }

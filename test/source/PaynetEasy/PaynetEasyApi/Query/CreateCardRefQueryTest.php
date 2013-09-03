@@ -52,16 +52,16 @@ class CreateCardRefQueryTest extends SyncQueryTest
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
      * @expectedExceptionMessage Only finished payment transaction can be used for create-card-ref-id
      */
-    public function testCreateWithNotEndedPayment()
+    public function testCreateRequestWithNotEndedPayment()
     {
         $this->object->createRequest(parent::getPaymentTransaction());
     }
 
     /**
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
-     * @expectedExceptionMessage Can not use new payment for create-card-ref-id. Execute 'sale' or 'preauth' query first
+     * @expectedExceptionMessage Can not use new payment for create-card-ref-id
      */
-    public function testCreateWithNewPayment()
+    public function testCreateRequestWithNewPayment()
     {
         $payment = new Payment(array
         (

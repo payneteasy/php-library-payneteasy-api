@@ -103,8 +103,8 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue($paymentTransaction->isFinished());
             $this->assertTrue($paymentTransaction->hasErrors());
 
-            $this->assertEquals($response['error-message'], $error->getMessage());
-            $this->assertEquals($response['error-code'], $error->getCode());
+            $this->assertEquals($responseObject->getErrorMessage(), $error->getMessage());
+            $this->assertEquals($responseObject->getErrorCode(), $error->getCode());
 
             return array($paymentTransaction, $responseObject);
         }
@@ -209,12 +209,13 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
     {
         return new QueryConfig(array
         (
-            'login'             =>  self::LOGIN,
-            'end_point'         =>  self::END_POINT,
-            'signing_key'       =>  self::SIGNING_KEY,
-            'site_url'          => 'http://example.com',
-            'redirect_url'      => 'https://example.com/redirect_url',
-            'callback_url'      => 'https://example.com/callback_url'
+            'login'                 =>  self::LOGIN,
+            'end_point'             =>  self::END_POINT,
+            'signing_key'           =>  self::SIGNING_KEY,
+            'site_url'              => 'http://example.com',
+            'gateway_url_sandbox'   => 'https://example.com/sandbox_url',
+            'redirect_url'          => 'https://example.com/redirect_url',
+            'callback_url'          => 'https://example.com/callback_url'
         ));
     }
 }
