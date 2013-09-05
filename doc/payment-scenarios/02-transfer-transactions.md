@@ -29,8 +29,7 @@ login               |queryConfig.login      |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса create-card-ref](../../example/create-card-ref.php)
 
-После выполнения данного запроса будет получен id сохраненной кредитной карты и создан объект **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова
-`$payment->getRecurrentCardFrom()`, а к ее id с помощью вызова `$payment->getRecurrentCardFrom()->getCardReferenceId()`
+После выполнения данного запроса будет получен id сохраненной кредитной карты и создан объект **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()`, а к ее id с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getCardReferenceId()`
 
 ## <a name="transfer-by-ref"></a> Запрос "transfer-by-ref"
 

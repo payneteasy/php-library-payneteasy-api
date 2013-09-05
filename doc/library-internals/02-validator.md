@@ -12,7 +12,7 @@
 Validator::EMAIL                |[FILTER_VALIDATE_EMAIL](http://www.php.net/manual/en/filter.filters.validate.php)|Validate value as email
 Validator::IP                   |[FILTER_VALIDATE_IP](http://www.php.net/manual/en/filter.filters.validate.php)|Validate value as IP address
 Validator::URL                  |[FILTER_VALIDATE_URL](http://www.php.net/manual/en/filter.filters.validate.php)|Validate value as URL
-Validator::MONTH                |0 < month < 13             |Validate value as month
+Validator::MONTH                |in_array($month, range(1, 12))|Validate value as month
 Validator::YEAR                 |#^[0-9]{1,2}$#i            |Validate value as year
 Validator::PHONE                |#^[0-9\-\+\(\)\s]{6,15}$#i |Validate value as phone number
 Validator::AMOUNT               |#^[0-9\.]{1,11}$#i         |Validate value as payment amount

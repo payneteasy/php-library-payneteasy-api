@@ -84,7 +84,7 @@ gatewayMode         |string |                   |Gateway mode (sandbox, producti
 gatewayUrlSandbox   |string |                   |Sandbox gateway url
 gatewayUrlProduction|string |                   |Production gateway url
 
-Значение свойства endPoint участвует в формировании URL для вызова платежного метода шлюза PaynetEasy, а свойства signingKey - в формировании подписи для данных платежа. Значения свойств **gatewayUrlSandbox** и **gatewayUrlProduction** содержат ссылки на sandbox и production гейты. Выбор между этими url осуществляется на основе значения поля **gatewayMode**, если значение поля `QueryConfig::GATEWAY_MODE_SANDBOX`, то будет выбран url **gatewayUrlSandbox**, если `QueryConfig::GATEWAY_MODE_PRODUCTION` - то url **gatewayUrlProduction**.
+Значение свойства **endPoint** участвует в формировании URL для вызова платежного метода шлюза PaynetEasy, а свойства **signingKey** - в формировании подписи для данных платежа. Значения свойств **gatewayUrlSandbox** и **gatewayUrlProduction** содержат ссылки на sandbox и production гейты. Выбор между этими url осуществляется на основе значения поля **gatewayMode**, если значение поля `QueryConfig::GATEWAY_MODE_SANDBOX`, то будет выбран url **gatewayUrlSandbox**, если `QueryConfig::GATEWAY_MODE_PRODUCTION` - то url **gatewayUrlProduction**.
 
 ### <a name="Customer"></a> Customer
 

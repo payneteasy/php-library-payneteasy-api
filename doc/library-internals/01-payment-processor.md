@@ -1,12 +1,12 @@
 # Фронтенд библиотеки, PaymentProcessor
 
-Фронтенд библиотеки представляет класс **[PaynetEasy\PaynetEasyApi\PaymentProcessor](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php)**. Класс предоставляет следующие возможности:
-* **[executeQuery()](#executeQuery)**: простое выполнение запроса к PaynetEasy
-* **[processCustomerReturn()](#processCustomerReturn)**: простая обработка данных, полученных от PaynetEasy при возвращении пользователя с платежного шлюза
-* **[processPaynetEasyCallback()](#processPaynetEasyCallback)**: простая обработка данных, полученных от PaynetEasy при поступлении коллбэка от PaynetEasy
+Фронтенд библиотеки представлен классом **[PaynetEasy\PaynetEasyApi\PaymentProcessor](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php)**. Класс предоставляет следующие методы:
+* **[executeQuery()](#executeQuery)**: выполнение запроса к PaynetEasy
+* **[processCustomerReturn()](#processCustomerReturn)**: обработка данных, полученных от PaynetEasy при возвращении пользователя с платежного шлюза
+* **[processPaynetEasyCallback()](#processPaynetEasyCallback)**: обработка данных, полученных от PaynetEasy при поступлении коллбэка от PaynetEasy
 * **[setHandlers()](#setHandlers)**: установка обработчиков для различных событий, происходящих при обработке платежной транзакции
 
-### <a name="executeQuery"></a>executeQuery(): простое выполнение запроса к PaynetEasy
+### <a name="executeQuery"></a>executeQuery(): выполнение запроса к PaynetEasy
 
 Некоторые сценарии обработки платежа имеют асинхронную природу и состоят из нескольких запросов. Так, некоторые запросы не возвращают результат платежа сразу и требуют многократного выполнения запроса **status**, после которого клиент может быть отправлен на шлюз PaynetEasy для проведения дополнительных шагов авторизации. После возвращения клиента на сервис мерчанта необходима обработка данных, полученных от шлюза.
 <a name="async_queries_list"></a>Cписок асинхронных запросов:
@@ -52,9 +52,9 @@
 * Название запроса
 * Платежная транзакция для обработки
 
-### <a name="processCustomerReturn"></a>processCustomerReturn(): простая обработка данных, полученных от PaynetEasy
+### <a name="processCustomerReturn"></a>processCustomerReturn(): обработка данных, полученных от PaynetEasy при возвращении клиента
 
-Каждый [асинхронный запрос](#async_queries_list) может завершиться перенаправлением пользователя на платежный шлюз для выполнения дополнительных действий, а каждый [запрос для интеграции платежной формы](#form_queries_list) обязательно содержит такое перенаправление. Каждый раз при возвращении пользователя на сервис мерчанта передаются данные с результатом обработки платежа. Также, если в [конфигурации стартового запроса](../00-basic-tutorial.md#stage_1_step_3) был задан ключ **server_callback_url**, то через некоторое время PaynetEasy вызовет этот url и передаст ему данные, описанные в wiki PaynetEasy в разделе [Merchant Callbacks](http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks). Для удобной обработки этих данных в **PaymentProcessor** реализован метод **[executeCallback()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L161)**.
+Каждый [асинхронный запрос](#async_queries_list) может завершиться перенаправлением пользователя на платежный шлюз для выполнения дополнительных действий, а каждый [запрос для интеграции платежной формы](#form_queries_list) обязательно содержит такое перенаправление. Каждый раз при возвращении пользователя на сервис мерчанта передаются данные с результатом обработки платежа. Также, если в [конфигурации стартового запроса](../00-basic-tutorial.md#stage_1_step_3) был задан ключ **server_callback_url**, то через некоторое время PaynetEasy вызовет этот url и передаст ему данные, описанные в wiki PaynetEasy в разделе [Merchant Callbacks](http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks). Для удобной обработки этих данных в **PaymentProcessor** реализован метод **[processCustomerReturn()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L144)**.
 Метод принимает два параметра:
 * Объект с данными, полученными при возвращении пользователя от PaynetEasy
 * Платежная транзакция для обработки
@@ -67,9 +67,9 @@
 * [Пример выполнения запроса preauth-form](../../example/preauth-form.php#70)
 * [Пример выполнения запроса transfer-form](../../example/transfer-form.php#70)
 
-### <a name="processPaynetEasyCallback"></a>processPaynetEasyCallback(): простая обработка данных, полученных от PaynetEasy
+### <a name="processPaynetEasyCallback"></a>processPaynetEasyCallback(): обработка удаленного вызова от PaynetEasy
 
-После выполнения [асинхронного запроса](#async_queries_list) или [запроса для интеграции платежной формы](#form_queries_list), если в [конфигурации стартового запроса](../00-basic-tutorial.md#stage_1_step_3) был задан ключ **server_callback_url**, то через некоторое время PaynetEasy вызовет этот url и передаст ему данные, описанные в wiki PaynetEasy в разделе [Merchant Callbacks](http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks). Для удобной обработки этих данных в **PaymentProcessor** реализован метод **[processPaynetEasyCallback()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L176)**.
+После выполнения [асинхронного запроса](#async_queries_list) или [запроса для интеграции платежной формы](#form_queries_list), если в [конфигурации стартового запроса](../00-basic-tutorial.md#stage_1_step_3) был задан ключ **server_callback_url**, то через некоторое время PaynetEasy вызовет этот url и передаст ему данные, описанные в wiki PaynetEasy в разделе [Merchant Callbacks](http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks). Для удобной обработки этих данных в **PaymentProcessor** реализован метод **[processPaynetEasyCallback()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L159)**.
 Метод принимает два параметра:
 * Объект с данными, полученными при возвращении пользователя от PaynetEasy
 * Платежная транзакция для обработки
@@ -83,9 +83,9 @@
 
 ### <a name="setHandlers"></a> setHandlers(): установка обработчиков для различных событий, происходящих при обработке заказа
 
-**PaymentProcessor** скрывает от конечного пользователя алгоритм обработки заказа в методах **[executeWorkflow()](#executeWorkflow)**, **[executeQuery()](#executeQuery)** и **[executeCallback()](#executeCallback)**. При этом во время обработки заказа возникают ситуации, обработка которых должна быть реализована на стороне сервиса мерчанта. Для обработки таких ситуаций в **PaymentProcessor** реализована система событий и их обработчиков. Обработчики могут быть установлены тремя разными способами:
-* Передача массива обработчиков в [конструктор класса **PaymentProcessor**](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L101)
-* Передача массива обработчиков в метод [**setHandlers()**](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L273)
+**PaymentProcessor** скрывает от конечного пользователя алгоритм обработки заказа в методах **[executeQuery()](#executeQuery)**, **[processCustomerReturn()](#processCustomerReturn)** и **[processPaynetEasyCallback()](processPaynetEasyCallback)**. При этом во время обработки заказа возникают ситуации, обработка которых должна быть реализована на стороне сервиса мерчанта. Для обработки таких ситуаций в **PaymentProcessor** реализована система событий и их обработчиков. Обработчики могут быть установлены тремя разными способами:
+* Передача массива c обработчиками в [конструктор класса **PaymentProcessor**](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L101)
+* Передача массива с обработчиками в метод [**setHandlers()**](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L273)
 * Установка обработчиков по одному с помощью метода **[setHandler()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L249)**
 
 Список обработчиков событий:
@@ -130,7 +130,7 @@ $paymentProcessor->setHandlers(array
     },
     PaymentProcessor::HANDLER_STATUS_UPDATE     => function()
     {
-        header("Location: http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}?stage=updateStatus");
+        header("Location: http://{$_SERVER['HTTP_HOST']}{$_SERVER['SCRIPT_NAME']}?stage=updateStatus");
         exit;
     },
     PaymentProcessor::HANDLER_SHOW_HTML         => function(Response $response)

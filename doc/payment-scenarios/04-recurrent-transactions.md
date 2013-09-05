@@ -24,14 +24,13 @@
 
 Поле запроса        |Цепочка свойств платежа        |Правило валидации
 --------------------|-------------------------------|-----------------
-client_orderid      |clientId                       |Validator::ID
-orderid             |paynetId                       |Validator::ID
+client_orderid      |payment.clientId               |Validator::ID
+orderid             |payment.paynetId               |Validator::ID
 login               |queryConfig.login              |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса create-card-ref](../../example/create-card-ref.php)
 
-После выполнения данного запроса будет получен id сохраненной кредитной карты и создан объект **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова
-`$payment->getRecurrentCardFrom()`, а к ее id с помощью вызова `$payment->getRecurrentCardFrom()->getCardReferenceId()`
+После выполнения данного запроса будет получен id сохраненной кредитной карты и создан объект **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()`, а к ее id с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getCardReferenceId()`
 
 ## <a name="get-card-info"></a> Запрос "get-card-info"
 
@@ -40,19 +39,19 @@ login               |queryConfig.login              |Validator::MEDIUM_STRING
 
 ##### Обязательные параметры запроса
 
-Поле запроса        |Цепочка свойств платежа    |Правило валидации
---------------------|---------------------------|-----------------
-cardrefid           |recurrentCardFrom.paynetId |Validator::ID
-login               |queryConfig.login          |Validator::MEDIUM_STRING
+Поле запроса        |Цепочка свойств платежа            |Правило валидации
+--------------------|-----------------------------------|-----------------
+cardrefid           |payment.recurrentCardFrom.paynetId |Validator::ID
+login               |queryConfig.login                  |Validator::MEDIUM_STRING
 
 [Пример выполнения запроса get-card-info](../../example/get-card-info.php)
 
-После выполнения данного запроса будут получены данные сохраненной кредитной карты и создан объект **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова `$payment->getRecurrentCardFrom()`. В объекте будут заполнены следующие данные:
-* **cardPrintedName** - данные доступны с помощью вызова `$payment->getRecurrentCardFrom()->getСardPrintedName()`
-* **expireYear** - данные доступны с помощью вызова `$payment->getRecurrentCardFrom()->getExpireYear()`
-* **expireMonth** - данные доступны с помощью вызова `$payment->getRecurrentCardFrom()->getExpireMonth()`
-* **bin** - данные доступны с помощью вызова `$payment->getRecurrentCardFrom()->getBin()`
-* **lastFourDigits** - данные доступны с помощью вызова `$payment->getRecurrentCardFrom()->getLastFourDigits()`
+После выполнения данного запроса будут получены данные сохраненной кредитной карты и создан объект **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()`. В объекте будут заполнены следующие данные:
+* **cardPrintedName** - данные доступны с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getСardPrintedName()`
+* **expireYear** - данные доступны с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getExpireYear()`
+* **expireMonth** - данные доступны с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getExpireMonth()`
+* **bin** - данные доступны с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getBin()`
+* **lastFourDigits** - данные доступны с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getLastFourDigits()`
 
 ## <a name="make-rebill"></a> Запрос "make-rebill"
 
