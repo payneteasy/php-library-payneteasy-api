@@ -6,6 +6,7 @@ use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
 use PaynetEasy\PaynetEasyApi\PaymentData\Payment;
 use PaynetEasy\PaynetEasyApi\PaymentData\Customer;
 use PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress;
+use PaynetEasy\PaynetEasyApi\PaymentData\CreditCard;
 use PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig;
 use PaynetEasy\PaynetEasyApi\Transport\Request;
 use PaynetEasy\PaynetEasyApi\Transport\Response;
@@ -112,6 +113,19 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
             (
                 'status'            => 'processing',
                 'type'              => 'status-response',
+                'paynet-order-id'   => '_',
+                'merchant-order-id' => '_',
+                'serial-number'     => '_'
+            ),
+            PaymentProcessor::HANDLER_STATUS_UPDATE
+        ),
+        array
+        (
+            'sale',
+            array
+            (
+                'status'            => 'processing',
+                'type'              => 'async-response',
                 'paynet-order-id'   => '_',
                 'merchant-order-id' => '_',
                 'serial-number'     => '_'
@@ -335,6 +349,14 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
                     'zip_code'              => '1235',
                     'phone'                 => '660-485-6353',
                     'cell_phone'            => '660-485-6353'
+                )),
+                'credit_card'           => new CreditCard(array
+                (
+                    'card_printed_name'     => 'Vasya Pupkin',
+                    'credit_card_number'    => '4485 9408 2237 9130',
+                    'expire_month'          => '12',
+                    'expire_year'           => '14',
+                    'cvv2'                  => '084'
                 ))
             )),
             'query_config'      => new QueryConfig(array

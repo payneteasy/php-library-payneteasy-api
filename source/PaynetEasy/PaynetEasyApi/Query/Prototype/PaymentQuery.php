@@ -3,6 +3,7 @@
 namespace PaynetEasy\PaynetEasyApi\Query\Prototype;
 
 use PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction;
+use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 
 class PaymentQuery extends Query
@@ -71,6 +72,19 @@ class PaymentQuery extends Query
         if (empty(static::$paymentStatus))
         {
             throw new RuntimeException('You must configure paymentStatus property');
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function updatePaymentTransactionOnSuccess(PaymentTransaction $paymentTransaction, Response $response)
+    {
+        parent::updatePaymentTransactionOnSuccess($paymentTransaction, $response);
+
+        if ($response->isProcessing())
+        {
+            $response->setNeededAction(Response::NEEDED_STATUS_UPDATE);
         }
     }
 }
