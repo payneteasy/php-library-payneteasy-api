@@ -61,11 +61,11 @@
 
 Ознакомиться с использованием данного метода можно в следующих файлах:
 * [Базовый пример использования библиотеки](../00-basic-tutorial.md#stage_2)
-* [Пример выполнения запроса sale](../../example/sale.php#L91)
-* [Пример выполнения запроса preauth](../../example/preauth.php#L91)
-* [Пример выполнения запроса sale-form](../../example/sale-form.php#L70)
-* [Пример выполнения запроса preauth-form](../../example/preauth-form.php#70)
-* [Пример выполнения запроса transfer-form](../../example/transfer-form.php#70)
+* [Пример выполнения запроса sale](../../example/sale.php#L96)
+* [Пример выполнения запроса preauth](../../example/preauth.php#L96)
+* [Пример выполнения запроса sale-form](../../example/sale-form.php#L75)
+* [Пример выполнения запроса preauth-form](../../example/preauth-form.php#L75)
+* [Пример выполнения запроса transfer-form](../../example/transfer-form.php#L75)
 
 ### <a name="processPaynetEasyCallback"></a>processPaynetEasyCallback(): обработка удаленного вызова от PaynetEasy
 
@@ -75,18 +75,18 @@
 * Платежная транзакция для обработки
 
 Ознакомиться с использованием данного метода можно в следующих файлах:
-* [Пример выполнения запроса sale](../../example/sale.php#L102)
-* [Пример выполнения запроса preauth](../../example/preauth.php#L102)
-* [Пример выполнения запроса sale-form](../../example/sale-form.php#L81)
-* [Пример выполнения запроса preauth-form](../../example/preauth-form.php#81)
-* [Пример выполнения запроса transfer-form](../../example/transfer-form.php#81)
+* [Пример выполнения запроса sale](../../example/sale.php#L107)
+* [Пример выполнения запроса preauth](../../example/preauth.php#L107)
+* [Пример выполнения запроса sale-form](../../example/sale-form.php#L86)
+* [Пример выполнения запроса preauth-form](../../example/preauth-form.php#L86)
+* [Пример выполнения запроса transfer-form](../../example/transfer-form.php#L86)
 
 ### <a name="setHandlers"></a> setHandlers(): установка обработчиков для различных событий, происходящих при обработке заказа
 
 **PaymentProcessor** скрывает от конечного пользователя алгоритм обработки заказа в методах **[executeQuery()](#executeQuery)**, **[processCustomerReturn()](#processCustomerReturn)** и **[processPaynetEasyCallback()](processPaynetEasyCallback)**. При этом во время обработки заказа возникают ситуации, обработка которых должна быть реализована на стороне сервиса мерчанта. Для обработки таких ситуаций в **PaymentProcessor** реализована система событий и их обработчиков. Обработчики могут быть установлены тремя разными способами:
 * Передача массива c обработчиками в [конструктор класса **PaymentProcessor**](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L101)
-* Передача массива с обработчиками в метод [**setHandlers()**](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L273)
-* Установка обработчиков по одному с помощью метода **[setHandler()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L249)**
+* Передача массива с обработчиками в метод [**setHandlers()**](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L250)
+* Установка обработчиков по одному с помощью метода **[setHandler()](../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L226)**
 
 Список обработчиков событий:
 * **HANDLER_SAVE_CHANGES** - обработчик для сохранения платежной транзакции. Вызывается, если данные платежной транзакции изменены. Должен реализовывать сохранение платежной транзакции в хранилище. Принимает следующие параметры:
