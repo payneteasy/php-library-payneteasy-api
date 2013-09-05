@@ -29,7 +29,7 @@ if (!isset($_GET['stage']))
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\CreditCard
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     * @see functions.php, $getQueryConfig()
+     * @see common/functions.php, $getQueryConfig()
      */
     $paymentTransaction = new PaymentTransaction(array
     (

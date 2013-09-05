@@ -26,7 +26,7 @@ if (!isset($_GET['stage']))
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
-     * @see functions.php, $getQueryConfig()
+     * @see common/functions.php, $getQueryConfig()
      */
     $paymentTransaction = new PaymentTransaction(array
     (

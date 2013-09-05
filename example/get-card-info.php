@@ -24,7 +24,7 @@ session_start();
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard
  * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
- * @see functions.php, $getQueryConfig()
+ * @see common/functions.php, $getQueryConfig()
  */
 $paymentTransaction = new PaymentTransaction(array
 (

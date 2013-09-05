@@ -21,13 +21,13 @@ if (!isset($_GET['stage']))
      * Создадим новый платеж
      *
      * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
-     * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::$requestFieldsDefinition
+     * @see \PaynetEasy\PaynetEasyApi\Query\PreauthFormQuery::$requestFieldsDefinition
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Payment
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\Customer
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress
      * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig
-     * @see functions.php, $getQueryConfig()
+     * @see common/functions.php, $getQueryConfig()
      */
     $paymentTransaction = new PaymentTransaction(array
     (
@@ -59,7 +59,7 @@ if (!isset($_GET['stage']))
      * Выполним запрос preauth-form
      *
      * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
-     * @see \PaynetEasy\PaynetEasyApi\Query\FormQuery::updatePaymentOnSuccess()
+     * @see \PaynetEasy\PaynetEasyApi\Query\PreauthFormQuery::updatePaymentOnSuccess()
      */
     $getPaymentProcessor()->executeQuery('preauth-form', $paymentTransaction);
 }
