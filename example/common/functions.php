@@ -38,13 +38,13 @@ $getQueryConfig = function()
          * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#3D_redirect
          * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect
          */
-        'redirect_url'              => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}?stage=processCustomerReturn",
+        'redirect_url'              => "http://{$_SERVER['HTTP_HOST']}{$_SERVER['SCRIPT_NAME']}?stage=processCustomerReturn",
         /**
          * URL на который пользователь будет перенаправлен после окончания запроса
          *
          * @see http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks
          */
-        'callback_url'              => "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}?stage=processPaynetEasyCallback",
+        'callback_url'              => "http://{$_SERVER['HTTP_HOST']}{$_SERVER['SCRIPT_NAME']}?stage=processPaynetEasyCallback",
         /**
          * Режим работы библиотеки: sandbox, production
          *
@@ -100,7 +100,7 @@ $savePaymentTransaction = function(PaymentTransaction $paymentTransaction)
  */
 $displayWaitPage = function()
 {
-    $formAction = "http://{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}?stage=updateStatus";
+    $formAction = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['SCRIPT_NAME']}?stage=updateStatus";
     include(__DIR__ . '/waitPage.php');
     exit;
 };
