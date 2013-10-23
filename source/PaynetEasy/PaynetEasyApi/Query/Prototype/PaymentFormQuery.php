@@ -34,7 +34,7 @@ abstract class PaymentFormQuery extends PaymentQuery
         array('last_name',              'payment.customer.lastName',            false,  Validator::MEDIUM_STRING),
         array('ssn',                    'payment.customer.ssn',                 false,  Validator::SSN),
         array('birthday',               'payment.customer.birthday',            false,  Validator::DATE),
-        array('state',                  'payment.billingAddress.state',         false,  Validator::COUNTRY),
+        array('state',                  'payment.billingAddress.state',         false,  Validator::STATE),
         array('cell_phone',             'payment.billingAddress.cellPhone',     false,  Validator::PHONE),
         array('site_url',               'queryConfig.siteUrl',                  false,  Validator::URL),
         array('server_callback_url',    'queryConfig.callbackUrl',              false,  Validator::URL)

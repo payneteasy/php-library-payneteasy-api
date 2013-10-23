@@ -3,6 +3,7 @@
 namespace PaynetEasy\PaynetEasyApi\Util;
 
 use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
+use PaynetEasy\PaynetEasyApi\Util\RegionFinder;
 
 class Validator
 {
@@ -57,9 +58,14 @@ class Validator
     const ZIP_CODE      = 'zip_code';
 
     /**
-     * Validate value as two-letter country or state code
+     * Validate value as two-letter country code
      */
     const COUNTRY       = 'country';
+
+    /**
+     * Validate value as two-letter state code
+     */
+    const STATE         = 'state';
 
     /**
      * Validate value as date in format MMDDYY
@@ -103,7 +109,6 @@ class Validator
         self::CURRENCY              => '#^[A-Z]{1,3}$#i',
         self::CVV2                  => '#^[\S\s]{3,4}$#i',
         self::ZIP_CODE              => '#^[\S\s]{1,10}$#i',
-        self::COUNTRY               => '#^[A-Z]{1,2}$#i',
         self::YEAR                  => '#^[0-9]{1,2}$#i',
         self::DATE                  => '#^[0-9]{6}$#i',
         self::SSN                   => '#^[0-9]{1,4}$#i',
@@ -149,6 +154,16 @@ class Validator
             case self::MONTH:
             {
                 $valid = in_array($value, range(1, 12));
+                break;
+            }
+            case self::COUNTRY:
+            {
+                $valid = RegionFinder::hasCountryByCode($value);
+                break;
+            }
+            case self::STATE:
+            {
+                $valid = RegionFinder::hasStateByCode($value);
                 break;
             }
             default:
