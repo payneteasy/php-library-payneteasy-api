@@ -33,6 +33,18 @@ class RegionFinder
     );
 
     /**
+     * Countries with states
+     *
+     * @var array
+     */
+    static protected $countriesWithStates = array
+    (
+        'AU',
+        'CA',
+        'US'
+    );
+
+    /**
      * Australia states
      *
      * @var array
@@ -165,6 +177,16 @@ class RegionFinder
     static public function hasCountryByCode($countryCode)
     {
         return in_array($countryCode, static::$countryCodes);
+    }
+
+    /**
+     * True, if country has states
+     *
+     * @param       string      $countryCode        Country code
+     */
+    static public function hasStates($countryCode)
+    {
+        return in_array($countryCode, static::$countriesWithStates);
     }
 
     /**

@@ -13,6 +13,12 @@ class RegionFinderTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(RegionFinder::hasCountryByCode('USA'));
     }
 
+    public function testHasStates()
+    {
+        $this->assertTrue(RegionFinder::hasStates('US'));
+        $this->assertFalse(RegionFinder::hasStates('EN'));
+    }
+
     public function testHasStateByCode()
     {
         $this->assertTrue(RegionFinder::hasStateByCode('NY'));
