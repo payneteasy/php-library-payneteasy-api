@@ -260,11 +260,11 @@ class Payment extends Data
     /**
      * Get amount in cents (for control code generation)
      *
-     * @return      integer
+     * @return      string
      */
     public function getAmountInCents()
     {
-        return (int) ($this->getAmount() * 100);
+        return (string) ($this->getAmount() * 100);
     }
 
     /**
