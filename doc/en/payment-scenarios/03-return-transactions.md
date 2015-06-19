@@ -26,7 +26,7 @@ currency        |payment.currency       |Validator::CURRENCY
 comment         |payment.comment        |Validator::MEDIUM_STRING
 login           |queryConfig.login      |Validator::MEDIUM_STRING
 
-[Пример выполнения запроса return](../../example/return.php)
+[Пример выполнения запроса return](../../../example/return.php)
 
 ## <a name="status"></a> "status" request
 
@@ -48,4 +48,4 @@ client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[status request execution example](../../example/status.php)
+[status request execution example](../../../example/status.php)

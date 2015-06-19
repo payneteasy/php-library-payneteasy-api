@@ -1,6 +1,6 @@
 # Data storage and exchange classes
 
-Classes for data storage and exchange between the library and merchant CMS. Located in namespace **[PaynetEasy\PaynetEasyApi\PaymentData](../../source/PaynetEasy/PaynetEasyApi/PaymentData)**. Represented with the following classes:
+Classes for data storage and exchange between the library and merchant CMS. Located in namespace **[PaynetEasy\PaynetEasyApi\PaymentData](../../../source/PaynetEasy/PaynetEasyApi/PaymentData)**. Represented with the following classes:
 * [PaymentTransaction](#PaymentTransaction)
 * [Payment](#Payment)
 * [QueryConfig](#QueryConfig)
@@ -33,7 +33,7 @@ $payment = (new Payment)
 
 ### <a name="PaymentTransaction"></a> PaymentTransaction
 
-Central object for data storage and exchange is instance of  **[PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction](../../source/PaynetEasy/PaynetEasyApi/PaymentData/PaymentTransaction.php)** class. This is the object that is passed from CMS to the library when executing any request. It has the following data:
+Central object for data storage and exchange is instance of  **[PaynetEasy\PaynetEasyApi\PaymentData\PaymentTransaction](../../../source/PaynetEasy/PaynetEasyApi/PaymentData/PaymentTransaction.php)** class. This is the object that is passed from CMS to the library when executing any request. It has the following data:
 
 Class property      |Type                       |Request field  |Purpose
 --------------------|---------------------------|---------------|-------------------------------------------------------
@@ -48,7 +48,7 @@ errors              |array                      |               |Transaction pro
 
 ### <a name="Payment"></a> Payment
 
-Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\Payment](../../source/PaynetEasy/PaynetEasyApi/PaymentData/Payment.php)** class. Used when executing any request. It has the following data:
+Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\Payment](../../../source/PaynetEasy/PaynetEasyApi/PaymentData/Payment.php)** class. Used when executing any request. It has the following data:
 
 Class property      |Type                               |Request field  |Purpose
 --------------------|-----------------------------------|---------------|-------------------------------------------------------
@@ -70,7 +70,7 @@ recurrentCardTo     |[RecurrentCard](#RecurrentCard)    |               |Payment
 
 ### <a name="QueryConfig"></a> QueryConfig
 
-Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig](../../source/PaynetEasy/PaynetEasyApi/PaymentData/QueryConfig.php)** class. Used when executing any request. It has the following data:
+Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig](../../../source/PaynetEasy/PaynetEasyApi/PaymentData/QueryConfig.php)** class. Used when executing any request. It has the following data:
 
 Class property      |Type   |Request field      |Purpose
 --------------------|-------|-------------------|-------------------------------------------------------
@@ -88,7 +88,7 @@ gatewayUrlProduction|string |                   |Production gateway url
 
 ### <a name="Customer"></a> Customer
 
-Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\Customer](../../source/PaynetEasy/PaynetEasyApi/PaymentData/Customer.php)** class. Used when executing the following requests:
+Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\Customer](../../../source/PaynetEasy/PaynetEasyApi/PaymentData/Customer.php)** class. Used when executing the following requests:
 * [sale](../payment-scenarios/00-sale-transactions.md#sale)
 * [preauth](../payment-scenarios/01-preauth-capture-transactions.md#preauth)
 * [sale-form, preauth-form, transfer-form](../payment-scenarios/05-payment-form-integration.md#form)
@@ -108,7 +108,7 @@ ssn                 |string |ssn            |Last four digits of the customer’
 
 ### <a name="BillingAddress"></a> BillingAddress
 
-Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress](../../source/PaynetEasy/PaynetEasyApi/PaymentData/BillingAddress.php)** class. Used when executing the following requests:
+Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\BillingAddress](../../../source/PaynetEasy/PaynetEasyApi/PaymentData/BillingAddress.php)** class. Used when executing the following requests:
 * [sale](../payment-scenarios/00-sale-transactions.md#sale)
 * [preauth](../payment-scenarios/01-preauth-capture-transactions.md#preauth)
 * [sale-form, preauth-form, transfer-form](../payment-scenarios/05-payment-form-integration.md#form)
@@ -127,7 +127,7 @@ cellPhone           |string |cell_phone     |Customer’s full international cel
 
 ### <a name="CreditCard"></a> CreditCard
 
-Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\CreditCard](../../source/PaynetEasy/PaynetEasyApi/PaymentData/CreditCard.php)** class. Used when executing the following requests:
+Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\CreditCard](../../../source/PaynetEasy/PaynetEasyApi/PaymentData/CreditCard.php)** class. Used when executing the following requests:
 * [sale](../payment-scenarios/00-sale-transactions.md#sale)
 * [preauth](../payment-scenarios/01-preauth-capture-transactions.md#preauth)
 
@@ -143,7 +143,7 @@ expireMonth         |integer|expire_month       |Card expiration month
 
 ### <a name="RecurrentCard"></a> RecurrentCard
 
-Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard](../../source/PaynetEasy/PaynetEasyApi/PaymentData/RecurrentCard.php)** class. Used when executing the following requests:
+Instance of **[PaynetEasy\PaynetEasyApi\PaymentData\RecurrentCard](../../../source/PaynetEasy/PaynetEasyApi/PaymentData/RecurrentCard.php)** class. Used when executing the following requests:
 * [create-card-ref](../payment-scenarios/04-recurrent-transactions.md#create-card-ref)
 * [get-card-info](../payment-scenarios/04-recurrent-transactions.md#get-card-info)
 * [make-rebill](../payment-scenarios/04-recurrent-transactions.md#make-rebill)

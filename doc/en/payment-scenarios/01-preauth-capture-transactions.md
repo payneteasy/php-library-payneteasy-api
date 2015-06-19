@@ -15,7 +15,7 @@ Scenario requests list:
 
 This request is used to block an amount on client's credit card. Card data is entered at merchant service side and sent to PaynetEasy. After executing this request, "**status**" request needs to be polled to update payment status. To achieve this, merchant service may display a self-updating page, each reload of which will make "**status**" request. After a successful processing of this request, to charge client's card you need to execute **[capture](#capture)** request.
 
-[Self-updating page example](../../example/common/waitPage.html)
+[Self-updating page example](../../../example/common/waitPage.php)
 
 ##### Mandatory request parameters
 
@@ -53,7 +53,7 @@ destination         |payment.destination                |Validator::LONG_STRING
 site_url            |queryConfig.siteUrl                |Validator::URL
 server_callback_url |queryConfig.callbackUrl            |Validator::URL
 
-[preauth request execution example](../../example/preauth.php)
+[preauth request execution example](../../../example/preauth.php)
 
 ## <a name="capture"></a> "capture" request
 
@@ -67,7 +67,7 @@ client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[capture request execution example](../../example/capture.php)
+[capture request execution example](../../../example/capture.php)
 
 ## <a name="status"></a> "status" request
 
@@ -93,7 +93,7 @@ client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[status request execution example](../../example/status.php)
+[status request execution example](../../../example/status.php)
 
 ## <a name="3d-redirect"></a> Processing payment result after 3D Authorization (only after **[preauth](#preauth)** request execution)
 

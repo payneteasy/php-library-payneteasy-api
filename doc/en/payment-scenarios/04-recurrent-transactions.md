@@ -28,7 +28,7 @@ client_orderid      |payment.clientId               |Validator::ID
 orderid             |payment.paynetId               |Validator::ID
 login               |queryConfig.login              |Validator::MEDIUM_STRING
 
-[create-card-ref request execution example](../../example/create-card-ref.php)
+[create-card-ref request execution example](../../../example/create-card-ref.php)
 
 This request creates an ID of a saved credit card embedded in **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)** object. To access **RecurrentCard**, call `$paymentTransaction->getPayment()->getRecurrentCardFrom()`; to access card reference ID, call `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getCardReferenceId()`
 
@@ -44,7 +44,7 @@ Request field       |Payment property chain             |Validation rule
 cardrefid           |payment.recurrentCardFrom.paynetId |Validator::ID
 login               |queryConfig.login                  |Validator::MEDIUM_STRING
 
-[get-card-info request execution](../../example/get-card-info.php)
+[get-card-info request execution](../../../example/get-card-info.php)
 
 When this request is executed, an instance of **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)** is created. To access the **RecurrentCard**, you can use `$paymentTransaction->getPayment()->getRecurrentCardFrom()`. Following data will be filled in the object:
 * **cardPrintedName** - available via `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getСardPrintedName()`
@@ -79,7 +79,7 @@ comment             |payment.comment                |Validator::MEDIUM_STRING
 cvv2                |payment.recurrentCardFrom.cvv2 |Validator::CVV2
 server_callback_url |queryConfig.callbackUrl        |Validator::URL
 
-[make-rebill request execution example](../../example/make-rebill.php)
+[make-rebill request execution example](../../../example/make-rebill.php)
 
 ## <a name="status"></a> "status" request
 
@@ -101,7 +101,7 @@ client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[status request execution example](../../example/status.php)
+[status request execution example](../../../example/status.php)
 
 ## <a name="callback"></a> Callback processing
 

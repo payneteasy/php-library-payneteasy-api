@@ -1,11 +1,11 @@
 # Data validator, Validator
 
-Static class **[PaynetEasy\PaynetEasyApi\Util\Validator](../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php)** provides the following data validation methods:
+Static class **[PaynetEasy\PaynetEasyApi\Util\Validator](../../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php)** provides the following data validation methods:
 * **[validateByRule()](#validateByRule)**: validation using a predefined rule or a regular expression
 
 ### <a name="validateByRule"></a>validateByRule(): validation using a predefined rule
 
-For convenient data validation,**[Validator](../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php)** has **[validateByRule()](../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php#L128)** method and a set of constants with validation rules. Available rules follow:
+For convenient data validation,**[Validator](../../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php)** has **[validateByRule()](../../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php#L128)** method and a set of constants with validation rules. Available rules follow:
 
 Constant                        |Validation rule            |Description
 --------------------------------|---------------------------|--------

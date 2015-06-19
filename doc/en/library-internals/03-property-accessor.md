@@ -1,6 +1,6 @@
 # Property chains utility class, PropertyAccessor
 
-When working with payment data, a need arises to get and set properties of objects embedded into PaymentTransaction. For example, to get client's email we need to call `$paymentTransaction->getPayment()->getCustomer()->getEmail()`, and to set it - `$paymentTransaction->getPayment()->getCustomer()->setEmail()`. For convenience, **[PaynetEasy\PaynetEasyApi\Util\PropertyAccessor](../../source/PaynetEasy/PaynetEasyApi/Util/PropertyAccessor.php)** class contains the following methods:
+When working with payment data, a need arises to get and set properties of objects embedded into PaymentTransaction. For example, to get client's email we need to call `$paymentTransaction->getPayment()->getCustomer()->getEmail()`, and to set it - `$paymentTransaction->getPayment()->getCustomer()->setEmail()`. For convenience, **[PaynetEasy\PaynetEasyApi\Util\PropertyAccessor](../../../source/PaynetEasy/PaynetEasyApi/Util/PropertyAccessor.php)** class contains the following methods:
 * **[getValue()](#getValue)**: convenient data reading using property chain
 * **[setValue()](#setValue)**: convenient data writing using property chain
 

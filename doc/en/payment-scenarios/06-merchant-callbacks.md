@@ -22,8 +22,8 @@ status              |
 type                |
 control             |
 
-* [sale request execution example](../../example/sale.php#L107)
-* [preauth request execution example](../../example/preauth.php#L107)
-* [sale-form request execution example](../../example/sale-form.php#L86)
-* [preauth-form request execution example](../../example/preauth-form.php#86)
-* [transfer-form request execution example](../../example/transfer-form.php#86)
+* [sale request execution example](../../../example/sale.php#L107)
+* [preauth request execution example](../../../example/preauth.php#L107)
+* [sale-form request execution example](../../../example/sale-form.php#L86)
+* [preauth-form request execution example](../../../example/preauth-form.php#86)
+* [transfer-form request execution example](../../../example/transfer-form.php#86)

@@ -14,7 +14,7 @@ Scenario requests list:
 
 This request is used to make a payment with a credit card. Card data is entered at merchant service side and sent to PaynetEasy. After executing this request, "**status**" request needs to be polled to update payment status. To achieve this, merchant service may display a self-updating page, each reload of which will make "**status**" request.
 
-[Self-updating page example](../../example/common/waitPage.html)
+[Self-updating page example](../../../example/common/waitPage.php)
 
 ##### Mandatory request parameters
 
@@ -52,7 +52,7 @@ destination         |payment.destination                |Validator::LONG_STRING
 site_url            |queryConfig.siteUrl                |Validator::URL
 server_callback_url |queryConfig.callbackUrl            |Validator::URL
 
-[sale request execution example](../../example/sale.php)
+[sale request execution example](../../../example/sale.php)
 
 ## <a name="status"></a> "status" request
 
@@ -78,7 +78,7 @@ client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[status request execution example](../../example/status.php)
+[status request execution example](../../../example/status.php)
 
 ## <a name="3d-redirect"></a> Processing payment result after 3D Authorization
 
