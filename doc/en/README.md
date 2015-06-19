@@ -1,7 +1,7 @@
 # PHP Library for PaynetEasy API integration [![Build Status](https://travis-ci.org/payneteasy/php-library-payneteasy-api.png?branch=master)](https://travis-ci.org/payneteasy/php-library-paynet)
 ## Available functionality
 
-This library allows to make payments using [merchant PaynetEasy API](http://doc.payneteasy.com/). For now, the following payment methods are implemented:
+This library allows to make payments using [PaynetEasy Merchant API](http://doc.payneteasy.com/). For now, the following payment methods are implemented:
 - [x] [Sale Transactions](http://doc.payneteasy.com/doc/sale-transactions.htm)
 - [x] [Preauth/Capture Transactions](http://doc.payneteasy.com/doc/preauth-capture-transactions.htm)
 - [x] [Transfer Transactions](http://doc.payneteasy.com/doc/transfer-transactions.htm)
