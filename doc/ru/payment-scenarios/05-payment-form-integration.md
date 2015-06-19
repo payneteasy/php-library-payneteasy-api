@@ -45,7 +45,9 @@ site_url            |queryConfig.siteUrl                |Validator::URL
 server_callback_url |queryConfig.callbackUrl            |Validator::URL
 
 [Пример выполнения запроса sale-form](../../../example/sale-form.php)
+
 [Пример выполнения запроса preauth-form](../../../example/preauth-form.php)
+
 [Пример выполнения запроса transfer-form](../../../example/transfer-form.php)
 
 ## <a name="form-redirect"></a> Обработка результата платежа после возвращения клиента с платежной формы
