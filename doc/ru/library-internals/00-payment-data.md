@@ -1,6 +1,6 @@
 # Классы для хранения и передачи данных
 
-Семейство классов для хранения данных и обмена данными между библиотекой и CMS мерчанта. Расположены в пространстве имен **[PaynetEasy\PaynetEasyApi\PaymentData](../../source/PaynetEasy/PaynetEasyApi/PaymentData)**. Представлены следующими классами объектов:
+Семейство классов для хранения данных и обмена данными между библиотекой и CMS мерчанта. Расположены в пространстве имен **[PaynetEasy\PaynetEasyApi\PaymentData](../../../source/PaynetEasy/PaynetEasyApi/PaymentData)**. Представлены следующими классами объектов:
 * [PaymentTransaction](#PaymentTransaction)
 * [Payment](#Payment)
 * [QueryConfig](#QueryConfig)
