@@ -83,7 +83,7 @@
 
 ### <a name="setHandlers"></a> setHandlers(): установка обработчиков для различных событий, происходящих при обработке заказа
 
-**PaymentProcessor** скрывает от конечного пользователя алгоритм обработки заказа в методах **[executeQuery()](#executeQuery)**, **[processCustomerReturn()](#processCustomerReturn)** и **[processPaynetEasyCallback()](processPaynetEasyCallback)**. При этом во время обработки заказа возникают ситуации, обработка которых должна быть реализована на стороне сервиса мерчанта. Для обработки таких ситуаций в **PaymentProcessor** реализована система событий и их обработчиков. Обработчики могут быть установлены тремя разными способами:
+**PaymentProcessor** скрывает от конечного пользователя алгоритм обработки заказа в методах **[executeQuery()](#executeQuery)**, **[processCustomerReturn()](#processCustomerReturn)** и **[processPaynetEasyCallback()](#processPaynetEasyCallback)**. При этом во время обработки заказа возникают ситуации, обработка которых должна быть реализована на стороне сервиса мерчанта. Для обработки таких ситуаций в **PaymentProcessor** реализована система событий и их обработчиков. Обработчики могут быть установлены тремя разными способами:
 * Передача массива c обработчиками в [конструктор класса **PaymentProcessor**](../../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L101)
 * Передача массива с обработчиками в метод [**setHandlers()**](../../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L250)
 * Установка обработчиков по одному с помощью метода **[setHandler()](../../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L226)**
