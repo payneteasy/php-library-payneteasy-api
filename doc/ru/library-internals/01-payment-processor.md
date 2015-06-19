@@ -18,12 +18,12 @@
 * transfer-by-ref
 
 Ознакомиться с обработкой таких запросов можно в следующих файлах:
-* [Пример выполнения запроса sale](../../example/sale.php)
-* [Пример выполнения запроса preauth](../../example/preauth.php)
-* [Пример выполнения запроса capture](../../example/capture.php)
-* [Пример выполнения запроса return](../../example/return.php)
-* [Пример выполнения запроса make-rebill](../../example/make-rebill.php)
-* [Пример выполнения запроса transfer-by-ref](../../example/transfer-by-ref.php)
+* [Пример выполнения запроса sale](../../../example/sale.php)
+* [Пример выполнения запроса preauth](../../../example/preauth.php)
+* [Пример выполнения запроса capture](../../../example/capture.php)
+* [Пример выполнения запроса return](../../../example/return.php)
+* [Пример выполнения запроса make-rebill](../../../example/make-rebill.php)
+* [Пример выполнения запроса transfer-by-ref](../../../example/transfer-by-ref.php)
 
 Отдельный сценарий обработки необходим и при интеграции платежной формы. Запрос к шлюзу возвращает ссылку на платежную форму, на которую должен быть отправлен клиент. После заполнения и отправки данных шлюз обрабатывает платежную форму и возвращает клиента на сервис мерчанта. После возвращения клиента на сервис мерчанта необходима обработка данных, полученных от шлюза.
 <a name="form_queries_list"></a>Список запросов для интеграции платежной формы:
@@ -32,9 +32,9 @@
 * transfer-form
 
 Ознакомиться с обработкой таких запросов можно в следующих файлах:
-* [Пример выполнения запроса sale-form](../../example/sale-form.php)
-* [Пример выполнения запроса preauth-form](../../example/preauth-form.php)
-* [Пример выполнения запроса transfer-form](../../example/transfer-form.php)
+* [Пример выполнения запроса sale-form](../../../example/sale-form.php)
+* [Пример выполнения запроса preauth-form](../../../example/preauth-form.php)
+* [Пример выполнения запроса transfer-form](../../../example/transfer-form.php)
 
 Некоторые операции с платежами не требуют сложных сценариев обработки и выполняются с помощью одного запроса.
 Список простых операций над платежом:
@@ -43,9 +43,9 @@
 * status
 
 Ознакомиться с обработкой таких запросов можно в следующих файлах:
-* [Пример выполнения запроса create-card-ref](../../example/create-card-ref.php)
-* [Пример выполнения запроса get-card-info](../../example/get-card-info.php)
-* [Пример выполнения запроса status](../../example/status.php)
+* [Пример выполнения запроса create-card-ref](../../../example/create-card-ref.php)
+* [Пример выполнения запроса get-card-info](../../../example/get-card-info.php)
+* [Пример выполнения запроса status](../../../example/status.php)
 
 Для удобного выполнения запросов к PaynetEasy в **PaymentProcessor** реализован метод **[executeQuery()](../../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L114)**.
 Метод принимает два параметра:
@@ -61,11 +61,11 @@
 
 Ознакомиться с использованием данного метода можно в следующих файлах:
 * [Базовый пример использования библиотеки](../00-basic-tutorial.md#stage_2)
-* [Пример выполнения запроса sale](../../example/sale.php#L96)
-* [Пример выполнения запроса preauth](../../example/preauth.php#L96)
-* [Пример выполнения запроса sale-form](../../example/sale-form.php#L75)
-* [Пример выполнения запроса preauth-form](../../example/preauth-form.php#L75)
-* [Пример выполнения запроса transfer-form](../../example/transfer-form.php#L75)
+* [Пример выполнения запроса sale](../../../example/sale.php#L96)
+* [Пример выполнения запроса preauth](../../../example/preauth.php#L96)
+* [Пример выполнения запроса sale-form](../../../example/sale-form.php#L75)
+* [Пример выполнения запроса preauth-form](../../../example/preauth-form.php#L75)
+* [Пример выполнения запроса transfer-form](../../../example/transfer-form.php#L75)
 
 ### <a name="processPaynetEasyCallback"></a>processPaynetEasyCallback(): обработка удаленного вызова от PaynetEasy
 
@@ -75,11 +75,11 @@
 * Платежная транзакция для обработки
 
 Ознакомиться с использованием данного метода можно в следующих файлах:
-* [Пример выполнения запроса sale](../../example/sale.php#L107)
-* [Пример выполнения запроса preauth](../../example/preauth.php#L107)
-* [Пример выполнения запроса sale-form](../../example/sale-form.php#L86)
-* [Пример выполнения запроса preauth-form](../../example/preauth-form.php#L86)
-* [Пример выполнения запроса transfer-form](../../example/transfer-form.php#L86)
+* [Пример выполнения запроса sale](../../../example/sale.php#L107)
+* [Пример выполнения запроса preauth](../../../example/preauth.php#L107)
+* [Пример выполнения запроса sale-form](../../../example/sale-form.php#L86)
+* [Пример выполнения запроса preauth-form](../../../example/preauth-form.php#L86)
+* [Пример выполнения запроса transfer-form](../../../example/transfer-form.php#L86)
 
 ### <a name="setHandlers"></a> setHandlers(): установка обработчиков для различных событий, происходящих при обработке заказа
 
