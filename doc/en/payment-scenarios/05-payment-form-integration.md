@@ -44,9 +44,9 @@ cell_phone          |payment.billingAddress.cellPhone   |Validator::PHONE
 site_url            |queryConfig.siteUrl                |Validator::URL
 server_callback_url |queryConfig.callbackUrl            |Validator::URL
 
-[sale-form request execution example](../../../example/sale-form.php)
-[preauth-form request execution example](../../../example/preauth-form.php)
-[transfer-form request execution example](../../../example/transfer-form.php)
+* [sale-form request execution example](../../../example/sale-form.php)
+* [preauth-form request execution example](../../../example/preauth-form.php)
+* [transfer-form request execution example](../../../example/transfer-form.php)
 
 ## <a name="form-redirect"></a> Payment processing after the client has returned from the payment form
 
