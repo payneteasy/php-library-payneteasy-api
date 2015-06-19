@@ -2,7 +2,7 @@
 
 ## General provisions
 
-* This article only describes library usage. Full information on Payment form integration may be found at [PaynetEasy wiki article](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration).
+* This article only describes library usage. Full information on Payment form integration may be found at [PaynetEasy documentation section](http://doc.payneteasy.com/doc/payment-form-integration.htm).
 * Validation rules description may be found in **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)** method description.
 * Property chains usage may be found in **[PropertyAccessor](../library-internals/03-property-accessor.md)** class description
 

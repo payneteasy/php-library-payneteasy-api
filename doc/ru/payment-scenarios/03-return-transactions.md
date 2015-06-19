@@ -6,7 +6,7 @@
 
 ## Общие положения
 
-* В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Return transactions расположена в [статье в wiki PaynetEasy](http://wiki.payneteasy.com/index.php/PnE:Return_Transactions).
+* В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Return transactions расположена в [в документации PaynetEasy](http://doc.payneteasy.com/doc/return-transactions.htm).
 * Описание правил валидации можно найти в описании метода **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)**.
 * Описание работы с цепочками свойств можно найти в описании класса **[PropertyAccessor](../library-internals/03-property-accessor.md)**
 

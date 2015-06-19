@@ -1,20 +1,20 @@
 # PHP Library for PaynetEasy API integration [![Build Status](https://travis-ci.org/payneteasy/php-library-payneteasy-api.png?branch=master)](https://travis-ci.org/payneteasy/php-library-paynet)
 ## Доступная функциональность
 
-Данная библиотека позволяет производить оплату с помощью [merchant PaynetEasy API](http://wiki.payneteasy.com/index.php/PnE:Merchant_API). На текущий момент реализованы следующие платежные методы:
-- [x] [Sale Transactions](http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions)
-- [x] [Preauth/Capture Transactions](http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions)
-- [x] [Transfer Transactions](http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions)
-- [x] [Return Transactions](http://wiki.payneteasy.com/index.php/PnE:Return_Transactions)
-- [x] [Recurrent Transactions](http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions)
-- [x] [Payment Form Integration](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration)
-- [ ] [Buy Now Button integration](http://wiki.payneteasy.com/index.php/PnE:Buy_Now_Button_integration)
-- [ ] [eCheck integration](http://wiki.payneteasy.com/index.php/PnE:eCheck_integration)
-- [ ] [Western Union Integration](http://wiki.payneteasy.com/index.php/PnE:Western_Union_Integration)
-- [ ] [Bitcoin Integration](http://wiki.payneteasy.com/index.php/PnE:Bitcoin_integration)
-- [ ] [Loan Integration](http://wiki.payneteasy.com/index.php/PnE:Loan_integration)
-- [ ] [Qiwi Integration](http://wiki.payneteasy.com/index.php/PnE:Qiwi_integration)
-- [x] [Merchant Callbacks](http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks)
+Данная библиотека позволяет производить оплату с помощью [PaynetEasy Merchant API](http://doc.payneteasy.com/). На текущий момент реализованы следующие платежные методы:
+- [x] [Sale Transactions](http://doc.payneteasy.com/doc/sale-transactions.htm)
+- [x] [Preauth/Capture Transactions](http://doc.payneteasy.com/doc/preauth-capture-transactions.htm)
+- [x] [Transfer Transactions](http://doc.payneteasy.com/doc/transfer-transactions.htm)
+- [x] [Return Transactions](http://doc.payneteasy.com/doc/return-transactions.htm)
+- [x] [Recurrent Transactions](http://doc.payneteasy.com/doc/recurrent-transactions.htm)
+- [x] [Payment Form Integration](http://doc.payneteasy.com/doc/payment-form-integration.htm)
+- [ ] [Buy Now Button integration](http://doc.payneteasy.com/doc/buy-now-button-integration.htm)
+- [ ] [eCheck integration](http://doc.payneteasy.com/doc/echeck-integration.htm)
+- [ ] [Western Union Integration](http://doc.payneteasy.com/doc/money-transfer-systems.htm)
+- [ ] [Bitcoin Integration](http://doc.payneteasy.com/doc/bitcoin-integration.htm)
+- [ ] [Loan Integration](http://doc.payneteasy.com/doc/loan-integration.htm)
+- [ ] [Qiwi Integration](http://doc.payneteasy.com/doc/qiwi-integration.htm)
+- [x] [Merchant Callbacks](http://doc.payneteasy.com/doc/merchant-callbacks.htm)
 
 ## Системные требования
 

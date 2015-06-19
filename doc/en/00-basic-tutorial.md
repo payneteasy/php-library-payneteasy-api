@@ -1,6 +1,6 @@
 # Simple library usage example
 
-Let's walk through requests execution in [payment form integration](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration). Typical payment processing is made in three stages. First and last stages take place on Merchant service side, while second stage is on PaynetEasy side.
+Let's walk through requests execution in [payment form integration](http://doc.payneteasy.com/doc/payment-form-integration.htm). Typical payment processing is made in three stages. First and last stages take place on Merchant service side, while second stage is on PaynetEasy side.
 
 1. Payment initiation:
     1. [Include classloader and required classes](#stage_1_step_1)
@@ -138,10 +138,10 @@ Here are examples of code that accomplish both stages. Code that performs second
     ```
 
     Request configuration fields **QueryConfig**:
-    * **[end_point](http://wiki.payneteasy.com/index.php/PnE:Introduction#Endpoint)** - end point for merchant account, created when registering
-    * **[login](http://wiki.payneteasy.com/index.php/PnE:Introduction#PaynetEasy_Users)** - merchant login to access PaynetEasy UI, created when registering
+    * **[end_point](http://doc.payneteasy.com/doc/introduction.htm#Endpoint)** - end point for merchant account, created when registering
+    * **[login](http://doc.payneteasy.com/doc/introduction.htm#PaynetEasy_Users)** - merchant login to access PaynetEasy UI, created when registering
     * **signing_key** - merchant control key for request signing, created when registering
-    * **[redirect_url](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect)** - URL to which user will be redirected after payment processing has finished
+    * **[redirect_url](http://doc.payneteasy.com/doc/payment-form-integration.htm#Payment_Form_final_redirect)** - URL to which user will be redirected after payment processing has finished
     * **gateway_mode** - library mode: sandbox, production
     * **gateway_url_sandbox** - URL of PaynetEasy sandbox processing gateway
     * **gateway_url_production** - URL of PaynetEasy production processing gateway

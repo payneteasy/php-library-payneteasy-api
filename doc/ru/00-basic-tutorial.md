@@ -1,6 +1,6 @@
 # Простой пример использования библиотеки
 
-Разберем выполнение запросов при [интеграции платежной формы](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration). Типовая обработка платежа происходит в три этапа. Первый и последний этапы происходят на стороне сервиса мерчанта, а второй - на стороне PaynetEasy.
+Разберем выполнение запросов при [интеграции платежной формы](http://doc.payneteasy.com/doc/payment-form-integration.htm). Типовая обработка платежа происходит в три этапа. Первый и последний этапы происходят на стороне сервиса мерчанта, а второй - на стороне PaynetEasy.
 
 1. Инициация оплаты:
     1. [Подключение загрузчика классов и необходимых классов](#stage_1_step_1)
@@ -138,10 +138,10 @@
     ```
 
     Поля конфигурации запроса **QueryConfig**:
-    * **[end_point](http://wiki.payneteasy.com/index.php/PnE:Introduction#Endpoint)** - точка входа для аккаунта мерчанта, выдается при подключении
-    * **[login](http://wiki.payneteasy.com/index.php/PnE:Introduction#PaynetEasy_Users)** - логин мерчанта для доступа к панели PaynetEasy, выдается при подключении
+    * **[end_point](http://doc.payneteasy.com/doc/introduction.htm#Endpoint)** - точка входа для аккаунта мерчанта, выдается при подключении
+    * **[login](http://doc.payneteasy.com/doc/introduction.htm#PaynetEasy_Users)** - логин мерчанта для доступа к панели PaynetEasy, выдается при подключении
     * **signing_key** - ключ мерчанта для подписывания запросов, выдается при подключении
-    * **[redirect_url](http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect)** - URL, на который пользователь будет перенаправлен после окончания запроса
+    * **[redirect_url](http://doc.payneteasy.com/doc/payment-form-integration.htm#Payment_Form_final_redirect)** - URL, на который пользователь будет перенаправлен после окончания запроса
     * **gateway_mode** - режим работы библиотеки: sandbox, production
     * **gateway_url_sandbox** - ссылка на шлюз PaynetEasy для режима работы sandbox
     * **gateway_url_production** - ссылка на шлюз PaynetEasy для режима работы production

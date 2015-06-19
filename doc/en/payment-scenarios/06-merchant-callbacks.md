@@ -2,7 +2,7 @@
 
 ## General provisions
 
-* This article only describes library usage. Full information on Merchant callbacks may be found at [PaynetEasy wiki article](http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks).
+* This article only describes library usage. Full information on Merchant callbacks may be found at [PaynetEasy documentation section](http://doc.payneteasy.com/doc/merchant-callbacks.htm).
 * Property chains usage may be found in **[PropertyAccessor](../library-internals/03-property-accessor.md)** class description
 
 ## <a name="main-callbacks"></a> Sale, Return, Chargeback callbacks

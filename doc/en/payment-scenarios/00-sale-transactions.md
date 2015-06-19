@@ -6,7 +6,7 @@ Scenario requests list:
 
 ## General provisions
 
-* This article only describes library usage. Full information on Sale transactions processing may be found at [PaynetEasy wiki article](http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions).
+* This article only describes library usage. Full information on Sale transactions processing may be found at [PaynetEasy documentation section](http://doc.payneteasy.com/doc/sale-transactions.htm).
 * Validation rules description may be found in **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)** method description.
 * Property chains usage may be found in **[PropertyAccessor](../library-internals/03-property-accessor.md)** class description
 
