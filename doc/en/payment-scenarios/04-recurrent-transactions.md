@@ -32,7 +32,7 @@ login               |queryConfig.login              |Validator::MEDIUM_STRING
 
 This request creates an ID of a saved credit card embedded in **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)** object. To access **RecurrentCard**, call `$paymentTransaction->getPayment()->getRecurrentCardFrom()`; to access card reference ID, call `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getCardReferenceId()`
 
-## <a name="get-card-info"></a> "get-card-info" query
+## <a name="get-card-info"></a> "get-card-info" request
 
 Used to get information about a saved credit card.
 For this to work, a [create-card-ref](#create-card-ref) must be executed before.

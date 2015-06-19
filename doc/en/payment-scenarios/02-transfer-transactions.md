@@ -1,45 +1,45 @@
 # Transfer transactions
 
-Список запросов сценария:
-* [Запрос "create-card-ref"](#create-card-ref)
-* [Запрос "transfer-by-ref"](#transfer-by-ref)
-* [Запрос "status"](#status)
+Scenario requests list:
+* ["create-card-ref" request](#create-card-ref)
+* ["transfer-by-ref" request](#transfer-by-ref)
+* ["status" request](#status)
 
-## Общие положения
+## General provisions
 
-* В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Transfer transactions расположена в [статье в wiki PaynetEasy](http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions).
-* Описание правил валидации можно найти в описании метода **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)**.
-* Описание работы с цепочками свойств можно найти в описании класса **[PropertyAccessor](../library-internals/03-property-accessor.md)**
+* This article only describes library usage. Full information on Transfer transactions processing may be found at [PaynetEasy wiki article](http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions).
+* Validation rules description may be found in **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)** method description.
+* Property chains usage may be found in **[PropertyAccessor](../library-internals/03-property-accessor.md)** class description
 
-## <a name="create-card-ref"></a> Запрос "create-card-ref"
+## <a name="create-card-ref"></a> "create-card-ref" request
 
-Запрос применяется для получения id для кредитной карты, сохраненной на стороне PaynetEasy. Этот id позволяет совершать повторные платежи без ввода данных кредитной карты как на стороне сервиса мерчанта так и на стороне PaynetEasy.
-Перед выполнением этого запроса необходимо выполнить один из следующих сценариев для проверки данных, которые ввел клиент:
+This request is used to create an ID which may be used to reference a card stored at PaynetEasy. This ID allows to make recurrent payments without a necessity to enter card data again.
+For this request to be used, it is necessary to perform one of the following scenarios to create verification transaction:
 * [Sale Transactions](00-sale-transactions.md)
 * [Preauth/Capture Transactions](01-preauth-capture-transactions.md)
 * [Payment Form Integration](05-payment-form-integration.md)
 
-##### Обязательные параметры запроса
+##### Mandatory request parameters
 
-Поле запроса        |Цепочка свойств платежа|Правило валидации
---------------------|-----------------------|-----------------
-client_orderid      |payment.clientId       |Validator::ID
-orderid             |payment.paynetId       |Validator::ID
-login               |queryConfig.login      |Validator::MEDIUM_STRING
+Request field       |Payment property chain         |Validation rule
+--------------------|-------------------------------|-----------------
+client_orderid      |payment.clientId               |Validator::ID
+orderid             |payment.paynetId               |Validator::ID
+login               |queryConfig.login              |Validator::MEDIUM_STRING
 
-[Пример выполнения запроса create-card-ref](../../../example/create-card-ref.php)
+[create-card-ref request execution example](../../../example/create-card-ref.php)
 
-После выполнения данного запроса будет получен id сохраненной кредитной карты и создан объект **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()`, а к ее id с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getCardReferenceId()`
+This request creates an ID of a saved credit card embedded in **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)** object. To access **RecurrentCard**, call `$paymentTransaction->getPayment()->getRecurrentCardFrom()`; to access card reference ID, call `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getCardReferenceId()`
 
-## <a name="transfer-by-ref"></a> Запрос "transfer-by-ref"
+## <a name="transfer-by-ref"></a> "transfer-by-ref" request
 
-Запрос применяется для перевода определенной суммы с одного счета на другой.
-Перед выполнением этого запроса необходимо как минимум один запрос [create-card-ref](#create-card-ref), для получения id сохраненной карты, на которую производится перевод средств. Если перевод выполняется между двумя картами клиентов, то необходимо выполнить два запроса [create-card-ref](#create-card-ref), для получения id сохраненных карт, между которымы переводятся средства.
-После выполнения данного запроса необходимо выполнить серию запросов "**status**" для обновления статуса платежа. Для этого сервис мерчанта может вывести самообновляющуюся страницу, каждая перезагрузка которой будет выполнять запрос "**status**".
+Used to transfer an amount from one card to another one.
+Before using this request, it is necessary to create at least one card reference using [create-card-ref](#create-card-ref). Two [create-card-ref](#create-card-ref), may be executed to use them both for transfer (one for source card, another for destination card).
+After executing this request, "**status**" request needs to be polled to update payment status. To achieve this, merchant service may display a self-updating page, each reload of which will make "**status**" request.
 
-##### Обязательные параметры запроса
+##### Mandatory request parameters
 
-Поле запроса            |Цепочка свойств платежа            |Правило валидации
+Request field           |Payment property chain             |Validation rule
 ------------------------|-----------------------------------|-----------------
 client_orderid          |payment.clientId                   |Validator::ID
 amount                  |payment.amount                     |Validator::AMOUNT
@@ -48,9 +48,9 @@ ipaddress               |payment.customer.ipAddress         |Validator::IP
 destination-card-ref-id |payment.recurrentCardTo.paynetId   |Validator::ID
 login                   |queryConfig.login                  |Validator::MEDIUM_STRING
 
-##### Необязательные параметры запроса
+##### Optional request parameters
 
-Поле запроса            |Цепочка свойств платежа            |Правило валидации
+Request field           |Payment property chain             |Validation rule
 ------------------------|-----------------------------------|-----------------
 order_desc              |payment.description                |Validator::LONG_STRING
 source-card-ref-id      |payment.recurrentCardFrom.paynetId |Validator::ID
@@ -58,31 +58,35 @@ cvv2                    |payment.recurrentCardFrom.cvv2     |Validator::CVV2
 redirect_url            |queryConfig.redirectUrl            |Validator::URL
 server_callback_url     |queryConfig.callbackUrl            |Validator::URL
 
-[Пример выполнения запроса transfer-by-ref](../../../example/transfer-by-ref.php)
+[transfer-by-ref request execution example](../../../example/transfer-by-ref.php)
 
-## <a name="status"></a> Запрос "status"
+## <a name="status"></a> "status" request
 
-Запрос применяется для проверки статуса платежа. Обычно требуется серия таких запросов из-за того, что обработка платежа занимает некоторое время. В зависимости от статуса платежа обработка результата этого запроса может происходить несколькими путями.
+This request is used to check payment status. Usually, a series of such requests is required, because payment processingn takes some time. Depending on client authorization type (is 3D Authorization required or not) and payment status, processing of this request may be performed in different ways.
 
-##### Необходимо обновление платежа
+##### Payment update is required
 
-В том случае, если статус платежа не изменился (значение поля **status** - **processing**) и нет необходимости в дополнительных шагах авторизации, то запустить проверку статуса еще раз.
+If payment status did not change (**status** field has **processing** value) and there is not need of additional authorization steps, status needs to be called again after some time.
 
-##### Обработка платежа завершена
+##### 3D Authorization is required
 
-В ответе на запрос поле **status** содержит результат обработки платежа - **approved**, **filtered**, **declined**, **error**
+Response will contain **html** field, which content needs to be output to client's browser. Field content is a form which redirects a user to perform 3D Authorization.
 
-##### Обязательные параметры запроса
+##### Payment processing finished
 
-Поле запроса        |Цепочка свойств платежа|Правило валидации
+Response's **status** field contains final payment status: **approved**, **filtered**, **declined**, **error**, **unknown**
+
+##### Mandatory request parameters
+
+Request parameter   |Payment property chain |Validation chain
 --------------------|-----------------------|-----------------
 client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[Пример выполнения запроса status](../../../example/status.php)
+[status request execution example](../../../example/status.php)
 
-## <a name="callback"></a> Обработка обратного вызова
+## <a name="callback"></a> Callback processing
 
-После завершения обработки платежа на стороне PaynetEasy, данные с результатом обработки передаются в сервис мерчанта с помощью обратного вызова. Это необходимо, чтобы платеж был обработан сервисом мерчанта независимо от того, выполнил пользователь корректно возврат с шлюза PaynetEasy или нет.
-[Подробнее о Merchant callbacks](06-merchant-callbacks.md)
+After payment processing has been finished by PaynetEasy, data with processing result is sent to merchant service using a callback. This is done to allow payment to be processed by merchant service regardless of whether user was correctly redirected from PaynetEasy gateway or not.
+[More about Merchant callbacks](06-merchant-callbacks.md)
