@@ -66,7 +66,7 @@ creditCard          |[CreditCard](#CreditCard)          |               |Payment
 recurrentCardFrom   |[RecurrentCard](#RecurrentCard)    |               |Payment source recurrent card
 recurrentCardTo     |[RecurrentCard](#RecurrentCard)    |               |Payment destination recurrent card
 
-**status** field is filled by transaction handler after building payment request according to operation implemented by the handler.
+The **status** field is filled by transaction handler after building payment request according to operation implemented by the handler.
 
 ### <a name="QueryConfig"></a> QueryConfig
 
