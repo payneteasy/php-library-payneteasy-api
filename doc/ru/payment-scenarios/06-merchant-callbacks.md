@@ -2,7 +2,7 @@
 
 ## Общие положения
 
-* В данной статье описывается исключительно работа с библиотекой. Полная информация о Merchant callbacks расположена в [в документации PaynetEasy](http://doc.payneteasy.com/doc/merchant-callbacks.htm).
+* В данной статье описывается исключительно работа с библиотекой. Полная информация о Merchant callbacks расположена в [документации PaynetEasy](http://doc.payneteasy.com/doc/merchant-callbacks.htm).
 * Описание работы с цепочками свойств можно найти в описании класса **[PropertyAccessor](../library-internals/03-property-accessor.md)**
 
 ## <a name="main-callbacks"></a> Sale, Return, Chargeback callbacks

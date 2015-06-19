@@ -7,7 +7,7 @@
 
 ## Общие положения
 
-* В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Transfer transactions расположена в [в документации PaynetEasy](http://doc.payneteasy.com/doc/transfer-transactions.htm).
+* В данной статье описывается исключительно работа с библиотекой. Полная информация о выполнении Transfer transactions расположена в [документации PaynetEasy](http://doc.payneteasy.com/doc/transfer-transactions.htm).
 * Описание правил валидации можно найти в описании метода **[Validator::validateByRule()](../library-internals/02-validator.md#validateByRule)**.
 * Описание работы с цепочками свойств можно найти в описании класса **[PropertyAccessor](../library-internals/03-property-accessor.md)**
 
