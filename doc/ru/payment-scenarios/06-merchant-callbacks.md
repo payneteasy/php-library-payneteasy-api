@@ -22,8 +22,8 @@ status              |
 type                |
 control             |
 
-* [Пример выполнения запроса sale](../../example/sale.php#L107)
-* [Пример выполнения запроса preauth](../../example/preauth.php#L107)
-* [Пример выполнения запроса sale-form](../../example/sale-form.php#L86)
-* [Пример выполнения запроса preauth-form](../../example/preauth-form.php#86)
-* [Пример выполнения запроса transfer-form](../../example/transfer-form.php#86)
+* [Пример выполнения запроса sale](../../../example/sale.php#L107)
+* [Пример выполнения запроса preauth](../../../example/preauth.php#L107)
+* [Пример выполнения запроса sale-form](../../../example/sale-form.php#L86)
+* [Пример выполнения запроса preauth-form](../../../example/preauth-form.php#86)
+* [Пример выполнения запроса transfer-form](../../../example/transfer-form.php#86)

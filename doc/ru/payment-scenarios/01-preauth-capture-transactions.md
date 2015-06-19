@@ -15,7 +15,7 @@
 
 Запрос применяется для блокирования части средств кредитной карты клиента. При этом информация о карте вводится на стороне сервиса мерчанта и передается в запросе к PaynetEasy. После отправки данного запроса необходимо выполнить серию запросов "**status**" для обновления статуса платежа. Для этого сервис мерчанта может вывести самообновляющуюся страницу, каждая перезагрузка которой будет выполнять запрос "**status**". После успешного завершения этого запроса для списания средств с карты клиента необходимо выполнить запрос **[capture](#capture)**.
 
-[Пример самообновляющейся страницы](../../example/common/waitPage.html)
+[Пример самообновляющейся страницы](../../../example/common/waitPage.html)
 
 ##### Обязательные параметры запроса
 
@@ -53,7 +53,7 @@ destination         |payment.destination                |Validator::LONG_STRING
 site_url            |queryConfig.siteUrl                |Validator::URL
 server_callback_url |queryConfig.callbackUrl            |Validator::URL
 
-[Пример выполнения запроса preauth](../../example/preauth.php)
+[Пример выполнения запроса preauth](../../../example/preauth.php)
 
 ## <a name="capture"></a> Запрос "capture"
 
@@ -67,7 +67,7 @@ client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[Пример выполнения запроса capture](../../example/capture.php)
+[Пример выполнения запроса capture](../../../example/capture.php)
 
 ## <a name="status"></a> Запрос "status"
 
@@ -93,7 +93,7 @@ client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[Пример выполнения запроса status](../../example/status.php)
+[Пример выполнения запроса status](../../../example/status.php)
 
 ## <a name="3d-redirect"></a> Обработка результата платежа после 3D-авторизации (только при выполнении запроса **[preauth](#preauth)**)
 

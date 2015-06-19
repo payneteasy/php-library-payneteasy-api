@@ -27,7 +27,7 @@ client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[Пример выполнения запроса create-card-ref](../../example/create-card-ref.php)
+[Пример выполнения запроса create-card-ref](../../../example/create-card-ref.php)
 
 После выполнения данного запроса будет получен id сохраненной кредитной карты и создан объект **[RecurrentCard](../library-internals/00-payment-data.md#RecurrentCard)**. Получить доступ к **RecurrentCard** можно с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()`, а к ее id с помощью вызова `$paymentTransaction->getPayment()->getRecurrentCardFrom()->getCardReferenceId()`
 
@@ -58,7 +58,7 @@ cvv2                    |payment.recurrentCardFrom.cvv2     |Validator::CVV2
 redirect_url            |queryConfig.redirectUrl            |Validator::URL
 server_callback_url     |queryConfig.callbackUrl            |Validator::URL
 
-[Пример выполнения запроса transfer-by-ref](../../example/transfer-by-ref.php)
+[Пример выполнения запроса transfer-by-ref](../../../example/transfer-by-ref.php)
 
 ## <a name="status"></a> Запрос "status"
 
@@ -80,7 +80,7 @@ client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[Пример выполнения запроса status](../../example/status.php)
+[Пример выполнения запроса status](../../../example/status.php)
 
 ## <a name="callback"></a> Обработка обратного вызова
 

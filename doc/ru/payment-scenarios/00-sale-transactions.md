@@ -14,7 +14,7 @@
 
 Запрос применяется для оплаты с помощью кредитной карты. При этом информация о карте вводится на стороне сервиса мерчанта и передается в запросе к PaynetEasy. После выполнения данного запроса необходимо выполнить серию запросов "**status**" для обновления статуса платежа. Для этого сервис мерчанта может вывести самообновляющуюся страницу, каждая перезагрузка которой будет выполнять запрос "**status**".
 
-[Пример самообновляющейся страницы](../../example/common/waitPage.html)
+[Пример самообновляющейся страницы](../../../example/common/waitPage.html)
 
 ##### Обязательные параметры запроса
 
@@ -52,7 +52,7 @@ destination         |payment.destination                |Validator::LONG_STRING
 site_url            |queryConfig.siteUrl                |Validator::URL
 server_callback_url |queryConfig.callbackUrl            |Validator::URL
 
-[Пример выполнения запроса sale](../../example/sale.php)
+[Пример выполнения запроса sale](../../../example/sale.php)
 
 ## <a name="status"></a> Запрос "status"
 
@@ -78,7 +78,7 @@ client_orderid      |payment.clientId       |Validator::ID
 orderid             |payment.paynetId       |Validator::ID
 login               |queryConfig.login      |Validator::MEDIUM_STRING
 
-[Пример выполнения запроса status](../../example/status.php)
+[Пример выполнения запроса status](../../../example/status.php)
 
 ## <a name="3d-redirect"></a> Обработка результата платежа после 3D-авторизации
 
