@@ -1,11 +1,11 @@
 # Валидатор данных, Validator
 
-Статический класс **[PaynetEasy\PaynetEasyApi\Util\Validator](../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php)** предоставляет следующие методы для валидации данных:
+Статический класс **[PaynetEasy\PaynetEasyApi\Util\Validator](../../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php)** предоставляет следующие методы для валидации данных:
 * **[validateByRule()](#validateByRule)**: валидация с помощью предопределенного правила или регулярного выражения
 
 ### <a name="validateByRule"></a>validateByRule(): валидация с помощью предопределнного правила
 
-Для удобной валидации данных в **[Validator](../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php)** реализован метод **[validateByRule()](../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php#L128)** и набор констант с правилами валидации. Список доступных правил:
+Для удобной валидации данных в **[Validator](../../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php)** реализован метод **[validateByRule()](../../../source/PaynetEasy/PaynetEasyApi/Util/Validator.php#L128)** и набор констант с правилами валидации. Список доступных правил:
 
 Константа                       |Правило валидации          |Описание
 --------------------------------|---------------------------|--------

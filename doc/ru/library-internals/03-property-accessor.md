@@ -1,6 +1,6 @@
 # Класс для работы с цепочками свойств, PropertyAccessor
 
-В процессе работы с данными платежа возникает необходимость читать и изменять свойства объектов, хранящихся в PaymentTransaction. Например, для чтения email клиента необходимо вызвать `$paymentTransaction->getPayment()->getCustomer()->getEmail()`, а для записи - `$paymentTransaction->getPayment()->getCustomer()->setEmail()`. Для удобного выполнения этих операций в классе **[PaynetEasy\PaynetEasyApi\Util\PropertyAccessor](../../source/PaynetEasy/PaynetEasyApi/Util/PropertyAccessor.php)** реализованы следующие методы:
+В процессе работы с данными платежа возникает необходимость читать и изменять свойства объектов, хранящихся в PaymentTransaction. Например, для чтения email клиента необходимо вызвать `$paymentTransaction->getPayment()->getCustomer()->getEmail()`, а для записи - `$paymentTransaction->getPayment()->getCustomer()->setEmail()`. Для удобного выполнения этих операций в классе **[PaynetEasy\PaynetEasyApi\Util\PropertyAccessor](../../../source/PaynetEasy/PaynetEasyApi/Util/PropertyAccessor.php)** реализованы следующие методы:
 * **[getValue()](#getValue)**: удобное чтение данных по цепочке свойств
 * **[setValue()](#setValue)**: удобная запись данных по цепочке свойств
 
