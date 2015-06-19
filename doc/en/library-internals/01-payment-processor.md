@@ -83,7 +83,7 @@ Following files contain examples of processing of such requests:
 
 ### <a name="setHandlers"></a> setHandlers(): setting handlers for various events occurring during order processing
 
-**PaymentProcessor** hides the order processing algorithm from the end user in **[executeQuery()](#executeQuery)**, **[processCustomerReturn()](#processCustomerReturn)** and **[processPaynetEasyCallback()](processPaynetEasyCallback)** methods. During order processing situations arise, which must be handled at merchant service side. To handle such situations, **PaymentProcessor** has event handling system. Handlers may be installed using three ways:
+**PaymentProcessor** hides the order processing algorithm from the end user in **[executeQuery()](#executeQuery)**, **[processCustomerReturn()](#processCustomerReturn)** and **[processPaynetEasyCallback()](#processPaynetEasyCallback)** methods. During order processing situations arise, which must be handled at merchant service side. To handle such situations, **PaymentProcessor** has event handling system. Handlers may be installed using three ways:
 * Pass handlers array to [**PaymentProcessor** class constructor](../../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L101)
 * Pass handlers array to [**setHandlers()**](../../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L250) method
 * Install handlers one by one using **[setHandler()](../../../source/PaynetEasy/PaynetEasyApi/PaymentProcessor.php#L226)** method
