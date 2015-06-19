@@ -98,7 +98,7 @@ Event handlers list:
 * **HANDLER_SHOW_HTML** - handler to output HTML code received from PaynetEasy. Called when user 3D Authorization is required. Must output HTML code from PaynetEasy response to client's browser. Accepts the following parameters:
     * PaynetEasy response
     * Payment transaction
-* **HANDLER_REDIRECT** - handler to redirect a client to PaynetEasy payment form. Called after executing [sale-form, preauth-form или transfer-form](../payment-scenarios/05-payment-form-integration.md). Must redirect a user to URL from PaynetEasy response. Accepts the following parameters:
+* **HANDLER_REDIRECT** - handler to redirect a client to PaynetEasy payment form. Called after executing [sale-form, preauth-form or transfer-form](../payment-scenarios/05-payment-form-integration.md). Must redirect a user to URL from PaynetEasy response. Accepts the following parameters:
     * PaynetEasy response
     * Payment transaction
 * **HANDLER_FINISH_PROCESSING** - handler to proceed payment transaction processing after it has been processed by the library. Called if there is no need of further transaction processing. Accepts the following parameters:

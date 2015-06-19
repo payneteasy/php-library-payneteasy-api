@@ -97,7 +97,7 @@ login               |queryConfig.login      |Validator::MEDIUM_STRING
 
 ## <a name="3d-redirect"></a> Processing payment result after 3D Authorization (only after **[preauth](#preauth)** request execution)
 
-If a 3D Authorization was performed during payment processing, then when a user is redirected back from authorization form, payment processing result data will be sent to merchant service. Processing of this data is the same as processing for [sale-form, preauth-form или transfer-form](05-payment-form-integration.md) flows, it is described in the [basic library usage example](../00-basic-tutorial.md#stage_2).
+If a 3D Authorization was performed during payment processing, then when a user is redirected back from authorization form, payment processing result data will be sent to merchant service. Processing of this data is the same as processing for [sale-form, preauth-form or transfer-form](05-payment-form-integration.md) flows, it is described in the [basic library usage example](../00-basic-tutorial.md#stage_2).
 
 ## <a name="callback"></a> Callback processing
 

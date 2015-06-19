@@ -56,6 +56,6 @@ When the user is redirected from the payment form, payment processing result dat
 
 ## <a name="callback"></a> Callback processing
 
-After payment processing has been finished by PaynetEasy, data with processing result is sent to merchant service using a callback. This is done to allow payment to be processed by merchant service regardless of whether user was correctly redirected from PaynetEasy gateway or not. Processing of that data is the same as processing of data for [sale-form, preauth-form или transfer-form](05-payment-form-integration.md) and it is described in the [basic library usage example](../00-basic-tutorial.md#stage_2).
+After payment processing has been finished by PaynetEasy, data with processing result is sent to merchant service using a callback. This is done to allow payment to be processed by merchant service regardless of whether user was correctly redirected from PaynetEasy gateway or not. Processing of that data is the same as processing of data for [sale-form, preauth-form or transfer-form](05-payment-form-integration.md) and it is described in the [basic library usage example](../00-basic-tutorial.md#stage_2).
 
 [More about Merchant callbacks](06-merchant-callbacks.md)
