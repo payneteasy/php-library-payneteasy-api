@@ -35,10 +35,11 @@ class MakeRebillQuery extends PaymentQuery
      */
     static protected $signatureDefinition = array
     (
-        'queryConfig.endPoint',
+        'queryConfig.login',
         'payment.clientId',
-        'payment.amountInCents',
         'payment.recurrentCardFrom.paynetId',
+        'payment.amountInCents',
+        'payment.currency',
         'queryConfig.signingKey'
     );
 
