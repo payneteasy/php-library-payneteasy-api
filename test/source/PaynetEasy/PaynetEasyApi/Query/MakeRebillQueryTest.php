@@ -29,10 +29,11 @@ class MakeRebillQueryTest extends PaymentQueryTest
         (
             sha1
             (
-                self::END_POINT .
+                self::LOGIN .
                 self::CLIENT_ID .
-                '99' .                          // amount
                 self::RECURRENT_CARD_FROM_ID .
+                '99' .                          // amount
+                'USD' .                         // currency
                 self::SIGNING_KEY
             )
         ));
