@@ -125,7 +125,7 @@ $paymentProcessor->setHandlers(array
 (
     PaymentProcessor::HANDLER_SAVE_CHANGES      => function(PaymentTransaction $paymentTransaction)
     {
-        start_session();
+        session_start();
         $_SESSION['payment_transaction'] = serialize($paymentTransaction);
     },
     PaymentProcessor::HANDLER_STATUS_UPDATE     => function()

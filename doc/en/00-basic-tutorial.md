@@ -160,7 +160,7 @@ Here are examples of code that accomplish both stages. Code that performs second
         },
         PaymentProcessor::HANDLER_SAVE_CHANGES      => function(PaymentTransaction $paymentTransaction)
         {
-            start_session();
+            session_start();
             $_SESSION['payment_transaction'] = serialize($paymentTransaction);
         },
         PaymentProcessor::HANDLER_REDIRECT          => function(Response $response)
