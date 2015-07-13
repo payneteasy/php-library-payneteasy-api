@@ -26,7 +26,8 @@
     "require":
     {
         "php":          ">=5.3.0",
-        "ext-curl":     "*"
+        "ext-curl":     "*",
+        "phpunit/php-code-coverage": "~2.0"
     },
     "autoload":
     {
