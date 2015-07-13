@@ -18,7 +18,7 @@
 
 ## Системные требования
 
-* PHP 5.3 - 5.5
+* PHP 5.4 - 5.6
 * [Расширение curl](http://php.net/manual/en/book.curl.php)
 
 ## Установка

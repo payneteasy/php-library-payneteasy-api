@@ -18,7 +18,7 @@ This library allows to make payments using [PaynetEasy Merchant API](http://doc.
 
 ## System requirements
 
-* PHP 5.3 - 5.5
+* PHP 5.4 - 5.6
 * [curl extension](http://php.net/manual/en/book.curl.php)
 
 ## Install
