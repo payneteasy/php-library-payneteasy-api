@@ -35,6 +35,13 @@ class QueryConfig extends Data
     protected $endPoint;
 
     /**
+     * Merchant end points group
+     *
+     * @var     integer
+     */
+    protected $endPointGroup;
+
+    /**
      * Merchant login
      *
      * @var     string
@@ -99,6 +106,13 @@ class QueryConfig extends Data
      */
     public function setEndPoint($endPoint)
     {
+        if (strlen($this->getEndPointGroup()) > 0)
+        {
+            throw new RuntimeException(
+                "End point group has been already set. You can set either end point or end point group."
+            );
+        }
+
         $this->endPoint = $endPoint;
 
         return $this;
@@ -112,6 +126,33 @@ class QueryConfig extends Data
     public function getEndPoint()
     {
         return $this->endPoint;
+    }
+
+    /**
+     * Set merchant end point group
+     *
+     * @param       integer     $endPoint       Merchant end point group
+     *
+     * @return      self
+     */
+    function getEndPointGroup() {
+        return $this->endPointGroup;
+    }
+
+    /**
+     * Get merchant end point group
+     *
+     * @return      integer
+     */
+    function setEndPointGroup($endPointGroup) {
+        if (strlen($this->getEndPoint()) > 0)
+        {
+            throw new RuntimeException(
+                "End point has been already set. You can set either end point or end point group."
+            );
+        }
+
+        $this->endPointGroup = $endPointGroup;
     }
 
     /**

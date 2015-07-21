@@ -97,6 +97,7 @@ abstract class Query implements QueryInterface
         $request
             ->setApiMethod($this->apiMethod)
             ->setEndPoint($paymentTransaction->getQueryConfig()->getEndPoint())
+            ->setEndPointGroup($paymentTransaction->getQueryConfig()->getEndPointGroup())
             ->setGatewayUrl($paymentTransaction->getQueryConfig()->getGatewayUrl())
             ->setSignature($this->createSignature($paymentTransaction))
         ;

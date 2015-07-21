@@ -46,6 +46,7 @@ abstract class PaymentFormQuery extends PaymentQuery
     static protected $signatureDefinition = array
     (
         'queryConfig.endPoint',
+        'queryConfig.endPointGroup',
         'payment.clientId',
         'payment.amountInCents',
         'payment.customer.email',

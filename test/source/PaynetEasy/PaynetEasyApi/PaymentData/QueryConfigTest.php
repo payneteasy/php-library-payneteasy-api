@@ -41,4 +41,22 @@ class QueryConfigTest extends \PHPUnit_Framework_TestCase
         $this->object->setGatewayMode(QueryConfig::GATEWAY_MODE_PRODUCTION);
         $this->assertEquals('production', $this->object->getGatewayUrl());
     }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage End point group has been already set. You can set either end point or end point group.
+     */
+    public function testSetEndPointIfEndPointGroupExists() {
+        $this->object->setEndPointGroup(121);
+        $this->object->setEndPoint(121);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage End point has been already set. You can set either end point or end point group.
+     */
+    public function testSetEndPointGroupIfEndPointExists() {
+        $this->object->setEndPoint(121);
+        $this->object->setEndPointGroup(121);
+    }
 }

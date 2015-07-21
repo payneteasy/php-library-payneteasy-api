@@ -34,6 +34,42 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
         $this->object->validateRequest(new Request);
     }
 
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Request end point is empty and request end point group is empty. Set one of them.
+     */
+    public function testValidateRequestWithoutEndpointAndEndpointGroup()
+    {
+        $request = new Request(array
+        (
+            'client_orderid'    => 2121
+        ));
+
+        $request->setApiMethod('sale');
+        $request->setGatewayUrl('http://example.com');
+
+        $this->object->validateRequest($request);
+    }
+
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Request end point was set and request end point group was set. Set only one of them.
+     */
+    public function testValidateRequestWithEndpointAndEndpointGroup()
+    {
+        $request = new Request(array
+        (
+            'client_orderid'    => 2121
+        ));
+
+        $request->setApiMethod('sale');
+        $request->setGatewayUrl('http://example.com');
+        $request->setEndPoint(121);
+        $request->setEndPointGroup(121);
+
+        $this->object->validateRequest($request);
+    }
+
     public function testSuccessMakeRequest()
     {
         CurlData::$httpCode = 200;
@@ -81,6 +117,35 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
         $this->object->makeRequest($this->getRequest());
     }
 
+    public function testGetUrlForEndPoint()
+    {
+        $request = new Request(array
+        (
+            'client_orderid'    => 2121
+        ));
+
+        $request->setApiMethod('sale');
+        $request->setEndPoint(121);
+        $request->setGatewayUrl('http://example.com');
+
+        $url = $this->object->getUrl($request);
+
+        $this->assertEquals("http://example.com/sale/121", $url);
+    }
+
+    public function testGetUrlForEndPointGroup()
+    {
+        $request = new Request;
+
+        $request->setApiMethod('sale');
+        $request->setEndPointGroup(121);
+        $request->setGatewayUrl('http://example.com');
+
+        $url = $this->object->getUrl($request);
+
+        $this->assertEquals("http://example.com/sale/group/121", $url);
+    }
+
     protected function getRequest()
     {
         $request = new Request(array
@@ -103,6 +168,10 @@ class PublicGatewayClient extends GatewayClient
     public function validateRequest(Request $request)
     {
         parent::validateRequest($request);
+    }
+
+    public function getUrl(Request $request) {
+        return parent::getUrl($request);
     }
 }
 

@@ -79,12 +79,13 @@ siteUrl             |string |site_url           |URL the original payment is mad
 redirectUrl         |string |redirect_url       |URL the customer will be redirected to upon completion of the transaction
 callbackUrl         |string |server_callback_url|URL the transaction result will be sent to
 endPoint            |integer|                   |Merchant end point
+endPointGroup       |integer|                   |Merchant end points group
 signingKey          |string |                   |Merchant key for payment signing
 gatewayMode         |string |                   |Gateway mode (sandbox, production)
 gatewayUrlSandbox   |string |                   |Sandbox gateway url
 gatewayUrlProduction|string |                   |Production gateway url
 
-Значение свойства **endPoint** участвует в формировании URL для вызова платежного метода шлюза PaynetEasy, а свойства **signingKey** - в формировании подписи для данных платежа. Значения свойств **gatewayUrlSandbox** и **gatewayUrlProduction** содержат ссылки на sandbox и production гейты. Выбор между этими url осуществляется на основе значения поля **gatewayMode**, если значение поля `QueryConfig::GATEWAY_MODE_SANDBOX`, то будет выбран url **gatewayUrlSandbox**, если `QueryConfig::GATEWAY_MODE_PRODUCTION` - то url **gatewayUrlProduction**.
+Значение свойства **endPoint** или свойства **endPointGroup** участвует в формировании URL для вызова платежного метода шлюза PaynetEasy, а свойства **signingKey** - в формировании подписи для данных платежа. Значения свойств **gatewayUrlSandbox** и **gatewayUrlProduction** содержат ссылки на sandbox и production гейты. Выбор между этими url осуществляется на основе значения поля **gatewayMode**, если значение поля `QueryConfig::GATEWAY_MODE_SANDBOX`, то будет выбран url **gatewayUrlSandbox**, если `QueryConfig::GATEWAY_MODE_PRODUCTION` - то url **gatewayUrlProduction**.
 
 ### <a name="Customer"></a> Customer
 

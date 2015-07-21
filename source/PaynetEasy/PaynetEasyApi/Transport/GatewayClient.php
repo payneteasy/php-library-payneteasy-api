@@ -49,8 +49,7 @@ class GatewayClient implements GatewayClientInterface
      */
     protected function sendRequest(Request $request)
     {
-        $url  = "{$request->getGatewayUrl()}/{$request->getApiMethod()}/{$request->getEndPoint()}";
-        $curl = curl_init($url);
+        $curl = curl_init($this->getUrl($request));
 
         curl_setopt_array($curl, $this->curlOptions);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request->getRequestFields()));
@@ -119,9 +118,14 @@ class GatewayClient implements GatewayClientInterface
             $validationErrors[] = 'Request api method is empty';
         }
 
-        if (strlen($request->getEndPoint()) == 0)
+        if (strlen($request->getEndPoint()) == 0 && strlen($request->getEndPointGroup()) === 0)
         {
-            $validationErrors[] = 'Request end point is empty';
+            $validationErrors[] = 'Request end point is empty and request end point group is empty. Set one of them.';
+        }
+
+        if (strlen($request->getEndPoint()) > 0 && strlen($request->getEndPointGroup()) > 0)
+        {
+            $validationErrors[] = 'Request end point was set and request end point group was set. Set only one of them.';
         }
 
         if (count($request->getRequestFields()) === 0)
@@ -138,6 +142,24 @@ class GatewayClient implements GatewayClientInterface
         {
             throw new ValidationException("Some Request fields are invalid:\n" .
                                           implode(";\n", $validationErrors));
+        }
+    }
+
+    /**
+     * Returns url for payment method, based on request data
+     *
+     * @param       Request         $request        Request for url creation
+     *
+     * @return      string      Url
+     */
+    protected function getUrl(Request $request)
+    {
+        if (strlen($request->getEndPointGroup()) > 0) {
+            return "{$request->getGatewayUrl()}/{$request->getApiMethod()}/group/{$request->getEndPointGroup()}";
+        }
+        else
+        {
+            return "{$request->getGatewayUrl()}/{$request->getApiMethod()}/{$request->getEndPoint()}";
         }
     }
 }

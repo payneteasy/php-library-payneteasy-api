@@ -79,12 +79,13 @@ siteUrl             |string |site_url           |URL the original payment is mad
 redirectUrl         |string |redirect_url       |URL the customer will be redirected to upon completion of the transaction
 callbackUrl         |string |server_callback_url|URL the transaction result will be sent to
 endPoint            |integer|                   |Merchant end point
+endPointGroup       |integer|                   |Merchant end points group
 signingKey          |string |                   |Merchant key for payment signing
 gatewayMode         |string |                   |Gateway mode (sandbox, production)
 gatewayUrlSandbox   |string |                   |Sandbox gateway url
 gatewayUrlProduction|string |                   |Production gateway url
 
-**endPoint** property value takes part in building of URL to call PaynetEasy gateway payment method, and **signingKey** is used to create a signature of payment data. **gatewayUrlSandbox** and **gatewayUrlProduction** property values are URLs of sandbox and production gateways. Selection of one of these URLs is made according to **gatewayMode**: if field value is `QueryConfig::GATEWAY_MODE_SANDBOX`, then **gatewayUrlSandbox** is chosen, and if it is `QueryConfig::GATEWAY_MODE_PRODUCTION`, then **gatewayUrlProduction** is used.
+**endPoint** property value or **endPointGroup** property value takes part in building of URL to call PaynetEasy gateway payment method, and **signingKey** is used to create a signature of payment data. **gatewayUrlSandbox** and **gatewayUrlProduction** property values are URLs of sandbox and production gateways. Selection of one of these URLs is made according to **gatewayMode**: if field value is `QueryConfig::GATEWAY_MODE_SANDBOX`, then **gatewayUrlSandbox** is chosen, and if it is `QueryConfig::GATEWAY_MODE_PRODUCTION`, then **gatewayUrlProduction** is used.
 
 ### <a name="Customer"></a> Customer
 

@@ -70,7 +70,9 @@
 
     $queryConfig = new QueryConfig(array
     (
+        // НЕВОЗМОЖНО задать и end_point и end_point_group для одного запроса
         'end_point'                 =>  253,
+        'end_point_group'           =>  140,
         'login'                     => 'rp-merchant1',
         'signing_key'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
         'redirect_url'              => "http://{$_SERVER['HTTP_HOST']}/second_stage.php",
@@ -113,7 +115,9 @@
     ;
 
     $queryConfig = (new QueryConfig)
+        // НЕВОЗМОЖНО задать и setEndPoint и setEndPointGroup для одного запроса
         ->setEndPoint(253)
+        ->setEndPointGroup(140)
         ->setLogin('rp-merchant1')
         ->setSigningKey('3FD4E71A-D84E-411D-A613-40A0FB9DED3A')
         ->setRedirectUrl("http://{$_SERVER['HTTP_HOST']}/second_stage.php")
@@ -139,6 +143,7 @@
 
     Поля конфигурации запроса **QueryConfig**:
     * **[end_point](http://doc.payneteasy.com/doc/introduction.htm#Endpoint)** - точка входа для аккаунта мерчанта, выдается при подключении
+    * **[end_point_group](http://doc.payneteasy.com/doc/introduction.htm#Endpoint)** - группа точек входа для аккаунта мерчанта, выдается при подключении
     * **[login](http://doc.payneteasy.com/doc/introduction.htm#PaynetEasy_Users)** - логин мерчанта для доступа к панели PaynetEasy, выдается при подключении
     * **signing_key** - ключ мерчанта для подписывания запросов, выдается при подключении
     * **[redirect_url](http://doc.payneteasy.com/doc/payment-form-integration.htm#Payment_Form_final_redirect)** - URL, на который пользователь будет перенаправлен после окончания запроса

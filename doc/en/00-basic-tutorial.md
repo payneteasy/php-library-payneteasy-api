@@ -70,7 +70,9 @@ Here are examples of code that accomplish both stages. Code that performs second
 
     $queryConfig = new QueryConfig(array
     (
+        // you CAN'T set both end_point and end_point_group for one request
         'end_point'                 =>  253,
+        'end_point_group'           =>  140,
         'login'                     => 'rp-merchant1',
         'signing_key'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
         'redirect_url'              => "http://{$_SERVER['HTTP_HOST']}/second_stage.php",
@@ -113,7 +115,9 @@ Here are examples of code that accomplish both stages. Code that performs second
     ;
 
     $queryConfig = (new QueryConfig)
+        // you CAN'T set both setEndPoint and setEndPointGroup for one request
         ->setEndPoint(253)
+        ->setEndPointGroup(140)
         ->setLogin('rp-merchant1')
         ->setSigningKey('3FD4E71A-D84E-411D-A613-40A0FB9DED3A')
         ->setRedirectUrl("http://{$_SERVER['HTTP_HOST']}/second_stage.php")
@@ -139,6 +143,7 @@ Here are examples of code that accomplish both stages. Code that performs second
 
     Request configuration fields **QueryConfig**:
     * **[end_point](http://doc.payneteasy.com/doc/introduction.htm#Endpoint)** - end point for merchant account, created when registering
+    * **[end_point_group](http://doc.payneteasy.com/doc/introduction.htm#Endpoint)** - group of end points for merchant account, created when registering
     * **[login](http://doc.payneteasy.com/doc/introduction.htm#PaynetEasy_Users)** - merchant login to access PaynetEasy UI, created when registering
     * **signing_key** - merchant control key for request signing, created when registering
     * **[redirect_url](http://doc.payneteasy.com/doc/payment-form-integration.htm#Payment_Form_final_redirect)** - URL to which user will be redirected after payment processing has finished

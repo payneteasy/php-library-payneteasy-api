@@ -23,6 +23,13 @@ class Request
     protected $endPoint;
 
     /**
+     * PaynetEasy gateway endpoint group
+     *
+     * @var     integer
+     */
+    protected $endPointGroup;
+
+    /**
      * PaynetEasy gateway URL
      *
      * @var     string
@@ -81,13 +88,27 @@ class Request
     /**
      * Set endpoint
      *
-     * @param       integer     $endPoint       Endpount
+     * @param       integer     $endPoint       Endpoint
      *
      * @return      self
      */
     public function setEndPoint($endPoint)
     {
         $this->endPoint = (int) $endPoint;
+
+        return $this;
+    }
+
+    /**
+     * Set endpoint group
+     *
+     * @param       integer     $endPointGroup       Endpoint group
+     *
+     * @return      self
+     */
+    public function setEndPointGroup($endPointGroup)
+    {
+        $this->endPointGroup = (int) $endPointGroup;
 
         return $this;
     }
@@ -100,6 +121,16 @@ class Request
     public function getEndPoint()
     {
         return $this->endPoint;
+    }
+
+    /**
+     * Get endpoint group
+     *
+     * @return      integer                     Endpoint group
+     */
+    public function getEndPointGroup()
+    {
+        return $this->endPointGroup;
     }
 
     /**
