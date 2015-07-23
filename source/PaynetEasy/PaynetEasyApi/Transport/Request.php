@@ -94,7 +94,7 @@ class Request
      */
     public function setEndPoint($endPoint)
     {
-        $this->endPoint = (int) $endPoint;
+        $this->endPoint = $endPoint;
 
         return $this;
     }
@@ -108,7 +108,7 @@ class Request
      */
     public function setEndPointGroup($endPointGroup)
     {
-        $this->endPointGroup = (int) $endPointGroup;
+        $this->endPointGroup = $endPointGroup;
 
         return $this;
     }

@@ -113,7 +113,7 @@ class QueryConfig extends Data
             );
         }
 
-        $this->endPoint = $endPoint;
+        $this->endPoint = (int) $endPoint;
 
         return $this;
     }
@@ -152,7 +152,7 @@ class QueryConfig extends Data
             );
         }
 
-        $this->endPointGroup = $endPointGroup;
+        $this->endPointGroup = (int) $endPointGroup;
     }
 
     /**
