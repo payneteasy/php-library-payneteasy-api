@@ -361,6 +361,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
             )),
             'query_config'      => new QueryConfig(array
             (
+                'end_point'         => 123,
                 'login'             => '_',
                 'redirect_url'      => 'http://example.com',
                 'signing_key'       => 'key'

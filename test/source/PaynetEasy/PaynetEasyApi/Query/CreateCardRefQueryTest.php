@@ -40,6 +40,7 @@ class CreateCardRefQueryTest extends SyncQueryTest
             )),
             'query_config'  => new QueryConfig(array
             (
+                'end_point'     => self::END_POINT,
                 'signing_key'   => self::SIGNING_KEY
             )),
             'status'        => PaymentTransaction::STATUS_APPROVED

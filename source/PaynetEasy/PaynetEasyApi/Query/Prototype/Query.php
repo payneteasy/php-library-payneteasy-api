@@ -372,9 +372,27 @@ abstract class Query implements QueryInterface
      */
     protected function validateQueryConfig(PaymentTransaction $paymentTransaction)
     {
-        if(strlen($paymentTransaction->getQueryConfig()->getSigningKey()) === 0)
+        $queryConfig = $paymentTransaction->getQueryConfig();
+
+        if(strlen($queryConfig->getSigningKey()) === 0)
         {
             throw new ValidationException("Property 'signingKey' does not defined in PaymentTransaction property 'queryConfig'");
+        }
+
+        if (strlen($queryConfig->getEndPoint()) == 0 && strlen($queryConfig->getEndPointGroup()) === 0)
+        {
+            throw new ValidationException(
+                "Properties 'endPont' and 'endPointGroup' do not defined in " .
+                "PaymentTransaction property 'queryConfig'. Set one of them."
+            );
+        }
+
+        if (strlen($queryConfig->getEndPoint()) > 0 && strlen($queryConfig->getEndPointGroup()) > 0)
+        {
+            throw new ValidationException(
+                "Property 'endPont' was set and property 'endPointGroup' was set in " .
+                "PaymentTransaction property 'queryConfig'. Set only one of them."
+            );
         }
     }
 

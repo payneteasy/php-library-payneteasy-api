@@ -64,6 +64,7 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
             )),
             'query_config'  => new QueryConfig(array
             (
+                'end_point'     => self::END_POINT,
                 'signing_key'   => self::SIGNING_KEY
             ))
         ));
