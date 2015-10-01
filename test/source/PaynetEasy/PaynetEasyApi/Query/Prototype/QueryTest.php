@@ -149,7 +149,16 @@ abstract class QueryTest extends \PHPUnit_Framework_TestCase
             'serial-number'     => '_',
             'card-ref-id'       => '_',
             'redirect-url'      => '_',
-            'client_orderid'    => 'invalid'
+            'client_orderid'    => 'invalid',
+            'phone'             => '_',
+            'email'             => '_',
+            'last-four-digits'  => '_',
+            'bin'               => '_',
+            'cardholder-name'   => '_',
+            'card-exp-month'    => '_',
+            'card-exp-year'     => '_',
+            'card-hash-id'      => '_',
+            'card-type'         => '_'
         ));
 
         $this->object->processResponse($this->getPaymentTransaction(), $response);

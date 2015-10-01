@@ -1,5 +1,6 @@
 # Integrating different payment scenarios
 
+* [Account verification](payment-scenarios/07-account-verification.md)
 * [Sale Transactions](payment-scenarios/00-sale-transactions.md)
 * [Preauth/Capture Transactions](payment-scenarios/01-preauth-capture-transactions.md)
 * [Transfer Transactions](payment-scenarios/02-transfer-transactions.md)

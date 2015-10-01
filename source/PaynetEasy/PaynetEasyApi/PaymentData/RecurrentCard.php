@@ -58,6 +58,20 @@ class RecurrentCard extends Data
     protected $lastFourDigits;
 
     /**
+     * Unique card identifier to use for loyalty programs or fraud checks.
+     *
+     * @var string
+     */
+    protected $cardHashId;
+
+    /**
+     * Type of customer credit card (VISA,MASTERCARD, etc).
+     *
+     * @var string
+     */
+    protected $cardType;
+
+    /**
      * Set RecurrentCard referense ID
      *
      * @param       integer     $paynetId       RecurrentCard referense ID
@@ -220,4 +234,41 @@ class RecurrentCard extends Data
     {
         return $this->lastFourDigits;
     }
+
+    /**
+     * Set unique card identifier to use for loyalty programs or fraud checks.
+     *
+     * @param       string      $cardHashId     Unique card identifier to use for loyalty programs or fraud checks.
+     */
+    function setCardHashId($cardHashId) {
+        $this->cardHashId = $cardHashId;
+    }
+
+    /**
+     * Get unique card identifier to use for loyalty programs or fraud checks.
+     *
+     * @return      string      Unique card identifier to use for loyalty programs or fraud checks.
+     */
+    function getCardHashId() {
+        return $this->cardHashId;
+    }
+
+    /**
+     * Set type of customer credit card (VISA,MASTERCARD, etc).
+     *
+     * @param       string      $cardType       Type of customer credit card (VISA,MASTERCARD, etc).
+     */
+    function setCardType($cardType) {
+        $this->cardType = $cardType;
+    }
+
+    /**
+     * Get type of customer credit card (VISA,MASTERCARD, etc).
+     *
+     * @return      string      Type of customer credit card (VISA,MASTERCARD, etc).
+     */
+    function getCardType() {
+        return $this->cardType;
+    }
+
 }

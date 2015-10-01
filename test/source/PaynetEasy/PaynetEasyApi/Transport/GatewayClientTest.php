@@ -148,6 +148,22 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("http://example.com/sale/group/121", $url);
     }
 
+    public function testGetUrlForSyncMethod()
+    {
+        $request = new Request(array
+        (
+            'client_orderid'    => 2121
+        ));
+
+        $request->setApiMethod('sync-account-verification');
+        $request->setEndPoint(121);
+        $request->setGatewayUrl('http://example.com');
+
+        $url = $this->object->getUrl($request);
+
+        $this->assertEquals("http://example.com/sync/account-verification/121", $url);
+    }
+
     public function testIntegrationBetweenQueryConfigAndRequest() {
         $queryConfig = new QueryConfig(array(
             'end_point'         => 123,

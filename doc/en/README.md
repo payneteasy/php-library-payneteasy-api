@@ -2,6 +2,7 @@
 ## Available functionality
 
 This library allows to make payments using [PaynetEasy Merchant API](http://doc.payneteasy.com/). For now, the following payment methods are implemented:
+- [x] [Account verification](http://doc.payneteasy.com/doc/account-verification.htm)
 - [x] [Sale Transactions](http://doc.payneteasy.com/doc/sale-transactions.htm)
 - [x] [Preauth/Capture Transactions](http://doc.payneteasy.com/doc/preauth-capture-transactions.htm)
 - [x] [Transfer Transactions](http://doc.payneteasy.com/doc/transfer-transactions.htm)
@@ -42,6 +43,7 @@ This library allows to make payments using [PaynetEasy Merchant API](http://doc.
     * [Data validator, PaynetEasy\PaynetEasyApi\Util\Validator](library-internals/02-validator.md)
     * [Property chains handling class, PaynetEasy\PaynetEasyApi\Util\PropertyAccessor](library-internals/03-property-accessor.md)
 * [Integrating different payment scenarios](02-payment-scenarios.md)
+    * [Account verification](payment-scenarios/07-account-verification.md)
     * [Sale transactions](payment-scenarios/00-sale-transactions.md)
     * [Preauth/Capture Transactions](payment-scenarios/01-preauth-capture-transactions.md)
     * [Transfer Transactions](payment-scenarios/02-transfer-transactions.md)

@@ -1,13 +1,11 @@
 <?php
 namespace PaynetEasy\PaynetEasyApi\Transport;
 
-use PaynetEasy\PaynetEasyApi\Util\Validator;
-
-use PaynetEasy\PaynetEasyApi\Transport\Response;
-
-use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 use PaynetEasy\PaynetEasyApi\Exception\RequestException;
 use PaynetEasy\PaynetEasyApi\Exception\ResponseException;
+use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
+use PaynetEasy\PaynetEasyApi\Transport\Response;
+use PaynetEasy\PaynetEasyApi\Util\Validator;
 
 class GatewayClient implements GatewayClientInterface
 {
@@ -154,12 +152,24 @@ class GatewayClient implements GatewayClientInterface
      */
     protected function getUrl(Request $request)
     {
-        if (strlen($request->getEndPointGroup()) > 0) {
-            return "{$request->getGatewayUrl()}/{$request->getApiMethod()}/group/{$request->getEndPointGroup()}";
+        if (strpos($request->getApiMethod(), 'sync-') === 0)
+        {
+            $apiMethod = 'sync/' . substr($request->getApiMethod(), strlen('sync-'));
         }
         else
         {
-            return "{$request->getGatewayUrl()}/{$request->getApiMethod()}/{$request->getEndPoint()}";
+            $apiMethod = $request->getApiMethod();
         }
+
+        if (strlen($request->getEndPointGroup()) > 0)
+        {
+            $endPoint = "group/{$request->getEndPointGroup()}";
+        }
+        else
+        {
+            $endPoint = (string) $request->getEndPoint();
+        }
+
+        return "{$request->getGatewayUrl()}/{$apiMethod}/{$endPoint}";
     }
 }
