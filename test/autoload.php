@@ -1,5 +1,11 @@
 <?php
 define('UNIT_TEST_ROOT', dirname(__FILE__));
+include_once __DIR__.'/../vendor/autoload.php';
+
+use Composer\Autoload\ClassLoader;
+
+$classLoader = new ClassLoader();
+$classLoader->register();
 
 set_include_path
 (

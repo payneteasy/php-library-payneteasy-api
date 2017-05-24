@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Query;
 
-use PaynetEasy\PaynetEasyApi\Util\String;
+use PaynetEasy\PaynetEasyApi\Util\StringHelper;
 use RuntimeException;
 
 class       QueryFactory
@@ -20,7 +20,7 @@ implements  QueryFactoryInterface
      */
     public function getQuery($apiQueryName)
     {
-        $queryClass = __NAMESPACE__ . '\\' . String::camelize($apiQueryName) . 'Query';
+        $queryClass = __NAMESPACE__ . '\\' . StringHelper::camelize($apiQueryName) . 'Query';
 
         if (class_exists($queryClass, true))
         {

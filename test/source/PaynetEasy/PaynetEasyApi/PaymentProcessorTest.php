@@ -15,6 +15,9 @@ use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 use PaynetEasy\PaynetEasyApi\Query\FakeQuery;
 use PaynetEasy\PaynetEasyApi\Query\ExceptionQuery;
 use PaynetEasy\PaynetEasyApi\Transport\FakeGatewayClient;
+use PaynetEasy\PaynetEasyApi\Exception\RequestException;
+
+use Phake;
 
 use Exception;
 
@@ -158,6 +161,11 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testExecuteQueryWithExceptionOnMakeRequest()
     {
+        $gatewayClient = Phake::mock('PaynetEasy\PaynetEasyApi\Transport\GatewayClientInterface');
+        $this->object->setGatewayClient($gatewayClient);
+
+        Phake::when($gatewayClient)->makeRequest(Phake::anyParameters())->thenThrow(new RequestException());
+
         $handlerCalled = false;
         $handler  = function() use (&$handlerCalled)
         {
@@ -166,7 +174,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setHandler(PaymentProcessor::HANDLER_CATCH_EXCEPTION, $handler);
 
-        $this->object->executeQuery('fake', new PaymentTransaction);
+        $this->object->executeQuery('sale', new PaymentTransaction);
 
         $this->assertTrue($handlerCalled);
     }

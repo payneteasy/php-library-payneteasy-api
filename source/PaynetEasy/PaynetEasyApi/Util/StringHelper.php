@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Util;
 
-class String
+class StringHelper
 {
     /**
      * Convert string from format <this_is_the_string> or

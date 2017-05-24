@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\Callback;
 
-use PaynetEasy\PaynetEasyApi\Util\String;
+use PaynetEasy\PaynetEasyApi\Util\StringHelper;
 use RuntimeException;
 
 class CallbackFactory implements CallbackFactoryInterface
@@ -31,7 +31,7 @@ class CallbackFactory implements CallbackFactoryInterface
      */
     public function getCallback($callbackType)
     {
-        $callbackClass  = __NAMESPACE__ . '\\' . String::camelize($callbackType) . 'Callback';
+        $callbackClass  = __NAMESPACE__ . '\\' . StringHelper::camelize($callbackType) . 'Callback';
 
         if (class_exists($callbackClass, true))
         {

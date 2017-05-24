@@ -2,7 +2,7 @@
 
 namespace PaynetEasy\PaynetEasyApi\PaymentData;
 
-use PaynetEasy\PaynetEasyApi\Util\String;
+use PaynetEasy\PaynetEasyApi\Util\StringHelper;
 use PaynetEasy\PaynetEasyApi\Util\PropertyAccessor;
 
 use Serializable;
@@ -44,7 +44,7 @@ class Data implements Serializable
      */
     protected function getPropertyByField($fieldName)
     {
-        return String::camelize($fieldName);
+        return StringHelper::camelize($fieldName);
     }
 
     /**
