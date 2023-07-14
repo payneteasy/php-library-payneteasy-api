@@ -335,6 +335,8 @@ class QueryConfig extends Data
     public function setGatewayUrlProduction($gatewayUrl)
     {
         $this->gatewayUrlProduction = $gatewayUrl;
+
+        return $this;
     }
 
     /**
