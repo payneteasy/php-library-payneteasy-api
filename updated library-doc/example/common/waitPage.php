@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Processing ...</title>
+        <script type="text/javascript">
+            function countdown()
+            {
+                if (document.getElementById("seconds-remaining").innerHTML > 0)
+                {
+                    --document.getElementById("seconds-remaining").innerHTML;
+                    setTimeout(countdown, 1000);
+                }
+                else
+                {
+                    document.update_status.submit();
+                }
+            }
+        </script>
+    </head>
+    <body onload="countdown()">
+        <div>
+            <h2>Please wait, your payment is being processed...</h2>
+
+            <p>This page refreshes automatically each 5 sec...</p>
+            <p>Next time it will refresh in <span id="seconds-remaining">5</span> sec.</p>
+
+            <form action="<?php print $formAction; ?>" name="update_status" method="post">
+                <input type="submit" value="Check result" />
+            </form>
+        </div>
+    </body>
+</html>
