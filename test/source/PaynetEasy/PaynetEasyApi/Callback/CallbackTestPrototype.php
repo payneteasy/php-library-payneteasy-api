@@ -87,7 +87,7 @@ abstract class CallbackTestPrototype extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
-     * @expectedExceptionMessage Actual control code '' does not equal expected
+     * @expectedExceptionMessage Invalid callback control code
      */
     public function testProcessCallbackWithEmptyControl()
     {
