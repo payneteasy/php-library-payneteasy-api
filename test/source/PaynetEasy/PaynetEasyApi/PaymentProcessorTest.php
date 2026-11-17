@@ -15,6 +15,7 @@ use PaynetEasy\PaynetEasyApi\Transport\CallbackResponse;
 use PaynetEasy\PaynetEasyApi\Query\FakeQuery;
 use PaynetEasy\PaynetEasyApi\Query\ExceptionQuery;
 use PaynetEasy\PaynetEasyApi\Transport\FakeGatewayClient;
+use PaynetEasy\PaynetEasyApi\Callback\TestCallbackFactory;
 use PaynetEasy\PaynetEasyApi\Exception\RequestException;
 
 use Phake;
@@ -38,6 +39,7 @@ class PaymentProcessorTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->object = new PublicPaymentProcessor;
+        $this->object->setCallbackFactory(new TestCallbackFactory);
     }
 
     protected function tearDown()

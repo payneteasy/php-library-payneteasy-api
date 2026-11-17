@@ -20,6 +20,16 @@ class CallbackFactory implements CallbackFactoryInterface
     );
 
     /**
+     * Callback types, that have own callback class (<CamelizedType>Callback)
+     *
+     * @var array
+     */
+    static protected $allowedCallbackTypes = array
+    (
+        'customer_return'
+    );
+
+    /**
      * Interface, that callback class must implement
      *
      * @var     string
@@ -33,12 +43,15 @@ class CallbackFactory implements CallbackFactoryInterface
     {
         $callbackClass  = __NAMESPACE__ . '\\' . StringHelper::camelize($callbackType) . 'Callback';
 
-        if (class_exists($callbackClass, true))
+        // Callback type comes from untrusted request data:
+        // never autoload a class for a type that is not explicitly allowed
+        if (    in_array($callbackType, static::$allowedCallbackTypes, true)
+            &&  class_exists($callbackClass, true))
         {
             return $this->instantiateCallback($callbackClass, $callbackType);
         }
 
-        if (in_array($callbackType, static::$allowedPaynetEasyCallbackTypes))
+        if (in_array($callbackType, static::$allowedPaynetEasyCallbackTypes, true))
         {
             return $this->instantiateCallback(__NAMESPACE__ . '\\PaynetEasyCallback', $callbackType);
         }

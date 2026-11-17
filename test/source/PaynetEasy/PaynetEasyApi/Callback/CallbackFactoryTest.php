@@ -20,7 +20,7 @@ class CallbackFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new CallbackFactory;
+        $this->object = new TestCallbackFactory;
     }
 
     public function testGetCallback()
@@ -44,6 +44,18 @@ class CallbackFactoryTest extends \PHPUnit_Framework_TestCase
     public function testGetQueryWithUnknownClass()
     {
         $this->object->getCallback('unknown');
+    }
+
+    /**
+     * Class exists, but callback type is not in the allow-list of the default factory
+     *
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Unknown callback class 'PaynetEasy\PaynetEasyApi\Callback\FakeCallback' for callback with type 'fake'
+     */
+    public function testGetCallbackWithNotAllowedType()
+    {
+        $callbackFactory = new CallbackFactory;
+        $callbackFactory->getCallback('fake');
     }
 
     /**
