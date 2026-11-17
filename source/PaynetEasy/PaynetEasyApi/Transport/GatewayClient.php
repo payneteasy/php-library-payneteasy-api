@@ -18,8 +18,10 @@ class GatewayClient implements GatewayClientInterface
     (
         CURLOPT_HEADER         => 0,
         CURLOPT_USERAGENT      => 'PaynetEasy-Client/1.0',
-        CURLOPT_SSL_VERIFYHOST => 0,
-        CURLOPT_SSL_VERIFYPEER => 0,
+        CURLOPT_SSL_VERIFYHOST => 2,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_TIMEOUT        => 60,
         CURLOPT_POST           => 1,
         CURLOPT_RETURNTRANSFER => 1
     );
@@ -50,6 +52,13 @@ class GatewayClient implements GatewayClientInterface
         $curl = curl_init($this->getUrl($request));
 
         curl_setopt_array($curl, $this->curlOptions);
+
+        // Allow only HTTPS, so the request can never fall back to a plaintext protocol
+        if (defined('CURLOPT_PROTOCOLS') && defined('CURLPROTO_HTTPS'))
+        {
+            curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
+        }
+
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request->getRequestFields()));
 
         $response = curl_exec($curl);
@@ -131,9 +140,9 @@ class GatewayClient implements GatewayClientInterface
             $validationErrors[] = 'Request data is empty';
         }
 
-        if (!Validator::validateByRule($request->getGatewayUrl(), Validator::URL, false))
+        if (!Validator::validateByRule($request->getGatewayUrl(), Validator::HTTPS_URL, false))
         {
-            $validationErrors[] = 'Gateway url does not valid in Request';
+            $validationErrors[] = 'Gateway url does not valid in Request (only https:// urls are allowed)';
         }
 
         if (!empty($validationErrors))

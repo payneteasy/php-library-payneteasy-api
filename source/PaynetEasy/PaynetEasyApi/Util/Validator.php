@@ -23,6 +23,11 @@ class Validator
     const URL   = 'url';
 
     /**
+     * Validate value as URL with https scheme
+     */
+    const HTTPS_URL = 'https_url';
+
+    /**
      * Validate value as month
      */
     const MONTH = 'month';
@@ -149,6 +154,12 @@ class Validator
             case self::URL:
             {
                 $valid = filter_var($value, FILTER_VALIDATE_URL);
+                break;
+            }
+            case self::HTTPS_URL:
+            {
+                $valid = filter_var($value, FILTER_VALIDATE_URL) !== false &&
+                         strtolower((string) parse_url($value, PHP_URL_SCHEME)) === 'https';
                 break;
             }
             case self::MONTH:
