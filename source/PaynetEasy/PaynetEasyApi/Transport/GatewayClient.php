@@ -106,6 +106,11 @@ class GatewayClient implements GatewayClientInterface
 
         parse_str($response, $responseFields);
 
+        // The gateway separates fields with "\n&", so every value ends with a line break
+        $responseFields = array_map(function ($value) {
+            return is_string($value) ? trim($value) : $value;
+        }, $responseFields);
+
         return new Response($responseFields);
     }
 
