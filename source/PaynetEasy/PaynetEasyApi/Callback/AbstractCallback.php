@@ -156,7 +156,8 @@ abstract class AbstractCallback implements CallbackInterface
                 $propertyValue = PropertyAccessor::getValue($paymentTransaction, $propertyPath, false);
                 $callbackValue = $callbackResponse[$fieldName];
 
-                if ($propertyValue != $callbackValue)
+                // Strict string comparison: loose == treats e.g. "1e1" and "10" as equal
+                if ((string) $propertyValue !== trim((string) $callbackValue))
                 {
                     $unequalValues[] = "CallbackResponse field '{$fieldName}' value '{$callbackValue}' does not " .
                                        "equal PaymentTransaction property '{$propertyPath}' value '{$propertyValue}'";
@@ -219,10 +220,10 @@ abstract class AbstractCallback implements CallbackInterface
             $paymentTransaction->getQueryConfig()->getSigningKey()
         );
 
-        if($expectedControlCode !== $callbackResponse->getControlCode())
+        // Constant-time comparison; never disclose the expected control code
+        if(!hash_equals($expectedControlCode, (string) $callbackResponse->getControlCode()))
         {
-            throw new ValidationException("Actual control code '{$callbackResponse->getControlCode()}' does " .
-                                          "not equal expected '{$expectedControlCode}'");
+            throw new ValidationException('Invalid callback control code');
         }
     }
 }

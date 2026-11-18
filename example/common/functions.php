@@ -13,6 +13,10 @@ use PaynetEasy\PaynetEasyApi\PaymentProcessor;
  */
 $getQueryConfig = function()
 {
+    /**
+     * NOTE: HTTP_HOST is client-controlled. In production build these URLs
+     * from a configured base URL (e.g. 'https://shop.example.com') instead.
+     */
     return new QueryConfig(array
     (
         /**
@@ -100,6 +104,7 @@ $savePaymentTransaction = function(PaymentTransaction $paymentTransaction)
  */
 $displayWaitPage = function()
 {
+    // NOTE: HTTP_HOST is client-controlled, use a configured base URL in production
     $formAction = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['SCRIPT_NAME']}?stage=updateStatus";
     include(__DIR__ . '/waitPage.php');
     exit;
@@ -143,25 +148,25 @@ $displayEndedPayment = function(PaymentTransaction $paymentTransaction)
     // платеж завершен, выводим его статус
     print "<pre>";
     print "Payment processing finished.\n";
-    print "Payment status: '{$paymentTransaction->getPayment()->getStatus()}'.\n";
-    print "Payment transaction status: '{$paymentTransaction->getStatus()}'.\n";
+    print "Payment status: '" . htmlspecialchars((string) $paymentTransaction->getPayment()->getStatus(), ENT_QUOTES, 'UTF-8') . "'.\n";
+    print "Payment transaction status: '" . htmlspecialchars((string) $paymentTransaction->getStatus(), ENT_QUOTES, 'UTF-8') . "'.\n";
     print "</pre>";
 
     session_destroy();
 };
 
 /**
- * Функция выводит сообщение и трейс пойманного исключения
+ * Функция логирует пойманное исключение и выводит общее сообщение об ошибке
  *
  * @param       Exception       $exception      Исключение
  */
 $displayException = function(Exception $exception)
 {
-    // поймано исключение, выведем его сообщение и трейс
+    // поймано исключение: пишем подробности в лог, пользователю показываем общее сообщение
+    error_log((string) $exception);
+
     print "<pre>";
-    print "Exception catched.\n";
-    print "Exception message: '{$exception->getMessage()}'.\n";
-    print "Exception traceback: \n{$exception->getTraceAsString()}\n";
+    print "An error occurred while processing the payment. Please try again later.\n";
     print "</pre>";
 };
 

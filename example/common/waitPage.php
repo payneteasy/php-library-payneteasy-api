@@ -24,7 +24,7 @@
             <p>This page refreshes automatically each 5 sec...</p>
             <p>Next time it will refresh in <span id="seconds-remaining">5</span> sec.</p>
 
-            <form action="<?php print $formAction; ?>" name="update_status" method="post">
+            <form action="<?php print htmlspecialchars($formAction, ENT_QUOTES, 'UTF-8'); ?>" name="update_status" method="post">
                 <input type="submit" value="Check result" />
             </form>
         </div>

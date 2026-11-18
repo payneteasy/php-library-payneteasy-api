@@ -48,7 +48,7 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
         ));
 
         $request->setApiMethod('sale');
-        $request->setGatewayUrl('http://example.com');
+        $request->setGatewayUrl('https://example.com');
 
         $this->object->validateRequest($request);
     }
@@ -65,7 +65,7 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
         ));
 
         $request->setApiMethod('sale');
-        $request->setGatewayUrl('http://example.com');
+        $request->setGatewayUrl('https://example.com');
         $request->setEndPoint(121);
         $request->setEndPointGroup(121);
 
@@ -119,6 +119,29 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
         $this->object->makeRequest($this->getRequest());
     }
 
+    /**
+     * @expectedException \PaynetEasy\PaynetEasyApi\Exception\ValidationException
+     * @expectedExceptionMessage Gateway url does not valid in Request
+     */
+    public function testValidateRequestWithPlainHttpGatewayUrl()
+    {
+        $request = $this->getRequest();
+        $request->setGatewayUrl('http://example.com');
+
+        $this->object->validateRequest($request);
+    }
+
+    public function testCurlOptionsVerifyTls()
+    {
+        $client  = new GatewayClient;
+        $options = $this->readAttribute($client, 'curlOptions');
+
+        $this->assertSame(2,    $options[CURLOPT_SSL_VERIFYHOST]);
+        $this->assertSame(true, $options[CURLOPT_SSL_VERIFYPEER]);
+        $this->assertArrayHasKey(CURLOPT_CONNECTTIMEOUT, $options);
+        $this->assertArrayHasKey(CURLOPT_TIMEOUT, $options);
+    }
+
     public function testGetUrlForEndPoint()
     {
         $request = new Request(array
@@ -128,11 +151,11 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
 
         $request->setApiMethod('sale');
         $request->setEndPoint(121);
-        $request->setGatewayUrl('http://example.com');
+        $request->setGatewayUrl('https://example.com');
 
         $url = $this->object->getUrl($request);
 
-        $this->assertEquals("http://example.com/sale/121", $url);
+        $this->assertEquals("https://example.com/sale/121", $url);
     }
 
     public function testGetUrlForEndPointGroup()
@@ -141,11 +164,11 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
 
         $request->setApiMethod('sale');
         $request->setEndPointGroup(121);
-        $request->setGatewayUrl('http://example.com');
+        $request->setGatewayUrl('https://example.com');
 
         $url = $this->object->getUrl($request);
 
-        $this->assertEquals("http://example.com/sale/group/121", $url);
+        $this->assertEquals("https://example.com/sale/group/121", $url);
     }
 
     public function testGetUrlForSyncMethod()
@@ -157,11 +180,11 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
 
         $request->setApiMethod('sync-account-verification');
         $request->setEndPoint(121);
-        $request->setGatewayUrl('http://example.com');
+        $request->setGatewayUrl('https://example.com');
 
         $url = $this->object->getUrl($request);
 
-        $this->assertEquals("http://example.com/sync/account-verification/121", $url);
+        $this->assertEquals("https://example.com/sync/account-verification/121", $url);
     }
 
     public function testIntegrationBetweenQueryConfigAndRequest() {
@@ -181,7 +204,7 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
         $request->setEndPointGroup($queryConfig->getEndPointGroup());
 
         $request->setApiMethod('sale');
-        $request->setGatewayUrl('http://example.com');
+        $request->setGatewayUrl('https://example.com');
 
         $this->object->validateRequest($request);
     }
@@ -195,7 +218,7 @@ class GatewayClientTest extends \PHPUnit_Framework_TestCase
 
         $request->setApiMethod('sale');
         $request->setEndPoint(121);
-        $request->setGatewayUrl('http://example.com');
+        $request->setGatewayUrl('https://example.com');
 
         return $request;
     }
