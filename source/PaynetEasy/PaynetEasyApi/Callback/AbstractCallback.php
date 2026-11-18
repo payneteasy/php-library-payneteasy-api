@@ -156,7 +156,8 @@ abstract class AbstractCallback implements CallbackInterface
                 $propertyValue = PropertyAccessor::getValue($paymentTransaction, $propertyPath, false);
                 $callbackValue = $callbackResponse[$fieldName];
 
-                if ($propertyValue != $callbackValue)
+                // Strict string comparison: loose == treats e.g. "1e1" and "10" as equal
+                if ((string) $propertyValue !== trim((string) $callbackValue))
                 {
                     $unequalValues[] = "CallbackResponse field '{$fieldName}' value '{$callbackValue}' does not " .
                                        "equal PaymentTransaction property '{$propertyPath}' value '{$propertyValue}'";
