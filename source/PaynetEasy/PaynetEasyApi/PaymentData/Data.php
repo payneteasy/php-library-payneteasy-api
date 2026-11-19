@@ -54,6 +54,16 @@ class Data implements Serializable
      */
     public function serialize()
     {
+        return serialize($this->__serialize());
+    }
+
+    /**
+     * Object data for serialization (PHP 7.4+)
+     *
+     * @return      array
+     */
+    public function __serialize()
+    {
         $objectData = array();
 
         foreach ($this as $propertyName => $propertyValue)
@@ -66,7 +76,7 @@ class Data implements Serializable
             }
         }
 
-        return serialize($objectData);
+        return $objectData;
     }
 
     /**
@@ -76,8 +86,16 @@ class Data implements Serializable
      */
     public function unserialize($serialized)
     {
-        $objectData = unserialize($serialized);
+        $this->__unserialize((array) unserialize($serialized));
+    }
 
+    /**
+     * Restore object from serialized data (PHP 7.4+)
+     *
+     * @param       array       $objectData     Object data
+     */
+    public function __unserialize(array $objectData)
+    {
         foreach ($objectData as $propertyName => $propertyValue)
         {
             $this->{$propertyName} = $propertyValue;
