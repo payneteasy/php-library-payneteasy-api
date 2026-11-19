@@ -1,7 +1,6 @@
 {
     "name": "payneteasy/php-library-payneteasy-api",
     "description": "PHP library for PaynetEasy payment API",
-    "version": "1.0.0-dev",
     "type": "library",
     "keywords":
     [
@@ -53,7 +52,7 @@
     {
         "branch-alias":
         {
-            "dev-master": "1.0.0-dev"
+            "dev-master": "1.1.x-dev"
         }
     }
 }
