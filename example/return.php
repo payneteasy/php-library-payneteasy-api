@@ -9,13 +9,13 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Первый этап обработки платежа.
- * Создание нового платежа, выполнение запроса preauth
+ * First stage of the payment processing.
+ * Creating a new payment, running the request preauth
  */
 if (!isset($_GET['stage']))
 {
     /**
-     * Создадим новый платеж
+     * Create a new payment
      *
      * @see http://wiki.payneteasy.com/index.php/PnE:Return_Transactions#Return_Request_Parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::$requestFieldsDefinition
@@ -39,7 +39,7 @@ if (!isset($_GET['stage']))
     ));
 
     /**
-     * Выполним запрос return
+     * Run the request return
      *
      * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
      * @see \PaynetEasy\PaynetEasyApi\Query\ReturnQuery::updatePaymentOnSuccess()
@@ -47,13 +47,13 @@ if (!isset($_GET['stage']))
     $getPaymentProcessor()->executeQuery('return', $paymentTransaction);
 }
 /**
- * Второй этап обработки платежа.
- * Ожидание изменения статуса платежа.
+ * Second stage of the payment processing.
+ * Waiting for the payment status to change.
  */
 elseif ($_GET['stage'] == 'updateStatus')
 {
     /**
-     * Запросим статус платежа
+     * Request the payment status
      */
     $getPaymentProcessor()->executeQuery('status', $loadPaymentTransaction());
 }

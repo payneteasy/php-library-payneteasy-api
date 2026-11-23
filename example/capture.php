@@ -9,13 +9,13 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Первый этап обработки платежа.
- * Создание нового платежа, выполнение запроса capture.
+ * First stage of the payment processing.
+ * Creating a new payment, running the request capture.
  */
 if (!isset($_GET['stage']))
 {
     /**
-     * Создадим новый платеж
+     * Create a new payment
      *
      * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Capture_Request_Parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\CaptureQuery::$requestFieldsDefinition
@@ -35,7 +35,7 @@ if (!isset($_GET['stage']))
     ));
 
     /**
-     * Выполним запрос capture
+     * Run the request capture
      *
      * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
      * @see \PaynetEasy\PaynetEasyApi\Query\CaptureQuery::updatePaymentOnSuccess()
@@ -43,13 +43,13 @@ if (!isset($_GET['stage']))
     $getPaymentProcessor()->executeQuery('capture', $paymentTransaction);
 }
 /**
- * Второй этап обработки платежа.
- * Ожидание изменения статуса платежа.
+ * Second stage of the payment processing.
+ * Waiting for the payment status to change.
  */
 elseif ($_GET['stage'] == 'updateStatus')
 {
     /**
-     * Запросим статус платежа
+     * Request the payment status
      */
     $getPaymentProcessor()->executeQuery('status', $loadPaymentTransaction());
 }

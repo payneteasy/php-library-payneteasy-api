@@ -9,13 +9,13 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Обратите внимание, что для выполнения этого запроса необходимо сначала провести
- * платеж одним из следующих способов: sale, preauth, sale-form, preauth-form
+ * Note that before this request you have to process
+ * a payment with one of: sale, preauth, sale-form, preauth-form
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Registration
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Process_Initial_Payment
  *
- * Создадим новый платеж.
+ * Create a new payment.
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_registration_request_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::$requestFieldsDefinition
@@ -37,7 +37,7 @@ $paymentTransaction = new PaymentTransaction(array
 ));
 
 /**
- * Вызов этого метода создаст в объекте Payment объект RecurrentCard
+ * This call creates a RecurrentCard object in the Payment object
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\CreateCardRefQuery::updatePaymentOnSuccess()
  */

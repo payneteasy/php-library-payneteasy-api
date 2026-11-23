@@ -10,13 +10,13 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Обратите внимание, что для выполнения этого запроса необходимо сначала
- * получить id кредитной карты, выполнив запрос create-card-ref
+ * Note that before this request you have to
+ * get the credit card id with the create-card-ref request
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Registration
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Process_Initial_Payment
  *
- * Создадим новый платеж.
+ * Create a new payment.
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Information_request_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::$requestFieldsDefinition
@@ -39,7 +39,7 @@ $paymentTransaction = new PaymentTransaction(array
 ));
 
 /**
- * Вызов этого метода заполнит поля объекта RecurrentCard, размещенного в объекте Payment
+ * This call fills the fields of the RecurrentCard object in the Payment object
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\GetCardInfoQuery::updatePaymentOnSuccess()
  */

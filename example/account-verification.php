@@ -12,13 +12,13 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Первый этап верификации клиента.
- * Создание нового платежа, выполнение запроса account-verification
+ * First stage of the customer verification.
+ * Creating a new payment, running the request account-verification
  */
 if (!isset($_GET['stage']))
 {
     /**
-     * Создадим новый платеж
+     * Create a new payment
      *
      * @see http://doc.payneteasy.com/doc/account-verification.htm#account-verification-request-parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\AccountVerificationQuery::$requestFieldsDefinition
@@ -63,7 +63,7 @@ if (!isset($_GET['stage']))
     ));
 
     /**
-     * Выполним запрос account-verification
+     * Run the request account-verification
      *
      * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
      * @see \PaynetEasy\PaynetEasyApi\Query\AccountVerificationQuery::updatePaymentOnSuccess()
@@ -71,13 +71,13 @@ if (!isset($_GET['stage']))
     $getPaymentProcessor()->executeQuery('account-verification', $paymentTransaction);
 }
 /**
- * Второй этап верификации клиента.
- * Ожидание изменения статуса платежа.
+ * Second stage of the customer verification.
+ * Waiting for the payment status to change.
  */
 elseif ($_GET['stage'] == 'updateStatus')
 {
     /**
-     * Запросим статус платежа
+     * Request the payment status
      */
     $getPaymentProcessor()->executeQuery('status', $loadPaymentTransaction());
 }

@@ -11,20 +11,20 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Первый этап обработки платежа.
- * Создание нового платежа, выполнение запроса make-rebill.
+ * First stage of the payment processing.
+ * Creating a new payment, running the request make-rebill.
  */
 if (!isset($_GET['stage']))
 {
     /**
-     * Обратите внимание, что для выполнения этого запроса необходимо сначала
-     * получить id кредитной карты, выполнив запрос create-card-ref
+     * Note that before this request you have to
+     * get the credit card id with the create-card-ref request
      *
      * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Process_Recurrent_Payment
      * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Card_Registration
      * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Process_Initial_Payment
      *
-     * Создадим новый платеж.
+     * Create a new payment.
      *
      * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions#Recurrent_Payment_request_parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\MakeRebillQuery::$requestFieldsDefinition
@@ -56,7 +56,7 @@ if (!isset($_GET['stage']))
     ));
 
     /**
-     * Выполним запрос make-rebill
+     * Run the request make-rebill
      *
      * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
      * @see \PaynetEasy\PaynetEasyApi\Query\MakeRebillQuery::updatePaymentOnSuccess()
@@ -64,13 +64,13 @@ if (!isset($_GET['stage']))
     $getPaymentProcessor()->executeQuery('make-rebill', $paymentTransaction);
 }
 /**
- * Второй этап обработки платежа.
- * Ожидание изменения статуса платежа.
+ * Second stage of the payment processing.
+ * Waiting for the payment status to change.
  */
 elseif ($_GET['stage'] == 'updateStatus')
 {
     /**
-     * Запросим статус платежа
+     * Request the payment status
      */
     $getPaymentProcessor()->executeQuery('status', $loadPaymentTransaction());
 }

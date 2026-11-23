@@ -7,7 +7,7 @@ use PaynetEasy\PaynetEasyApi\Transport\Response;
 use PaynetEasy\PaynetEasyApi\PaymentProcessor;
 
 /**
- * Функция возвращает конфигурацию для выполнения запросов
+ * Returns the configuration for the requests
  *
  * @return array
  */
@@ -20,37 +20,37 @@ $getQueryConfig = function()
     return new QueryConfig(array
     (
         /**
-         * Точка входа для аккаунта мерчанта, выдается при подключении
+         * Merchant account endpoint, issued on connection
          *
          * @see http://wiki.payneteasy.com/index.php/PnE:Introduction#PaynetEasy_Objects
          * @see http://wiki.payneteasy.com/index.php/PnE:Introduction#Endpoint
          */
         'end_point'                 =>  253,
         /**
-         * Логин мерчанта, выдается при подключении
+         * Merchant login, issued on connection
          *
          * @see http://wiki.payneteasy.com/index.php/PnE:Introduction#PaynetEasy_Users
          */
         'login'                     => 'rp-merchant1',
         /**
-         * Ключ мерчанта для подписывания запросов, выдается при подключении
+         * Merchant key for signing requests, issued on connection
          */
         'signing_key'               => '3FD4E71A-D84E-411D-A613-40A0FB9DED3A',
         /**
-         * URL на который пользователь будет перенаправлен после окончания запроса
+         * URL the customer is redirected to after the request
          *
          * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#3D_redirect
          * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_final_redirect
          */
         'redirect_url'              => "http://{$_SERVER['HTTP_HOST']}{$_SERVER['SCRIPT_NAME']}?stage=processCustomerReturn",
         /**
-         * URL на который пользователь будет перенаправлен после окончания запроса
+         * URL the customer is redirected to after the request
          *
          * @see http://wiki.payneteasy.com/index.php/PnE:Merchant_Callbacks
          */
         'callback_url'              => "http://{$_SERVER['HTTP_HOST']}{$_SERVER['SCRIPT_NAME']}?stage=processPaynetEasyCallback",
         /**
-         * Режим работы библиотеки: sandbox, production
+         * Library mode: sandbox, production
          *
          * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig::$gatewayMode
          * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig::$allowedGatewayModes
@@ -59,13 +59,13 @@ $getQueryConfig = function()
          */
         'gateway_mode'              => QueryConfig::GATEWAY_MODE_SANDBOX,
         /**
-         * Ссылка на шлюз PaynetEasy для режима работы sandbox
+         * PaynetEasy gateway URL for the sandbox mode
          *
          * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig::getGatewayUrl()
          */
         'gateway_url_sandbox'       => 'https://sandbox.domain.com/paynet/api/v2/',
         /**
-         * Ссылка на шлюз PaynetEasy для режима работы production
+         * PaynetEasy gateway URL for the production mode
          *
          * @see \PaynetEasy\PaynetEasyApi\PaymentData\QueryConfig::getGatewayUrl()
          */
@@ -74,9 +74,9 @@ $getQueryConfig = function()
 };
 
 /**
- * Функция загружает платеж из сессии
+ * Loads the payment from the session
  *
- * @return      Payment        Платеж
+ * @return      Payment        Payment
  */
 $loadPaymentTransaction = function()
 {
@@ -87,9 +87,9 @@ $loadPaymentTransaction = function()
 };
 
 /**
- * Функция сохраняет платеж в сессию
+ * Saves the payment to the session
  *
- * @param       PaymentTransaction      $paymentTransaction     Платежная транзакция
+ * @param       PaymentTransaction      $paymentTransaction     Payment transaction
  */
 $savePaymentTransaction = function(PaymentTransaction $paymentTransaction)
 {
@@ -97,8 +97,8 @@ $savePaymentTransaction = function(PaymentTransaction $paymentTransaction)
 };
 
 /**
- * Функция выводит страницу с текстов "платеж обрабатывается",
- * которая автоматически обновляется через определенное время
+ * Shows a page with the text "payment is processing",
+ * that refreshes itself after some time
  *
  * @see ./common/waitPage.html
  */
@@ -111,41 +111,41 @@ $displayWaitPage = function()
 };
 
 /**
- * Функция выводит html, содержащийся в ответе от Paynet,
- * который переадресует пользователя на 3D-авторизацию
+ * Outputs the html from the Paynet response,
+ * that redirects the customer to 3-D Secure authentication
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#3D_Sale_transaction_diagram
  *
- * @param       Response       $response       Ответ от сервера Paynet
+ * @param       Response       $response       Paynet server response
  */
 $displayResponseHtml = function(Response $response)
 {
-    // выводим полученную форму для редиректа на 3D-авторизацию
+    // output the received form that redirects to 3-D Secure authentication
     print $response->getHtml();
     exit;
 };
 
 /**
- * Функция переадресует пользователя на URL, содержащийся в ответе от Paynet.
- * который ведет на платежную форму на стороне Paynet
+ * Redirects the customer to the URL from the Paynet response.
+ * that leads to the payment form on the Paynet side
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#General_Payment_Form_Process_Flow
  */
 $redirectToResponseUrl = function(Response $response)
 {
-    // Переадресуем пользователя на платежную форму
+    // Redirect the customer to the payment form
     header("Location: {$response->getRedirectUrl()}");
     exit;
 };
 
 /**
- * Функция выводит статус платежа после того, как его обработка завершена
+ * Shows the payment status after the processing is finished
  *
- * @param       PaymentTransaction      $paymentTransaction     Платежная транзакция
+ * @param       PaymentTransaction      $paymentTransaction     Payment transaction
  */
 $displayEndedPayment = function(PaymentTransaction $paymentTransaction)
 {
-    // платеж завершен, выводим его статус
+    // the payment is finished, show its status
     print "<pre>";
     print "Payment processing finished.\n";
     print "Payment status: '" . htmlspecialchars((string) $paymentTransaction->getPayment()->getStatus(), ENT_QUOTES, 'UTF-8') . "'.\n";
@@ -156,13 +156,13 @@ $displayEndedPayment = function(PaymentTransaction $paymentTransaction)
 };
 
 /**
- * Функция логирует пойманное исключение и выводит общее сообщение об ошибке
+ * Logs the caught exception and shows a general error message
  *
- * @param       Exception       $exception      Исключение
+ * @param       Exception       $exception      Exception
  */
 $displayException = function(Exception $exception)
 {
-    // поймано исключение: пишем подробности в лог, пользователю показываем общее сообщение
+    // exception caught: log the details, show the customer a general message
     error_log((string) $exception);
 
     print "<pre>";
@@ -171,8 +171,8 @@ $displayException = function(Exception $exception)
 };
 
 /**
- * Метод создает сервис для обработки платежей
- * и назначает обработчики для разных событий, происходящих при обработке платежа
+ * Creates the payment processing service
+ * and sets handlers for the events of the payment processing
  *
  * @see ./common/functions.php
  * @see PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
