@@ -11,13 +11,13 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Первый этап обработки платежа.
- * Создание нового платежа, выполнение запроса transfer-by-ref
+ * First stage of the payment processing.
+ * Creating a new payment, running the request transfer-by-ref
  */
 if (!isset($_GET['stage']))
 {
     /**
-     * Создадим новый платеж
+     * Create a new payment
      *
      * @see http://wiki.payneteasy.com/index.php/PnE:Transfer_Transactions#Money_transfer_request_parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\TransferByRefQuery::$requestFieldsDefinition
@@ -53,7 +53,7 @@ if (!isset($_GET['stage']))
     ));
 
     /**
-     * Выполним запрос transfer-by-ref
+     * Run the request transfer-by-ref
      *
      * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
      * @see \PaynetEasy\PaynetEasyApi\Query\TransferByRefQuery::updatePaymentOnSuccess()
@@ -61,13 +61,13 @@ if (!isset($_GET['stage']))
     $getPaymentProcessor()->executeQuery('transfer-by-ref', $paymentTransaction);
 }
 /**
- * Второй этап обработки платежа.
- * Ожидание изменения статуса платежа.
+ * Second stage of the payment processing.
+ * Waiting for the payment status to change.
  */
 elseif ($_GET['stage'] == 'updateStatus')
 {
     /**
-     * Запросим статус платежа
+     * Request the payment status
      */
     $getPaymentProcessor()->executeQuery('status', $loadPaymentTransaction());
 }

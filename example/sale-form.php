@@ -12,13 +12,13 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Первый этап обработки платежа.
- * Создание нового платежа, выполнение запроса sale-form.
+ * First stage of the payment processing.
+ * Creating a new payment, running the request sale-form.
  */
 if (!isset($_GET['stage']))
 {
     /**
-     * Создадим новый платеж
+     * Create a new payment
      *
      * @see http://wiki.payneteasy.com/index.php/PnE:Payment_Form_integration#Payment_Form_Request_Parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\SaleFormQuery::$requestFieldsDefinition
@@ -56,7 +56,7 @@ if (!isset($_GET['stage']))
     ));
 
     /**
-     * Выполним запрос sale-form
+     * Run the request sale-form
      *
      * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
      * @see \PaynetEasy\PaynetEasyApi\Query\SaleFormQuery::updatePaymentOnSuccess()
@@ -64,24 +64,24 @@ if (!isset($_GET['stage']))
     $getPaymentProcessor()->executeQuery('sale-form', $paymentTransaction);
 }
 /**
- * Второй этап обработки платежа.
- * Обработка возврата пользователя от PaynetEasy
+ * Second stage of the payment processing.
+ * Processing of the customer return from PaynetEasy
  */
 elseif ($_GET['stage'] == 'processCustomerReturn')
 {
     /**
-     * Обработаем данные, полученные от PaynetEasy
+     * Process the data received from PaynetEasy
      */
     $getPaymentProcessor()->processCustomerReturn(new CallbackResponse($_POST), $loadPaymentTransaction());
 }
 /**
- * Дополнительный этап обработки платежа.
- * Обработка коллбэка от PaynetEasy.
+ * Additional stage of the payment processing.
+ * Processing of the PaynetEasy callback.
  */
 elseif ($_GET['stage'] == 'processPaynetEasyCallback')
 {
     /**
-     * Обработаем данные, полученные от PaynetEasy
+     * Process the data received from PaynetEasy
      */
     $getPaymentProcessor()->processPaynetEasyCallback(new CallbackResponse($_GET), $loadPaymentTransaction());
 }

@@ -12,7 +12,7 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Создадим новый платеж
+ * Create a new payment
  *
  * @see http://doc.payneteasy.com/doc/account-verification.htm#account-verification-request-parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\SyncAccountVerificationQuery::$requestFieldsDefinition
@@ -57,7 +57,7 @@ $paymentTransaction = new PaymentTransaction(array
 ));
 
 /**
- * Выполним запрос sync-account-verification
+ * Run the request sync-account-verification
  *
  * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
  * @see \PaynetEasy\PaynetEasyApi\Query\SyncAccountVerificationQuery::updatePaymentOnSuccess()

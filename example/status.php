@@ -9,8 +9,8 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Обратите внимание, что для выполнения этого запроса необходимо сначала
- * выполнить любой запрос, который подразумевает асинхронную обработку:
+ * Note that before this request you have to
+ * run any request with asynchronous processing:
  * sale, preauth, capture, transfer-by-ref, make-rebill, return
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions
@@ -19,7 +19,7 @@ session_start();
  * @see http://wiki.payneteasy.com/index.php/PnE:Recurrent_Transactions
  * @see http://wiki.payneteasy.com/index.php/PnE:Return_Transactions
  *
- * Если платеж был сохранен - получим его сохраненную версию, иначе создадим новый.
+ * If the payment was saved, load the saved one, otherwise create a new one.
  *
  * @see http://wiki.payneteasy.com/index.php/PnE:Sale_Transactions#Payment_status_call_parameters
  * @see \PaynetEasy\PaynetEasyApi\Query\StatusQuery::$requestFieldsDefinition
@@ -39,7 +39,7 @@ $paymentTransaction = $loadPaymentTransaction() ?: new PaymentTransaction(array
 ));
 
 /**
- * Вызов этого метода обновит статус обработки платежа
+ * This call updates the payment processing status
  *
  * @see \PaynetEasy\PaynetEasyApi\Query\Status::updatePaymentOnSuccess()
  */

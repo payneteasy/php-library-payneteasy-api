@@ -13,13 +13,13 @@ require_once __DIR__ . '/common/functions.php';
 session_start();
 
 /**
- * Первый этап обработки платежа.
- * Создание нового платежа, выполнение запроса preauth
+ * First stage of the payment processing.
+ * Creating a new payment, running the request preauth
  */
 if (!isset($_GET['stage']))
 {
     /**
-     * Создадим новый платеж
+     * Create a new payment
      *
      * @see http://wiki.payneteasy.com/index.php/PnE:Preauth/Capture_Transactions#Preauth_Request_Parameters
      * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::$requestFieldsDefinition
@@ -66,7 +66,7 @@ if (!isset($_GET['stage']))
     ));
 
     /**
-     * Выполним запрос preauth
+     * Run the request preauth
      *
      * @see \PaynetEasy\PaynetEasyApi\PaymentProcessor::executeQuery()
      * @see \PaynetEasy\PaynetEasyApi\Query\PreauthQuery::updatePaymentOnSuccess()
@@ -74,35 +74,35 @@ if (!isset($_GET['stage']))
     $getPaymentProcessor()->executeQuery('preauth', $paymentTransaction);
 }
 /**
- * Второй этап обработки платежа.
- * Ожидание изменения статуса платежа.
+ * Second stage of the payment processing.
+ * Waiting for the payment status to change.
  */
 elseif ($_GET['stage'] == 'updateStatus')
 {
     /**
-     * Запросим статус платежа
+     * Request the payment status
      */
     $getPaymentProcessor()->executeQuery('status', $loadPaymentTransaction());
 }
 /**
- * Третий этап обработки платежа.
- * Обработка возврата пользователя от PaynetEasy, если была проведена 3D-авторизация
+ * Third stage of the payment processing.
+ * Processing of the customer return from PaynetEasy after 3-D Secure authentication
  */
 elseif ($_GET['stage'] == 'processCustomerReturn')
 {
     /**
-     * Обработаем данные, полученные от PaynetEasy
+     * Process the data received from PaynetEasy
      */
     $getPaymentProcessor()->processCustomerReturn(new CallbackResponse($_POST), $loadPaymentTransaction());
 }
 /**
- * Дополнительный этап обработки платежа.
- * Обработка коллбэка от PaynetEasy.
+ * Additional stage of the payment processing.
+ * Processing of the PaynetEasy callback.
  */
 elseif ($_GET['stage'] == 'processPaynetEasyCallback')
 {
     /**
-     * Обработаем данные, полученные от PaynetEasy
+     * Process the data received from PaynetEasy
      */
     $getPaymentProcessor()->processPaynetEasyCallback(new CallbackResponse($_GET), $loadPaymentTransaction());
 }
