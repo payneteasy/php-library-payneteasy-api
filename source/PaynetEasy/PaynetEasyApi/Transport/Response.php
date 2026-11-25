@@ -43,7 +43,12 @@ class Response extends ArrayObject
 
     public function __construct($response = array())
     {
-        parent::__construct(array_map('trim', $response));
+        // Request data may hold arrays (x[]=1): only strings are trimmed
+        parent::__construct(array_map(function ($value)
+        {
+            return is_string($value) ? trim($value) : $value;
+        },
+        (array) $response));
     }
 
     /**

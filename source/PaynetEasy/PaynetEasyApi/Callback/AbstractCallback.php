@@ -132,6 +132,7 @@ abstract class AbstractCallback implements CallbackInterface
     protected function validateCallback(PaymentTransaction $paymentTransaction, CallbackResponse $callbackResponse)
     {
         $this->validateQueryConfig($paymentTransaction);
+        $this->validateFieldAliases($callbackResponse);
         $this->validateSignature($paymentTransaction, $callbackResponse);
 
         if (!in_array($callbackResponse->getStatus(), static::$allowedStatuses))
@@ -179,6 +180,50 @@ abstract class AbstractCallback implements CallbackInterface
         if (!empty($errorMessage))
         {
             throw new ValidationException($errorMessage);
+        }
+    }
+
+    /**
+     * The gateway sends the same id under different field names, depending on
+     * the callback kind. When several of them are present, they must be equal:
+     * the control code and the field checks must read the same value.
+     *
+     * @param       CallbackResponse        $callbackResponse       Callback from PaynetEasy
+     *
+     * @throws      ValidationException                             The names of one id have different values
+     */
+    protected function validateFieldAliases(CallbackResponse $callbackResponse)
+    {
+        $aliasGroups = array
+        (
+            array('merchant-order-id', 'client_orderid', 'merchant_order'),
+            array('orderid', 'paynet-order-id'),
+            array('control', 'merchant_control'),
+            array('status')
+        );
+
+        foreach ($aliasGroups as $aliases)
+        {
+            $values = array();
+
+            foreach ($aliases as $alias)
+            {
+                if (isset($callbackResponse[$alias]))
+                {
+                    if (!is_scalar($callbackResponse[$alias]))
+                    {
+                        throw new ValidationException("CallbackResponse field '{$alias}' is not a string");
+                    }
+
+                    $values[(string) $callbackResponse[$alias]] = true;
+                }
+            }
+
+            if (count($values) > 1)
+            {
+                throw new ValidationException("CallbackResponse fields '" . implode("', '", $aliases) .
+                                              "' have different values");
+            }
         }
     }
 
