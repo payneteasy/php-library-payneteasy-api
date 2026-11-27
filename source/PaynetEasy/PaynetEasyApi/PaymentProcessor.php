@@ -15,6 +15,7 @@ use PaynetEasy\PaynetEasyApi\Transport\GatewayClient;
 use PaynetEasy\PaynetEasyApi\Query\QueryFactory;
 use PaynetEasy\PaynetEasyApi\Callback\CallbackFactory;
 
+use PaynetEasy\PaynetEasyApi\Exception\ValidationException;
 use RuntimeException;
 use Exception;
 
@@ -94,6 +95,13 @@ class PaymentProcessor
     protected $handlers = array();
 
     /**
+     * An approved callback or customer return is confirmed by a status request
+     *
+     * @var boolean
+     */
+    protected $confirmApprovedCallback = true;
+
+    /**
      * @see PaymentProcessor::setHandlers()
      *
      * @param       array       $handlers         Handlers callbacks
@@ -162,6 +170,11 @@ class PaymentProcessor
         {
             $this->getCallback($callbackResponse->getType())
                  ->processCallback($paymentTransaction, $callbackResponse);
+
+            if ($paymentTransaction->isApproved() && $this->confirmApprovedCallback)
+            {
+                $this->confirmApprovedStatus($paymentTransaction);
+            }
         }
         catch (Exception $e)
         {
@@ -172,6 +185,94 @@ class PaymentProcessor
         $this->handleQueryResult($paymentTransaction, $callbackResponse);
 
         return $callbackResponse;
+    }
+
+    /**
+     * Turns the status request after an approved callback on or off.
+     *
+     * @param       boolean     $confirm        True to confirm approved callbacks
+     *
+     * @return      self
+     */
+    public function setConfirmApprovedCallback($confirm)
+    {
+        $this->confirmApprovedCallback = (bool) $confirm;
+
+        return $this;
+    }
+
+    /**
+     * Asks the gateway for the status of an approved payment. The callback
+     * fields besides the signed ones are not trusted: the payment is approved
+     * only if the gateway confirms it for the same payment, amount and currency.
+     * Otherwise the transaction is processing again and an exception is thrown.
+     *
+     * @param       PaymentTransaction      $paymentTransaction     Approved payment transaction
+     *
+     * @throws      ValidationException                             Status not confirmed
+     */
+    protected function confirmApprovedStatus(PaymentTransaction $paymentTransaction)
+    {
+        $payment = $paymentTransaction->getPayment();
+
+        try
+        {
+            $request  = $this->getQuery('status')->createRequest($paymentTransaction);
+            $response = $this->makeRequest($request);
+        }
+        catch (Exception $e)
+        {
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
+            throw new ValidationException('Payment status was not confirmed by the gateway: ' . $e->getMessage());
+        }
+
+        $failed = array();
+        $field  = function ($name) use ($response)
+        {
+            return isset($response[$name]) && is_scalar($response[$name]) ? trim((string) $response[$name]) : '';
+        };
+
+        if ($response->getType() !== 'status-response' || $response->getStatus() !== PaymentTransaction::STATUS_APPROVED)
+        {
+            $failed[] = 'status';
+        }
+
+        if ($field('paynet-order-id') !== (string) $payment->getPaynetId())
+        {
+            $failed[] = 'paynet-order-id';
+        }
+
+        if (strlen($field('merchant-order-id')) > 0
+            && $field('merchant-order-id') !== (string) $payment->getClientId())
+        {
+            $failed[] = 'merchant-order-id';
+        }
+
+        if (strlen($field('transaction-type')) > 0
+            && !in_array(strtolower($field('transaction-type')), array('sale', 'preauth', 'capture')))
+        {
+            $failed[] = 'transaction-type';
+        }
+
+        if (strlen($field('amount')) > 0
+            && (   !is_numeric($field('amount'))
+                || round((float) $field('amount') * 100) != round((float) $payment->getAmount() * 100)))
+        {
+            $failed[] = 'amount';
+        }
+
+        if (strlen($field('currency')) > 0
+            && strlen(trim((string) $payment->getCurrency())) > 0
+            && strtoupper($field('currency')) !== strtoupper(trim((string) $payment->getCurrency())))
+        {
+            $failed[] = 'currency';
+        }
+
+        if (!empty($failed))
+        {
+            $paymentTransaction->setStatus(PaymentTransaction::STATUS_PROCESSING);
+            throw new ValidationException('Payment status was not confirmed by the gateway: ' . implode(', ', $failed));
+        }
     }
 
     /**
